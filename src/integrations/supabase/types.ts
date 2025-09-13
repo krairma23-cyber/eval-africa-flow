@@ -411,6 +411,21 @@ export type Database = {
         }
         Relationships: []
       }
+      "Gestion des évaluations": {
+        Row: {
+          created_at: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+        }
+        Relationships: []
+      }
       inscriptions: {
         Row: {
           consent_given: boolean | null
