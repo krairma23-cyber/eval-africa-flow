@@ -838,6 +838,39 @@ export type Database = {
         }
         Relationships: []
       }
+      event_registrations: {
+        Row: {
+          created_at: string
+          email: string
+          event_name: string | null
+          first_name: string
+          id: string
+          last_name: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          event_name?: string | null
+          first_name: string
+          id?: string
+          last_name: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          event_name?: string | null
+          first_name?: string
+          id?: string
+          last_name?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       "Gestion des évaluations": {
         Row: {
           created_at: string
@@ -1160,6 +1193,30 @@ export type Database = {
           published?: boolean | null
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      processed_webhook_events: {
+        Row: {
+          created_at: string
+          event_id: string
+          event_type: string
+          id: string
+          processed_at: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          event_type: string
+          id?: string
+          processed_at?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          event_type?: string
+          id?: string
+          processed_at?: string
         }
         Relationships: []
       }
@@ -1920,7 +1977,7 @@ export type Database = {
               p_user_id?: string
               p_window_minutes?: number
             }
-        Returns: Json
+        Returns: boolean
       }
       check_password_breach: {
         Args: { p_password: string }
@@ -2079,6 +2136,15 @@ export type Database = {
           severity: string
         }[]
       }
+      get_security_dashboard_summary: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          last_updated: string
+          metric_name: string
+          metric_value: number
+          severity: string
+        }[]
+      }
       get_security_monitoring_dashboard: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -2097,6 +2163,40 @@ export type Database = {
           metric_name: string
           metric_value: number
           status: string
+        }[]
+      }
+      get_students_for_user: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          address: string
+          created_at: string
+          date_of_birth: string
+          first_name: string
+          gender: string
+          id: string
+          last_name: string
+          parent_email: string
+          parent_name: string
+          parent_phone: string
+          school_id: string
+          student_number: string
+          updated_at: string
+        }[]
+      }
+      get_teachers_for_user: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string
+          email: string
+          first_name: string
+          hire_date: string
+          id: string
+          last_name: string
+          phone: string
+          school_id: string
+          specialization: string
+          teacher_number: string
+          updated_at: string
         }[]
       }
       get_user_role: {
@@ -2124,6 +2224,14 @@ export type Database = {
       }
       is_org_member: {
         Args: { _org_id: string; _user_id?: string }
+        Returns: boolean
+      }
+      is_school_admin: {
+        Args: { p_school_id: string; p_user_id?: string }
+        Returns: boolean
+      }
+      is_teacher: {
+        Args: { p_user_id?: string }
         Returns: boolean
       }
       log_comprehensive_audit: {
@@ -2169,6 +2277,10 @@ export type Database = {
       migrate_to_encrypted_storage: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      process_webhook_event: {
+        Args: { p_event_id: string; p_event_type: string }
+        Returns: boolean
       }
       run_security_audit: {
         Args: Record<PropertyKey, never>
@@ -2297,6 +2409,10 @@ export type Database = {
       }
       user_belongs_to_school: {
         Args: { school_uuid: string }
+        Returns: boolean
+      }
+      user_teaches_student: {
+        Args: { p_student_id: string; p_teacher_user_id?: string }
         Returns: boolean
       }
       validate_auth_attempt: {
