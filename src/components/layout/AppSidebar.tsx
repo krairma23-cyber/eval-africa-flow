@@ -25,11 +25,11 @@ const menuItems = [
   { title: "Tableau de bord", url: "/dashboard", icon: Home },
   { title: "Élèves", url: "/dashboard/students", icon: Users },
   { title: "Enseignants", url: "/dashboard/teachers", icon: GraduationCap },
-  { title: "Classes", url: "/classrooms", icon: School },
+  { title: "Classes", url: "/dashboard/classrooms", icon: School },
   { title: "Matières", url: "/dashboard/subjects", icon: BookOpen },
-  { title: "Évaluations", url: "/assessments", icon: ClipboardCheck },
-  { title: "Bulletins", url: "/reports", icon: FileText },
-  { title: "Paramètres", url: "/settings", icon: Settings },
+  { title: "Évaluations", url: "/dashboard/assessments", icon: ClipboardCheck },
+  { title: "Bulletins", url: "/dashboard/reports", icon: FileText },
+  { title: "Paramètres", url: "/dashboard/settings", icon: Settings },
 ];
 
 export function AppSidebar() {

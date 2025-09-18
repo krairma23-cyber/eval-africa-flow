@@ -9,6 +9,10 @@ import Dashboard from "./pages/Dashboard";
 import Students from "./pages/Students";
 import Teachers from "./pages/Teachers";
 import Subjects from "./pages/Subjects";
+import Classrooms from "./pages/Classrooms";
+import Assessments from "./pages/Assessments";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import NotFound from "./pages/NotFound";
 
@@ -28,6 +32,10 @@ const App = () => (
             <Route path="students" element={<Students />} />
             <Route path="teachers" element={<Teachers />} />
             <Route path="subjects" element={<Subjects />} />
+            <Route path="classrooms" element={<Classrooms />} />
+            <Route path="assessments" element={<Assessments />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
