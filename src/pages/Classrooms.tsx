@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, Users } from "lucide-react";
+import { Plus, Search, School, Calendar } from "lucide-react";
+import { AddClassroomDialog } from "@/components/forms/AddClassroomDialog";
 
 interface Classroom {
   id: string;
@@ -103,23 +105,27 @@ export default function Classrooms() {
             className="pl-10"
           />
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Ajouter une classe
-        </Button>
+        <AddClassroomDialog onClassroomAdded={fetchClassrooms}>
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Ajouter une classe
+          </Button>
+        </AddClassroomDialog>
       </div>
 
       {filteredClassrooms.length === 0 ? (
         <div className="text-center py-12">
-          <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <School className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">Aucune classe trouvée</h3>
           <p className="text-muted-foreground mb-4">
             {searchTerm ? "Aucune classe ne correspond à votre recherche" : "Commencez par créer votre première classe"}
           </p>
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            Créer une classe
-          </Button>
+          <AddClassroomDialog onClassroomAdded={fetchClassrooms}>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Créer une classe
+            </Button>
+          </AddClassroomDialog>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -128,7 +134,7 @@ export default function Classrooms() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>{classroom.name}</span>
-                  <Users className="h-5 w-5 text-muted-foreground" />
+                  <School className="h-5 w-5 text-muted-foreground" />
                 </CardTitle>
                 <CardDescription>
                   Niveau {classroom.grade_levels.name} • {classroom.academic_years.name}

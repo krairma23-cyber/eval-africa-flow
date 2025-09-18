@@ -116,7 +116,12 @@ export default function Reports() {
             className="pl-10"
           />
         </div>
-        <Button>
+        <Button onClick={() => {
+          toast({
+            title: "Fonction non disponible",
+            description: "La génération de bulletins sera disponible prochainement",
+          });
+        }}>
           <Plus className="h-4 w-4 mr-2" />
           Générer des bulletins
         </Button>
@@ -129,7 +134,12 @@ export default function Reports() {
           <p className="text-muted-foreground mb-4">
             {searchTerm ? "Aucun bulletin ne correspond à votre recherche" : "Commencez par générer vos premiers bulletins"}
           </p>
-          <Button>
+          <Button onClick={() => {
+            toast({
+              title: "Fonction non disponible", 
+              description: "La génération de bulletins sera disponible prochainement",
+            });
+          }}>
             <Plus className="h-4 w-4 mr-2" />
             Générer des bulletins
           </Button>
@@ -156,7 +166,17 @@ export default function Reports() {
                   <Calendar className="h-4 w-4 mr-2" />
                   Généré le {formatDate(report.generated_at)}
                 </div>
-                <Button variant="outline" size="sm" className="w-full">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full"
+                  onClick={() => {
+                    toast({
+                      title: "Fonction non disponible",
+                      description: "Le téléchargement de bulletins sera disponible prochainement",
+                    });
+                  }}
+                >
                   <Download className="h-4 w-4 mr-2" />
                   Télécharger le bulletin
                 </Button>

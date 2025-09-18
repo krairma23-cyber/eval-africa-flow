@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
 
 interface Student {
   id: string;
@@ -117,10 +118,12 @@ export default function Students() {
             Gestion des élèves de l'établissement
           </p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Ajouter un élève
-        </Button>
+        <AddStudentDialog onStudentAdded={fetchStudents}>
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Ajouter un élève
+          </Button>
+        </AddStudentDialog>
       </div>
 
       <div className="flex items-center space-x-2">
@@ -144,10 +147,12 @@ export default function Students() {
                 : "Commencez par ajouter des élèves à votre établissement"}
             </p>
             {!searchTerm && (
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Ajouter le premier élève
-              </Button>
+              <AddStudentDialog onStudentAdded={fetchStudents}>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Ajouter le premier élève
+                </Button>
+              </AddStudentDialog>
             )}
           </CardContent>
         </Card>

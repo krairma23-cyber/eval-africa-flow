@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Plus, GraduationCap, Mail, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AddTeacherDialog } from "@/components/forms/AddTeacherDialog";
 
 interface Teacher {
   id: string;
@@ -105,10 +106,12 @@ export default function Teachers() {
             Gestion du personnel enseignant
           </p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Ajouter un enseignant
-        </Button>
+        <AddTeacherDialog onTeacherAdded={fetchTeachers}>
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Ajouter un enseignant
+          </Button>
+        </AddTeacherDialog>
       </div>
 
       <div className="flex items-center space-x-2">
@@ -132,10 +135,12 @@ export default function Teachers() {
                 : "Commencez par ajouter des enseignants à votre établissement"}
             </p>
             {!searchTerm && (
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Ajouter le premier enseignant
-              </Button>
+              <AddTeacherDialog onTeacherAdded={fetchTeachers}>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Ajouter le premier enseignant
+                </Button>
+              </AddTeacherDialog>
             )}
           </CardContent>
         </Card>

@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Search, Plus, BookOpen } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { Plus, Search, BookOpen, Calendar } from "lucide-react";
+import { AddSubjectDialog } from "@/components/forms/AddSubjectDialog";
 
 interface Subject {
   id: string;
@@ -100,10 +101,12 @@ export default function Subjects() {
             Gestion des matières enseignées
           </p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Ajouter une matière
-        </Button>
+        <AddSubjectDialog onSubjectAdded={fetchSubjects}>
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Ajouter une matière
+          </Button>
+        </AddSubjectDialog>
       </div>
 
       <div className="flex items-center space-x-2">
@@ -127,10 +130,12 @@ export default function Subjects() {
                 : "Commencez par ajouter des matières à votre établissement"}
             </p>
             {!searchTerm && (
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Ajouter la première matière
-              </Button>
+              <AddSubjectDialog onSubjectAdded={fetchSubjects}>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Ajouter la première matière
+                </Button>
+              </AddSubjectDialog>
             )}
           </CardContent>
         </Card>

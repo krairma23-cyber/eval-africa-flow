@@ -136,7 +136,12 @@ export default function Assessments() {
             className="pl-10"
           />
         </div>
-        <Button>
+        <Button onClick={() => {
+          toast({
+            title: "Fonction non disponible",
+            description: "La création d'évaluations sera disponible prochainement",
+          });
+        }}>
           <Plus className="h-4 w-4 mr-2" />
           Créer une évaluation
         </Button>
@@ -149,7 +154,12 @@ export default function Assessments() {
           <p className="text-muted-foreground mb-4">
             {searchTerm ? "Aucune évaluation ne correspond à votre recherche" : "Commencez par créer votre première évaluation"}
           </p>
-          <Button>
+          <Button onClick={() => {
+            toast({
+              title: "Fonction non disponible",
+              description: "La création d'évaluations sera disponible prochainement",
+            });
+          }}>
             <Plus className="h-4 w-4 mr-2" />
             Créer une évaluation
           </Button>
