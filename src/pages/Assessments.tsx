@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Search, ClipboardCheck, Calendar } from "lucide-react";
+import { AddAssessmentDialog } from "@/components/forms/AddAssessmentDialog";
 
 interface Assessment {
   id: string;
@@ -136,15 +137,12 @@ export default function Assessments() {
             className="pl-10"
           />
         </div>
-        <Button onClick={() => {
-          toast({
-            title: "Fonction non disponible",
-            description: "La création d'évaluations sera disponible prochainement",
-          });
-        }}>
-          <Plus className="h-4 w-4 mr-2" />
-          Créer une évaluation
-        </Button>
+        <AddAssessmentDialog onAssessmentAdded={fetchAssessments}>
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Créer une évaluation
+          </Button>
+        </AddAssessmentDialog>
       </div>
 
       {filteredAssessments.length === 0 ? (
@@ -154,15 +152,12 @@ export default function Assessments() {
           <p className="text-muted-foreground mb-4">
             {searchTerm ? "Aucune évaluation ne correspond à votre recherche" : "Commencez par créer votre première évaluation"}
           </p>
-          <Button onClick={() => {
-            toast({
-              title: "Fonction non disponible",
-              description: "La création d'évaluations sera disponible prochainement",
-            });
-          }}>
-            <Plus className="h-4 w-4 mr-2" />
-            Créer une évaluation
-          </Button>
+          <AddAssessmentDialog onAssessmentAdded={fetchAssessments}>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Créer une évaluation
+            </Button>
+          </AddAssessmentDialog>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

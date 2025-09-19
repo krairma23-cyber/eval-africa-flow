@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Search, FileText, Download, Calendar } from "lucide-react";
+import { GenerateReportsDialog } from "@/components/forms/GenerateReportsDialog";
 
 interface Report {
   id: string;
@@ -116,15 +117,12 @@ export default function Reports() {
             className="pl-10"
           />
         </div>
-        <Button onClick={() => {
-          toast({
-            title: "Fonction non disponible",
-            description: "La génération de bulletins sera disponible prochainement",
-          });
-        }}>
-          <Plus className="h-4 w-4 mr-2" />
-          Générer des bulletins
-        </Button>
+        <GenerateReportsDialog onReportsGenerated={fetchReports}>
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Générer des bulletins
+          </Button>
+        </GenerateReportsDialog>
       </div>
 
       {filteredReports.length === 0 ? (
@@ -134,15 +132,12 @@ export default function Reports() {
           <p className="text-muted-foreground mb-4">
             {searchTerm ? "Aucun bulletin ne correspond à votre recherche" : "Commencez par générer vos premiers bulletins"}
           </p>
-          <Button onClick={() => {
-            toast({
-              title: "Fonction non disponible", 
-              description: "La génération de bulletins sera disponible prochainement",
-            });
-          }}>
-            <Plus className="h-4 w-4 mr-2" />
-            Générer des bulletins
-          </Button>
+          <GenerateReportsDialog onReportsGenerated={fetchReports}>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Générer des bulletins
+            </Button>
+          </GenerateReportsDialog>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -172,8 +167,8 @@ export default function Reports() {
                   className="w-full"
                   onClick={() => {
                     toast({
-                      title: "Fonction non disponible",
-                      description: "Le téléchargement de bulletins sera disponible prochainement",
+                      title: "Téléchargement simulé",
+                      description: "Le bulletin serait téléchargé en PDF",
                     });
                   }}
                 >
