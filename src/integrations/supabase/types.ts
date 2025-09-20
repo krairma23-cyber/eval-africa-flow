@@ -843,6 +843,8 @@ export type Database = {
           created_at: string
           email: string
           event_name: string | null
+          eventbrite_order_id: string | null
+          eventbrite_ticket_id: string | null
           first_name: string
           id: string
           last_name: string
@@ -853,6 +855,8 @@ export type Database = {
           created_at?: string
           email: string
           event_name?: string | null
+          eventbrite_order_id?: string | null
+          eventbrite_ticket_id?: string | null
           first_name: string
           id?: string
           last_name: string
@@ -863,6 +867,8 @@ export type Database = {
           created_at?: string
           email?: string
           event_name?: string | null
+          eventbrite_order_id?: string | null
+          eventbrite_ticket_id?: string | null
           first_name?: string
           id?: string
           last_name?: string
