@@ -7,14 +7,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [role, setRole] = useState("teacher");
   const [loading, setLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
@@ -82,7 +80,7 @@ export function LoginForm() {
       } else {
         toast({
           title: "Inscription réussie",
-          description: "Vérifiez votre email pour confirmer votre compte",
+          description: "Vérifiez votre email pour confirmer votre compte. Un administrateur devra activer votre compte et vous assigner un rôle.",
         });
       }
     } catch (error) {
@@ -162,7 +160,6 @@ export function LoginForm() {
                     />
                   </div>
                 </div>
-                {/* Role selection removed for security - roles assigned by admin */}
                 <div className="space-y-2">
                   <Label htmlFor="signupEmail">Email</Label>
                   <Input
@@ -184,6 +181,9 @@ export function LoginForm() {
                     minLength={6}
                   />
                 </div>
+                <p className="text-sm text-muted-foreground">
+                  Note: Votre rôle sera assigné par un administrateur après inscription.
+                </p>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Inscription..." : "S'inscrire"}
                 </Button>

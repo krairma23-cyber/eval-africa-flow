@@ -26,33 +26,38 @@ export function AddTeacherDialog({ onTeacherAdded, children }: AddTeacherDialogP
   const { toast } = useToast();
 
   useEffect(() => {
-    // Get user's school ID from their profile
-    const getUserSchool = async () => {
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('school_id')
-        .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-        .maybeSingle();
-      
-      if (error) {
+    const fetchUserProfile = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('school_id')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          
+          if (profile?.school_id) {
+            setUserSchoolId(profile.school_id);
+          } else {
+            toast({
+              title: "Erreur",
+              description: "Votre profil n'est pas associé à une école. Contactez l'administrateur.",
+              variant: "destructive",
+            });
+          }
+        }
+      } catch (error) {
         console.error('Error fetching user profile:', error);
-        return;
-      }
-      
-      if (!profile?.school_id) {
         toast({
           title: "Erreur",
-          description: "Aucune école associée à votre compte. Contactez l'administrateur.",
+          description: "Impossible de récupérer votre profil utilisateur.",
           variant: "destructive",
         });
-        return;
       }
-      
-      setUserSchoolId(profile.school_id);
     };
 
     if (open) {
-      getUserSchool();
+      fetchUserProfile();
     }
   }, [open, toast]);
 
@@ -70,7 +75,7 @@ export function AddTeacherDialog({ onTeacherAdded, children }: AddTeacherDialogP
     if (!userSchoolId) {
       toast({
         title: "Erreur",
-        description: "Impossible d'identifier votre école. Veuillez vous reconnecter.",
+        description: "Impossible de déterminer votre école. Contactez l'administrateur.",
         variant: "destructive",
       });
       return;
@@ -178,7 +183,7 @@ export function AddTeacherDialog({ onTeacherAdded, children }: AddTeacherDialogP
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Annuler
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading || !userSchoolId}>
               {loading ? "Ajout..." : "Ajouter"}
             </Button>
           </div>
