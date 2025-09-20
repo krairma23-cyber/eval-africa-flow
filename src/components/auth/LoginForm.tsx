@@ -69,7 +69,6 @@ export function LoginForm() {
           data: {
             first_name: firstName,
             last_name: lastName,
-            role: role,
           },
         },
       });
@@ -163,19 +162,7 @@ export function LoginForm() {
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="role">Rôle</Label>
-                  <Select value={role} onValueChange={setRole}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="admin">Administrateur</SelectItem>
-                      <SelectItem value="teacher">Enseignant</SelectItem>
-                      <SelectItem value="secretary">Secrétaire</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {/* Role selection removed for security - roles assigned by admin */}
                 <div className="space-y-2">
                   <Label htmlFor="signupEmail">Email</Label>
                   <Input
