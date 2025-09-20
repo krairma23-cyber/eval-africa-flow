@@ -2083,6 +2083,10 @@ export type Database = {
           total_users: number
         }[]
       }
+      get_current_user_school_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_owner_column: {
         Args: { p_table: unknown }
         Returns: string
