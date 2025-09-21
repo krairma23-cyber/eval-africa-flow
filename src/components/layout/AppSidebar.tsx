@@ -6,7 +6,8 @@ import {
   ClipboardCheck, 
   FileText, 
   Settings, 
-  School 
+  School,
+  Shield
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -29,6 +30,7 @@ const menuItems = [
   { title: "Matières", url: "/dashboard/subjects", icon: BookOpen },
   { title: "Évaluations", url: "/dashboard/assessments", icon: ClipboardCheck },
   { title: "Bulletins", url: "/dashboard/reports", icon: FileText },
+  { title: "Utilisateurs", url: "/dashboard/users", icon: Shield },
   { title: "Paramètres", url: "/dashboard/settings", icon: Settings },
 ];
 

@@ -14,6 +14,7 @@ import Assessments from "./pages/Assessments";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
+import UserManagement from "./pages/UserManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,16 +28,17 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="students" element={<Students />} />
-            <Route path="teachers" element={<Teachers />} />
-            <Route path="subjects" element={<Subjects />} />
-            <Route path="classrooms" element={<Classrooms />} />
-            <Route path="assessments" element={<Assessments />} />
-            <Route path="reports" element={<Reports />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="students" element={<Students />} />
+          <Route path="teachers" element={<Teachers />} />
+          <Route path="subjects" element={<Subjects />} />
+          <Route path="classrooms" element={<Classrooms />} />
+          <Route path="assessments" element={<Assessments />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

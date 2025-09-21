@@ -2087,6 +2087,16 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: string
       }
+      get_enhanced_security_overview: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          last_updated: string
+          metric_name: string
+          metric_value: number
+          recommendation: string
+          severity: string
+        }[]
+      }
       get_owner_column: {
         Args: { p_table: unknown }
         Returns: string
@@ -2116,6 +2126,40 @@ export type Database = {
           policy_count: number
           rls_enabled: boolean
           table_name: string
+        }[]
+      }
+      get_secure_student_data: {
+        Args: { p_student_id: string }
+        Returns: {
+          address: string
+          created_at: string
+          date_of_birth: string
+          first_name: string
+          gender: string
+          id: string
+          last_name: string
+          parent_email: string
+          parent_name: string
+          parent_phone: string
+          school_id: string
+          student_number: string
+          updated_at: string
+        }[]
+      }
+      get_secure_teacher_data: {
+        Args: { p_teacher_id: string }
+        Returns: {
+          created_at: string
+          email: string
+          first_name: string
+          hire_date: string
+          id: string
+          last_name: string
+          phone: string
+          school_id: string
+          specialization: string
+          teacher_number: string
+          updated_at: string
         }[]
       }
       get_security_config_recommendations: {
@@ -2175,6 +2219,24 @@ export type Database = {
           status: string
         }[]
       }
+      get_student_data_secure: {
+        Args: { p_access_reason: string; p_student_id: string }
+        Returns: {
+          access_level: string
+          address: string
+          data_masked: boolean
+          date_of_birth: string
+          first_name: string
+          gender: string
+          id: string
+          last_name: string
+          parent_email: string
+          parent_name: string
+          parent_phone: string
+          school_id: string
+          student_number: string
+        }[]
+      }
       get_students_for_user: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -2191,6 +2253,22 @@ export type Database = {
           school_id: string
           student_number: string
           updated_at: string
+        }[]
+      }
+      get_teacher_data_secure: {
+        Args: { p_access_reason: string; p_teacher_id: string }
+        Returns: {
+          access_level: string
+          data_masked: boolean
+          email: string
+          first_name: string
+          hire_date: string
+          id: string
+          last_name: string
+          phone: string
+          school_id: string
+          specialization: string
+          teacher_number: string
         }[]
       }
       get_teachers_for_user: {
@@ -2331,6 +2409,21 @@ export type Database = {
           masked_phone: string
         }[]
       }
+      secure_contact_data_access: {
+        Args: {
+          p_access_reason: string
+          p_contact_id: string
+          p_fields_requested?: string[]
+        }
+        Returns: {
+          access_logged: boolean
+          created_at: string
+          id: string
+          masked_email: string
+          masked_nom: string
+          sujet: string
+        }[]
+      }
       secure_customer_access: {
         Args: { p_inscription_id: string; p_justification: string }
         Returns: {
@@ -2354,6 +2447,19 @@ export type Database = {
           id: string
           masked_email: string
           masked_name: string
+          masked_phone: string
+        }[]
+      }
+      secure_event_registration_access: {
+        Args: { p_access_reason: string; p_registration_id: string }
+        Returns: {
+          access_logged: boolean
+          created_at: string
+          event_name: string
+          id: string
+          masked_email: string
+          masked_first_name: string
+          masked_last_name: string
           masked_phone: string
         }[]
       }

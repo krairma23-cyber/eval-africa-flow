@@ -79,8 +79,8 @@ export function LoginForm() {
         });
       } else {
         toast({
-          title: "Inscription réussie",
-          description: "Vérifiez votre email pour confirmer votre compte. Un administrateur devra activer votre compte et vous assigner un rôle.",
+          title: "Inscription réussie !",
+          description: "Vérifiez votre email pour confirmer votre compte. Vous pourrez ensuite accéder à la plateforme immédiatement.",
         });
       }
     } catch (error) {
@@ -182,7 +182,7 @@ export function LoginForm() {
                   />
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Note: Votre rôle sera assigné par un administrateur après inscription.
+                  Note: Après confirmation de votre email, vous aurez accès à la plateforme.
                 </p>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Inscription..." : "S'inscrire"}
