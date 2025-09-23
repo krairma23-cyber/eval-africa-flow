@@ -55,6 +55,44 @@ export type Database = {
           },
         ]
       }
+      ai_searches: {
+        Row: {
+          created_at: string | null
+          execution_time_ms: number | null
+          id: string
+          results_count: number | null
+          search_filters: Json | null
+          search_query: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          results_count?: number | null
+          search_filters?: Json | null
+          search_query: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          results_count?: number | null
+          search_filters?: Json | null
+          search_query?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_searches_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_usage_logs: {
         Row: {
           created_at: string
@@ -400,6 +438,42 @@ export type Database = {
         }
         Relationships: []
       }
+      beta_feedback: {
+        Row: {
+          content: string
+          created_at: string
+          feedback_type: string
+          id: string
+          metadata: Json | null
+          rating: number | null
+          status: string | null
+          user_email: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          feedback_type: string
+          id?: string
+          metadata?: Json | null
+          rating?: number | null
+          status?: string | null
+          user_email?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          feedback_type?: string
+          id?: string
+          metadata?: Json | null
+          rating?: number | null
+          status?: string | null
+          user_email?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       campuses: {
         Row: {
           address: string | null
@@ -650,6 +724,39 @@ export type Database = {
           ip_address?: unknown
           last_submission?: string | null
           submission_count?: number | null
+        }
+        Relationships: []
+      }
+      cron_jobs: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          executed_at: string | null
+          execution_time_ms: number | null
+          id: string
+          job_name: string
+          result: Json | null
+          status: string
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          executed_at?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          job_name: string
+          result?: Json | null
+          status: string
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          executed_at?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          job_name?: string
+          result?: Json | null
+          status?: string
         }
         Relationships: []
       }
@@ -993,6 +1100,45 @@ export type Database = {
         }
         Relationships: []
       }
+      market_analyses: {
+        Row: {
+          analysis_data: Json
+          created_at: string | null
+          id: string
+          product_id: string | null
+          user_id: string
+        }
+        Insert: {
+          analysis_data: Json
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          user_id: string
+        }
+        Update: {
+          analysis_data?: Json
+          created_at?: string | null
+          id?: string
+          product_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "market_analyses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "user_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "market_analyses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       "mini SaaS": {
         Row: {
           created_at: string
@@ -1226,34 +1372,177 @@ export type Database = {
         }
         Relationships: []
       }
+      product_searches: {
+        Row: {
+          created_at: string | null
+          execution_time_ms: number | null
+          filters: Json | null
+          id: string
+          results_count: number | null
+          search_query: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          execution_time_ms?: number | null
+          filters?: Json | null
+          id?: string
+          results_count?: number | null
+          search_query: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          execution_time_ms?: number | null
+          filters?: Json | null
+          id?: string
+          results_count?: number | null
+          search_query?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          external_id: string
+          id: string
+          images: string[] | null
+          is_favorite: boolean | null
+          keywords: string[] | null
+          last_updated: string | null
+          min_order_quantity: number | null
+          platform: string
+          potential_margin: number | null
+          price: number | null
+          sales_count: number | null
+          shipping_cost: number | null
+          shipping_time_days: number | null
+          specifications: Json | null
+          stock_quantity: number | null
+          subcategory: string | null
+          supplier_id: string | null
+          title: string
+          trend_score: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          external_id: string
+          id?: string
+          images?: string[] | null
+          is_favorite?: boolean | null
+          keywords?: string[] | null
+          last_updated?: string | null
+          min_order_quantity?: number | null
+          platform: string
+          potential_margin?: number | null
+          price?: number | null
+          sales_count?: number | null
+          shipping_cost?: number | null
+          shipping_time_days?: number | null
+          specifications?: Json | null
+          stock_quantity?: number | null
+          subcategory?: string | null
+          supplier_id?: string | null
+          title: string
+          trend_score?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          external_id?: string
+          id?: string
+          images?: string[] | null
+          is_favorite?: boolean | null
+          keywords?: string[] | null
+          last_updated?: string | null
+          min_order_quantity?: number | null
+          platform?: string
+          potential_margin?: number | null
+          price?: number | null
+          sales_count?: number | null
+          shipping_cost?: number | null
+          shipping_time_days?: number | null
+          specifications?: Json | null
+          stock_quantity?: number | null
+          subcategory?: string | null
+          supplier_id?: string | null
+          title?: string
+          trend_score?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
+          company_name: string | null
           created_at: string
           full_name: string | null
           id: string
+          monthly_searches_limit: number | null
           role: string | null
           school_id: string | null
+          searches_count: number | null
+          subscription_plan:
+            | Database["public"]["Enums"]["subscription_plan"]
+            | null
+          subscription_status: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           avatar_url?: string | null
+          company_name?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
+          monthly_searches_limit?: number | null
           role?: string | null
           school_id?: string | null
+          searches_count?: number | null
+          subscription_plan?:
+            | Database["public"]["Enums"]["subscription_plan"]
+            | null
+          subscription_status?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           avatar_url?: string | null
+          company_name?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
+          monthly_searches_limit?: number | null
           role?: string | null
           school_id?: string | null
+          searches_count?: number | null
+          subscription_plan?:
+            | Database["public"]["Enums"]["subscription_plan"]
+            | null
+          subscription_status?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -1771,6 +2060,45 @@ export type Database = {
           },
         ]
       }
+      suppliers: {
+        Row: {
+          api_endpoint: string | null
+          contact_info: Json | null
+          country: string | null
+          created_at: string | null
+          id: string
+          name: string
+          platform: string
+          rating: number | null
+          updated_at: string | null
+          verified: boolean | null
+        }
+        Insert: {
+          api_endpoint?: string | null
+          contact_info?: Json | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          platform: string
+          rating?: number | null
+          updated_at?: string | null
+          verified?: boolean | null
+        }
+        Update: {
+          api_endpoint?: string | null
+          contact_info?: Json | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          platform?: string
+          rating?: number | null
+          updated_at?: string | null
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
       teachers: {
         Row: {
           created_at: string | null
@@ -1879,6 +2207,118 @@ export type Database = {
           id?: number
         }
         Relationships: []
+      }
+      user_alerts: {
+        Row: {
+          alert_type: Database["public"]["Enums"]["alert_type"]
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          last_triggered: string | null
+          price_threshold: number | null
+          product_keywords: string[] | null
+          trend_threshold: number | null
+          user_id: string
+        }
+        Insert: {
+          alert_type: Database["public"]["Enums"]["alert_type"]
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_triggered?: string | null
+          price_threshold?: number | null
+          product_keywords?: string[] | null
+          trend_threshold?: number | null
+          user_id: string
+        }
+        Update: {
+          alert_type?: Database["public"]["Enums"]["alert_type"]
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_triggered?: string | null
+          price_threshold?: number | null
+          product_keywords?: string[] | null
+          trend_threshold?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_alerts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_products: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_favorite: boolean | null
+          minimum_order_quantity: number | null
+          platform_name: string
+          price_usd: number | null
+          product_title: string
+          product_url: string | null
+          profit_margin: number | null
+          shipping_cost: number | null
+          status: Database["public"]["Enums"]["product_status"] | null
+          supplier_name: string | null
+          tags: string[] | null
+          trend_score: number | null
+          updated_at: string | null
+          user_id: string
+          user_notes: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          minimum_order_quantity?: number | null
+          platform_name: string
+          price_usd?: number | null
+          product_title: string
+          product_url?: string | null
+          profit_margin?: number | null
+          shipping_cost?: number | null
+          status?: Database["public"]["Enums"]["product_status"] | null
+          supplier_name?: string | null
+          tags?: string[] | null
+          trend_score?: number | null
+          updated_at?: string | null
+          user_id: string
+          user_notes?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          minimum_order_quantity?: number | null
+          platform_name?: string
+          price_usd?: number | null
+          product_title?: string
+          product_url?: string | null
+          profit_margin?: number | null
+          shipping_cost?: number | null
+          status?: Database["public"]["Enums"]["product_status"] | null
+          supplier_name?: string | null
+          tags?: string[] | null
+          trend_score?: number | null
+          updated_at?: string | null
+          user_id?: string
+          user_notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_products_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -2011,7 +2451,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      check_search_limit: {
+        Args: { user_uuid: string }
+        Returns: boolean
+      }
       cleanup_expired_customer_data: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      cleanup_old_cron_jobs: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
@@ -2095,6 +2543,16 @@ export type Database = {
           metric_value: number
           recommendation: string
           severity: string
+        }[]
+      }
+      get_feedback_statistics: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          avg_rating: number
+          feedback_by_type: Json
+          open_feedback: number
+          resolved_feedback: number
+          total_feedback: number
         }[]
       }
       get_owner_column: {
@@ -2548,6 +3006,10 @@ export type Database = {
         Args: { p_email?: string; p_password: string }
         Returns: Json
       }
+      validate_password_strength: {
+        Args: { password: string }
+        Returns: boolean
+      }
       validate_payment_security: {
         Args: {
           p_amount: number
@@ -2575,8 +3037,11 @@ export type Database = {
       }
     }
     Enums: {
+      alert_type: "price_drop" | "trend_spike" | "new_winner" | "competition"
       app_role: "admin" | "moderator" | "user"
       org_role: "owner" | "admin" | "member"
+      product_status: "active" | "trending" | "declining" | "watchlist"
+      subscription_plan: "starter" | "pro" | "enterprise"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2704,8 +3169,11 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      alert_type: ["price_drop", "trend_spike", "new_winner", "competition"],
       app_role: ["admin", "moderator", "user"],
       org_role: ["owner", "admin", "member"],
+      product_status: ["active", "trending", "declining", "watchlist"],
+      subscription_plan: ["starter", "pro", "enterprise"],
     },
   },
 } as const
