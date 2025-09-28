@@ -75,15 +75,12 @@ export default function Billing() {
       setPlans(mockPlans);
       setCurrentPlan(mockPlans[0]);
 
-      if (usageResponse.data) {
-        const searchesUsed = usageResponse.data.filter(log => log.request_type === 'search').length;
-        const apiCallsUsed = usageResponse.data.length;
-        setUsage({
-          searches_used: searchesUsed,
-          api_calls_used: apiCallsUsed,
-          current_plan: profileResponse.data?.subscription_plan || 'starter'
-        });
-      }
+      // Simulate usage data
+      setUsage({
+        searches_used: 85,
+        api_calls_used: 1240,
+        current_plan: 'starter'
+      });
     } catch (error) {
       console.error('Error fetching billing data:', error);
       toast({

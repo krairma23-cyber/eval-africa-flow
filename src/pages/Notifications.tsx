@@ -16,7 +16,7 @@ import {
   Info,
   CheckCircle,
   Trash2,
-  Mail as MarkAsUnread
+  MailOpen
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -342,7 +342,7 @@ export default function Notifications() {
                               size="sm"
                               onClick={() => markAsUnread(notification.id)}
                             >
-                              <MarkAsUnread className="h-4 w-4" />
+                              <MailOpen className="h-4 w-4" />
                             </Button>
                           ) : (
                             <Button

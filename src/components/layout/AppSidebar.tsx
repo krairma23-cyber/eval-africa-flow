@@ -7,7 +7,12 @@ import {
   FileText, 
   Settings, 
   School,
-  Shield
+  Shield,
+  BarChart3,
+  CreditCard,
+  Code,
+  HelpCircle,
+  Bell
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -30,6 +35,11 @@ const menuItems = [
   { title: "Matières", url: "/dashboard/subjects", icon: BookOpen },
   { title: "Évaluations", url: "/dashboard/assessments", icon: ClipboardCheck },
   { title: "Bulletins", url: "/dashboard/reports", icon: FileText },
+  { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
+  { title: "Facturation", url: "/dashboard/billing", icon: CreditCard },
+  { title: "API", url: "/dashboard/api", icon: Code },
+  { title: "Support", url: "/dashboard/support", icon: HelpCircle },
+  { title: "Notifications", url: "/dashboard/notifications", icon: Bell },
   { title: "Utilisateurs", url: "/dashboard/users", icon: Shield },
   { title: "Paramètres", url: "/dashboard/settings", icon: Settings },
 ];
