@@ -16,6 +16,11 @@ import Settings from "./pages/Settings";
 import { DashboardLayout } from "./components/layout/DashboardLayout";
 import UserManagement from "./pages/UserManagement";
 import NotFound from "./pages/NotFound";
+import Billing from "./pages/Billing";
+import ApiManagement from "./pages/ApiManagement";
+import Analytics from "./pages/Analytics";
+import Support from "./pages/Support";
+import Notifications from "./pages/Notifications";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +43,11 @@ const App = () => (
           <Route path="assessments" element={<Assessments />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="billing" element={<Billing />} />
+          <Route path="api" element={<ApiManagement />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="support" element={<Support />} />
+          <Route path="notifications" element={<Notifications />} />
         </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
