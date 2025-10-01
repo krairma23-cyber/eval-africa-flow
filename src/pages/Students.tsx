@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, Plus, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -167,8 +168,12 @@ export default function Students() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredStudents.map((student) => (
             <Card key={student.id} className="hover:shadow-md transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
+              <CardHeader className="flex flex-col items-center">
+                <Avatar className="h-20 w-20 mb-4">
+                  <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${student.first_name} ${student.last_name}`} />
+                  <AvatarFallback>{student.first_name[0]}{student.last_name[0]}</AvatarFallback>
+                </Avatar>
+                <CardTitle className="flex items-center justify-between w-full">
                   <span>{student.first_name} {student.last_name}</span>
                   <Badge variant={student.gender === 'M' ? 'default' : 'secondary'}>
                     {student.gender === 'M' ? 'M' : 'F'}
