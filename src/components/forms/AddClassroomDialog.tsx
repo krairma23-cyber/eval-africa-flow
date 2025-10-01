@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { logError } from "@/lib/logger";
 
 interface AddClassroomDialogProps {
   onClassroomAdded: () => void;
@@ -58,12 +59,8 @@ export function AddClassroomDialog({ onClassroomAdded, children }: AddClassroomD
       setOpen(false);
       onClassroomAdded();
     } catch (error) {
-      console.error('Error adding classroom:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible d'ajouter la classe",
-        variant: "destructive",
-      });
+      await logError('Failed to add classroom', error, { component: 'AddClassroomDialog', action: 'ADD_CLASSROOM' });
+      toast({ title: "Erreur", description: "Impossible d'ajouter la classe", variant: "destructive" });
     } finally {
       setLoading(false);
     }

@@ -16,6 +16,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { logError } from "@/lib/logger";
 
 interface SubscriptionPlan {
   id: string;
@@ -82,7 +83,10 @@ export default function Billing() {
         current_plan: 'starter'
       });
     } catch (error) {
-      console.error('Error fetching billing data:', error);
+      await logError('Failed to fetch billing data', error, {
+        component: 'Billing',
+        action: 'FETCH_BILLING'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de charger les données de facturation",
@@ -101,7 +105,11 @@ export default function Billing() {
       });
       // Redirect to payment processor
     } catch (error) {
-      console.error('Error upgrading plan:', error);
+      await logError('Failed to upgrade plan', error, {
+        component: 'Billing',
+        action: 'UPGRADE_PLAN',
+        metadata: { planId }
+      });
       toast({
         title: "Erreur",
         description: "Impossible de traiter la mise à niveau",

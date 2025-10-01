@@ -8,6 +8,7 @@ import { Search, Plus, GraduationCap, Mail, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddTeacherDialog } from "@/components/forms/AddTeacherDialog";
+import { logError } from "@/lib/logger";
 
 interface Teacher {
   id: string;
@@ -39,7 +40,10 @@ export default function Teachers() {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching teachers:', error);
+        await logError('Failed to fetch teachers', error, {
+          component: 'Teachers',
+          action: 'FETCH_TEACHERS'
+        });
         toast({
           title: "Erreur",
           description: "Impossible de charger les enseignants",
@@ -47,9 +51,22 @@ export default function Teachers() {
         });
       } else {
         setTeachers(data || []);
+        
+        // Log audit trail for teacher data access
+        if (data && data.length > 0) {
+          await supabase.from('comprehensive_audit_logs').insert({
+            action: 'VIEW_TEACHERS_LIST',
+            resource_type: 'teachers',
+            request_data: { count: data.length },
+            success: true
+          });
+        }
       }
     } catch (error) {
-      console.error('Error:', error);
+      await logError('Unexpected error fetching teachers', error, {
+        component: 'Teachers',
+        action: 'FETCH_TEACHERS'
+      });
       toast({
         title: "Erreur",
         description: "Une erreur est survenue",

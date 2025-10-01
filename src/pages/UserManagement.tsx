@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Users, Crown, Shield, User } from "lucide-react";
+import { logError } from "@/lib/logger";
 
 interface UserWithRole {
   id: string;
@@ -49,7 +50,10 @@ export default function UserManagement() {
         });
       }
     } catch (error) {
-      console.error('Error checking admin status:', error);
+      await logError('Failed to check admin status', error, {
+        component: 'UserManagement',
+        action: 'CHECK_ADMIN'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de vérifier les permissions",
@@ -72,10 +76,13 @@ export default function UserManagement() {
           school_id,
           created_at,
           user_roles!inner(role)
-        `);
+          `);
 
       if (error) {
-        console.error('Error fetching profiles:', error);
+        await logError('Failed to fetch profiles', error, {
+          component: 'UserManagement',
+          action: 'FETCH_PROFILES'
+        });
         return;
       }
 
@@ -93,7 +100,10 @@ export default function UserManagement() {
         setUsers(usersWithRoles);
       }
     } catch (error) {
-      console.error('Error loading users:', error);
+      await logError('Failed to load users', error, {
+        component: 'UserManagement',
+        action: 'LOAD_USERS'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de charger les utilisateurs",
@@ -119,7 +129,11 @@ export default function UserManagement() {
       // Recharger les utilisateurs
       await loadUsers();
     } catch (error) {
-      console.error('Error updating user role:', error);
+      await logError('Failed to update user role', error, {
+        component: 'UserManagement',
+        action: 'UPDATE_ROLE',
+        metadata: { userId, newRole }
+      });
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour le rôle",

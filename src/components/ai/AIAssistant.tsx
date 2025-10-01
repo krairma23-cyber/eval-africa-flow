@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Mic, MicOff, Brain, Zap, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
+import { logError } from "@/lib/logger";
 
 export const AIAssistant = () => {
   const [isListening, setIsListening] = useState(false);
@@ -30,7 +31,10 @@ export const AIAssistant = () => {
       setLastMessage(message.message || '');
     },
     onError: (error) => {
-      console.error('AI Assistant Error:', error);
+      logError('AI Assistant connection error', error, {
+        component: 'AIAssistant',
+        action: 'CONNECT'
+      });
       toast({
         title: "Erreur Assistant IA",
         description: "Impossible de se connecter à l'assistant IA. Vérifiez votre configuration.",

@@ -8,6 +8,7 @@ import { PredictiveAnalytics } from "@/components/analytics/PredictiveAnalytics"
 import { ContentGenerator } from "@/components/ai/ContentGenerator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
+import { logError } from "@/lib/logger";
 
 interface DashboardStats {
   studentsCount: number;
@@ -40,7 +41,10 @@ export default function Dashboard() {
         assessmentsCount: assessmentsResponse.count || 0,
       });
     } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
+      await logError('Failed to fetch dashboard stats', error, {
+        component: 'Dashboard',
+        action: 'FETCH_STATS'
+      });
     } finally {
       setLoading(false);
     }

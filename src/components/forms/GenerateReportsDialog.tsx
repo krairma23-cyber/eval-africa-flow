@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { logError } from "@/lib/logger";
 
 interface GenerateReportsDialogProps {
   onReportsGenerated: () => void;
@@ -47,7 +48,7 @@ export function GenerateReportsDialog({ onReportsGenerated, children }: Generate
       if (classroomsResult.data) setClassrooms(classroomsResult.data);
       if (termsResult.data) setTerms(termsResult.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      await logError('Failed to fetch report data', error, { component: 'GenerateReportsDialog', action: 'FETCH_DATA' });
     }
   };
 
@@ -77,12 +78,8 @@ export function GenerateReportsDialog({ onReportsGenerated, children }: Generate
       setOpen(false);
       onReportsGenerated();
     } catch (error) {
-      console.error('Error generating reports:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de générer les bulletins",
-        variant: "destructive",
-      });
+      await logError('Failed to generate reports', error, { component: 'GenerateReportsDialog', action: 'GENERATE_REPORTS' });
+      toast({ title: "Erreur", description: "Impossible de générer les bulletins", variant: "destructive" });
     } finally {
       setLoading(false);
     }

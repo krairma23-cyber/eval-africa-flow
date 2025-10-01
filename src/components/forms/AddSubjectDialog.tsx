@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { logError } from "@/lib/logger";
 
 interface AddSubjectDialogProps {
   onSubjectAdded: () => void;
@@ -55,12 +56,8 @@ export function AddSubjectDialog({ onSubjectAdded, children }: AddSubjectDialogP
       setOpen(false);
       onSubjectAdded();
     } catch (error) {
-      console.error('Error adding subject:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible d'ajouter la matière",
-        variant: "destructive",
-      });
+      await logError('Failed to add subject', error, { component: 'AddSubjectDialog', action: 'ADD_SUBJECT' });
+      toast({ title: "Erreur", description: "Impossible d'ajouter la matière", variant: "destructive" });
     } finally {
       setLoading(false);
     }

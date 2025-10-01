@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { logError } from "@/lib/logger";
 
 interface AddTeacherDialogProps {
   onTeacherAdded: () => void;
@@ -47,7 +48,10 @@ export function AddTeacherDialog({ onTeacherAdded, children }: AddTeacherDialogP
           }
         }
       } catch (error) {
-        console.error('Error fetching user profile:', error);
+        await logError('Failed to fetch user profile', error, {
+          component: 'AddTeacherDialog',
+          action: 'FETCH_PROFILE'
+        });
         toast({
           title: "Erreur",
           description: "Impossible de récupérer votre profil utilisateur.",
@@ -106,7 +110,10 @@ export function AddTeacherDialog({ onTeacherAdded, children }: AddTeacherDialogP
       setOpen(false);
       onTeacherAdded();
     } catch (error) {
-      console.error('Error adding teacher:', error);
+      await logError('Failed to add teacher', error, {
+        component: 'AddTeacherDialog',
+        action: 'ADD_TEACHER'
+      });
       toast({
         title: "Erreur",
         description: "Impossible d'ajouter l'enseignant",

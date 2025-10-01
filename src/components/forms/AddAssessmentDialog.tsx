@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { logError } from "@/lib/logger";
 
 interface AddAssessmentDialogProps {
   onAssessmentAdded: () => void;
@@ -69,7 +70,10 @@ export function AddAssessmentDialog({ onAssessmentAdded, children }: AddAssessme
       if (subjectsResult.data) setClassroomSubjects(subjectsResult.data);
       if (termsResult.data) setTerms(termsResult.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      await logError('Failed to fetch assessment data', error, {
+        component: 'AddAssessmentDialog',
+        action: 'FETCH_DATA'
+      });
     }
   };
 
@@ -113,7 +117,10 @@ export function AddAssessmentDialog({ onAssessmentAdded, children }: AddAssessme
       setOpen(false);
       onAssessmentAdded();
     } catch (error) {
-      console.error('Error adding assessment:', error);
+      await logError('Failed to add assessment', error, {
+        component: 'AddAssessmentDialog',
+        action: 'ADD_ASSESSMENT'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de créer l'évaluation",

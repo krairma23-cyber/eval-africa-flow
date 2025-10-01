@@ -31,6 +31,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { logError } from "@/lib/logger";
 
 interface Notification {
   id: string;
@@ -119,7 +120,10 @@ export default function Notifications() {
 
       setNotifications(mockNotifications);
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      await logError('Failed to fetch notifications', error, {
+        component: 'Notifications',
+        action: 'FETCH_NOTIFICATIONS'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de charger les notifications",
@@ -140,7 +144,10 @@ export default function Notifications() {
         title: "Notification marquée comme lue",
       });
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      await logError('Failed to mark notification as read', error, {
+        component: 'Notifications',
+        action: 'MARK_READ'
+      });
     }
   };
 
@@ -154,7 +161,10 @@ export default function Notifications() {
         title: "Notification marquée comme non lue",
       });
     } catch (error) {
-      console.error('Error marking notification as unread:', error);
+      await logError('Failed to mark notification as unread', error, {
+        component: 'Notifications',
+        action: 'MARK_UNREAD'
+      });
     }
   };
 
@@ -166,7 +176,10 @@ export default function Notifications() {
         title: "Notification supprimée",
       });
     } catch (error) {
-      console.error('Error deleting notification:', error);
+      await logError('Failed to delete notification', error, {
+        component: 'Notifications',
+        action: 'DELETE'
+      });
     }
   };
 
@@ -178,7 +191,10 @@ export default function Notifications() {
         title: "Toutes les notifications marquées comme lues",
       });
     } catch (error) {
-      console.error('Error marking all as read:', error);
+      await logError('Failed to mark all as read', error, {
+        component: 'Notifications',
+        action: 'MARK_ALL_READ'
+      });
     }
   };
 
@@ -191,7 +207,10 @@ export default function Notifications() {
         description: "Vos préférences de notification ont été sauvegardées",
       });
     } catch (error) {
-      console.error('Error updating settings:', error);
+      await logError('Failed to update settings', error, {
+        component: 'Notifications',
+        action: 'UPDATE_SETTINGS'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de mettre à jour les paramètres",

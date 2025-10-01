@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { logError } from "@/lib/logger";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,10 @@ export default function Students() {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching students:', error);
+        await logError('Failed to fetch students', error, {
+          component: 'Students',
+          action: 'FETCH_STUDENTS'
+        });
         toast({
           title: "Erreur",
           description: "Impossible de charger les élèves",
@@ -50,7 +54,10 @@ export default function Students() {
         setStudents(data || []);
       }
     } catch (error) {
-      console.error('Error:', error);
+      await logError('Unexpected error fetching students', error, {
+        component: 'Students',
+        action: 'FETCH_STUDENTS'
+      });
       toast({
         title: "Erreur",
         description: "Une erreur est survenue",

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Search, BookOpen, Calendar } from "lucide-react";
 import { AddSubjectDialog } from "@/components/forms/AddSubjectDialog";
+import { logError } from "@/lib/logger";
 
 interface Subject {
   id: string;
@@ -35,7 +36,10 @@ export default function Subjects() {
         .order('name', { ascending: true });
 
       if (error) {
-        console.error('Error fetching subjects:', error);
+        await logError('Failed to fetch subjects', error, {
+          component: 'Subjects',
+          action: 'FETCH_SUBJECTS'
+        });
         toast({
           title: "Erreur",
           description: "Impossible de charger les matières",
@@ -45,7 +49,10 @@ export default function Subjects() {
         setSubjects(data || []);
       }
     } catch (error) {
-      console.error('Error:', error);
+      await logError('Unexpected error fetching subjects', error, {
+        component: 'Subjects',
+        action: 'FETCH_SUBJECTS'
+      });
       toast({
         title: "Erreur",
         description: "Une erreur est survenue",

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Search, ClipboardCheck, Calendar } from "lucide-react";
 import { AddAssessmentDialog } from "@/components/forms/AddAssessmentDialog";
+import { logError } from "@/lib/logger";
 
 interface Assessment {
   id: string;
@@ -57,7 +58,10 @@ export default function Assessments() {
       if (error) throw error;
       setAssessments(data || []);
     } catch (error) {
-      console.error("Error fetching assessments:", error);
+      await logError('Failed to fetch assessments', error, {
+        component: 'Assessments',
+        action: 'FETCH_ASSESSMENTS'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de charger les évaluations",

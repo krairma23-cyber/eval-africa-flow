@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Search, School, Calendar } from "lucide-react";
 import { AddClassroomDialog } from "@/components/forms/AddClassroomDialog";
+import { logError } from "@/lib/logger";
 
 interface Classroom {
   id: string;
@@ -46,7 +47,10 @@ export default function Classrooms() {
       if (error) throw error;
       setClassrooms(data || []);
     } catch (error) {
-      console.error("Error fetching classrooms:", error);
+      await logError('Failed to fetch classrooms', error, {
+        component: 'Classrooms',
+        action: 'FETCH_CLASSROOMS'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de charger les classes",
