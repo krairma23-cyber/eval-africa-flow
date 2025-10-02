@@ -29,24 +29,10 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
-interface Ticket {
-  id: string;
-  subject: string;
-  description: string;
-  status: 'open' | 'in_progress' | 'resolved' | 'closed';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  created_at: string;
-  updated_at: string;
-  category: string;
-}
+import { Database } from "@/integrations/supabase/types";
 
-interface FAQ {
-  id: string;
-  question: string;
-  answer: string;
-  category: string;
-  views: number;
-}
+type Ticket = Database['public']['Tables']['support_tickets']['Row'];
+type FAQ = Database['public']['Tables']['support_faqs']['Row'];
 
 export default function Support() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -67,56 +53,37 @@ export default function Support() {
 
   const fetchSupportData = async () => {
     try {
-      // Simulate support data
-      const mockTickets: Ticket[] = [
-        {
-          id: '1',
-          subject: 'Problème de connexion',
-          description: 'Impossible de me connecter à mon compte',
-          status: 'open',
-          priority: 'high',
-          created_at: '2024-02-20',
-          updated_at: '2024-02-20',
-          category: 'technique'
-        },
-        {
-          id: '2',
-          subject: 'Question sur la facturation',
-          description: 'Comment changer mon plan d\'abonnement ?',
-          status: 'resolved',
-          priority: 'medium',
-          created_at: '2024-02-18',
-          updated_at: '2024-02-19',
-          category: 'facturation'
-        }
-      ];
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté pour accéder au support",
+          variant: "destructive",
+        });
+        return;
+      }
 
-      const mockFAQs: FAQ[] = [
-        {
-          id: '1',
-          question: 'Comment créer une évaluation ?',
-          answer: 'Pour créer une évaluation, rendez-vous dans la section "Évaluations" et cliquez sur "Nouvelle évaluation".',
-          category: 'general',
-          views: 1250
-        },
-        {
-          id: '2',
-          question: 'Comment inviter des enseignants ?',
-          answer: 'Dans la section "Utilisateurs", cliquez sur "Inviter" et saisissez les emails des enseignants.',
-          category: 'general',
-          views: 890
-        },
-        {
-          id: '3',
-          question: 'Problèmes de paiement',
-          answer: 'Si vous rencontrez des problèmes de paiement, vérifiez vos informations bancaires dans la section Facturation.',
-          category: 'facturation',
-          views: 654
-        }
-      ];
+      // Load tickets
+      const { data: ticketsData, error: ticketsError } = await supabase
+        .from('support_tickets')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
 
-      setTickets(mockTickets);
-      setFaqs(mockFAQs);
+      if (ticketsError) throw ticketsError;
+
+      // Load FAQs
+      const { data: faqsData, error: faqsError } = await supabase
+        .from('support_faqs')
+        .select('*')
+        .eq('published', true)
+        .order('views', { ascending: false });
+
+      if (faqsError) throw faqsError;
+
+      setTickets(ticketsData || []);
+      setFaqs(faqsData || []);
     } catch (error) {
       console.error('Error fetching support data:', error);
       toast({
@@ -140,18 +107,41 @@ export default function Support() {
     }
 
     try {
-      const ticket: Ticket = {
-        id: Date.now().toString(),
-        subject: newTicket.subject,
-        description: newTicket.description,
-        status: 'open',
-        priority: newTicket.priority as 'low' | 'medium' | 'high' | 'urgent',
-        created_at: new Date().toISOString().split('T')[0],
-        updated_at: new Date().toISOString().split('T')[0],
-        category: newTicket.category
-      };
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté pour créer un ticket",
+          variant: "destructive",
+        });
+        return;
+      }
 
-      setTickets([ticket, ...tickets]);
+      // Get user's school_id from profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('school_id')
+        .eq('user_id', user.id)
+        .single();
+
+      const { data, error } = await supabase
+        .from('support_tickets')
+        .insert({
+          user_id: user.id,
+          school_id: profile?.school_id || null,
+          subject: newTicket.subject,
+          description: newTicket.description,
+          category: newTicket.category,
+          priority: newTicket.priority,
+          status: 'open'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setTickets([data, ...tickets]);
       setNewTicket({ subject: "", description: "", category: "general", priority: "medium" });
       
       toast({
