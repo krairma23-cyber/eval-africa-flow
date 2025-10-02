@@ -52,15 +52,18 @@ export default function Settings() {
       if (profile?.school_id) {
         setSchoolId(profile.school_id);
 
-        // Get school data including logo
+        // Get school data including logo, address, and academic year
         const { data: school } = await supabase
           .from('schools')
-          .select('name, logo_url')
+          .select('name, logo_url, address, academic_year')
           .eq('id', profile.school_id)
           .single();
 
         if (school) {
           setSchoolName(school.name || "École Primaire Example");
+          setSchoolAddress(school.address || "123 Rue de l'École, Paris");
+          setAcademicYear(school.academic_year || "2025-2026");
+          
           if (school.logo_url) {
             const { data } = supabase.storage
               .from('school-logos')
@@ -68,6 +71,19 @@ export default function Settings() {
             setLogoUrl(data.publicUrl);
           }
         }
+      }
+
+      // Load user preferences
+      const { data: preferences } = await supabase
+        .from('user_preferences')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (preferences) {
+        setEmailNotifications(preferences.email_notifications ?? true);
+        setReportReminders(preferences.report_reminders ?? true);
+        setDarkMode(preferences.dark_mode ?? false);
       }
     } catch (error) {
       console.error('Error loading school data:', error);
@@ -145,9 +161,36 @@ export default function Settings() {
   const handleSaveSettings = async () => {
     setLoading(true);
     try {
-      // Simulate saving settings
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      if (!schoolId || !user) {
+        throw new Error("Données manquantes");
+      }
+
+      // Save school information
+      const { error: schoolError } = await supabase
+        .from('schools')
+        .update({
+          name: schoolName,
+          address: schoolAddress,
+          academic_year: academicYear,
+        })
+        .eq('id', schoolId);
+
+      if (schoolError) throw schoolError;
+
+      // Save user preferences
+      const { error: prefsError } = await supabase
+        .from('user_preferences')
+        .upsert({
+          user_id: user.id,
+          email_notifications: emailNotifications,
+          report_reminders: reportReminders,
+          dark_mode: darkMode,
+        }, {
+          onConflict: 'user_id'
+        });
+
+      if (prefsError) throw prefsError;
+
       toast({
         title: "Paramètres sauvegardés",
         description: "Vos paramètres ont été mis à jour avec succès",
