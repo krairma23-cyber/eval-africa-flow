@@ -477,7 +477,7 @@ export default function Support() {
         </TabsContent>
 
         <TabsContent value="resources" className="space-y-6">
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -545,23 +545,23 @@ export default function Support() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span>API EvalScol</span>
-                  <Badge className="bg-green-100 text-green-800">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-sm">API EvalScol</span>
+                  <Badge className="bg-green-100 text-green-800 shrink-0">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Opérationnel
                   </Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span>Base de données</span>
-                  <Badge className="bg-green-100 text-green-800">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-sm">Base de données</span>
+                  <Badge className="bg-green-100 text-green-800 shrink-0">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Opérationnel
                   </Badge>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span>Assistant IA</span>
-                  <Badge className="bg-green-100 text-green-800">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-sm">Assistant IA</span>
+                  <Badge className="bg-green-100 text-green-800 shrink-0">
                     <CheckCircle className="h-3 w-3 mr-1" />
                     Opérationnel
                   </Badge>
