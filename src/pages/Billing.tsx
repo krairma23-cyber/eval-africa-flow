@@ -35,10 +35,20 @@ interface UsageStats {
   current_plan: string;
 }
 
+interface Invoice {
+  id: string;
+  invoice_number: string;
+  invoice_date: string;
+  amount: number;
+  currency: string;
+  status: string;
+}
+
 export default function Billing() {
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [currentPlan, setCurrentPlan] = useState<SubscriptionPlan | null>(null);
   const [usage, setUsage] = useState<UsageStats | null>(null);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [isYearly, setIsYearly] = useState(false);
   const { toast } = useToast();
@@ -68,74 +78,75 @@ export default function Billing() {
         .eq('is_active', true)
         .order('price_monthly', { ascending: true });
 
-      if (plansError) throw plansError;
+      if (plansError) {
+        console.error('Plans error:', plansError);
+      }
 
       const formattedPlans: SubscriptionPlan[] = (plansData || []).map((plan: any) => ({
         id: plan.id,
         name: plan.name,
         price_monthly: parseFloat(plan.price_monthly),
-        price_yearly: parseFloat(plan.price_yearly),
+        price_yearly: plan.price_yearly ? parseFloat(plan.price_yearly) : parseFloat(plan.price_monthly) * 10,
         features: Array.isArray(plan.features) ? plan.features : [],
-        searches_limit: plan.searches_limit,
-        api_calls_limit: plan.api_calls_limit,
-        is_popular: plan.is_popular
+        searches_limit: plan.searches_limit || 100,
+        api_calls_limit: plan.api_calls_limit || 1000,
+        is_popular: plan.is_popular || false
       }));
 
       setPlans(formattedPlans);
 
-      // Fetch user's current subscription
-      const { data: subscriptionData, error: subscriptionError } = await supabase
-        .from('user_subscriptions')
-        .select(`
-          *,
-          subscription_plans (*)
-        `)
+      // Get searches and api usage stats manually
+      const { data: searchesData } = await supabase
+        .from('ai_searches')
+        .select('id', { count: 'exact', head: true })
         .eq('user_id', user.id)
-        .eq('status', 'active')
-        .single();
+        .gte('created_at', new Date(new Date().setDate(1)).toISOString());
 
-      if (subscriptionError && subscriptionError.code !== 'PGRST116') {
-        throw subscriptionError;
+      const { data: apiUsageData } = await supabase
+        .from('ai_usage_logs')
+        .select('tokens_used')
+        .eq('user_id', user.id)
+        .gte('created_at', new Date(new Date().setDate(1)).toISOString());
+
+      const searchesUsed = searchesData?.length || 0;
+      const apiCallsUsed = apiUsageData?.reduce((sum: number, log: any) => sum + (log.tokens_used || 0), 0) || 0;
+
+      setCurrentPlan(formattedPlans[0] || {
+        id: '1',
+        name: 'Free',
+        price_monthly: 0,
+        price_yearly: 0,
+        features: ['100 recherches/mois', 'Support communautaire'],
+        searches_limit: 100,
+        api_calls_limit: 1000,
+        is_popular: false
+      });
+
+      setUsage({
+        searches_used: searchesUsed,
+        api_calls_used: apiCallsUsed,
+        current_plan: formattedPlans[0]?.name || 'Free'
+      });
+
+      // Fetch user invoices
+      const { data: invoicesData } = await supabase
+        .from('invoices')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('invoice_date', { ascending: false })
+        .limit(10);
+
+      if (invoicesData) {
+        setInvoices(invoicesData.map((inv: any) => ({
+          id: inv.id,
+          invoice_number: inv.invoice_number,
+          invoice_date: inv.invoice_date,
+          amount: parseFloat(inv.amount),
+          currency: inv.currency,
+          status: inv.status
+        })));
       }
 
-      if (subscriptionData?.subscription_plans) {
-        const plan = subscriptionData.subscription_plans as any;
-        setCurrentPlan({
-          id: plan.id,
-          name: plan.name,
-          price_monthly: parseFloat(plan.price_monthly),
-          price_yearly: parseFloat(plan.price_yearly),
-          features: Array.isArray(plan.features) ? plan.features : [],
-          searches_limit: plan.searches_limit,
-          api_calls_limit: plan.api_calls_limit,
-          is_popular: plan.is_popular
-        });
-      } else if (formattedPlans.length > 0) {
-        setCurrentPlan(formattedPlans[0]);
-      }
-
-      // Fetch real usage data
-      const { data: usageData, error: usageError } = await supabase
-        .rpc('get_user_usage_stats', { p_user_id: user.id });
-
-      if (usageError) {
-        console.error('Usage error:', usageError);
-      }
-
-      if (usageData && usageData.length > 0) {
-        const stats = usageData[0];
-        setUsage({
-          searches_used: stats.searches_used || 0,
-          api_calls_used: stats.api_calls_used || 0,
-          current_plan: stats.current_plan || 'Free'
-        });
-      } else {
-        setUsage({
-          searches_used: 0,
-          api_calls_used: 0,
-          current_plan: 'Free'
-        });
-      }
     } catch (error) {
       await logError('Failed to fetch billing data', error, {
         component: 'Billing',
@@ -494,39 +505,51 @@ export default function Billing() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {[
-                  { id: '001', date: '15 févr. 2025', amount: '29€', status: 'Payée' },
-                  { id: '002', date: '15 janv. 2025', amount: '29€', status: 'Payée' },
-                  { id: '003', date: '15 déc. 2024', amount: '29€', status: 'Payée' },
-                ].map((invoice) => (
-                  <div key={invoice.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex items-center gap-4">
-                      <CreditCard className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-medium">Facture #{invoice.id}</p>
-                        <p className="text-sm text-muted-foreground">{invoice.date}</p>
+                {invoices.length > 0 ? (
+                  invoices.map((invoice) => (
+                    <div key={invoice.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-4">
+                        <CreditCard className="h-5 w-5 text-muted-foreground" />
+                        <div>
+                          <p className="font-medium">{invoice.invoice_number}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(invoice.invoice_date).toLocaleDateString('fr-FR', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric'
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <p className="font-medium">{invoice.amount}{invoice.currency === 'EUR' ? '€' : invoice.currency}</p>
+                          <Badge variant={invoice.status === 'paid' ? 'secondary' : 'outline'}>
+                            {invoice.status === 'paid' ? 'Payée' : 
+                             invoice.status === 'pending' ? 'En attente' : 
+                             invoice.status === 'failed' ? 'Échouée' : 'Remboursée'}
+                          </Badge>
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            toast({
+                              title: "Téléchargement",
+                              description: `${invoice.invoice_number} sera bientôt disponible`,
+                            });
+                          }}
+                        >
+                          <Download className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-right">
-                        <p className="font-medium">{invoice.amount}</p>
-                        <Badge variant="secondary">{invoice.status}</Badge>
-                      </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => {
-                          toast({
-                            title: "Téléchargement",
-                            description: `Facture #${invoice.id} téléchargée avec succès`,
-                          });
-                        }}
-                      >
-                        <Download className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-center text-muted-foreground py-8">
+                    Aucune facture disponible
+                  </p>
+                )}
               </div>
             </CardContent>
           </Card>

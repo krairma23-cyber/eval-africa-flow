@@ -1108,6 +1108,65 @@ export type Database = {
         }
         Relationships: []
       }
+      invoices: {
+        Row: {
+          amount: number
+          created_at: string | null
+          currency: string
+          due_date: string | null
+          id: string
+          invoice_date: string
+          invoice_number: string
+          paid_at: string | null
+          payment_method: string | null
+          payment_reference: string | null
+          status: string
+          subscription_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          currency?: string
+          due_date?: string | null
+          id?: string
+          invoice_date?: string
+          invoice_number: string
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          currency?: string
+          due_date?: string | null
+          id?: string
+          invoice_date?: string
+          invoice_number?: string
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          status?: string
+          subscription_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "user_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ip_access_control: {
         Row: {
           access_type: string
@@ -2505,6 +2564,53 @@ export type Database = {
         }
         Relationships: []
       }
+      user_subscriptions: {
+        Row: {
+          billing_period: string
+          cancel_at_period_end: boolean | null
+          created_at: string | null
+          current_period_end: string
+          current_period_start: string
+          id: string
+          plan_id: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          billing_period?: string
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end: string
+          current_period_start?: string
+          id?: string
+          plan_id: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          billing_period?: string
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          plan_id?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -2656,6 +2762,10 @@ export type Database = {
       }
       encrypt_sensitive_data: {
         Args: { p_data: string; p_key_name?: string }
+        Returns: string
+      }
+      generate_invoice_number: {
+        Args: Record<PropertyKey, never>
         Returns: string
       }
       get_admin_stats: {
@@ -2900,6 +3010,16 @@ export type Database = {
       get_user_school_id: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      get_user_usage_stats: {
+        Args: { p_user_id: string }
+        Returns: {
+          api_calls_limit: number
+          api_calls_used: number
+          current_plan: string
+          searches_limit: number
+          searches_used: number
+        }[]
       }
       has_role: {
         Args: {
