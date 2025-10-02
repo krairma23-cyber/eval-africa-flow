@@ -49,39 +49,93 @@ export default function Billing() {
 
   const fetchBillingData = async () => {
     try {
-      // Simulate subscription plans data
-      const mockPlans: SubscriptionPlan[] = [
-        {
-          id: '1',
-          name: 'Starter',
-          price_monthly: 29,
-          price_yearly: 290,
-          features: ['100 évaluations/mois', 'Support email', 'Analytics de base'],
-          searches_limit: 1000,
-          api_calls_limit: 5000,
-          is_popular: false
-        },
-        {
-          id: '2',
-          name: 'Professional',
-          price_monthly: 59,
-          price_yearly: 590,
-          features: ['Évaluations illimitées', 'Support prioritaire', 'Analytics avancées', 'API complète'],
-          searches_limit: 5000,
-          api_calls_limit: 25000,
-          is_popular: true
-        }
-      ];
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
 
-      setPlans(mockPlans);
-      setCurrentPlan(mockPlans[0]);
+      // Fetch subscription plans from Supabase
+      const { data: plansData, error: plansError } = await supabase
+        .from('subscription_plans')
+        .select('*')
+        .eq('is_active', true)
+        .order('price_monthly', { ascending: true });
 
-      // Simulate usage data
-      setUsage({
-        searches_used: 85,
-        api_calls_used: 1240,
-        current_plan: 'starter'
-      });
+      if (plansError) throw plansError;
+
+      const formattedPlans: SubscriptionPlan[] = (plansData || []).map((plan: any) => ({
+        id: plan.id,
+        name: plan.name,
+        price_monthly: parseFloat(plan.price_monthly),
+        price_yearly: parseFloat(plan.price_yearly),
+        features: Array.isArray(plan.features) ? plan.features : [],
+        searches_limit: plan.searches_limit,
+        api_calls_limit: plan.api_calls_limit,
+        is_popular: plan.is_popular
+      }));
+
+      setPlans(formattedPlans);
+
+      // Fetch user's current subscription
+      const { data: subscriptionData, error: subscriptionError } = await supabase
+        .from('user_subscriptions')
+        .select(`
+          *,
+          subscription_plans (*)
+        `)
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .single();
+
+      if (subscriptionError && subscriptionError.code !== 'PGRST116') {
+        throw subscriptionError;
+      }
+
+      if (subscriptionData?.subscription_plans) {
+        const plan = subscriptionData.subscription_plans as any;
+        setCurrentPlan({
+          id: plan.id,
+          name: plan.name,
+          price_monthly: parseFloat(plan.price_monthly),
+          price_yearly: parseFloat(plan.price_yearly),
+          features: Array.isArray(plan.features) ? plan.features : [],
+          searches_limit: plan.searches_limit,
+          api_calls_limit: plan.api_calls_limit,
+          is_popular: plan.is_popular
+        });
+      } else if (formattedPlans.length > 0) {
+        setCurrentPlan(formattedPlans[0]);
+      }
+
+      // Fetch real usage data
+      const { data: usageData, error: usageError } = await supabase
+        .rpc('get_user_usage_stats', { p_user_id: user.id });
+
+      if (usageError) {
+        console.error('Usage error:', usageError);
+      }
+
+      if (usageData && usageData.length > 0) {
+        const stats = usageData[0];
+        setUsage({
+          searches_used: stats.searches_used || 0,
+          api_calls_used: stats.api_calls_used || 0,
+          current_plan: stats.current_plan || 'Free'
+        });
+      } else {
+        setUsage({
+          searches_used: 0,
+          api_calls_used: 0,
+          current_plan: 'Free'
+        });
+      }
     } catch (error) {
       await logError('Failed to fetch billing data', error, {
         component: 'Billing',
