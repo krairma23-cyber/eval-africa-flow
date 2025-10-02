@@ -141,9 +141,12 @@ export function LoginForm() {
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="signin">Connexion</TabsTrigger>
-              <TabsTrigger value="signup">Inscription</TabsTrigger>
-              <TabsTrigger value="reset">Mot de passe oublié</TabsTrigger>
+              <TabsTrigger value="signin" className="text-xs sm:text-sm">Connexion</TabsTrigger>
+              <TabsTrigger value="signup" className="text-xs sm:text-sm">Inscription</TabsTrigger>
+              <TabsTrigger value="reset" className="text-xs sm:text-sm whitespace-normal leading-tight py-2">
+                <span className="hidden sm:inline">Mot de passe oublié</span>
+                <span className="sm:hidden">Mot de passe</span>
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
