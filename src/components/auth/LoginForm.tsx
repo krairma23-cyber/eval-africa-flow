@@ -14,7 +14,7 @@ export function LoginForm() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [activeTab, setActiveTab] = useState("signin");
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -94,6 +94,41 @@ export function LoginForm() {
     }
   };
 
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const redirectUrl = `${window.location.origin}/auth`;
+      
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectUrl,
+      });
+
+      if (error) {
+        toast({
+          title: "Erreur",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Email envoyé",
+          description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
+        });
+        setEmail("");
+      }
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'envoi de l'email",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
@@ -104,10 +139,11 @@ export function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs value={isSignUp ? "signup" : "signin"} onValueChange={(value) => setIsSignUp(value === "signup")}>
-            <TabsList className="grid w-full grid-cols-2">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="signin">Connexion</TabsTrigger>
               <TabsTrigger value="signup">Inscription</TabsTrigger>
+              <TabsTrigger value="reset">Mot de passe oublié</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
@@ -186,6 +222,28 @@ export function LoginForm() {
                 </p>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Inscription..." : "S'inscrire"}
+                </Button>
+              </form>
+            </TabsContent>
+            
+            <TabsContent value="reset">
+              <form onSubmit={handleResetPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="resetEmail">Email</Label>
+                  <Input
+                    id="resetEmail"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="votre@email.com"
+                    required
+                  />
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Entrez votre email pour recevoir un lien de réinitialisation de mot de passe.
+                </p>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Envoi..." : "Réinitialiser le mot de passe"}
                 </Button>
               </form>
             </TabsContent>
