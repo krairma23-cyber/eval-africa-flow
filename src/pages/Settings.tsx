@@ -18,7 +18,7 @@ export default function Settings() {
   // Settings state
   const [schoolName, setSchoolName] = useState("École Primaire Example");
   const [schoolAddress, setSchoolAddress] = useState("123 Rue de l'École, Paris");
-  const [academicYear, setAcademicYear] = useState("2024-2025");
+  const [academicYear, setAcademicYear] = useState("2025-2026");
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [reportReminders, setReportReminders] = useState(true);
   const [darkMode, setDarkMode] = useState(false);

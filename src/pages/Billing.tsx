@@ -175,7 +175,15 @@ export default function Billing() {
             Gérez votre plan d'abonnement et suivez votre utilisation
           </p>
         </div>
-        <Button variant="outline">
+        <Button 
+          variant="outline"
+          onClick={() => {
+            toast({
+              title: "Téléchargement en cours",
+              description: "L'archive de vos factures sera bientôt disponible",
+            });
+          }}
+        >
           <Download className="h-4 w-4 mr-2" />
           Télécharger factures
         </Button>
@@ -199,7 +207,7 @@ export default function Billing() {
                   <div>
                     <CardTitle>Plan Actuel: {currentPlan?.name}</CardTitle>
                     <CardDescription>
-                      {currentPlan?.price_monthly}€/mois • Prochain paiement le 15 mars 2024
+                      {currentPlan?.price_monthly}€/mois • Prochain paiement le 15 mars 2025
                     </CardDescription>
                   </div>
                 </div>
@@ -249,7 +257,17 @@ export default function Billing() {
                 <CreditCard className="h-8 w-8 mx-auto text-primary mb-2" />
                 <h3 className="font-semibold">Méthode de paiement</h3>
                 <p className="text-sm text-muted-foreground">•••• 1234</p>
-                <Button variant="outline" size="sm" className="mt-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="mt-2"
+                  onClick={() => {
+                    toast({
+                      title: "Modification méthode de paiement",
+                      description: "Cette fonctionnalité sera bientôt disponible",
+                    });
+                  }}
+                >
                   Modifier
                 </Button>
               </CardContent>
@@ -259,7 +277,7 @@ export default function Billing() {
               <CardContent className="pt-6">
                 <Calendar className="h-8 w-8 mx-auto text-accent mb-2" />
                 <h3 className="font-semibold">Prochaine facture</h3>
-                <p className="text-sm text-muted-foreground">15 mars 2024</p>
+                <p className="text-sm text-muted-foreground">15 mars 2025</p>
                 <p className="text-sm font-medium">{currentPlan?.price_monthly}€</p>
               </CardContent>
             </Card>
@@ -278,7 +296,17 @@ export default function Billing() {
                 <AlertCircle className="h-8 w-8 mx-auto text-orange-500 mb-2" />
                 <h3 className="font-semibold">Limite atteinte</h3>
                 <p className="text-sm text-muted-foreground">Recherches: 85%</p>
-                <Button variant="outline" size="sm" className="mt-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="mt-2"
+                  onClick={() => {
+                    const professionalPlan = plans.find(p => p.name === 'Professional');
+                    if (professionalPlan) {
+                      handleUpgrade(professionalPlan.id);
+                    }
+                  }}
+                >
                   Upgrader
                 </Button>
               </CardContent>
@@ -413,9 +441,9 @@ export default function Billing() {
             <CardContent>
               <div className="space-y-4">
                 {[
-                  { id: '001', date: '15 févr. 2024', amount: '29€', status: 'Payée' },
-                  { id: '002', date: '15 janv. 2024', amount: '29€', status: 'Payée' },
-                  { id: '003', date: '15 déc. 2023', amount: '29€', status: 'Payée' },
+                  { id: '001', date: '15 févr. 2025', amount: '29€', status: 'Payée' },
+                  { id: '002', date: '15 janv. 2025', amount: '29€', status: 'Payée' },
+                  { id: '003', date: '15 déc. 2024', amount: '29€', status: 'Payée' },
                 ].map((invoice) => (
                   <div key={invoice.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center gap-4">
@@ -430,7 +458,16 @@ export default function Billing() {
                         <p className="font-medium">{invoice.amount}</p>
                         <Badge variant="secondary">{invoice.status}</Badge>
                       </div>
-                      <Button variant="outline" size="sm">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          toast({
+                            title: "Téléchargement",
+                            description: `Facture #${invoice.id} téléchargée avec succès`,
+                          });
+                        }}
+                      >
                         <Download className="h-4 w-4" />
                       </Button>
                     </div>

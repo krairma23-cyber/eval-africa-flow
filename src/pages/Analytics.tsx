@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 import { 
   BarChart3, 
   TrendingUp, 
@@ -37,6 +38,7 @@ export default function Analytics() {
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState("30d");
   const [refreshing, setRefreshing] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchAnalytics();
@@ -60,10 +62,10 @@ export default function Analytics() {
           { name: "Assistant IA", usage: 987, change: 45.3 }
         ],
         userGrowth: [
-          { date: "2024-01-01", users: 1100 },
-          { date: "2024-01-15", users: 1156 },
-          { date: "2024-02-01", users: 1203 },
-          { date: "2024-02-15", users: 1247 }
+          { date: "2025-01-01", users: 1100 },
+          { date: "2025-01-15", users: 1156 },
+          { date: "2025-02-01", users: 1203 },
+          { date: "2025-02-15", users: 1247 }
         ],
         featureUsage: [
           { feature: "Dashboard", count: 3456, percentage: 89 },
@@ -136,7 +138,15 @@ export default function Analytics() {
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
             Actualiser
           </Button>
-          <Button onClick={exportData}>
+          <Button 
+            onClick={() => {
+              exportData();
+              toast({
+                title: "Export réussi",
+                description: `Les données analytiques (${timeRange}) ont été exportées en CSV`,
+              });
+            }}
+          >
             <Download className="h-4 w-4 mr-2" />
             Exporter
           </Button>
