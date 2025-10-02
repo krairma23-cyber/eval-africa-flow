@@ -67,58 +67,23 @@ export default function Notifications() {
 
   useEffect(() => {
     fetchNotifications();
+    fetchSettings();
   }, []);
 
   const fetchNotifications = async () => {
     try {
-      // Simulate notifications data
-      const mockNotifications: Notification[] = [
-        {
-          id: '1',
-          title: 'Nouvelle évaluation créée',
-          message: 'L\'évaluation "Mathématiques - Chapitre 5" a été créée avec succès',
-          type: 'success',
-          read: false,
-          created_at: '2024-02-20T10:30:00Z',
-          action_url: '/dashboard/assessments'
-        },
-        {
-          id: '2',
-          title: 'Rappel: Bulletins à générer',
-          message: 'N\'oubliez pas de générer les bulletins pour la classe de 5ème A',
-          type: 'warning',
-          read: false,
-          created_at: '2024-02-20T09:15:00Z',
-          action_url: '/dashboard/reports'
-        },
-        {
-          id: '3',
-          title: 'Mise à jour système',
-          message: 'Une nouvelle version d\'EvalScol est disponible avec des améliorations',
-          type: 'info',
-          read: true,
-          created_at: '2024-02-19T16:45:00Z'
-        },
-        {
-          id: '4',
-          title: 'Erreur de synchronisation',
-          message: 'Problème temporaire de synchronisation des données',
-          type: 'error',
-          read: true,
-          created_at: '2024-02-19T14:20:00Z'
-        },
-        {
-          id: '5',
-          title: 'Nouveau message de support',
-          message: 'Réponse reçue pour votre ticket #1234',
-          type: 'info',
-          read: false,
-          created_at: '2024-02-19T11:30:00Z',
-          action_url: '/dashboard/support'
-        }
-      ];
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-      setNotifications(mockNotifications);
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      
+      setNotifications(data || []);
     } catch (error) {
       await logError('Failed to fetch notifications', error, {
         component: 'Notifications',
@@ -134,8 +99,46 @@ export default function Notifications() {
     }
   };
 
+  const fetchSettings = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('user_preferences')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      
+      if (data) {
+        setSettings({
+          email_notifications: data.email_notifications,
+          push_notifications: data.push_notifications,
+          assessment_reminders: data.assessment_reminders,
+          report_notifications: data.report_notifications,
+          system_updates: data.system_updates,
+          marketing_emails: data.marketing_emails,
+        });
+      }
+    } catch (error) {
+      await logError('Failed to fetch settings', error, {
+        component: 'Notifications',
+        action: 'FETCH_SETTINGS'
+      });
+    }
+  };
+
   const markAsRead = async (notificationId: string) => {
     try {
+      const { error } = await supabase
+        .from('notifications')
+        .update({ read: true })
+        .eq('id', notificationId);
+
+      if (error) throw error;
+
       setNotifications(notifications.map(notif => 
         notif.id === notificationId ? { ...notif, read: true } : notif
       ));
@@ -153,6 +156,13 @@ export default function Notifications() {
 
   const markAsUnread = async (notificationId: string) => {
     try {
+      const { error } = await supabase
+        .from('notifications')
+        .update({ read: false })
+        .eq('id', notificationId);
+
+      if (error) throw error;
+
       setNotifications(notifications.map(notif => 
         notif.id === notificationId ? { ...notif, read: false } : notif
       ));
@@ -170,6 +180,13 @@ export default function Notifications() {
 
   const deleteNotification = async (notificationId: string) => {
     try {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('id', notificationId);
+
+      if (error) throw error;
+
       setNotifications(notifications.filter(notif => notif.id !== notificationId));
       
       toast({
@@ -185,6 +202,17 @@ export default function Notifications() {
 
   const markAllAsRead = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('notifications')
+        .update({ read: true })
+        .eq('user_id', user.id)
+        .eq('read', false);
+
+      if (error) throw error;
+
       setNotifications(notifications.map(notif => ({ ...notif, read: true })));
       
       toast({
@@ -200,7 +228,21 @@ export default function Notifications() {
 
   const updateSettings = async (key: keyof NotificationSettings, value: boolean) => {
     try {
-      setSettings({ ...settings, [key]: value });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const newSettings = { ...settings, [key]: value };
+      
+      const { error } = await supabase
+        .from('user_preferences')
+        .upsert({
+          user_id: user.id,
+          ...newSettings,
+        });
+
+      if (error) throw error;
+
+      setSettings(newSettings);
       
       toast({
         title: "Paramètres mis à jour",
