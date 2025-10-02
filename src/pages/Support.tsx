@@ -490,17 +490,17 @@ export default function Support() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Guide de démarrage
+                  <Button variant="outline" className="w-full justify-start text-sm">
+                    <BookOpen className="h-4 w-4 mr-2 shrink-0" />
+                    <span className="truncate">Guide de démarrage</span>
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Manuel utilisateur
+                  <Button variant="outline" className="w-full justify-start text-sm">
+                    <BookOpen className="h-4 w-4 mr-2 shrink-0" />
+                    <span className="truncate">Manuel utilisateur</span>
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Documentation API
+                  <Button variant="outline" className="w-full justify-start text-sm">
+                    <BookOpen className="h-4 w-4 mr-2 shrink-0" />
+                    <span className="truncate">Documentation API</span>
                   </Button>
                 </div>
               </CardContent>
@@ -518,17 +518,17 @@ export default function Support() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start">
-                    <Video className="h-4 w-4 mr-2" />
-                    Configuration initiale
+                  <Button variant="outline" className="w-full justify-start text-sm">
+                    <Video className="h-4 w-4 mr-2 shrink-0" />
+                    <span className="truncate">Configuration initiale</span>
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Video className="h-4 w-4 mr-2" />
-                    Créer des évaluations
+                  <Button variant="outline" className="w-full justify-start text-sm">
+                    <Video className="h-4 w-4 mr-2 shrink-0" />
+                    <span className="truncate">Créer des évaluations</span>
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Video className="h-4 w-4 mr-2" />
-                    Générer des bulletins
+                  <Button variant="outline" className="w-full justify-start text-sm">
+                    <Video className="h-4 w-4 mr-2 shrink-0" />
+                    <span className="truncate">Générer des bulletins</span>
                   </Button>
                 </div>
               </CardContent>
