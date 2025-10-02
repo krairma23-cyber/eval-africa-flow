@@ -2102,6 +2102,7 @@ export type Database = {
       students: {
         Row: {
           address: string | null
+          avatar_url: string | null
           created_at: string | null
           date_of_birth: string | null
           first_name: string
@@ -2117,6 +2118,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          avatar_url?: string | null
           created_at?: string | null
           date_of_birth?: string | null
           first_name: string
@@ -2132,6 +2134,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          avatar_url?: string | null
           created_at?: string | null
           date_of_birth?: string | null
           first_name?: string
@@ -2291,6 +2294,7 @@ export type Database = {
       }
       teachers: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
           email: string | null
           first_name: string
@@ -2305,6 +2309,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
           email?: string | null
           first_name: string
@@ -2319,6 +2324,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
           email?: string | null
           first_name?: string

@@ -20,6 +20,7 @@ interface Teacher {
   phone: string;
   specialization: string;
   hire_date: string;
+  avatar_url: string | null;
   created_at: string;
 }
 
@@ -168,7 +169,7 @@ export default function Teachers() {
             <Card key={teacher.id} className="hover:shadow-md transition-shadow">
               <CardHeader className="flex flex-col items-center">
                 <Avatar className="h-20 w-20 mb-4">
-                  <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${teacher.first_name} ${teacher.last_name}`} />
+                  <AvatarImage src={teacher.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${teacher.first_name} ${teacher.last_name}`} />
                   <AvatarFallback>{teacher.first_name[0]}{teacher.last_name[0]}</AvatarFallback>
                 </Avatar>
                 <CardTitle className="flex items-center justify-between w-full">

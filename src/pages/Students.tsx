@@ -21,6 +21,7 @@ interface Student {
   parent_name: string;
   parent_phone: string;
   parent_email: string;
+  avatar_url: string | null;
   created_at: string;
 }
 
@@ -170,7 +171,7 @@ export default function Students() {
             <Card key={student.id} className="hover:shadow-md transition-shadow">
               <CardHeader className="flex flex-col items-center">
                 <Avatar className="h-20 w-20 mb-4">
-                  <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${student.first_name} ${student.last_name}`} />
+                  <AvatarImage src={student.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${student.first_name} ${student.last_name}`} />
                   <AvatarFallback>{student.first_name[0]}{student.last_name[0]}</AvatarFallback>
                 </Avatar>
                 <CardTitle className="flex items-center justify-between w-full">

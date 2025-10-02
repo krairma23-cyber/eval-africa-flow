@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { logError } from "@/lib/logger";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Upload, X } from "lucide-react";
 
 interface AddStudentDialogProps {
   onStudentAdded: () => void;
@@ -17,6 +19,8 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userSchoolId, setUserSchoolId] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     student_number: "",
     first_name: "",
@@ -69,6 +73,18 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
     }
   }, [open, toast]);
 
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setAvatarFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.student_number || !formData.first_name || !formData.last_name) {
@@ -91,9 +107,31 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
 
     setLoading(true);
     try {
+      let avatarUrl = null;
+
+      // Upload avatar if provided
+      if (avatarFile) {
+        const fileExt = avatarFile.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `students/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(filePath, avatarFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('avatars')
+          .getPublicUrl(filePath);
+
+        avatarUrl = publicUrl;
+      }
+
       const { error } = await supabase.from('students').insert([{
         ...formData,
         school_id: userSchoolId,
+        avatar_url: avatarUrl,
       }]);
 
       if (error) throw error;
@@ -114,6 +152,8 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
         parent_email: "",
         address: "",
       });
+      setAvatarFile(null);
+      setAvatarPreview(null);
       setOpen(false);
       onStudentAdded();
     } catch (error) {
@@ -141,6 +181,47 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
           <DialogTitle>Ajouter un élève</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex flex-col items-center gap-4 mb-4">
+            <Avatar className="h-24 w-24">
+              {avatarPreview ? (
+                <AvatarImage src={avatarPreview} />
+              ) : (
+                <AvatarFallback>
+                  <Upload className="h-8 w-8 text-muted-foreground" />
+                </AvatarFallback>
+              )}
+            </Avatar>
+            <div className="flex gap-2">
+              <Label htmlFor="avatar" className="cursor-pointer">
+                <Button type="button" variant="outline" size="sm" asChild>
+                  <span>
+                    <Upload className="h-4 w-4 mr-2" />
+                    Choisir une photo
+                  </span>
+                </Button>
+                <Input
+                  id="avatar"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
+              </Label>
+              {avatarPreview && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setAvatarFile(null);
+                    setAvatarPreview(null);
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </div>
           <div>
             <Label htmlFor="student_number">Numéro d'élève *</Label>
             <Input
