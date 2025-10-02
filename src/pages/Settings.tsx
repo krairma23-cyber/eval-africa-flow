@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,11 +8,15 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette } from "lucide-react";
+import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon } from "lucide-react";
 
 export default function Settings() {
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [schoolId, setSchoolId] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   // Settings state
@@ -25,11 +29,117 @@ export default function Settings() {
 
   useEffect(() => {
     getCurrentUser();
+    loadSchoolData();
   }, []);
 
   const getCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     setUser(user);
+  };
+
+  const loadSchoolData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Get user's school from profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('school_id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profile?.school_id) {
+        setSchoolId(profile.school_id);
+
+        // Get school data including logo
+        const { data: school } = await supabase
+          .from('schools')
+          .select('name, logo_url')
+          .eq('id', profile.school_id)
+          .single();
+
+        if (school) {
+          setSchoolName(school.name || "École Primaire Example");
+          if (school.logo_url) {
+            const { data } = supabase.storage
+              .from('school-logos')
+              .getPublicUrl(school.logo_url);
+            setLogoUrl(data.publicUrl);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error loading school data:', error);
+    }
+  };
+
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setUploading(true);
+      const file = event.target.files?.[0];
+      if (!file || !schoolId) return;
+
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        toast({
+          title: "Type de fichier invalide",
+          description: "Seuls les formats JPG, PNG et WebP sont acceptés",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate file size (2MB)
+      if (file.size > 2097152) {
+        toast({
+          title: "Fichier trop volumineux",
+          description: "La taille maximale est de 2MB",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${schoolId}/logo.${fileExt}`;
+
+      // Upload to storage
+      const { error: uploadError } = await supabase.storage
+        .from('school-logos')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      // Update school record
+      const { error: updateError } = await supabase
+        .from('schools')
+        .update({ logo_url: filePath })
+        .eq('id', schoolId);
+
+      if (updateError) throw updateError;
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('school-logos')
+        .getPublicUrl(filePath);
+
+      setLogoUrl(data.publicUrl);
+
+      toast({
+        title: "Logo mis à jour",
+        description: "Le logo de votre établissement a été mis à jour avec succès",
+      });
+    } catch (error) {
+      console.error('Error uploading logo:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de télécharger le logo",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSaveSettings = async () => {
@@ -76,6 +186,46 @@ export default function Settings() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            <div className="grid gap-2">
+              <Label htmlFor="school-logo">Logo de l'établissement</Label>
+              <div className="flex items-center gap-4">
+                {logoUrl ? (
+                  <div className="relative w-32 h-32 border-2 border-border rounded-lg overflow-hidden bg-muted">
+                    <img 
+                      src={logoUrl} 
+                      alt="Logo de l'établissement" 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-32 h-32 border-2 border-dashed border-border rounded-lg flex items-center justify-center bg-muted">
+                    <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                  </div>
+                )}
+                <div className="flex flex-col gap-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                    onChange={handleLogoUpload}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    {uploading ? "Téléchargement..." : "Télécharger un logo"}
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    JPG, PNG ou WebP. Max 2MB.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <Separator />
             <div className="grid gap-2">
               <Label htmlFor="school-name">Nom de l'établissement</Label>
               <Input

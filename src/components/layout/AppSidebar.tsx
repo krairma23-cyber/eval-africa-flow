@@ -15,6 +15,8 @@ import {
   Bell
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Sidebar,
   SidebarContent,
@@ -47,6 +49,45 @@ const menuItems = [
 export function AppSidebar() {
   const { open } = useSidebar();
   const location = useLocation();
+  const [schoolLogo, setSchoolLogo] = useState<string | null>(null);
+  const [schoolName, setSchoolName] = useState<string>("EvalScol");
+
+  useEffect(() => {
+    loadSchoolLogo();
+  }, []);
+
+  const loadSchoolLogo = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('school_id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profile?.school_id) {
+        const { data: school } = await supabase
+          .from('schools')
+          .select('name, logo_url')
+          .eq('id', profile.school_id)
+          .single();
+
+        if (school) {
+          if (school.name) setSchoolName(school.name);
+          if (school.logo_url) {
+            const { data } = supabase.storage
+              .from('school-logos')
+              .getPublicUrl(school.logo_url);
+            setSchoolLogo(data.publicUrl);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error loading school logo:', error);
+    }
+  };
 
   const isActive = (path: string) => location.pathname === path;
   const getNavClass = (path: string) =>
@@ -58,9 +99,22 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-lg font-semibold text-primary">
-            EvalScol
-          </SidebarGroupLabel>
+          <div className="px-4 py-4 border-b border-border">
+            <div className="flex items-center gap-3">
+              {schoolLogo ? (
+                <img 
+                  src={schoolLogo} 
+                  alt={schoolName}
+                  className="w-10 h-10 object-contain rounded"
+                />
+              ) : (
+                <School className="w-10 h-10 text-primary" />
+              )}
+              <SidebarGroupLabel className="text-lg font-semibold text-primary">
+                {schoolName}
+              </SidebarGroupLabel>
+            </div>
+          </div>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (

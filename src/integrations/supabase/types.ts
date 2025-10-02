@@ -984,6 +984,44 @@ export type Database = {
         }
         Relationships: []
       }
+      favorites: {
+        Row: {
+          created_at: string | null
+          id: string
+          notes: string | null
+          product_id: string
+          target_price: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          product_id: string
+          target_price?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          product_id?: string
+          target_price?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       "Gestion des évaluations": {
         Row: {
           created_at: string
@@ -1791,6 +1829,7 @@ export type Database = {
           created_at: string | null
           email: string | null
           id: string
+          logo_url: string | null
           name: string
           phone: string | null
           updated_at: string | null
@@ -1801,6 +1840,7 @@ export type Database = {
           created_at?: string | null
           email?: string | null
           id?: string
+          logo_url?: string | null
           name: string
           phone?: string | null
           updated_at?: string | null
@@ -1811,6 +1851,7 @@ export type Database = {
           created_at?: string | null
           email?: string | null
           id?: string
+          logo_url?: string | null
           name?: string
           phone?: string | null
           updated_at?: string | null
@@ -1847,6 +1888,36 @@ export type Database = {
           otp_hash?: string
           used_at?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      security_cleanup_jobs: {
+        Row: {
+          created_at: string | null
+          executed_at: string | null
+          execution_time_ms: number | null
+          id: string
+          job_type: string
+          records_cleaned: number | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          executed_at?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          job_type: string
+          records_cleaned?: number | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          executed_at?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          job_type?: string
+          records_cleaned?: number | null
+          status?: string | null
         }
         Relationships: []
       }
@@ -2059,6 +2130,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      subscription_plans: {
+        Row: {
+          alerts_limit: number | null
+          api_calls_limit: number | null
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          export_limit: number | null
+          features: Json | null
+          id: string
+          is_active: boolean | null
+          is_popular: boolean | null
+          name: string
+          price_monthly: number
+          price_yearly: number | null
+          searches_limit: number | null
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          alerts_limit?: number | null
+          api_calls_limit?: number | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          export_limit?: number | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          name: string
+          price_monthly: number
+          price_yearly?: number | null
+          searches_limit?: number | null
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          alerts_limit?: number | null
+          api_calls_limit?: number | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          export_limit?: number | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          name?: string
+          price_monthly?: number
+          price_yearly?: number | null
+          searches_limit?: number | null
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       suppliers: {
         Row: {
@@ -2438,6 +2566,14 @@ export type Database = {
         }
         Returns: Json
       }
+      check_payment_security: {
+        Args: { p_amount: number; p_ip_address?: unknown; p_user_id: string }
+        Returns: Json
+      }
+      check_product_search_limit: {
+        Args: { p_user_id: string }
+        Returns: Json
+      }
       check_rbac_access: {
         Args: { p_action: string; p_resource: string; p_user_id: string }
         Returns: boolean
@@ -2645,7 +2781,9 @@ export type Database = {
           last_updated: string
           metric_name: string
           metric_value: number
+          recommendation: string
           severity: string
+          trend: string
         }[]
       }
       get_security_dashboard_summary: {
@@ -2711,6 +2849,16 @@ export type Database = {
           school_id: string
           student_number: string
           updated_at: string
+        }[]
+      }
+      get_teacher_basic_info: {
+        Args: { p_school_id: string }
+        Returns: {
+          first_name: string
+          id: string
+          last_name: string
+          specialization: string
+          teacher_number: string
         }[]
       }
       get_teacher_data_secure: {
@@ -2780,6 +2928,10 @@ export type Database = {
         Args: { p_user_id?: string }
         Returns: boolean
       }
+      is_user_admin: {
+        Args: { check_user_id?: string }
+        Returns: boolean
+      }
       log_comprehensive_audit: {
         Args: {
           p_action: string
@@ -2809,6 +2961,14 @@ export type Database = {
         }
         Returns: string
       }
+      log_security_cleanup: {
+        Args: {
+          p_execution_time_ms?: number
+          p_job_type: string
+          p_records_cleaned: number
+        }
+        Returns: string
+      }
       log_security_incident: {
         Args: {
           p_details?: Json
@@ -2827,6 +2987,10 @@ export type Database = {
       process_webhook_event: {
         Args: { p_event_id: string; p_event_type: string }
         Returns: boolean
+      }
+      remind_enable_password_protection: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       run_security_audit: {
         Args: Record<PropertyKey, never>
@@ -2920,6 +3084,10 @@ export type Database = {
           masked_last_name: string
           masked_phone: string
         }[]
+      }
+      secure_migrate_customer_data: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       secure_organization_data_access: {
         Args: { p_access_reason: string; p_org_id: string }
