@@ -40,152 +40,45 @@ export const ContentGenerator = () => {
   const generateContent = async () => {
     setGenerating(true);
     
-    // Simulate AI generation
-    setTimeout(() => {
-      let content = '';
+    try {
+      const { supabase } = await import('@/integrations/supabase/client');
       
-      if (selectedType === 'assessment') {
-        content = generateAssessmentContent();
-      } else if (selectedType === 'report') {
-        content = generateReportContent();
-      } else {
-        content = generateAnalysisContent();
-      }
-
-      setGeneratedContent({
-        type: selectedType,
-        content,
-        metadata: {
+      const { data, error } = await supabase.functions.invoke('generate-educational-content', {
+        body: {
+          type: selectedType,
           subject: formData.subject,
           level: formData.level,
-          duration: formData.duration + ' min',
-          difficulty: formData.difficulty
+          topic: formData.topic,
+          difficulty: formData.difficulty,
+          questionsCount: formData.questionsCount,
+          duration: formData.duration,
         }
       });
 
-      setGenerating(false);
+      if (error) throw error;
+
+      setGeneratedContent({
+        type: selectedType,
+        content: data.content,
+        metadata: data.metadata
+      });
+
       toast({
-        title: "✨ Contenu généré avec succès",
+        title: "✨ Contenu généré avec succès par Gemini",
         description: `${selectedType === 'assessment' ? 'Évaluation' : selectedType === 'report' ? 'Rapport' : 'Analyse'} créé(e) par IA`,
       });
-    }, 3000);
+    } catch (error) {
+      console.error('Error generating content:', error);
+      toast({
+        title: "Erreur de génération",
+        description: error.message || "Impossible de générer le contenu. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    } finally {
+      setGenerating(false);
+    }
   };
 
-  const generateAssessmentContent = () => {
-    return `# Évaluation - ${formData.subject}
-**Sujet:** ${formData.topic}
-**Niveau:** ${formData.level}
-**Durée:** ${formData.duration} minutes
-**Difficulté:** ${formData.difficulty}
-
-## Questions générées par IA:
-
-### Question 1 (4 points)
-Expliquez les concepts fondamentaux de ${formData.topic} en donnant des exemples concrets.
-
-**Critères d'évaluation:**
-- Clarté de l'explication (2 pts)
-- Pertinence des exemples (2 pts)
-
-### Question 2 (6 points)
-Résolvez le problème suivant en détaillant votre démarche:
-[Problème adapté au niveau ${formData.level}]
-
-**Barème:**
-- Méthode correcte (3 pts)
-- Calculs justes (2 pts)
-- Présentation (1 pt)
-
-### Question 3 (10 points)
-Analyse critique: Comparez et contrastez les différentes approches pour...
-
-*[Générée automatiquement selon les paramètres spécifiés]*
-
----
-**Total: 20 points**
-**Temps recommandé par question: ${Math.floor(parseInt(formData.duration) / parseInt(formData.questionsCount))} min**`;
-  };
-
-  const generateReportContent = () => {
-    return `# Rapport de Performance - Classe ${formData.level}
-**Matière:** ${formData.subject}
-**Période:** Trimestre en cours
-**Généré le:** ${new Date().toLocaleDateString('fr-FR')}
-
-## Analyse globale par IA
-
-### 📊 Statistiques de classe
-- **Moyenne générale:** 14.2/20 (+1.3 vs trimestre précédent)
-- **Médiane:** 14.8/20
-- **Écart-type:** 3.1
-- **Taux de réussite:** 87% (≥10/20)
-
-### 🎯 Points forts identifiés
-1. **Compréhension conceptuelle** - 92% des élèves maîtrisent les bases
-2. **Participation active** - Augmentation de 23% des interventions
-3. **Travail collaboratif** - Excellents résultats en projets de groupe
-
-### ⚠️ Axes d'amélioration détectés
-1. **Rédaction scientifique** - 34% d'élèves en difficulté
-2. **Gestion du temps** - Problème identifié pour 28% de la classe
-3. **Applications pratiques** - Besoin de renforcement
-
-### 🔮 Prédictions IA pour le prochain trimestre
-- **Évolution attendue:** +0.8 points de moyenne
-- **Élèves à accompagner:** 5 élèves identifiés
-- **Recommandations pédagogiques:** Mise en place d'ateliers méthodologiques
-
-### 📈 Graphiques et données
-*[Graphiques interactifs générés automatiquement]*
-
----
-*Rapport généré par l'IA EvalScol - Analyse basée sur 247 points de données*`;
-  };
-
-  const generateAnalysisContent = () => {
-    return `# Analyse Prédictive - ${formData.subject}
-**Analyse générée par IA le:** ${new Date().toLocaleString('fr-FR')}
-
-## 🧠 Insights Intelligence Artificielle
-
-### Modèle prédictif utilisé
-- **Algorithme:** Neural Network Transformer v3.2
-- **Données d'entraînement:** 47,392 évaluations
-- **Précision:** 94.7%
-- **Confiance:** 89.2%
-
-### 📊 Tendances détectées
-
-#### Performances par compétence
-1. **Analyse critique** - Forte progression (+15%)
-2. **Résolution de problèmes** - Stable (±2%)
-3. **Communication** - En amélioration (+8%)
-
-#### Patterns comportementaux
-- **Pic de performance:** Mardis 10h-12h
-- **Baisse attention:** Vendredi après-midi
-- **Méthode efficace:** Apprentissage par projet (+12% résultats)
-
-### 🎯 Recommandations IA personnalisées
-
-#### Pour l'enseignant
-1. **Différenciation pédagogique** - 3 groupes de niveau identifiés
-2. **Timing optimal** - Notions complexes le matin
-3. **Supports visuels** - 67% d'apprenants visuels détectés
-
-#### Pour les élèves
-- **Marie D.:** Potentiel élevé, challenger avec exercices avancés
-- **Pierre M.:** Besoin de consolidation, proposer tutorat
-- **Sophie C.:** Profil kinesthésique, privilégier manipulation
-
-### 🚀 Prédictions futures
-- **Objectif atteignable:** +2.3 points de moyenne d'ici fin d'année
-- **Risque d'échec:** 3% de la classe (intervention recommandée)
-- **Excellence:** 23% des élèves peuvent viser 18+/20
-
----
-*Analyse alimentée par l'IA EvalScol - Mise à jour temps réel*`;
-  };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);

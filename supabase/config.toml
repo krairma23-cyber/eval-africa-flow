@@ -5,3 +5,6 @@ verify_jwt = true
 
 [functions.paystack-verify]
 verify_jwt = true
+
+[functions.generate-educational-content]
+verify_jwt = true
