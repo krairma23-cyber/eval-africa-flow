@@ -191,7 +191,7 @@ export default function Billing() {
       const { data, error } = await supabase.functions.invoke('paystack-payment', {
         body: {
           email: user.email,
-          amount: amount,
+          amount: Math.round(amount), // Ensure integer amount
           planId: selectedPlan.id,
           planName: selectedPlan.name,
           callback_url: `${window.location.origin}/billing?payment=success`
