@@ -33,23 +33,18 @@ import {
 } from "@/components/ui/alert-dialog";
 import { logError } from "@/lib/logger";
 
-interface Notification {
-  id: string;
-  title: string;
-  message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
-  read: boolean;
-  created_at: string;
-  action_url?: string;
-}
+import { Database } from "@/integrations/supabase/types";
+
+type Notification = Database['public']['Tables']['notifications']['Row'];
+type UserPreferences = Database['public']['Tables']['user_preferences']['Row'];
 
 interface NotificationSettings {
-  email_notifications: boolean;
-  push_notifications: boolean;
-  assessment_reminders: boolean;
-  report_notifications: boolean;
-  system_updates: boolean;
-  marketing_emails: boolean;
+  email_notifications: boolean | null;
+  push_notifications: boolean | null;
+  assessment_reminders: boolean | null;
+  report_notifications: boolean | null;
+  system_updates: boolean | null;
+  marketing_emails: boolean | null;
 }
 
 export default function Notifications() {
@@ -108,18 +103,18 @@ export default function Notifications() {
         .from('user_preferences')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
       
       if (data) {
         setSettings({
-          email_notifications: data.email_notifications,
-          push_notifications: data.push_notifications,
-          assessment_reminders: data.assessment_reminders,
-          report_notifications: data.report_notifications,
-          system_updates: data.system_updates,
-          marketing_emails: data.marketing_emails,
+          email_notifications: data.email_notifications ?? true,
+          push_notifications: data.push_notifications ?? true,
+          assessment_reminders: data.assessment_reminders ?? true,
+          report_notifications: data.report_notifications ?? true,
+          system_updates: data.system_updates ?? true,
+          marketing_emails: data.marketing_emails ?? false,
         });
       }
     } catch (error) {
@@ -237,7 +232,14 @@ export default function Notifications() {
         .from('user_preferences')
         .upsert({
           user_id: user.id,
-          ...newSettings,
+          email_notifications: newSettings.email_notifications,
+          push_notifications: newSettings.push_notifications,
+          assessment_reminders: newSettings.assessment_reminders,
+          report_notifications: newSettings.report_notifications,
+          system_updates: newSettings.system_updates,
+          marketing_emails: newSettings.marketing_emails,
+        }, {
+          onConflict: 'user_id'
         });
 
       if (error) throw error;

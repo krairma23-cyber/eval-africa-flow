@@ -2486,29 +2486,44 @@ export type Database = {
       }
       user_preferences: {
         Row: {
+          assessment_reminders: boolean
           created_at: string | null
           dark_mode: boolean | null
           email_notifications: boolean | null
           id: string
+          marketing_emails: boolean
+          push_notifications: boolean
+          report_notifications: boolean
           report_reminders: boolean | null
+          system_updates: boolean
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          assessment_reminders?: boolean
           created_at?: string | null
           dark_mode?: boolean | null
           email_notifications?: boolean | null
           id?: string
+          marketing_emails?: boolean
+          push_notifications?: boolean
+          report_notifications?: boolean
           report_reminders?: boolean | null
+          system_updates?: boolean
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          assessment_reminders?: boolean
           created_at?: string | null
           dark_mode?: boolean | null
           email_notifications?: boolean | null
           id?: string
+          marketing_emails?: boolean
+          push_notifications?: boolean
+          report_notifications?: boolean
           report_reminders?: boolean | null
+          system_updates?: boolean
           updated_at?: string | null
           user_id?: string
         }
