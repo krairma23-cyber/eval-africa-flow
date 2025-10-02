@@ -99,11 +99,46 @@ export default function Billing() {
 
   const handleUpgrade = async (planId: string) => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user?.email) {
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté pour effectuer un paiement",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const selectedPlan = plans.find(p => p.id === planId);
+      if (!selectedPlan) {
+        throw new Error('Plan not found');
+      }
+
+      const amount = isYearly ? selectedPlan.price_yearly : selectedPlan.price_monthly;
+
       toast({
-        title: "Redirection vers le paiement",
-        description: "Vous allez être redirigé vers notre plateforme de paiement sécurisée",
+        title: "Initialisation du paiement",
+        description: "Veuillez patienter...",
       });
-      // Redirect to payment processor
+
+      // Initialize payment with Paystack
+      const { data, error } = await supabase.functions.invoke('paystack-payment', {
+        body: {
+          email: user.email,
+          amount: amount,
+          planId: selectedPlan.id,
+          planName: selectedPlan.name,
+          callback_url: `${window.location.origin}/billing?payment=success`
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.authorization_url) {
+        // Redirect to Paystack payment page
+        window.location.href = data.authorization_url;
+      }
     } catch (error) {
       await logError('Failed to upgrade plan', error, {
         component: 'Billing',
