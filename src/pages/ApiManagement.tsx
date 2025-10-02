@@ -34,11 +34,12 @@ import { Label } from "@/components/ui/label";
 interface ApiKey {
   id: string;
   name: string;
-  key: string;
+  key_prefix: string;
   created_at: string;
-  last_used: string | null;
+  last_used_at: string | null;
   usage_count: number;
   is_active: boolean;
+  full_key?: string; // Only available immediately after creation
 }
 
 export default function ApiManagement() {
@@ -54,28 +55,43 @@ export default function ApiManagement() {
 
   const fetchApiKeys = async () => {
     try {
-      // Simulate API keys data
-      const mockApiKeys: ApiKey[] = [
-        {
-          id: '1',
-          name: 'Production API',
-          key: 'eval_pk_live_1234567890abcdef',
-          created_at: '2024-01-15',
-          last_used: '2024-02-20',
-          usage_count: 1250,
-          is_active: true
-        },
-        {
-          id: '2',
-          name: 'Development API',
-          key: 'eval_pk_test_9876543210fedcba',
-          created_at: '2024-02-01',
-          last_used: '2024-02-19',
-          usage_count: 486,
-          is_active: true
-        }
-      ];
-      setApiKeys(mockApiKeys);
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Get user's school_id
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('school_id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!profile?.school_id) {
+        toast({
+          title: "Erreur",
+          description: "Profil utilisateur non trouvé",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Fetch API keys
+      const { data, error } = await supabase
+        .from('api_keys')
+        .select('*')
+        .eq('school_id', profile.school_id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setApiKeys(data || []);
     } catch (error) {
       console.error('Error fetching API keys:', error);
       toast({
@@ -99,23 +115,69 @@ export default function ApiManagement() {
     }
 
     try {
-      const newKey = `eval_pk_${Date.now()}_${Math.random().toString(36).substr(2, 16)}`;
-      const apiKey: ApiKey = {
-        id: String(Date.now()),
-        name: newKeyName,
-        key: newKey,
-        created_at: new Date().toISOString().split('T')[0],
-        last_used: null,
-        usage_count: 0,
-        is_active: true
-      };
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté",
+          variant: "destructive",
+        });
+        return;
+      }
 
-      setApiKeys([...apiKeys, apiKey]);
+      // Get user's school_id
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('school_id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!profile?.school_id) {
+        toast({
+          title: "Erreur",
+          description: "Profil utilisateur non trouvé",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Generate a unique API key
+      const randomPart = Array.from(crypto.getRandomValues(new Uint8Array(24)))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+      const fullKey = `eval_sk_${randomPart}`;
+      const keyPrefix = fullKey.substring(0, 16);
+      
+      // Hash the full key for storage
+      const encoder = new TextEncoder();
+      const data = encoder.encode(fullKey);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const keyHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      // Insert into database
+      const { data: newKey, error } = await supabase
+        .from('api_keys')
+        .insert({
+          user_id: user.id,
+          school_id: profile.school_id,
+          name: newKeyName,
+          key_hash: keyHash,
+          key_prefix: keyPrefix
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Add to local state with full key (only shown once)
+      setApiKeys([{ ...newKey, full_key: fullKey }, ...apiKeys]);
       setNewKeyName("");
       
       toast({
         title: "Clé API créée",
-        description: "Votre nouvelle clé API a été générée avec succès",
+        description: "Copiez cette clé maintenant, elle ne sera plus visible",
       });
     } catch (error) {
       console.error('Error creating API key:', error);
@@ -129,6 +191,13 @@ export default function ApiManagement() {
 
   const deleteApiKey = async (keyId: string) => {
     try {
+      const { error } = await supabase
+        .from('api_keys')
+        .delete()
+        .eq('id', keyId);
+
+      if (error) throw error;
+
       setApiKeys(apiKeys.filter(key => key.id !== keyId));
       toast({
         title: "Clé API supprimée",
@@ -160,7 +229,17 @@ export default function ApiManagement() {
   };
 
   const maskApiKey = (key: string) => {
-    return key.slice(0, 12) + '•'.repeat(key.length - 16) + key.slice(-4);
+    if (key.length <= 16) return key;
+    return key.slice(0, 12) + '•'.repeat(20) + key.slice(-4);
+  };
+
+  const getDisplayKey = (apiKey: ApiKey) => {
+    // If full_key is available (just created), return it or masked version
+    if (apiKey.full_key) {
+      return showKeys[apiKey.id] ? apiKey.full_key : maskApiKey(apiKey.full_key);
+    }
+    // Otherwise show prefix with dots
+    return apiKey.key_prefix + '••••••••••••••••••••••••';
   };
 
   if (loading) {
@@ -249,32 +328,41 @@ export default function ApiManagement() {
                         </div>
                         <div className="flex items-center gap-2 mt-1">
                           <code className="text-sm bg-muted px-2 py-1 rounded">
-                            {showKeys[apiKey.id] ? apiKey.key : maskApiKey(apiKey.key)}
+                            {getDisplayKey(apiKey)}
                           </code>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => toggleKeyVisibility(apiKey.id)}
-                          >
-                            {showKeys[apiKey.id] ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => copyToClipboard(apiKey.key)}
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
+                          {apiKey.full_key && (
+                            <>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => toggleKeyVisibility(apiKey.id)}
+                              >
+                                {showKeys[apiKey.id] ? (
+                                  <EyeOff className="h-4 w-4" />
+                                ) : (
+                                  <Eye className="h-4 w-4" />
+                                )}
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => copyToClipboard(apiKey.full_key!)}
+                              >
+                                <Copy className="h-4 w-4" />
+                              </Button>
+                            </>
+                          )}
                         </div>
                         <p className="text-sm text-muted-foreground mt-1">
                           Créée le {new Date(apiKey.created_at).toLocaleDateString('fr-FR')} • 
                           {apiKey.usage_count} utilisations • 
-                          Dernière utilisation: {apiKey.last_used ? new Date(apiKey.last_used).toLocaleDateString('fr-FR') : 'Jamais'}
+                          Dernière utilisation: {apiKey.last_used_at ? new Date(apiKey.last_used_at).toLocaleDateString('fr-FR') : 'Jamais'}
                         </p>
+                        {apiKey.full_key && (
+                          <p className="text-sm text-orange-600 mt-1">
+                            ⚠️ Copiez cette clé maintenant, elle ne sera plus visible après actualisation
+                          </p>
+                        )}
                       </div>
                     </div>
                     <AlertDialog>
