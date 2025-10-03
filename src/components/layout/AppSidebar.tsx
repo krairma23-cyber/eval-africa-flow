@@ -12,7 +12,8 @@ import {
   CreditCard,
   Code,
   HelpCircle,
-  Bell
+  Bell,
+  UserCog
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -37,6 +38,7 @@ const menuItems = [
   { title: "Matières", url: "/dashboard/subjects", icon: BookOpen },
   { title: "Évaluations", url: "/dashboard/assessments", icon: ClipboardCheck },
   { title: "Bulletins", url: "/dashboard/reports", icon: FileText },
+  { title: "Affectations", url: "/dashboard/assignments", icon: UserCog },
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
   { title: "Facturation", url: "/dashboard/billing", icon: CreditCard },
   { title: "API", url: "/dashboard/api", icon: Code },
