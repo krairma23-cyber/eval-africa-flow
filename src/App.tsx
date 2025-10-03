@@ -24,6 +24,7 @@ import Notifications from "./pages/Notifications";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DataPrivacy from "./pages/DataPrivacy";
 import { CookieConsent } from "./components/gdpr/CookieConsent";
+import { TestModeBanner } from "./components/layout/TestModeBanner";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <TestModeBanner />
         <CookieConsent />
         <Routes>
           <Route path="/" element={<Index />} />
