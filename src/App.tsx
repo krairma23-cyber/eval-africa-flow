@@ -21,6 +21,9 @@ import ApiManagement from "./pages/ApiManagement";
 import Analytics from "./pages/Analytics";
 import Support from "./pages/Support";
 import Notifications from "./pages/Notifications";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import DataPrivacy from "./pages/DataPrivacy";
+import { CookieConsent } from "./components/gdpr/CookieConsent";
 
 const queryClient = new QueryClient();
 
@@ -29,10 +32,12 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <CookieConsent />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="users" element={<UserManagement />} />
@@ -48,6 +53,7 @@ const App = () => (
           <Route path="analytics" element={<Analytics />} />
           <Route path="support" element={<Support />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="privacy" element={<DataPrivacy />} />
         </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
