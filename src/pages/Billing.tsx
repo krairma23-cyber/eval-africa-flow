@@ -153,13 +153,13 @@ export default function Billing() {
           price_monthly: 69000,
           price_yearly: 690000,
           features: [
-            'Grandes écoles ou réseaux (>300 élèves)',
+            'Grandes écoles ou réseaux (>300-500 élèves)',
             'Tout du Standard +',
             'Personnalisation complète',
             'Intégrations API',
-            'Formation dédiée',
+            'Formation',
             'SLA + Support premium',
-            'Modules avancés (gamification, etc.)'
+            'Modules avancés (gamification, marketplace, etc.)'
           ],
           searches_limit: 10000,
           api_calls_limit: 100000,
