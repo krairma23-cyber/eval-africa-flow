@@ -112,7 +112,43 @@ export default function Billing() {
       const apiCallsUsed = apiUsageData?.reduce((sum: number, log: any) => sum + (log.tokens_used || 0), 0) || 0;
 
       // If no plans from DB, use default plans
-      const defaultPlans: SubscriptionPlan[] = [];
+      const defaultPlans: SubscriptionPlan[] = [
+        {
+          id: 'professional',
+          name: 'Professional',
+          price_monthly: 25,
+          price_yearly: 250,
+          features: [
+            'Jusqu\'à 300 élèves',
+            'Évaluations illimitées',
+            'Analytics prédictifs',
+            'Assistant vocal',
+            'Rapports avancés',
+            'Support prioritaire'
+          ],
+          searches_limit: 1000,
+          api_calls_limit: 10000,
+          is_popular: true
+        },
+        {
+          id: 'enterprise',
+          name: 'Entreprise',
+          price_monthly: 50,
+          price_yearly: 500,
+          features: [
+            'Plus de 300 élèves',
+            'Tout du Professional',
+            'Personnalisation complète',
+            'Intégrations API',
+            'Formation dédiée',
+            'SLA et support premium',
+            'Modules avancés'
+          ],
+          searches_limit: 10000,
+          api_calls_limit: 100000,
+          is_popular: false
+        }
+      ];
 
       const finalPlans = formattedPlans.length > 0 ? formattedPlans : defaultPlans;
       setPlans(finalPlans);
@@ -269,7 +305,7 @@ export default function Billing() {
                   <div>
                     <CardTitle>Plan Actuel: {currentPlan?.name}</CardTitle>
                     <CardDescription>
-                      {currentPlan?.price_monthly.toLocaleString()} FCFA/mois • Prochain paiement le 15 mars 2025
+                      ${currentPlan?.price_monthly}/mois • Prochain paiement le 15 mars 2025
                     </CardDescription>
                   </div>
                 </div>
@@ -340,7 +376,7 @@ export default function Billing() {
                 <Calendar className="h-8 w-8 mx-auto text-accent mb-2" />
                 <h3 className="font-semibold">Prochaine facture</h3>
                 <p className="text-sm text-muted-foreground">15 mars 2025</p>
-                <p className="text-sm font-medium">{currentPlan?.price_monthly.toLocaleString()} FCFA</p>
+                <p className="text-sm font-medium">${currentPlan?.price_monthly}</p>
               </CardContent>
             </Card>
 
@@ -426,7 +462,7 @@ export default function Billing() {
                   <CardHeader className="text-center">
                     <CardTitle className="text-2xl">{plan.name}</CardTitle>
                     <div className="text-3xl font-bold">
-                      {(isYearly ? plan.price_yearly : plan.price_monthly).toLocaleString()} FCFA
+                      ${(isYearly ? plan.price_yearly : plan.price_monthly)}
                       <span className="text-base font-normal text-muted-foreground">
                         /{isYearly ? 'an' : 'mois'}
                       </span>
@@ -536,7 +572,7 @@ export default function Billing() {
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <p className="font-medium">{invoice.amount}{invoice.currency === 'EUR' ? '€' : invoice.currency}</p>
+                          <p className="font-medium">${invoice.amount}</p>
                           <Badge variant={invoice.status === 'paid' ? 'secondary' : 'outline'}>
                             {invoice.status === 'paid' ? 'Payée' : 
                              invoice.status === 'pending' ? 'En attente' : 
