@@ -111,16 +111,66 @@ export default function Billing() {
       const searchesUsed = searchesData?.length || 0;
       const apiCallsUsed = apiUsageData?.reduce((sum: number, log: any) => sum + (log.tokens_used || 0), 0) || 0;
 
-      setCurrentPlan(formattedPlans[0] || {
-        id: '1',
-        name: 'Free',
-        price_monthly: 0,
-        price_yearly: 0,
-        features: ['100 recherches/mois', 'Support communautaire'],
-        searches_limit: 100,
-        api_calls_limit: 1000,
-        is_popular: false
-      });
+      // If no plans from DB, use default plans
+      const defaultPlans: SubscriptionPlan[] = [
+        {
+          id: 'starter',
+          name: 'Starter',
+          price_monthly: 12500,
+          price_yearly: 125000,
+          features: [
+            'Petites écoles (≤ 50 élèves)',
+            'Création + correction automatisée des évaluations',
+            'Bulletins simples',
+            'Suivi enseignant/parent',
+            'Support standard'
+          ],
+          searches_limit: 500,
+          api_calls_limit: 5000,
+          is_popular: false
+        },
+        {
+          id: 'standard',
+          name: 'Standard',
+          price_monthly: 32500,
+          price_yearly: 325000,
+          features: [
+            'Écoles moyennes (50-300 élèves)',
+            'Tout du Starter +',
+            'Analytics IA avancés',
+            'Assistant vocal',
+            'Rapports avancés',
+            'Export PDF',
+            'Support prioritaire'
+          ],
+          searches_limit: 2000,
+          api_calls_limit: 20000,
+          is_popular: true
+        },
+        {
+          id: 'premium',
+          name: 'Premium',
+          price_monthly: 97500,
+          price_yearly: 975000,
+          features: [
+            'Grandes écoles ou réseaux (>300 élèves)',
+            'Tout du Standard +',
+            'Personnalisation complète',
+            'Intégration API',
+            'Formation dédiée',
+            'Gamification',
+            'Support premium 24/7'
+          ],
+          searches_limit: 10000,
+          api_calls_limit: 100000,
+          is_popular: false
+        }
+      ];
+
+      const finalPlans = formattedPlans.length > 0 ? formattedPlans : defaultPlans;
+      setPlans(finalPlans);
+
+      setCurrentPlan(finalPlans[0] || defaultPlans[0]);
 
       setUsage({
         searches_used: searchesUsed,
@@ -272,7 +322,7 @@ export default function Billing() {
                   <div>
                     <CardTitle>Plan Actuel: {currentPlan?.name}</CardTitle>
                     <CardDescription>
-                      {currentPlan?.price_monthly}€/mois • Prochain paiement le 15 mars 2025
+                      {currentPlan?.price_monthly.toLocaleString()} FCFA/mois • Prochain paiement le 15 mars 2025
                     </CardDescription>
                   </div>
                 </div>
@@ -343,7 +393,7 @@ export default function Billing() {
                 <Calendar className="h-8 w-8 mx-auto text-accent mb-2" />
                 <h3 className="font-semibold">Prochaine facture</h3>
                 <p className="text-sm text-muted-foreground">15 mars 2025</p>
-                <p className="text-sm font-medium">{currentPlan?.price_monthly}€</p>
+                <p className="text-sm font-medium">{currentPlan?.price_monthly.toLocaleString()} FCFA</p>
               </CardContent>
             </Card>
 
@@ -414,7 +464,7 @@ export default function Billing() {
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl">{plan.name}</CardTitle>
                   <div className="text-3xl font-bold">
-                    {isYearly ? plan.price_yearly : plan.price_monthly}€
+                    {(isYearly ? plan.price_yearly : plan.price_monthly).toLocaleString()} FCFA
                     <span className="text-base font-normal text-muted-foreground">
                       /{isYearly ? 'an' : 'mois'}
                     </span>
