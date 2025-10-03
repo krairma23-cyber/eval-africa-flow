@@ -395,49 +395,65 @@ export default function Billing() {
             </span>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {plans.map((plan) => (
-              <Card 
-                key={plan.id} 
-                className={`relative ${plan.is_popular ? 'border-2 border-primary' : ''}`}
-              >
-                {plan.is_popular && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-primary text-primary-foreground">
-                      Le plus populaire
-                    </Badge>
-                  </div>
-                )}
-                <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                  <div className="text-3xl font-bold">
-                    {(isYearly ? plan.price_yearly : plan.price_monthly).toLocaleString()} FCFA
-                    <span className="text-base font-normal text-muted-foreground">
-                      /{isYearly ? 'an' : 'mois'}
-                    </span>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <ul className="space-y-2">
-                    {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-center gap-2">
-                        <Check className="h-4 w-4 text-primary" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    className="w-full"
-                    variant={currentPlan?.id === plan.id ? "outline" : "default"}
-                    onClick={() => handleUpgrade(plan.id)}
-                    disabled={currentPlan?.id === plan.id}
-                  >
-                    {currentPlan?.id === plan.id ? 'Plan actuel' : 'Choisir ce plan'}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {plans.length === 0 ? (
+            <Card className="p-12">
+              <CardContent className="text-center space-y-4">
+                <div className="mx-auto w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                  <CreditCard className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Plans en cours de configuration</h3>
+                  <p className="text-muted-foreground">
+                    Les nouveaux plans d'abonnement seront bientôt disponibles.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-3">
+              {plans.map((plan) => (
+                <Card 
+                  key={plan.id} 
+                  className={`relative ${plan.is_popular ? 'border-2 border-primary' : ''}`}
+                >
+                  {plan.is_popular && (
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                      <Badge className="bg-primary text-primary-foreground">
+                        Le plus populaire
+                      </Badge>
+                    </div>
+                  )}
+                  <CardHeader className="text-center">
+                    <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                    <div className="text-3xl font-bold">
+                      {(isYearly ? plan.price_yearly : plan.price_monthly).toLocaleString()} FCFA
+                      <span className="text-base font-normal text-muted-foreground">
+                        /{isYearly ? 'an' : 'mois'}
+                      </span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <ul className="space-y-2">
+                      {plan.features.map((feature, index) => (
+                        <li key={index} className="flex items-center gap-2">
+                          <Check className="h-4 w-4 text-primary" />
+                          <span className="text-sm">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      className="w-full"
+                      variant={currentPlan?.id === plan.id ? "outline" : "default"}
+                      onClick={() => handleUpgrade(plan.id)}
+                      disabled={currentPlan?.id === plan.id}
+                    >
+                      {currentPlan?.id === plan.id ? 'Plan actuel' : 'Choisir ce plan'}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="usage" className="space-y-6">
