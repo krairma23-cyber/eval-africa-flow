@@ -45,7 +45,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         email,
-        amount: Math.round(amount * 100), // Paystack expects amount in kobo as INTEGER
+        amount: Math.round(amount), // Amount already in FCFA, Paystack expects minor units
         currency: 'XOF', // West African CFA franc
         callback_url: callback_url || `${req.headers.get('origin')}/billing?payment=success`,
         metadata: {

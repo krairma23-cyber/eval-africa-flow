@@ -175,7 +175,7 @@ export default function Billing() {
       setUsage({
         searches_used: searchesUsed,
         api_calls_used: apiCallsUsed,
-        current_plan: formattedPlans[0]?.name || 'Free'
+        current_plan: finalPlans[0]?.name || 'Starter'
       });
 
       // Fetch user invoices
@@ -241,10 +241,10 @@ export default function Billing() {
       const { data, error } = await supabase.functions.invoke('paystack-payment', {
         body: {
           email: user.email,
-          amount: Math.round(amount), // Ensure integer amount
+          amount: amount, // Amount in FCFA
           planId: selectedPlan.id,
           planName: selectedPlan.name,
-          callback_url: `${window.location.origin}/billing?payment=success`
+          callback_url: `${window.location.origin}/dashboard/billing?payment=success`
         }
       });
 
