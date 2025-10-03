@@ -116,13 +116,14 @@ export default function Billing() {
         {
           id: 'starter',
           name: 'Starter',
-          price_monthly: 12500,
-          price_yearly: 125000,
+          price_monthly: 9000,
+          price_yearly: 90000,
           features: [
             'Petites écoles (≤ 50 élèves)',
-            'Création + correction automatisée des évaluations',
+            'Création d\'évaluations',
+            'Correction de base',
             'Bulletins simples',
-            'Suivi enseignant/parent',
+            'Vue enseignant + parent',
             'Support standard'
           ],
           searches_limit: 500,
@@ -132,15 +133,14 @@ export default function Billing() {
         {
           id: 'standard',
           name: 'Standard',
-          price_monthly: 32500,
-          price_yearly: 325000,
+          price_monthly: 24000,
+          price_yearly: 240000,
           features: [
-            'Écoles moyennes (50-300 élèves)',
+            'Écoles moyennes (100-300 élèves)',
             'Tout du Starter +',
-            'Analytics IA avancés',
+            'Analytics prédictifs',
             'Assistant vocal',
             'Rapports avancés',
-            'Export PDF',
             'Support prioritaire'
           ],
           searches_limit: 2000,
@@ -150,16 +150,16 @@ export default function Billing() {
         {
           id: 'premium',
           name: 'Premium',
-          price_monthly: 97500,
-          price_yearly: 975000,
+          price_monthly: 69000,
+          price_yearly: 690000,
           features: [
             'Grandes écoles ou réseaux (>300 élèves)',
             'Tout du Standard +',
             'Personnalisation complète',
-            'Intégration API',
+            'Intégrations API',
             'Formation dédiée',
-            'Gamification',
-            'Support premium 24/7'
+            'SLA + Support premium',
+            'Modules avancés (gamification, etc.)'
           ],
           searches_limit: 10000,
           api_calls_limit: 100000,
