@@ -112,60 +112,7 @@ export default function Billing() {
       const apiCallsUsed = apiUsageData?.reduce((sum: number, log: any) => sum + (log.tokens_used || 0), 0) || 0;
 
       // If no plans from DB, use default plans
-      const defaultPlans: SubscriptionPlan[] = [
-        {
-          id: 'starter',
-          name: 'Starter',
-          price_monthly: 9000,
-          price_yearly: 90000,
-          features: [
-            'Petites écoles (≤ 50 élèves)',
-            'Création d\'évaluations',
-            'Correction de base',
-            'Bulletins simples',
-            'Vue enseignant + parent',
-            'Support standard'
-          ],
-          searches_limit: 500,
-          api_calls_limit: 5000,
-          is_popular: false
-        },
-        {
-          id: 'standard',
-          name: 'Standard',
-          price_monthly: 24000,
-          price_yearly: 240000,
-          features: [
-            'Écoles moyennes (100-300 élèves)',
-            'Tout du Starter +',
-            'Analytics prédictifs',
-            'Assistant vocal',
-            'Rapports avancés',
-            'Support prioritaire'
-          ],
-          searches_limit: 2000,
-          api_calls_limit: 20000,
-          is_popular: true
-        },
-        {
-          id: 'premium',
-          name: 'Premium',
-          price_monthly: 69000,
-          price_yearly: 690000,
-          features: [
-            'Grandes écoles ou réseaux (>300-500 élèves)',
-            'Tout du Standard +',
-            'Personnalisation complète',
-            'Intégrations API',
-            'Formation',
-            'SLA + Support premium',
-            'Modules avancés (gamification, marketplace, etc.)'
-          ],
-          searches_limit: 10000,
-          api_calls_limit: 100000,
-          is_popular: false
-        }
-      ];
+      const defaultPlans: SubscriptionPlan[] = [];
 
       const finalPlans = formattedPlans.length > 0 ? formattedPlans : defaultPlans;
       setPlans(finalPlans);
