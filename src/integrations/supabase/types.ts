@@ -777,6 +777,38 @@ export type Database = {
         }
         Relationships: []
       }
+      conversations: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          pme_id: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          pme_id: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          pme_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_pme_id_fkey"
+            columns: ["pme_id"]
+            isOneToOne: false
+            referencedRelation: "pmes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cron_jobs: {
         Row: {
           created_at: string | null
@@ -1039,7 +1071,8 @@ export type Database = {
           created_at: string | null
           id: string
           notes: string | null
-          product_id: string
+          pme_id: string | null
+          product_id: string | null
           target_price: number | null
           updated_at: string | null
           user_id: string
@@ -1048,7 +1081,8 @@ export type Database = {
           created_at?: string | null
           id?: string
           notes?: string | null
-          product_id: string
+          pme_id?: string | null
+          product_id?: string | null
           target_price?: number | null
           updated_at?: string | null
           user_id: string
@@ -1057,12 +1091,20 @@ export type Database = {
           created_at?: string | null
           id?: string
           notes?: string | null
-          product_id?: string
+          pme_id?: string | null
+          product_id?: string | null
           target_price?: number | null
           updated_at?: string | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "favorites_pme_id_fkey"
+            columns: ["pme_id"]
+            isOneToOne: false
+            referencedRelation: "pmes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "favorites_product_id_fkey"
             columns: ["product_id"]
@@ -1286,6 +1328,41 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          read: boolean
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       "mini SaaS": {
         Row: {
           created_at: string
@@ -1459,6 +1536,104 @@ export type Database = {
           security_flags?: Json | null
           status?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      pme_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          id: string
+          pme_id: string
+          rating: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          pme_id: string
+          rating: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          pme_id?: string
+          rating?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pme_reviews_pme_id_fkey"
+            columns: ["pme_id"]
+            isOneToOne: false
+            referencedRelation: "pmes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pmes: {
+        Row: {
+          adresse: string | null
+          average_rating: number | null
+          categorie: Database["public"]["Enums"]["pme_category"]
+          created_at: string
+          description: string | null
+          email: string | null
+          id: string
+          logo_url: string | null
+          nom: string
+          region: string | null
+          review_count: number | null
+          services: string[] | null
+          site_web: string | null
+          telephone: string | null
+          updated_at: string
+          verified: boolean | null
+          ville: string | null
+        }
+        Insert: {
+          adresse?: string | null
+          average_rating?: number | null
+          categorie: Database["public"]["Enums"]["pme_category"]
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          nom: string
+          region?: string | null
+          review_count?: number | null
+          services?: string[] | null
+          site_web?: string | null
+          telephone?: string | null
+          updated_at?: string
+          verified?: boolean | null
+          ville?: string | null
+        }
+        Update: {
+          adresse?: string | null
+          average_rating?: number | null
+          categorie?: Database["public"]["Enums"]["pme_category"]
+          created_at?: string
+          description?: string | null
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          nom?: string
+          region?: string | null
+          review_count?: number | null
+          services?: string[] | null
+          site_web?: string | null
+          telephone?: string | null
+          updated_at?: string
+          verified?: boolean | null
+          ville?: string | null
         }
         Relationships: []
       }
@@ -1685,7 +1860,6 @@ export type Database = {
           full_name: string | null
           id: string
           monthly_searches_limit: number | null
-          role: string | null
           school_id: string | null
           searches_count: number | null
           subscription_plan:
@@ -1702,7 +1876,6 @@ export type Database = {
           full_name?: string | null
           id?: string
           monthly_searches_limit?: number | null
-          role?: string | null
           school_id?: string | null
           searches_count?: number | null
           subscription_plan?:
@@ -1719,7 +1892,6 @@ export type Database = {
           full_name?: string | null
           id?: string
           monthly_searches_limit?: number | null
-          role?: string | null
           school_id?: string | null
           searches_count?: number | null
           subscription_plan?:
@@ -1971,6 +2143,7 @@ export type Database = {
         Row: {
           academic_year: string | null
           address: string | null
+          admi_yann: number[] | null
           country: string | null
           created_at: string | null
           email: string | null
@@ -1983,6 +2156,7 @@ export type Database = {
         Insert: {
           academic_year?: string | null
           address?: string | null
+          admi_yann?: number[] | null
           country?: string | null
           created_at?: string | null
           email?: string | null
@@ -1995,6 +2169,7 @@ export type Database = {
         Update: {
           academic_year?: string | null
           address?: string | null
+          admi_yann?: number[] | null
           country?: string | null
           created_at?: string | null
           email?: string | null
@@ -2735,18 +2910,24 @@ export type Database = {
       }
       user_roles: {
         Row: {
+          assigned_at: string | null
+          assigned_by: string | null
           created_at: string
           id: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
           created_at?: string
           id?: string
           role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
@@ -3554,6 +3735,19 @@ export type Database = {
       alert_type: "price_drop" | "trend_spike" | "new_winner" | "competition"
       app_role: "admin" | "moderator" | "user"
       org_role: "owner" | "admin" | "member"
+      pme_category:
+        | "agriculture"
+        | "artisanat"
+        | "batiment_construction"
+        | "commerce"
+        | "education_formation"
+        | "hotellerie_restauration"
+        | "industrie_manufacturiere"
+        | "sante_social"
+        | "services_professionnels"
+        | "technologie_informatique"
+        | "transport_logistique"
+        | "autre"
       product_status: "active" | "trending" | "declining" | "watchlist"
       subscription_plan: "starter" | "pro" | "enterprise"
     }
@@ -3686,6 +3880,20 @@ export const Constants = {
       alert_type: ["price_drop", "trend_spike", "new_winner", "competition"],
       app_role: ["admin", "moderator", "user"],
       org_role: ["owner", "admin", "member"],
+      pme_category: [
+        "agriculture",
+        "artisanat",
+        "batiment_construction",
+        "commerce",
+        "education_formation",
+        "hotellerie_restauration",
+        "industrie_manufacturiere",
+        "sante_social",
+        "services_professionnels",
+        "technologie_informatique",
+        "transport_logistique",
+        "autre",
+      ],
       product_status: ["active", "trending", "declining", "watchlist"],
       subscription_plan: ["starter", "pro", "enterprise"],
     },
