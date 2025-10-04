@@ -80,7 +80,8 @@ export function LoginForm() {
       } else {
         toast({
           title: "Inscription réussie !",
-          description: "Vérifiez votre email pour confirmer votre compte. Vous pourrez ensuite accéder à la plateforme immédiatement.",
+          description: "⚠️ IMPORTANT: Vérifiez votre email et cliquez sur le lien de confirmation. Sans cette étape, vous ne pourrez pas vous connecter à la plateforme.",
+          duration: 10000,
         });
       }
     } catch (error) {
