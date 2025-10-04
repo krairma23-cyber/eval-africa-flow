@@ -13,7 +13,7 @@ interface UserWithRole {
   email: string;
   full_name?: string;
   created_at: string;
-  role?: 'admin' | 'moderator' | 'user';
+  role?: 'admin' | 'teacher' | 'user';
   school_id?: string;
 }
 
@@ -37,9 +37,10 @@ export default function UserManagement() {
         .from('user_roles')
         .select('role')
         .eq('user_id', user.id)
-        .single();
+        .eq('role', 'admin')
+        .maybeSingle();
 
-      if (userRoles?.role === 'admin') {
+      if (userRoles) {
         setIsAdmin(true);
         await loadUsers();
       } else {
@@ -66,20 +67,13 @@ export default function UserManagement() {
 
   const loadUsers = async () => {
     try {
-      // Récupérer les utilisateurs avec leurs profils et rôles
-      const { data: profiles, error } = await supabase
+      // Récupérer tous les profils
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select(`
-          id,
-          user_id,
-          full_name,
-          school_id,
-          created_at,
-          user_roles!inner(role)
-          `);
+        .select('id, user_id, full_name, school_id, created_at');
 
-      if (error) {
-        await logError('Failed to fetch profiles', error, {
+      if (profilesError) {
+        await logError('Failed to fetch profiles', profilesError, {
           component: 'UserManagement',
           action: 'FETCH_PROFILES'
         });
@@ -87,15 +81,25 @@ export default function UserManagement() {
       }
 
       if (profiles) {
-        // Pour simplifier, on va utiliser les données disponibles directement
-        const usersWithRoles = profiles.map((profile: any) => ({
-          id: profile.user_id,
-          email: 'Email via auth', // Simplifié pour éviter les appels admin
-          full_name: profile.full_name,
-          created_at: profile.created_at,
-          role: profile.user_roles?.[0]?.role || 'user',
-          school_id: profile.school_id
-        }));
+        // Récupérer les rôles pour tous les utilisateurs
+        const userIds = profiles.map(p => p.user_id);
+        const { data: userRoles } = await supabase
+          .from('user_roles')
+          .select('user_id, role')
+          .in('user_id', userIds);
+
+        // Mapper les profils avec leurs rôles
+        const usersWithRoles = profiles.map((profile: any) => {
+          const role = userRoles?.find(r => r.user_id === profile.user_id)?.role as 'admin' | 'teacher' | 'user' || 'user';
+          return {
+            id: profile.user_id,
+            email: 'Email via auth', // Simplifié pour éviter les appels admin
+            full_name: profile.full_name,
+            created_at: profile.created_at,
+            role,
+            school_id: profile.school_id
+          };
+        });
         
         setUsers(usersWithRoles);
       }
@@ -112,12 +116,18 @@ export default function UserManagement() {
     }
   };
 
-  const updateUserRole = async (userId: string, newRole: 'admin' | 'moderator' | 'user') => {
+  const updateUserRole = async (userId: string, newRole: 'admin' | 'teacher' | 'user') => {
     try {
+      // D'abord, supprimer tous les rôles existants de l'utilisateur
+      await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId);
+
+      // Ensuite, insérer le nouveau rôle
       const { error } = await supabase
         .from('user_roles')
-        .update({ role: newRole })
-        .eq('user_id', userId);
+        .insert([{ user_id: userId, role: newRole as any }]);
 
       if (error) throw error;
 
@@ -173,7 +183,7 @@ export default function UserManagement() {
     switch (role) {
       case 'admin':
         return <Crown className="h-4 w-4" />;
-      case 'moderator':
+      case 'teacher':
         return <Shield className="h-4 w-4" />;
       default:
         return <User className="h-4 w-4" />;
@@ -184,7 +194,7 @@ export default function UserManagement() {
     switch (role) {
       case 'admin':
         return 'destructive';
-      case 'moderator':
+      case 'teacher':
         return 'secondary';
       default:
         return 'outline';
@@ -237,14 +247,14 @@ export default function UserManagement() {
                   <div className="flex items-center gap-2">
                     <Select
                       value={user.role || 'user'}
-                      onValueChange={(newRole) => updateUserRole(user.id, newRole as 'admin' | 'moderator' | 'user')}
+                      onValueChange={(newRole) => updateUserRole(user.id, newRole as 'admin' | 'teacher' | 'user')}
                     >
                       <SelectTrigger className="w-[130px]">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="user">Utilisateur</SelectItem>
-                        <SelectItem value="moderator">Modérateur</SelectItem>
+                        <SelectItem value="teacher">Enseignant</SelectItem>
                         <SelectItem value="admin">Administrateur</SelectItem>
                       </SelectContent>
                     </Select>
