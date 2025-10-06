@@ -1012,6 +1012,63 @@ export type Database = {
           },
         ]
       }
+      enterprise: {
+        Row: {
+          alerts_limit: number | null
+          api_calls_limit: number | null
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          export_limit: number | null
+          features: Json | null
+          id: string
+          is_active: boolean | null
+          is_popular: boolean | null
+          name: string
+          price_monthly: number
+          price_yearly: number | null
+          searches_limit: number | null
+          sort_order: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          alerts_limit?: number | null
+          api_calls_limit?: number | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          export_limit?: number | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          name: string
+          price_monthly: number
+          price_yearly?: number | null
+          searches_limit?: number | null
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          alerts_limit?: number | null
+          api_calls_limit?: number | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          export_limit?: number | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          name?: string
+          price_monthly?: number
+          price_yearly?: number | null
+          searches_limit?: number | null
+          sort_order?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       Evenement: {
         Row: {
           created_at: string
@@ -1375,6 +1432,27 @@ export type Database = {
         Update: {
           created_at?: string
           id?: number
+        }
+        Relationships: []
+      }
+      newsletter_subscribers: {
+        Row: {
+          email: string
+          id: string
+          is_active: boolean
+          subscribed_at: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          is_active?: boolean
+          subscribed_at?: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          is_active?: boolean
+          subscribed_at?: string
         }
         Relationships: []
       }
@@ -1857,8 +1935,10 @@ export type Database = {
           avatar_url: string | null
           company_name: string | null
           created_at: string
+          first_name: string | null
           full_name: string | null
           id: string
+          last_name: string | null
           monthly_searches_limit: number | null
           school_id: string | null
           searches_count: number | null
@@ -1873,8 +1953,10 @@ export type Database = {
           avatar_url?: string | null
           company_name?: string | null
           created_at?: string
+          first_name?: string | null
           full_name?: string | null
           id?: string
+          last_name?: string | null
           monthly_searches_limit?: number | null
           school_id?: string | null
           searches_count?: number | null
@@ -1889,8 +1971,10 @@ export type Database = {
           avatar_url?: string | null
           company_name?: string | null
           created_at?: string
+          first_name?: string | null
           full_name?: string | null
           id?: string
+          last_name?: string | null
           monthly_searches_limit?: number | null
           school_id?: string | null
           searches_count?: number | null
@@ -2462,7 +2546,7 @@ export type Database = {
           alerts_limit: number | null
           api_calls_limit: number | null
           created_at: string | null
-          currency: string | null
+          currency: string
           description: string | null
           export_limit: number | null
           features: Json | null
@@ -2472,7 +2556,7 @@ export type Database = {
           name: string
           price_monthly: number
           price_yearly: number | null
-          searches_limit: number | null
+          searches_limit: number
           sort_order: number | null
           updated_at: string | null
         }
@@ -2480,7 +2564,7 @@ export type Database = {
           alerts_limit?: number | null
           api_calls_limit?: number | null
           created_at?: string | null
-          currency?: string | null
+          currency?: string
           description?: string | null
           export_limit?: number | null
           features?: Json | null
@@ -2488,9 +2572,9 @@ export type Database = {
           is_active?: boolean | null
           is_popular?: boolean | null
           name: string
-          price_monthly: number
+          price_monthly?: number
           price_yearly?: number | null
-          searches_limit?: number | null
+          searches_limit?: number
           sort_order?: number | null
           updated_at?: string | null
         }
@@ -2498,7 +2582,7 @@ export type Database = {
           alerts_limit?: number | null
           api_calls_limit?: number | null
           created_at?: string | null
-          currency?: string | null
+          currency?: string
           description?: string | null
           export_limit?: number | null
           features?: Json | null
@@ -2508,7 +2592,7 @@ export type Database = {
           name?: string
           price_monthly?: number
           price_yearly?: number | null
-          searches_limit?: number | null
+          searches_limit?: number
           sort_order?: number | null
           updated_at?: string | null
         }
@@ -2748,6 +2832,66 @@ export type Database = {
         Update: {
           created_at?: string
           id?: number
+        }
+        Relationships: []
+      }
+      user_actions: {
+        Row: {
+          action_details: Json | null
+          action_type: string
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action_details?: Json | null
+          action_type: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action_details?: Json | null
+          action_type?: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_activity_logs: {
+        Row: {
+          action_details: Json | null
+          action_type: string
+          created_at: string | null
+          id: string
+          ip_address: unknown | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action_details?: Json | null
+          action_type: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action_details?: Json | null
+          action_type?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -3013,7 +3157,7 @@ export type Database = {
             foreignKeyName: "user_subscriptions_plan_id_fkey"
             columns: ["plan_id"]
             isOneToOne: false
-            referencedRelation: "subscription_plans"
+            referencedRelation: "enterprise"
             referencedColumns: ["id"]
           },
         ]
@@ -3504,6 +3648,15 @@ export type Database = {
           p_ip_address?: unknown
           p_severity: string
           p_user_id?: string
+        }
+        Returns: string
+      }
+      log_user_activity: {
+        Args: {
+          p_action_details?: Json
+          p_action_type: string
+          p_ip_address?: unknown
+          p_user_agent?: string
         }
         Returns: string
       }
