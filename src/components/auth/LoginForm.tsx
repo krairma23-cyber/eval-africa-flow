@@ -57,9 +57,9 @@ export function LoginForm() {
     setLoading(true);
 
     try {
-      const redirectUrl = `${window.location.origin}/dashboard`;
+      const redirectUrl = `${window.location.origin}/`;
       
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -72,22 +72,29 @@ export function LoginForm() {
       });
 
       if (error) {
+        console.error("Signup error:", error);
         toast({
           title: "Erreur d'inscription",
-          description: error.message,
+          description: error.message || "Impossible de créer le compte. Vérifiez que l'email n'est pas déjà utilisé.",
           variant: "destructive",
         });
-      } else {
+      } else if (data.user) {
         toast({
           title: "Inscription réussie !",
           description: "⚠️ IMPORTANT: Vérifiez votre email et cliquez sur le lien de confirmation. Sans cette étape, vous ne pourrez pas vous connecter à la plateforme.",
           duration: 10000,
         });
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPassword("");
+        setActiveTab("signin");
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Signup exception:", error);
       toast({
         title: "Erreur",
-        description: "Une erreur est survenue lors de l'inscription",
+        description: error?.message || "Une erreur est survenue lors de l'inscription",
         variant: "destructive",
       });
     } finally {
