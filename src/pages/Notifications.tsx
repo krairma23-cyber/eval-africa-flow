@@ -16,7 +16,8 @@ import {
   Info,
   CheckCircle,
   Trash2,
-  MailOpen
+  MailOpen,
+  Play
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -31,6 +32,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { logError } from "@/lib/logger";
 
 import { Database } from "@/integrations/supabase/types";
@@ -58,6 +60,7 @@ export default function Notifications() {
     marketing_emails: false
   });
   const [loading, setLoading] = useState(true);
+  const [analyzing, setAnalyzing] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -263,11 +266,42 @@ export default function Notifications() {
     }
   };
 
+  const runAtRiskAnalysis = async () => {
+    setAnalyzing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('detect-at-risk-students');
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Analyse terminée",
+        description: `${data.at_risk_students?.length || 0} élèves à risque détectés. ${data.notifications_created || 0} notifications créées.`,
+      });
+      
+      // Recharger les notifications
+      fetchNotifications();
+    } catch (error) {
+      console.error('Error running analysis:', error);
+      await logError('Failed to run at-risk analysis', error, {
+        component: 'Notifications',
+        action: 'RUN_ANALYSIS'
+      });
+      toast({
+        title: "Erreur",
+        description: "Impossible d'exécuter l'analyse des élèves à risque",
+        variant: "destructive",
+      });
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'success': return <CheckCircle className="h-5 w-5 text-green-500" />;
       case 'warning': return <AlertTriangle className="h-5 w-5 text-yellow-500" />;
       case 'error': return <X className="h-5 w-5 text-red-500" />;
+      case 'alert': return <AlertTriangle className="h-5 w-5 text-red-500" />;
       default: return <Info className="h-5 w-5 text-blue-500" />;
     }
   };
@@ -277,6 +311,7 @@ export default function Notifications() {
       case 'success': return 'border-l-green-500';
       case 'warning': return 'border-l-yellow-500';
       case 'error': return 'border-l-red-500';
+      case 'alert': return 'border-l-red-500';
       default: return 'border-l-blue-500';
     }
   };
@@ -300,6 +335,7 @@ export default function Notifications() {
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
+  const alertNotifications = notifications.filter(n => n.type === 'alert' && !n.read);
 
   if (loading) {
     return (
@@ -331,12 +367,30 @@ export default function Notifications() {
         </div>
         
         <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            onClick={runAtRiskAnalysis}
+            disabled={analyzing}
+          >
+            <Play className="h-4 w-4 mr-2" />
+            {analyzing ? "Analyse en cours..." : "Détecter élèves à risque"}
+          </Button>
           <Button variant="outline" onClick={markAllAsRead}>
             <Check className="h-4 w-4 mr-2" />
             Tout marquer comme lu
           </Button>
         </div>
       </div>
+
+      {alertNotifications.length > 0 && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Alertes importantes</AlertTitle>
+          <AlertDescription>
+            Vous avez {alertNotifications.length} alerte{alertNotifications.length > 1 ? 's' : ''} non lue{alertNotifications.length > 1 ? 's' : ''} concernant des élèves à risque.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <Tabs defaultValue="notifications" className="space-y-6">
         <TabsList>
