@@ -3,6 +3,7 @@ import { GraduationCap, Users, BookOpen, ClipboardCheck, Shield, Lock } from "lu
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SchoolTestimonials } from "@/components/testimonials/SchoolTestimonials";
 import { LocalSupport } from "@/components/features/LocalSupport";
+import { EvaluationFeatures } from "@/components/features/EvaluationFeatures";
 
 const Index = () => {
   return (
@@ -118,6 +119,9 @@ const Index = () => {
             <LoginForm />
           </div>
         </div>
+
+        {/* Evaluation and Analytics Features */}
+        <EvaluationFeatures />
 
         {/* Testimonials Section */}
         <SchoolTestimonials />
