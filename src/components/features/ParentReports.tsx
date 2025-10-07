@@ -37,44 +37,44 @@ export const ParentReports = () => {
   ];
 
   return (
-    <section className="py-16 px-4 bg-gradient-to-b from-background to-secondary/5">
+    <section className="py-16 px-4 bg-[hsl(222,47%,11%)]">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-12">
-          <div className="inline-block mb-4 px-4 py-2 bg-primary/10 rounded-full">
+          <div className="inline-block mb-4 px-4 py-2 bg-primary/20 rounded-full border border-primary/30">
             <span className="text-sm font-semibold text-primary">Espace Parents</span>
           </div>
-          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-[hsl(280,100%,70%)] to-primary bg-clip-text text-transparent">
             Rapports Accessibles aux Parents
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Tenez-vous informés du progrès de votre enfant avec un accès direct et sécurisé 
-            à tous les bulletins et rapports scolaires
+          <p className="text-lg text-foreground/70 max-w-3xl mx-auto">
+            Tenez-vous informés du progrès de votre enfant avec un accès direct et sécurisé à tous
+            les bulletins et rapports scolaires
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {features.map((feature, index) => (
-            <Card key={index} className="p-6 hover:shadow-lg transition-shadow border-border/50">
+            <Card key={index} className="p-6 bg-[hsl(221,39%,11%)] border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg hover:shadow-primary/10">
               <div className="flex items-start gap-4">
-                <div className="p-3 bg-primary/10 rounded-lg">
+                <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
                   <feature.icon className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground text-sm">{feature.description}</p>
+                  <h3 className="font-semibold text-lg mb-2 text-foreground">{feature.title}</h3>
+                  <p className="text-foreground/60 text-sm">{feature.description}</p>
                 </div>
               </div>
             </Card>
           ))}
         </div>
 
-        <Card className="p-8 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+        <Card className="p-8 bg-[hsl(221,39%,11%)] border-primary/20">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex-1">
-              <h3 className="text-2xl font-bold mb-3">
+              <h3 className="text-2xl font-bold mb-3 text-foreground">
                 Interface Parent Intuitive
               </h3>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-foreground/70 mb-4">
                 Une interface spécialement conçue pour les parents, simple à utiliser et disponible 
                 en plusieurs langues locales. Consultez les résultats, téléchargez les bulletins 
                 et communiquez avec les enseignants en quelques clics.
@@ -82,39 +82,32 @@ export const ParentReports = () => {
               <ul className="space-y-2 text-sm">
                 <li className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  <span>Vue d'ensemble du parcours scolaire</span>
+                  <span className="text-foreground/80">Vue d'ensemble du parcours scolaire</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  <span>Téléchargement PDF des bulletins</span>
+                  <span className="text-foreground/80">Téléchargement PDF des bulletins</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  <span>Comparaison avec les moyennes de classe</span>
+                  <span className="text-foreground/80">Comparaison avec les moyennes de classe</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                  <span>Recommandations personnalisées</span>
+                  <span className="text-foreground/80">Recommandations personnalisées</span>
                 </li>
               </ul>
             </div>
             <div className="flex flex-col gap-3">
-              <Button size="lg" className="shadow-lg">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg">
                 Voir une Démo
               </Button>
-              <Button size="lg" variant="outline">
+              <Button size="lg" variant="outline" className="border-foreground/20 text-foreground hover:bg-foreground/5">
                 Guide Parents
               </Button>
             </div>
           </div>
         </Card>
-
-        <div className="mt-12 text-center p-6 bg-secondary/30 rounded-lg">
-          <p className="text-sm text-muted-foreground">
-            <Shield className="h-4 w-4 inline-block mr-2" />
-            Conformité RGPD · Données chiffrées · Accès parent uniquement aux informations de leur enfant
-          </p>
-        </div>
       </div>
     </section>
   );
