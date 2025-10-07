@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { GraduationCap, Users, BookOpen, ClipboardCheck, Shield, Lock } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SchoolTestimonials } from "@/components/testimonials/SchoolTestimonials";
+import { LocalSupport } from "@/components/features/LocalSupport";
 
 const Index = () => {
   return (
@@ -120,6 +121,9 @@ const Index = () => {
 
         {/* Testimonials Section */}
         <SchoolTestimonials />
+
+        {/* Local Support Section */}
+        <LocalSupport />
       </div>
     </div>
   );
