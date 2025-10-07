@@ -98,11 +98,11 @@ export const ParentReports = () => {
                 </li>
               </ul>
             </div>
-            <div className="flex flex-col gap-3">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg">
+            <div className="flex flex-col gap-3 min-w-[200px]">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-lg">
                 Voir une Démo
               </Button>
-              <Button size="lg" variant="outline" className="border-foreground/20 text-foreground hover:bg-foreground/5">
+              <Button size="lg" variant="outline" className="border-foreground/30 text-foreground hover:bg-foreground/10">
                 Guide Parents
               </Button>
             </div>
