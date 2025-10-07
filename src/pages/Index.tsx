@@ -4,6 +4,7 @@ import { LoginForm } from "@/components/auth/LoginForm";
 import { SchoolTestimonials } from "@/components/testimonials/SchoolTestimonials";
 import { LocalSupport } from "@/components/features/LocalSupport";
 import { EvaluationFeatures } from "@/components/features/EvaluationFeatures";
+import { ParentReports } from "@/components/features/ParentReports";
 
 const Index = () => {
   return (
@@ -122,6 +123,9 @@ const Index = () => {
 
         {/* Evaluation and Analytics Features */}
         <EvaluationFeatures />
+
+        {/* Parent Reports Section */}
+        <ParentReports />
 
         {/* Testimonials Section */}
         <SchoolTestimonials />
