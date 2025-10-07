@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Users, BookOpen, ClipboardCheck, Shield, Lock } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { SchoolTestimonials } from "@/components/testimonials/SchoolTestimonials";
 
 const Index = () => {
   return (
@@ -116,6 +117,9 @@ const Index = () => {
             <LoginForm />
           </div>
         </div>
+
+        {/* Testimonials Section */}
+        <SchoolTestimonials />
       </div>
     </div>
   );
