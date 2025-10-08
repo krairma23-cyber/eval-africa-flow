@@ -7,12 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [acceptPrivacyPolicy, setAcceptPrivacyPolicy] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("signin");
   const navigate = useNavigate();
@@ -88,6 +90,7 @@ export function LoginForm() {
         setLastName("");
         setEmail("");
         setPassword("");
+        setAcceptPrivacyPolicy(false);
         setActiveTab("signin");
       }
     } catch (error: any) {
@@ -228,10 +231,23 @@ export function LoginForm() {
                     minLength={6}
                   />
                 </div>
+                <div className="flex items-start space-x-2">
+                  <Checkbox 
+                    id="privacy" 
+                    checked={acceptPrivacyPolicy}
+                    onCheckedChange={(checked) => setAcceptPrivacyPolicy(checked as boolean)}
+                  />
+                  <Label 
+                    htmlFor="privacy" 
+                    className="text-sm font-normal leading-tight cursor-pointer"
+                  >
+                    J'ai lu et j'accepte la politique de confidentialité de Winning-E-Com-Product
+                  </Label>
+                </div>
                 <p className="text-sm text-muted-foreground">
                   Note: Après confirmation de votre email, vous aurez accès à la plateforme.
                 </p>
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full" disabled={loading || !acceptPrivacyPolicy}>
                   {loading ? "Inscription..." : "S'inscrire"}
                 </Button>
               </form>
