@@ -241,7 +241,7 @@ export function LoginForm() {
                     htmlFor="privacy" 
                     className="text-sm font-normal leading-tight cursor-pointer"
                   >
-                    J'ai lu et j'accepte la politique de confidentialité de Winning-E-Com-Product
+                    J'ai lu et j'accepte la politique de confidentialité d'EvalScol
                   </Label>
                 </div>
                 <p className="text-sm text-muted-foreground">
