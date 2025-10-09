@@ -9,6 +9,30 @@ import { supabase } from "@/integrations/supabase/client";
 import { logError } from "@/lib/logger";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Upload, X } from "lucide-react";
+import { z } from "zod";
+
+const studentSchema = z.object({
+  student_number: z.string().trim().min(1, "Le numéro d'élève est requis").max(50),
+  first_name: z.string().trim().min(1, "Le prénom est requis").max(100),
+  last_name: z.string().trim().min(1, "Le nom est requis").max(100),
+  date_of_birth: z.string().optional(),
+  gender: z.string().optional(),
+  parent_name: z.string().trim().max(200).optional(),
+  parent_phone: z.string()
+    .trim()
+    .regex(/^[\d\s\-+()]*$/, "Format de téléphone invalide")
+    .min(10, "Le numéro doit contenir au moins 10 chiffres")
+    .max(20, "Le numéro ne peut pas dépasser 20 caractères")
+    .optional()
+    .or(z.literal("")),
+  parent_email: z.string()
+    .trim()
+    .email("Format d'email invalide")
+    .max(254, "L'email ne peut pas dépasser 254 caractères")
+    .optional()
+    .or(z.literal("")),
+  address: z.string().trim().max(500).optional(),
+});
 
 interface AddStudentDialogProps {
   onStudentAdded: () => void;
@@ -87,12 +111,18 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.student_number || !formData.first_name || !formData.last_name) {
-      toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs obligatoires",
-        variant: "destructive",
-      });
+    
+    // Validate form data
+    try {
+      studentSchema.parse(formData);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erreur de validation",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+      }
       return;
     }
 
