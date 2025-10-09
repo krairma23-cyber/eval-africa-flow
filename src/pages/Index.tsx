@@ -19,7 +19,7 @@ const Index = () => {
             EvalScol Africa Flow - Plateforme SaaS de Gestion des Évaluations Scolaires en Afrique
           </h1>
           <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
-            Solution numérique pour enseignants et établissements scolaires en Côte d'Ivoire et Afrique. Logiciel de suivi des élèves, gestion des évaluations et bulletins scolaires.
+            Plateforme éducative en Côte d'Ivoire - Solution numérique pour enseignants et établissements scolaires en Afrique francophone. Logiciel de gestion scolaire en Afrique pour le suivi des élèves, les évaluations et les bulletins.
           </p>
           <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
@@ -38,7 +38,7 @@ const Index = () => {
           {/* Left Column - Features */}
           <section className="space-y-6 order-2 lg:order-1">
             <article>
-              <h2 className="text-2xl lg:text-3xl font-bold mb-6">Logiciel École Côte d'Ivoire - Fonctionnalités de Gestion</h2>
+              <h2 className="text-2xl lg:text-3xl font-bold mb-6">Plateforme Éducative Côte d'Ivoire - Gestion Scolaire en Afrique Francophone</h2>
               <div className="grid gap-4">
                 <Card className="border-primary/20 hover:border-primary/40 transition-colors">
                   <CardHeader className="pb-3">
@@ -47,7 +47,7 @@ const Index = () => {
                       <div>
                         <CardTitle className="text-lg">Suivi des Élèves et Gestion Scolaire</CardTitle>
                         <CardDescription className="mt-1">
-                          Inscriptions, données personnelles et suivi complet des élèves en toute sécurité. Gestion centralisée pour écoles privées et publiques en Afrique.
+                          Inscriptions, données personnelles et suivi complet des élèves. Gestion centralisée pour écoles privées et publiques en Côte d'Ivoire et Afrique francophone.
                         </CardDescription>
                       </div>
                     </div>
@@ -104,10 +104,10 @@ const Index = () => {
                 <div className="flex items-start gap-3">
                   <Shield className="h-6 w-6 text-accent shrink-0 mt-1" aria-hidden="true" />
                   <div>
-                    <h3 className="font-semibold text-accent mb-2">Plateforme Sécurisée pour Écoles Africaines</h3>
+                    <h3 className="font-semibold text-accent mb-2">Plateforme Sécurisée - Gestion Scolaire en Côte d'Ivoire</h3>
                     <p className="text-sm text-muted-foreground">
-                      Toutes vos données sont stockées de manière sécurisée dans notre infrastructure Supabase. 
-                      Authentification renforcée, chiffrement des données sensibles et audit complet des actions utilisateurs. 
+                      Solution dédiée aux établissements en Côte d'Ivoire et Afrique francophone. Toutes vos données sont stockées de manière sécurisée dans notre infrastructure Supabase. 
+                      Authentification renforcée, chiffrement des données sensibles et audit complet des actions. 
                       Conformité RGPD pour la protection des données scolaires.
                     </p>
                   </div>
