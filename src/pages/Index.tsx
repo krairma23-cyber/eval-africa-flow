@@ -5,6 +5,7 @@ import { SchoolTestimonials } from "@/components/testimonials/SchoolTestimonials
 import { LocalSupport } from "@/components/features/LocalSupport";
 import { EvaluationFeatures } from "@/components/features/EvaluationFeatures";
 import { ParentReports } from "@/components/features/ParentReports";
+import { PressPartners } from "@/components/features/PressPartners";
 
 const Index = () => {
   return (
@@ -130,6 +131,9 @@ const Index = () => {
 
         {/* Testimonials Section */}
         <SchoolTestimonials />
+
+        {/* Press & Partners Section */}
+        <PressPartners />
 
         {/* Local Support Section */}
         <LocalSupport />
