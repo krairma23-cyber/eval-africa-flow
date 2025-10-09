@@ -799,15 +799,7 @@ export type Database = {
           pme_id?: string
           updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "conversations_pme_id_fkey"
-            columns: ["pme_id"]
-            isOneToOne: false
-            referencedRelation: "pmes"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       cron_jobs: {
         Row: {
@@ -877,6 +869,62 @@ export type Database = {
           user_agent?: string | null
         }
         Relationships: []
+      }
+      disputes: {
+        Row: {
+          created_at: string
+          description: string
+          dispute_type: string
+          escrow_payment_id: string
+          evidence_urls: string[] | null
+          id: string
+          initiated_by: string
+          resolution_amount: number | null
+          resolution_notes: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          dispute_type: string
+          escrow_payment_id: string
+          evidence_urls?: string[] | null
+          id?: string
+          initiated_by: string
+          resolution_amount?: number | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          dispute_type?: string
+          escrow_payment_id?: string
+          evidence_urls?: string[] | null
+          id?: string
+          initiated_by?: string
+          resolution_amount?: number | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disputes_escrow_payment_id_fkey"
+            columns: ["escrow_payment_id"]
+            isOneToOne: false
+            referencedRelation: "escrow_payments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       encrypted_contact_data: {
         Row: {
@@ -1069,6 +1117,59 @@ export type Database = {
         }
         Relationships: []
       }
+      escrow_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          held_at: string | null
+          id: string
+          payment_method: string
+          payment_reference: string | null
+          refunded_at: string | null
+          released_at: string | null
+          reservation_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          held_at?: string | null
+          id?: string
+          payment_method: string
+          payment_reference?: string | null
+          refunded_at?: string | null
+          released_at?: string | null
+          reservation_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          held_at?: string | null
+          id?: string
+          payment_method?: string
+          payment_reference?: string | null
+          refunded_at?: string | null
+          released_at?: string | null
+          reservation_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_payments_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Evenement: {
         Row: {
           created_at: string
@@ -1155,13 +1256,6 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "favorites_pme_id_fkey"
-            columns: ["pme_id"]
-            isOneToOne: false
-            referencedRelation: "pmes"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "favorites_product_id_fkey"
             columns: ["product_id"]
@@ -1578,6 +1672,47 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          notification_type: string
+          payment_id: string | null
+          read: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          notification_type: string
+          payment_id?: string | null
+          read?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          notification_type?: string
+          payment_id?: string | null
+          read?: boolean
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_notifications_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_security_logs: {
         Row: {
           amount: number | null
@@ -1617,33 +1752,176 @@ export type Database = {
         }
         Relationships: []
       }
-      pme_reviews: {
+      payments: {
         Row: {
-          comment: string | null
-          created_at: string | null
+          amount: number
+          client_id: string
+          completed_at: string | null
+          created_at: string
+          currency: string
+          failed_at: string | null
+          failure_reason: string | null
           id: string
+          metadata: Json | null
+          mobile_money_number: string | null
+          mobile_money_provider: string | null
+          payment_date: string | null
+          payment_method: string
           pme_id: string
-          rating: number
-          updated_at: string | null
-          user_id: string
+          reservation_id: string | null
+          status: string
+          transaction_reference: string | null
+          updated_at: string
         }
         Insert: {
-          comment?: string | null
-          created_at?: string | null
+          amount: number
+          client_id: string
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          failed_at?: string | null
+          failure_reason?: string | null
           id?: string
+          metadata?: Json | null
+          mobile_money_number?: string | null
+          mobile_money_provider?: string | null
+          payment_date?: string | null
+          payment_method: string
           pme_id: string
-          rating: number
-          updated_at?: string | null
-          user_id: string
+          reservation_id?: string | null
+          status?: string
+          transaction_reference?: string | null
+          updated_at?: string
         }
         Update: {
-          comment?: string | null
-          created_at?: string | null
+          amount?: number
+          client_id?: string
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          failed_at?: string | null
+          failure_reason?: string | null
           id?: string
+          metadata?: Json | null
+          mobile_money_number?: string | null
+          mobile_money_provider?: string | null
+          payment_date?: string | null
+          payment_method?: string
+          pme_id?: string
+          reservation_id?: string | null
+          status?: string
+          transaction_reference?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pme_availability: {
+        Row: {
+          created_at: string | null
+          day_of_week: number | null
+          end_time: string
+          id: string
+          is_available: boolean | null
+          pme_id: string
+          start_time: string
+        }
+        Insert: {
+          created_at?: string | null
+          day_of_week?: number | null
+          end_time: string
+          id?: string
+          is_available?: boolean | null
+          pme_id: string
+          start_time: string
+        }
+        Update: {
+          created_at?: string | null
+          day_of_week?: number | null
+          end_time?: string
+          id?: string
+          is_available?: boolean | null
+          pme_id?: string
+          start_time?: string
+        }
+        Relationships: []
+      }
+      pme_portfolio: {
+        Row: {
+          caption: string | null
+          created_at: string | null
+          display_order: number | null
+          id: string
+          image_url: string
+          pme_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url: string
+          pme_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url?: string
+          pme_id?: string
+        }
+        Relationships: []
+      }
+      pme_reviews: {
+        Row: {
+          client_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          is_published: boolean | null
+          is_verified: boolean | null
+          pme_id: string
+          rating: number
+          reservation_id: string | null
+          response: string | null
+          response_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean | null
+          is_verified?: boolean | null
+          pme_id: string
+          rating: number
+          reservation_id?: string | null
+          response?: string | null
+          response_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean | null
+          is_verified?: boolean | null
           pme_id?: string
           rating?: number
-          updated_at?: string | null
-          user_id?: string
+          reservation_id?: string | null
+          response?: string | null
+          response_date?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
@@ -1653,65 +1931,155 @@ export type Database = {
             referencedRelation: "pmes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "pme_reviews_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pme_services: {
+        Row: {
+          base_price: number | null
+          category_id: string
+          created_at: string | null
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          is_active: boolean | null
+          pme_id: string
+          price_type: string | null
+          service_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          base_price?: number | null
+          category_id: string
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          pme_id: string
+          price_type?: string | null
+          service_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          base_price?: number | null
+          category_id?: string
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_active?: boolean | null
+          pme_id?: string
+          price_type?: string | null
+          service_name?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pme_services_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          },
         ]
       }
       pmes: {
         Row: {
-          adresse: string | null
+          address: string | null
+          availability_status: string | null
           average_rating: number | null
-          categorie: Database["public"]["Enums"]["pme_category"]
-          created_at: string
+          business_license: string | null
+          business_license_verified: boolean | null
+          business_name: string
+          city: string | null
+          commune: string | null
+          cover_image_url: string | null
+          created_at: string | null
           description: string | null
-          email: string | null
           id: string
-          logo_url: string | null
-          nom: string
-          region: string | null
+          id_card_number: string | null
+          id_card_verified: boolean | null
+          is_active: boolean | null
+          is_verified: boolean | null
+          latitude: number | null
+          longitude: number | null
+          phone: string
+          phone_verified: boolean | null
+          profile_image_url: string | null
+          response_time_minutes: number | null
           review_count: number | null
-          services: string[] | null
-          site_web: string | null
-          telephone: string | null
-          updated_at: string
-          verified: boolean | null
-          ville: string | null
+          total_jobs_completed: number | null
+          updated_at: string | null
+          user_id: string
+          verification_date: string | null
+          whatsapp_phone: string | null
         }
         Insert: {
-          adresse?: string | null
+          address?: string | null
+          availability_status?: string | null
           average_rating?: number | null
-          categorie: Database["public"]["Enums"]["pme_category"]
-          created_at?: string
+          business_license?: string | null
+          business_license_verified?: boolean | null
+          business_name: string
+          city?: string | null
+          commune?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
           description?: string | null
-          email?: string | null
           id?: string
-          logo_url?: string | null
-          nom: string
-          region?: string | null
+          id_card_number?: string | null
+          id_card_verified?: boolean | null
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          phone: string
+          phone_verified?: boolean | null
+          profile_image_url?: string | null
+          response_time_minutes?: number | null
           review_count?: number | null
-          services?: string[] | null
-          site_web?: string | null
-          telephone?: string | null
-          updated_at?: string
-          verified?: boolean | null
-          ville?: string | null
+          total_jobs_completed?: number | null
+          updated_at?: string | null
+          user_id: string
+          verification_date?: string | null
+          whatsapp_phone?: string | null
         }
         Update: {
-          adresse?: string | null
+          address?: string | null
+          availability_status?: string | null
           average_rating?: number | null
-          categorie?: Database["public"]["Enums"]["pme_category"]
-          created_at?: string
+          business_license?: string | null
+          business_license_verified?: boolean | null
+          business_name?: string
+          city?: string | null
+          commune?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
           description?: string | null
-          email?: string | null
           id?: string
-          logo_url?: string | null
-          nom?: string
-          region?: string | null
+          id_card_number?: string | null
+          id_card_verified?: boolean | null
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          phone?: string
+          phone_verified?: boolean | null
+          profile_image_url?: string | null
+          response_time_minutes?: number | null
           review_count?: number | null
-          services?: string[] | null
-          site_web?: string | null
-          telephone?: string | null
-          updated_at?: string
-          verified?: boolean | null
-          ville?: string | null
+          total_jobs_completed?: number | null
+          updated_at?: string | null
+          user_id?: string
+          verification_date?: string | null
+          whatsapp_phone?: string | null
         }
         Relationships: []
       }
@@ -1940,6 +2308,7 @@ export type Database = {
           id: string
           last_name: string | null
           monthly_searches_limit: number | null
+          phone: string | null
           school_id: string | null
           searches_count: number | null
           subscription_plan:
@@ -1948,6 +2317,7 @@ export type Database = {
           subscription_status: string | null
           updated_at: string
           user_id: string
+          user_type: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -1958,6 +2328,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           monthly_searches_limit?: number | null
+          phone?: string | null
           school_id?: string | null
           searches_count?: number | null
           subscription_plan?:
@@ -1966,6 +2337,7 @@ export type Database = {
           subscription_status?: string | null
           updated_at?: string
           user_id: string
+          user_type?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -1976,6 +2348,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           monthly_searches_limit?: number | null
+          phone?: string | null
           school_id?: string | null
           searches_count?: number | null
           subscription_plan?:
@@ -1984,6 +2357,7 @@ export type Database = {
           subscription_status?: string | null
           updated_at?: string
           user_id?: string
+          user_type?: string | null
         }
         Relationships: [
           {
@@ -2059,6 +2433,79 @@ export type Database = {
           violation_count?: number
         }
         Relationships: []
+      }
+      refund_requests: {
+        Row: {
+          admin_notes: string | null
+          client_id: string
+          created_at: string
+          evidence_urls: string[] | null
+          id: string
+          payment_id: string | null
+          pme_id: string
+          reason: string
+          refund_amount: number | null
+          reservation_id: string
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          client_id: string
+          created_at?: string
+          evidence_urls?: string[] | null
+          id?: string
+          payment_id?: string | null
+          pme_id: string
+          reason: string
+          refund_amount?: number | null
+          reservation_id: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          client_id?: string
+          created_at?: string
+          evidence_urls?: string[] | null
+          id?: string
+          payment_id?: string | null
+          pme_id?: string
+          reason?: string
+          refund_amount?: number | null
+          reservation_id?: string
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refund_requests_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refund_requests_pme_id_fkey"
+            columns: ["pme_id"]
+            isOneToOne: false
+            referencedRelation: "pmes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refund_requests_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       registration_rate_limits: {
         Row: {
@@ -2163,62 +2610,137 @@ export type Database = {
           },
         ]
       }
-      reservations: {
+      reports: {
         Row: {
           created_at: string
-          created_by: string
-          customer_email: string | null
-          customer_name: string | null
-          customer_phone: string | null
+          description: string
           id: string
-          notes: string | null
-          org_id: string
-          scheduled_at: string
-          service_id: string | null
+          reason: string
+          reported_id: string
+          reported_type: string
+          reporter_id: string
+          resolution_notes: string | null
+          resolved_at: string | null
+          resolved_by: string | null
           status: string
           updated_at: string
         }
         Insert: {
           created_at?: string
-          created_by?: string
-          customer_email?: string | null
-          customer_name?: string | null
-          customer_phone?: string | null
+          description: string
           id?: string
-          notes?: string | null
-          org_id: string
-          scheduled_at: string
-          service_id?: string | null
+          reason: string
+          reported_id: string
+          reported_type: string
+          reporter_id: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
           status?: string
           updated_at?: string
         }
         Update: {
           created_at?: string
-          created_by?: string
-          customer_email?: string | null
-          customer_name?: string | null
-          customer_phone?: string | null
+          description?: string
           id?: string
-          notes?: string | null
-          org_id?: string
-          scheduled_at?: string
-          service_id?: string | null
+          reason?: string
+          reported_id?: string
+          reported_type?: string
+          reporter_id?: string
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
           status?: string
           updated_at?: string
         }
+        Relationships: []
+      }
+      reservations: {
+        Row: {
+          can_release_payment: boolean | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          cancelled_by: string | null
+          client_id: string
+          client_notes: string | null
+          completed_at: string | null
+          created_at: string | null
+          estimated_duration_minutes: number | null
+          id: string
+          payment_method: string | null
+          payment_status: string | null
+          pme_id: string
+          pme_notes: string | null
+          scheduled_date: string
+          scheduled_time: string
+          service_confirmed_at: string | null
+          service_confirmed_by_client: boolean | null
+          service_id: string
+          status: string | null
+          total_amount: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          can_release_payment?: boolean | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          client_id: string
+          client_notes?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          payment_method?: string | null
+          payment_status?: string | null
+          pme_id: string
+          pme_notes?: string | null
+          scheduled_date: string
+          scheduled_time: string
+          service_confirmed_at?: string | null
+          service_confirmed_by_client?: boolean | null
+          service_id: string
+          status?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          can_release_payment?: boolean | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by?: string | null
+          client_id?: string
+          client_notes?: string | null
+          completed_at?: string | null
+          created_at?: string | null
+          estimated_duration_minutes?: number | null
+          id?: string
+          payment_method?: string | null
+          payment_status?: string | null
+          pme_id?: string
+          pme_notes?: string | null
+          scheduled_date?: string
+          scheduled_time?: string
+          service_confirmed_at?: string | null
+          service_confirmed_by_client?: boolean | null
+          service_id?: string
+          status?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "reservations_org_id_fkey"
-            columns: ["org_id"]
+            foreignKeyName: "reservations_pme_id_fkey"
+            columns: ["pme_id"]
             isOneToOne: false
-            referencedRelation: "organizations"
+            referencedRelation: "pmes"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "reservations_service_id_fkey"
             columns: ["service_id"]
             isOneToOne: false
-            referencedRelation: "services"
+            referencedRelation: "pme_services"
             referencedColumns: ["id"]
           },
         ]
@@ -2399,6 +2921,47 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      service_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          icon_name: string | null
+          id: string
+          name: string
+          parent_id: string | null
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          icon_name?: string | null
+          id?: string
+          name: string
+          parent_id?: string | null
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          icon_name?: string | null
+          id?: string
+          name?: string
+          parent_id?: string | null
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       services: {
         Row: {
@@ -2835,6 +3398,48 @@ export type Database = {
         }
         Relationships: []
       }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          currency: string | null
+          id: string
+          metadata: Json | null
+          payment_method: string
+          payment_provider_reference: string | null
+          reservation_id: string
+          status: string | null
+          transaction_reference: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_method: string
+          payment_provider_reference?: string | null
+          reservation_id: string
+          status?: string | null
+          transaction_reference?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          metadata?: Json | null
+          payment_method?: string
+          payment_provider_reference?: string | null
+          reservation_id?: string
+          status?: string | null
+          transaction_reference?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_actions: {
         Row: {
           action_details: Json | null
@@ -3162,6 +3767,53 @@ export type Database = {
           },
         ]
       }
+      verification_documents: {
+        Row: {
+          created_at: string | null
+          document_type: string
+          document_url: string
+          id: string
+          pme_id: string
+          rejection_reason: string | null
+          updated_at: string | null
+          verification_status: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          document_type: string
+          document_url: string
+          id?: string
+          pme_id: string
+          rejection_reason?: string | null
+          updated_at?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          document_type?: string
+          document_url?: string
+          id?: string
+          pme_id?: string
+          rejection_reason?: string | null
+          updated_at?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_documents_pme_id_fkey"
+            columns: ["pme_id"]
+            isOneToOne: false
+            referencedRelation: "pmes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -3185,6 +3837,15 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      check_admin_access_rate_limit: {
+        Args: {
+          p_admin_id: string
+          p_max_accesses?: number
+          p_table_name: string
+          p_window_minutes?: number
+        }
+        Returns: boolean
+      }
       check_api_rate_limit: {
         Args: {
           p_endpoint: string
@@ -3203,7 +3864,7 @@ export type Database = {
           | { p_email?: string; p_ip: unknown }
           | {
               p_endpoint: string
-              p_ip: unknown
+              p_ip_address: unknown
               p_max_requests?: number
               p_user_id?: string
               p_window_minutes?: number
@@ -3252,9 +3913,17 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      cleanup_old_contact_messages: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       cleanup_old_cron_jobs: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      cleanup_old_event_registrations: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       cleanup_old_security_data: {
         Args: Record<PropertyKey, never>
@@ -3494,6 +4163,23 @@ export type Database = {
           student_number: string
         }[]
       }
+      get_student_limited_access: {
+        Args: { p_student_id: string }
+        Returns: {
+          access_level: string
+          address: string
+          date_of_birth: string
+          first_name: string
+          gender: string
+          id: string
+          last_name: string
+          parent_email: string
+          parent_name: string
+          parent_phone: string
+          school_id: string
+          student_number: string
+        }[]
+      }
       get_students_for_user: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -3530,6 +4216,19 @@ export type Database = {
           email: string
           first_name: string
           hire_date: string
+          id: string
+          last_name: string
+          phone: string
+          school_id: string
+          specialization: string
+          teacher_number: string
+        }[]
+      }
+      get_teacher_limited_access: {
+        Args: { p_teacher_id: string }
+        Returns: {
+          email: string
+          first_name: string
           id: string
           last_name: string
           phone: string
@@ -3580,15 +4279,15 @@ export type Database = {
         Returns: boolean
       }
       is_admin: {
-        Args: { user_id?: string }
+        Args: { check_user_id?: string }
         Returns: boolean
       }
       is_org_admin: {
-        Args: { _org_id: string; _user_id?: string }
+        Args: { p_org_id: string; p_user_id?: string }
         Returns: boolean
       }
       is_org_member: {
-        Args: { _org_id: string; _user_id?: string }
+        Args: { p_org_id: string; p_user_id?: string }
         Returns: boolean
       }
       is_school_admin: {
@@ -3606,15 +4305,15 @@ export type Database = {
       log_comprehensive_audit: {
         Args: {
           p_action: string
-          p_error_message?: string
-          p_execution_time_ms?: number
-          p_ip_address?: unknown
-          p_request_data?: Json
-          p_resource_id?: string
+          p_error_message: string
+          p_execution_time_ms: number
+          p_ip_address: unknown
+          p_request_data: Json
+          p_resource_id: string
           p_resource_type: string
-          p_response_data?: Json
-          p_success?: boolean
-          p_user_agent?: string
+          p_response_data: Json
+          p_success: boolean
+          p_user_agent: string
           p_user_id: string
         }
         Returns: string
@@ -3642,12 +4341,12 @@ export type Database = {
       }
       log_security_incident: {
         Args: {
-          p_details?: Json
-          p_endpoint?: string
+          p_details: Json
           p_incident_type: string
-          p_ip_address?: unknown
+          p_ip_address: unknown
+          p_resource_accessed: string
           p_severity: string
-          p_user_id?: string
+          p_user_id: string
         }
         Returns: string
       }
@@ -3752,6 +4451,17 @@ export type Database = {
           masked_phone: string
         }[]
       }
+      secure_customer_data_access_v2: {
+        Args: { p_access_reason: string; p_customer_id: string }
+        Returns: {
+          access_logged: boolean
+          created_at: string
+          id: string
+          masked_email: string
+          masked_name: string
+          masked_phone: string
+        }[]
+      }
       secure_event_registration_access: {
         Args: { p_access_reason: string; p_registration_id: string }
         Returns: {
@@ -3828,6 +4538,15 @@ export type Database = {
           p_telephone: string
         }
         Returns: Json
+      }
+      track_sensitive_data_access: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          access_count: number
+          access_date: string
+          table_name: string
+          unique_users: number
+        }[]
       }
       user_belongs_to_school: {
         Args: { school_uuid: string }
