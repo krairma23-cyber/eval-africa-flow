@@ -114,6 +114,22 @@ export default function Billing() {
       // If no plans from DB, use default plans
       const defaultPlans: SubscriptionPlan[] = [
         {
+          id: 'starter',
+          name: 'Starter',
+          price_monthly: 0,
+          price_yearly: 0,
+          features: [
+            'Jusqu\'à 30 élèves',
+            'Gestion basique des notes',
+            'Bulletins simples',
+            'Tableau de bord de base',
+            'Support communautaire'
+          ],
+          searches_limit: 100,
+          api_calls_limit: 100,
+          is_popular: false
+        },
+        {
           id: 'professional',
           name: 'Professional',
           price_monthly: 11500,
@@ -121,9 +137,11 @@ export default function Billing() {
           features: [
             'Jusqu\'à 300 élèves',
             'Évaluations illimitées',
-            'Analytics prédictifs',
+            'Analytics prédictifs avec IA',
             'Assistant vocal',
-            'Rapports avancés',
+            'Rapports avancés et bulletins personnalisés',
+            'Gestion des absences',
+            'Communication parents-enseignants',
             'Support prioritaire'
           ],
           searches_limit: 1000,
@@ -136,13 +154,15 @@ export default function Billing() {
           price_monthly: 28500,
           price_yearly: 285000,
           features: [
-            'Plus de 300 élèves',
-            'Tout du Professional',
+            'Plus de 300 élèves (illimité)',
+            'Tout du plan Professional',
+            'Multi-campus et multi-écoles',
             'Personnalisation complète',
-            'Intégrations API',
-            'Formation dédiée',
-            'SLA et support premium',
-            'Modules avancés'
+            'Intégrations API avancées',
+            'Formation dédiée du personnel',
+            'SLA et support premium 24/7',
+            'Modules métier personnalisés',
+            'Comptes multi-utilisateurs illimités'
           ],
           searches_limit: 10000,
           api_calls_limit: 100000,
@@ -202,7 +222,7 @@ export default function Billing() {
       if (!user?.email) {
         toast({
           title: "Erreur",
-          description: "Vous devez être connecté pour effectuer un paiement",
+          description: "Vous devez être connecté",
           variant: "destructive",
         });
         return;
@@ -215,6 +235,42 @@ export default function Billing() {
 
       const amount = isYearly ? selectedPlan.price_yearly : selectedPlan.price_monthly;
 
+      // Handle free plan (Starter) - activate directly without payment
+      if (amount === 0) {
+        toast({
+          title: "Activation du plan gratuit",
+          description: "Activation en cours...",
+        });
+
+        // Create or update user subscription for free plan
+        const { error: subscriptionError } = await supabase
+          .from('user_subscriptions')
+          .upsert({
+            user_id: user.id,
+            plan_id: selectedPlan.id,
+            status: 'active',
+            billing_period: 'monthly',
+            current_period_start: new Date().toISOString(),
+            current_period_end: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'user_id'
+          });
+
+        if (subscriptionError) throw subscriptionError;
+
+        setCurrentPlan(selectedPlan);
+        
+        toast({
+          title: "Plan activé !",
+          description: `Le plan ${selectedPlan.name} a été activé avec succès.`,
+        });
+
+        await fetchBillingData();
+        return;
+      }
+
+      // Handle paid plans - use Paystack
       toast({
         title: "Initialisation du paiement",
         description: "Veuillez patienter...",
