@@ -116,8 +116,8 @@ export default function Billing() {
         {
           id: 'professional',
           name: 'Professional',
-          price_monthly: 25,
-          price_yearly: 250,
+          price_monthly: 15000,
+          price_yearly: 150000,
           features: [
             'Jusqu\'à 300 élèves',
             'Évaluations illimitées',
@@ -133,8 +133,8 @@ export default function Billing() {
         {
           id: 'enterprise',
           name: 'Entreprise',
-          price_monthly: 50,
-          price_yearly: 500,
+          price_monthly: 30000,
+          price_yearly: 300000,
           features: [
             'Plus de 300 élèves',
             'Tout du Professional',
@@ -305,7 +305,7 @@ export default function Billing() {
                   <div>
                     <CardTitle>Plan Actuel: {currentPlan?.name}</CardTitle>
                     <CardDescription>
-                      ${currentPlan?.price_monthly}/mois • Prochain paiement le 15 mars 2025
+                      {currentPlan?.price_monthly.toLocaleString('fr-FR')} FCFA/mois • Prochain paiement le 15 mars 2025
                     </CardDescription>
                   </div>
                 </div>
@@ -376,7 +376,7 @@ export default function Billing() {
                 <Calendar className="h-8 w-8 mx-auto text-accent mb-2" />
                 <h3 className="font-semibold">Prochaine facture</h3>
                 <p className="text-sm text-muted-foreground">15 mars 2025</p>
-                <p className="text-sm font-medium">${currentPlan?.price_monthly}</p>
+                <p className="text-sm font-medium">{currentPlan?.price_monthly.toLocaleString('fr-FR')} FCFA</p>
               </CardContent>
             </Card>
 
@@ -462,7 +462,7 @@ export default function Billing() {
                   <CardHeader className="text-center">
                     <CardTitle className="text-2xl">{plan.name}</CardTitle>
                     <div className="text-3xl font-bold">
-                      ${(isYearly ? plan.price_yearly : plan.price_monthly)}
+                      {(isYearly ? plan.price_yearly : plan.price_monthly).toLocaleString('fr-FR')} FCFA
                       <span className="text-base font-normal text-muted-foreground">
                         /{isYearly ? 'an' : 'mois'}
                       </span>
@@ -572,7 +572,7 @@ export default function Billing() {
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <p className="font-medium">${invoice.amount}</p>
+                          <p className="font-medium">{invoice.amount.toLocaleString('fr-FR')} FCFA</p>
                           <Badge variant={invoice.status === 'paid' ? 'secondary' : 'outline'}>
                             {invoice.status === 'paid' ? 'Payée' : 
                              invoice.status === 'pending' ? 'En attente' : 
