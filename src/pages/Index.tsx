@@ -6,6 +6,7 @@ import { LocalSupport } from "@/components/features/LocalSupport";
 import { EvaluationFeatures } from "@/components/features/EvaluationFeatures";
 import { ParentReports } from "@/components/features/ParentReports";
 import { PressPartners } from "@/components/features/PressPartners";
+import { AboutEvalScol } from "@/components/features/AboutEvalScol";
 
 const Index = () => {
   return (
@@ -31,6 +32,9 @@ const Index = () => {
               <Lock className="h-4 w-4 text-accent" />
               <span>Authentification sécurisée</span>
             </div>
+          </div>
+          <div className="mt-6">
+            <AboutEvalScol />
           </div>
         </header>
 
