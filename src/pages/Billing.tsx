@@ -116,8 +116,8 @@ export default function Billing() {
         {
           id: 'professional',
           name: 'Professional',
-          price_monthly: 15000,
-          price_yearly: 150000,
+          price_monthly: 11500,
+          price_yearly: 115000,
           features: [
             'Jusqu\'à 300 élèves',
             'Évaluations illimitées',
@@ -133,8 +133,8 @@ export default function Billing() {
         {
           id: 'enterprise',
           name: 'Entreprise',
-          price_monthly: 30000,
-          price_yearly: 300000,
+          price_monthly: 28500,
+          price_yearly: 285000,
           features: [
             'Plus de 300 élèves',
             'Tout du Professional',
