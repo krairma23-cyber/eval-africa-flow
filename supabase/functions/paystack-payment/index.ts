@@ -37,6 +37,10 @@ serve(async (req) => {
     }
 
     // Initialize payment with Paystack
+    // For XOF (West African CFA franc), Paystack expects amounts in kobo (minor units)
+    // 1 FCFA = 100 kobo, so multiply by 100
+    const amountInKobo = Math.round(amount * 100);
+    
     const paystackResponse = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
       headers: {
@@ -45,7 +49,7 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         email,
-        amount: Math.round(amount), // Amount already in FCFA, Paystack expects minor units
+        amount: amountInKobo,
         currency: 'XOF', // West African CFA franc
         callback_url: callback_url || `${req.headers.get('origin')}/billing?payment=success`,
         metadata: {
