@@ -79,10 +79,14 @@ export function AppSidebar() {
         if (school) {
           if (school.name) setSchoolName(school.name);
           if (school.logo_url) {
-            const { data } = supabase.storage
-              .from('school-logos')
-              .getPublicUrl(school.logo_url);
-            setSchoolLogo(data.publicUrl);
+            if (school.logo_url.startsWith("http")) {
+              setSchoolLogo(school.logo_url);
+            } else {
+              const { data } = supabase.storage
+                .from('school-logos')
+                .getPublicUrl(school.logo_url);
+              setSchoolLogo(data.publicUrl);
+            }
           }
         }
       }
@@ -105,8 +109,10 @@ export function AppSidebar() {
             <div className="flex items-center gap-3">
               {schoolLogo ? (
                 <img 
-                  src={schoolLogo} 
+                  src={schoolLogo}
                   alt={schoolName}
+                  loading="lazy"
+                  onError={() => setSchoolLogo(null)}
                   className="w-10 h-10 object-contain rounded"
                 />
               ) : (

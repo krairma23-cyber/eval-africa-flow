@@ -65,10 +65,14 @@ export default function Settings() {
           setAcademicYear(school.academic_year || "2025-2026");
           
           if (school.logo_url) {
-            const { data } = supabase.storage
-              .from('school-logos')
-              .getPublicUrl(school.logo_url);
-            setLogoUrl(data.publicUrl);
+            if (school.logo_url.startsWith("http")) {
+              setLogoUrl(school.logo_url);
+            } else {
+              const { data } = supabase.storage
+                .from('school-logos')
+                .getPublicUrl(school.logo_url);
+              setLogoUrl(data.publicUrl);
+            }
           }
         }
       }
@@ -94,7 +98,15 @@ export default function Settings() {
     try {
       setUploading(true);
       const file = event.target.files?.[0];
-      if (!file || !schoolId) return;
+      if (!file) return;
+      if (!schoolId) {
+        toast({
+          title: "Profil en cours de chargement",
+          description: "Veuillez réessayer dans quelques secondes.",
+          variant: "destructive",
+        });
+        return;
+      }
 
       // Validate file type
       const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
@@ -235,8 +247,10 @@ export default function Settings() {
                 {logoUrl ? (
                   <div className="relative w-32 h-32 border-2 border-border rounded-lg overflow-hidden bg-muted">
                     <img 
-                      src={logoUrl} 
-                      alt="Logo de l'établissement" 
+                      src={logoUrl}
+                      alt="Logo de l'établissement"
+                      loading="lazy"
+                      onError={() => setLogoUrl(null)}
                       className="w-full h-full object-contain"
                     />
                   </div>
