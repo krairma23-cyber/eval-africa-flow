@@ -69,28 +69,33 @@ serve(async (req) => {
       const paymentData = await paystackVerification.json();
       console.log('Paystack verification response:', paymentData);
 
-      // Verify payment was successful
-      if (!paymentData.status || paymentData.data?.status !== 'success') {
-        console.error('Payment not verified:', paymentData);
-        return new Response(
-          JSON.stringify({ error: 'Payment not verified', details: paymentData }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
+    // CRITICAL: Verify payment was successful
+    if (!paymentData.status || paymentData.data?.status !== 'success') {
+      console.error('Payment not verified:', paymentData);
+      return new Response(
+        JSON.stringify({ error: 'Payment not verified', details: paymentData }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
-      // Verify amount matches (convert to kobo for comparison)
-      const paidAmount = paymentData.data.amount / 100; // Paystack returns in kobo
-      if (Math.abs(paidAmount - expectedAmount) > 1) { // Allow 1 XOF difference for rounding
-        console.error('Amount mismatch:', { paidAmount, expectedAmount });
-        return new Response(
-          JSON.stringify({ 
-            error: 'Amount mismatch', 
-            expected: expectedAmount, 
-            received: paidAmount 
-          }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
+    // CRITICAL: Verify amount matches plan price (Paystack returns amount in kobo)
+    const expectedAmountInKobo = expectedAmount * 100; // Convert XOF to kobo
+    if (paymentData.data.amount !== expectedAmountInKobo) {
+      console.error('Amount mismatch:', { 
+        paidAmountKobo: paymentData.data.amount, 
+        expectedAmountKobo: expectedAmountInKobo,
+        paidAmount: paymentData.data.amount / 100,
+        expectedAmount 
+      });
+      return new Response(
+        JSON.stringify({ 
+          error: 'Amount mismatch', 
+          expected: expectedAmount, 
+          received: paymentData.data.amount / 100
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     } else if (expectedAmount > 0 && !payment_reference) {
       console.error('Payment reference required for paid plan');
       return new Response(
