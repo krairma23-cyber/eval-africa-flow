@@ -235,29 +235,27 @@ export default function Billing() {
 
       const amount = isYearly ? selectedPlan.price_yearly : selectedPlan.price_monthly;
 
-      // Handle free plan (Starter) - activate directly without payment
+      // Handle free plan (Starter) - activate via secure edge function
       if (amount === 0) {
         toast({
           title: "Activation du plan gratuit",
           description: "Activation en cours...",
         });
 
-        // Create or update user subscription for free plan
-        const { error: subscriptionError } = await supabase
-          .from('user_subscriptions')
-          .upsert({
+        // Activate via secure edge function
+        const { data: activateData, error: activateError } = await supabase.functions.invoke('activate-subscription', {
+          body: {
             user_id: user.id,
             plan_id: selectedPlan.id,
-            status: 'active',
-            billing_period: 'monthly',
-            current_period_start: new Date().toISOString(),
-            current_period_end: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 year
-            updated_at: new Date().toISOString()
-          }, {
-            onConflict: 'user_id'
-          });
+            billing_period: isYearly ? 'yearly' : 'monthly',
+            payment_reference: null
+          }
+        });
 
-        if (subscriptionError) throw subscriptionError;
+        if (activateError || !activateData?.success) {
+          console.error('Subscription activation error:', activateError || activateData);
+          throw new Error('Failed to activate subscription');
+        }
 
         setCurrentPlan(selectedPlan);
         
@@ -283,13 +281,21 @@ export default function Billing() {
           amount: amount, // Amount in FCFA
           planId: selectedPlan.id,
           planName: selectedPlan.name,
-          callback_url: `${window.location.origin}/dashboard/billing?payment=success`
+          callback_url: `${window.location.origin}/payment-callback`
         }
       });
 
       if (error) throw error;
 
       if (data.authorization_url) {
+        // Store payment info for callback verification
+        localStorage.setItem('pending_payment', JSON.stringify({
+          reference: data.reference,
+          plan_id: selectedPlan.id,
+          user_id: user.id,
+          billing_period: isYearly ? 'yearly' : 'monthly'
+        }));
+
         // Redirect to Paystack payment page
         window.location.href = data.authorization_url;
       }
