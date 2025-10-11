@@ -79,13 +79,17 @@ export function AppSidebar() {
         if (school) {
           if (school.name) setSchoolName(school.name);
           if (school.logo_url) {
-            if (school.logo_url.startsWith("http")) {
-              setSchoolLogo(school.logo_url);
+            const raw = school.logo_url.trim();
+            if (/^https?:\/\//.test(raw)) {
+              setSchoolLogo(raw);
             } else {
+              const key = raw
+                .replace(/^\/+/, '')
+                .replace(/^school-logos\/+/, '');
               const { data } = supabase.storage
                 .from('school-logos')
-                .getPublicUrl(school.logo_url);
-              setSchoolLogo(data.publicUrl);
+                .getPublicUrl(key);
+              setSchoolLogo(data.publicUrl || null);
             }
           }
         }

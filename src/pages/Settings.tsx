@@ -65,13 +65,17 @@ export default function Settings() {
           setAcademicYear(school.academic_year || "2025-2026");
           
           if (school.logo_url) {
-            if (school.logo_url.startsWith("http")) {
-              setLogoUrl(school.logo_url);
+            const raw = school.logo_url.trim();
+            if (/^https?:\/\//.test(raw)) {
+              setLogoUrl(raw);
             } else {
+              const key = raw
+                .replace(/^\/+/, '')
+                .replace(/^school-logos\/+/, '');
               const { data } = supabase.storage
                 .from('school-logos')
-                .getPublicUrl(school.logo_url);
-              setLogoUrl(data.publicUrl);
+                .getPublicUrl(key);
+              setLogoUrl(data.publicUrl || null);
             }
           }
         }
