@@ -8,7 +8,8 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon, Globe, Database, Zap } from "lucide-react";
 
 export default function Settings() {
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,14 @@ export default function Settings() {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [reportReminders, setReportReminders] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
+  
+  // SaaS settings
+  const [timezone, setTimezone] = useState("Europe/Paris");
+  const [language, setLanguage] = useState("fr");
+  const [currency, setCurrency] = useState("EUR");
+  const [dateFormat, setDateFormat] = useState("DD/MM/YYYY");
+  const [autoBackup, setAutoBackup] = useState(true);
+  const [dataRetention, setDataRetention] = useState("365"); // jours
 
   useEffect(() => {
     getCurrentUser();
@@ -92,6 +101,12 @@ export default function Settings() {
         setEmailNotifications(preferences.email_notifications ?? true);
         setReportReminders(preferences.report_reminders ?? true);
         setDarkMode(preferences.dark_mode ?? false);
+        setTimezone(preferences.timezone ?? "Europe/Paris");
+        setLanguage(preferences.language ?? "fr");
+        setCurrency(preferences.currency ?? "EUR");
+        setDateFormat(preferences.date_format ?? "DD/MM/YYYY");
+        setAutoBackup(preferences.auto_backup ?? true);
+        setDataRetention(preferences.data_retention ?? "365");
       }
     } catch (error) {
       console.error('Error loading school data:', error);
@@ -201,6 +216,12 @@ export default function Settings() {
           email_notifications: emailNotifications,
           report_reminders: reportReminders,
           dark_mode: darkMode,
+          timezone,
+          language,
+          currency,
+          date_format: dateFormat,
+          auto_backup: autoBackup,
+          data_retention: dataRetention,
         }, {
           onConflict: 'user_id'
         });
@@ -351,6 +372,126 @@ export default function Settings() {
                 checked={reportReminders}
                 onCheckedChange={setReportReminders}
               />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Paramètres SaaS */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="h-5 w-5" />
+              Paramètres du SaaS
+            </CardTitle>
+            <CardDescription>
+              Configuration régionale et système
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-2">
+              <Label htmlFor="timezone">Fuseau horaire</Label>
+              <Select value={timezone} onValueChange={setTimezone}>
+                <SelectTrigger id="timezone">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Europe/Paris">Europe/Paris (UTC+1)</SelectItem>
+                  <SelectItem value="Africa/Abidjan">Africa/Abidjan (UTC+0)</SelectItem>
+                  <SelectItem value="Africa/Dakar">Africa/Dakar (UTC+0)</SelectItem>
+                  <SelectItem value="Africa/Lagos">Africa/Lagos (UTC+1)</SelectItem>
+                  <SelectItem value="Africa/Kinshasa">Africa/Kinshasa (UTC+1)</SelectItem>
+                  <SelectItem value="America/New_York">America/New York (UTC-5)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Separator />
+            <div className="grid gap-2">
+              <Label htmlFor="language">Langue</Label>
+              <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger id="language">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="fr">Français</SelectItem>
+                  <SelectItem value="en">English</SelectItem>
+                  <SelectItem value="es">Español</SelectItem>
+                  <SelectItem value="ar">العربية</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Separator />
+            <div className="grid gap-2">
+              <Label htmlFor="currency">Devise</Label>
+              <Select value={currency} onValueChange={setCurrency}>
+                <SelectTrigger id="currency">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="EUR">Euro (EUR)</SelectItem>
+                  <SelectItem value="XOF">Franc CFA (XOF)</SelectItem>
+                  <SelectItem value="USD">Dollar US (USD)</SelectItem>
+                  <SelectItem value="GBP">Livre Sterling (GBP)</SelectItem>
+                  <SelectItem value="MAD">Dirham Marocain (MAD)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Separator />
+            <div className="grid gap-2">
+              <Label htmlFor="date-format">Format de date</Label>
+              <Select value={dateFormat} onValueChange={setDateFormat}>
+                <SelectTrigger id="date-format">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="DD/MM/YYYY">JJ/MM/AAAA</SelectItem>
+                  <SelectItem value="MM/DD/YYYY">MM/JJ/AAAA</SelectItem>
+                  <SelectItem value="YYYY-MM-DD">AAAA-MM-JJ</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Sauvegarde et données */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Database className="h-5 w-5" />
+              Sauvegarde et données
+            </CardTitle>
+            <CardDescription>
+              Gestion des données et archivage
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Sauvegarde automatique</Label>
+                <p className="text-sm text-muted-foreground">
+                  Sauvegarde quotidienne de toutes les données
+                </p>
+              </div>
+              <Switch
+                checked={autoBackup}
+                onCheckedChange={setAutoBackup}
+              />
+            </div>
+            <Separator />
+            <div className="grid gap-2">
+              <Label htmlFor="data-retention">Rétention des données (jours)</Label>
+              <Select value={dataRetention} onValueChange={setDataRetention}>
+                <SelectTrigger id="data-retention">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="90">90 jours</SelectItem>
+                  <SelectItem value="180">180 jours</SelectItem>
+                  <SelectItem value="365">1 an</SelectItem>
+                  <SelectItem value="730">2 ans</SelectItem>
+                  <SelectItem value="1825">5 ans</SelectItem>
+                  <SelectItem value="-1">Illimité</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
         </Card>
