@@ -3547,43 +3547,61 @@ export type Database = {
       user_preferences: {
         Row: {
           assessment_reminders: boolean
+          auto_backup: boolean | null
           created_at: string | null
+          currency: string | null
           dark_mode: boolean | null
+          data_retention: string | null
+          date_format: string | null
           email_notifications: boolean | null
           id: string
+          language: string | null
           marketing_emails: boolean
           push_notifications: boolean
           report_notifications: boolean
           report_reminders: boolean | null
           system_updates: boolean
+          timezone: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
           assessment_reminders?: boolean
+          auto_backup?: boolean | null
           created_at?: string | null
+          currency?: string | null
           dark_mode?: boolean | null
+          data_retention?: string | null
+          date_format?: string | null
           email_notifications?: boolean | null
           id?: string
+          language?: string | null
           marketing_emails?: boolean
           push_notifications?: boolean
           report_notifications?: boolean
           report_reminders?: boolean | null
           system_updates?: boolean
+          timezone?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
           assessment_reminders?: boolean
+          auto_backup?: boolean | null
           created_at?: string | null
+          currency?: string | null
           dark_mode?: boolean | null
+          data_retention?: string | null
+          date_format?: string | null
           email_notifications?: boolean | null
           id?: string
+          language?: string | null
           marketing_emails?: boolean
           push_notifications?: boolean
           report_notifications?: boolean
           report_reminders?: boolean | null
           system_updates?: boolean
+          timezone?: string | null
           updated_at?: string | null
           user_id?: string
         }

@@ -98,15 +98,16 @@ export default function Settings() {
         .single();
 
       if (preferences) {
+        const prefs = preferences as any;
         setEmailNotifications(preferences.email_notifications ?? true);
         setReportReminders(preferences.report_reminders ?? true);
         setDarkMode(preferences.dark_mode ?? false);
-        setTimezone(preferences.timezone ?? "Europe/Paris");
-        setLanguage(preferences.language ?? "fr");
-        setCurrency(preferences.currency ?? "EUR");
-        setDateFormat(preferences.date_format ?? "DD/MM/YYYY");
-        setAutoBackup(preferences.auto_backup ?? true);
-        setDataRetention(preferences.data_retention ?? "365");
+        setTimezone(prefs.timezone ?? "Europe/Paris");
+        setLanguage(prefs.language ?? "fr");
+        setCurrency(prefs.currency ?? "EUR");
+        setDateFormat(prefs.date_format ?? "DD/MM/YYYY");
+        setAutoBackup(prefs.auto_backup ?? true);
+        setDataRetention(prefs.data_retention ?? "365");
       }
     } catch (error) {
       console.error('Error loading school data:', error);
