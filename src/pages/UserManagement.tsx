@@ -67,10 +67,10 @@ export default function UserManagement() {
 
   const loadUsers = async () => {
     try {
-      // Récupérer tous les profils
+      // Récupérer tous les profils avec leurs utilisateurs auth
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select('id, user_id, full_name, school_id, created_at');
+        .select('id, user_id, full_name, first_name, last_name, school_id, created_at');
 
       if (profilesError) {
         await logError('Failed to fetch profiles', profilesError, {
@@ -88,13 +88,22 @@ export default function UserManagement() {
           .select('user_id, role')
           .in('user_id', userIds);
 
-        // Mapper les profils avec leurs rôles
+        // Récupérer les emails depuis auth.users (admin uniquement)
+        const { data: authUsers } = await supabase.auth.admin.listUsers();
+
+        // Mapper les profils avec leurs rôles et emails
         const usersWithRoles = profiles.map((profile: any) => {
           const role = userRoles?.find(r => r.user_id === profile.user_id)?.role as 'admin' | 'teacher' | 'user' || 'user';
+          const authUser = authUsers?.users?.find((u: any) => u.id === profile.user_id);
+          const displayName = profile.full_name || 
+                             (profile.first_name && profile.last_name ? `${profile.first_name} ${profile.last_name}` : null) ||
+                             (authUser?.email ? authUser.email.split('@')[0] : null) || 
+                             'Utilisateur';
+          
           return {
             id: profile.user_id,
-            email: 'Email via auth', // Simplifié pour éviter les appels admin
-            full_name: profile.full_name,
+            email: authUser?.email || 'Email non disponible',
+            full_name: displayName,
             created_at: profile.created_at,
             role,
             school_id: profile.school_id
