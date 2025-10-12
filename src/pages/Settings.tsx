@@ -93,21 +93,20 @@ export default function Settings() {
       // Load user preferences
       const { data: preferences } = await supabase
         .from('user_preferences')
-        .select('*')
+        .select('email_notifications, report_reminders, dark_mode, timezone, language, currency, date_format, auto_backup, data_retention')
         .eq('user_id', user.id)
         .single();
 
       if (preferences) {
-        const prefs = preferences as any;
         setEmailNotifications(preferences.email_notifications ?? true);
         setReportReminders(preferences.report_reminders ?? true);
         setDarkMode(preferences.dark_mode ?? false);
-        setTimezone(prefs.timezone ?? "Europe/Paris");
-        setLanguage(prefs.language ?? "fr");
-        setCurrency(prefs.currency ?? "EUR");
-        setDateFormat(prefs.date_format ?? "DD/MM/YYYY");
-        setAutoBackup(prefs.auto_backup ?? true);
-        setDataRetention(prefs.data_retention ?? "365");
+        setTimezone((preferences as any).timezone ?? "Europe/Paris");
+        setLanguage((preferences as any).language ?? "fr");
+        setCurrency((preferences as any).currency ?? "EUR");
+        setDateFormat((preferences as any).date_format ?? "DD/MM/YYYY");
+        setAutoBackup((preferences as any).auto_backup ?? true);
+        setDataRetention((preferences as any).data_retention ?? "365");
       }
     } catch (error) {
       console.error('Error loading school data:', error);
