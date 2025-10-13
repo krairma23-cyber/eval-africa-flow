@@ -8,6 +8,30 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
+import { z } from "zod";
+
+// Secure validation schemas
+const loginSchema = z.object({
+  email: z.string()
+    .trim()
+    .min(5, "Email trop court")
+    .max(254, "Email trop long")
+    .email("Format d'email invalide"),
+  password: z.string()
+    .min(8, "Le mot de passe doit contenir au moins 8 caractères")
+    .max(72, "Mot de passe trop long"),
+});
+
+const signupSchema = loginSchema.extend({
+  firstName: z.string()
+    .trim()
+    .min(2, "Le prénom doit contenir au moins 2 caractères")
+    .max(50, "Prénom trop long"),
+  lastName: z.string()
+    .trim()
+    .min(2, "Le nom doit contenir au moins 2 caractères")
+    .max(50, "Nom trop long"),
+});
 
 export function LoginForm() {
   const [email, setEmail] = useState("");
@@ -22,18 +46,34 @@ export function LoginForm() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate input before API call
+    try {
+      loginSchema.parse({ email, password });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erreur de validation",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
     setLoading(true);
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password,
       });
 
       if (error) {
+        // Don't expose detailed error messages
         toast({
           title: "Erreur de connexion",
-          description: error.message,
+          description: "Email ou mot de passe incorrect.",
           variant: "destructive",
         });
       } else {
@@ -56,28 +96,53 @@ export function LoginForm() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate all signup fields
+    try {
+      signupSchema.parse({ 
+        email, 
+        password, 
+        firstName, 
+        lastName 
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Erreur de validation",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
     setLoading(true);
 
     try {
       const redirectUrl = `${window.location.origin}/`;
       
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: email.trim(),
         password,
         options: {
           emailRedirectTo: redirectUrl,
           data: {
-            first_name: firstName,
-            last_name: lastName,
+            first_name: firstName.trim(),
+            last_name: lastName.trim(),
           },
         },
       });
 
       if (error) {
         console.error("Signup error:", error);
+        // Sanitize error messages
+        const message = error.message.includes("already registered") 
+          ? "Cette adresse email est déjà utilisée."
+          : "Impossible de créer le compte. Veuillez vérifier vos informations.";
+        
         toast({
           title: "Erreur d'inscription",
-          description: error.message || "Impossible de créer le compte. Vérifiez que l'email n'est pas déjà utilisé.",
+          description: message,
           variant: "destructive",
         });
       } else if (data.user) {
@@ -97,7 +162,7 @@ export function LoginForm() {
       console.error("Signup exception:", error);
       toast({
         title: "Erreur",
-        description: error?.message || "Une erreur est survenue lors de l'inscription",
+        description: "Une erreur est survenue lors de l'inscription",
         variant: "destructive",
       });
     } finally {

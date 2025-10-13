@@ -105,74 +105,53 @@ export default function ApiManagement() {
   };
 
   const generateApiKey = async () => {
-    if (!newKeyName.trim()) {
+    if (!newKeyName.trim() || newKeyName.trim().length < 3) {
       toast({
         title: "Erreur",
-        description: "Veuillez saisir un nom pour la clé API",
+        description: "Veuillez saisir un nom valide (min 3 caractères)",
         variant: "destructive",
       });
       return;
     }
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
+      // Call secure edge function to generate the API key
+      const { data, error } = await supabase.functions.invoke('generate-api-key', {
+        body: { name: newKeyName.trim() }
+      });
+
+      if (error) {
+        const message = error.message || 'Une erreur s\'est produite';
         toast({
           title: "Erreur",
-          description: "Vous devez être connecté",
+          description: message,
           variant: "destructive",
         });
         return;
       }
 
-      // Get user's school_id
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('school_id')
-        .eq('user_id', user.id)
-        .single();
-
-      if (!profile?.school_id) {
+      if (!data || !data.key) {
         toast({
           title: "Erreur",
-          description: "Profil utilisateur non trouvé",
+          description: "Échec de la génération de la clé",
           variant: "destructive",
         });
         return;
       }
-
-      // Generate a unique API key
-      const randomPart = Array.from(crypto.getRandomValues(new Uint8Array(24)))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-      const fullKey = `eval_sk_${randomPart}`;
-      const keyPrefix = fullKey.substring(0, 16);
-      
-      // Hash the full key for storage
-      const encoder = new TextEncoder();
-      const data = encoder.encode(fullKey);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const keyHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-      // Insert into database
-      const { data: newKey, error } = await supabase
-        .from('api_keys')
-        .insert({
-          user_id: user.id,
-          school_id: profile.school_id,
-          name: newKeyName,
-          key_hash: keyHash,
-          key_prefix: keyPrefix
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
 
       // Add to local state with full key (only shown once)
-      setApiKeys([{ ...newKey, full_key: fullKey }, ...apiKeys]);
+      const newKeyData: ApiKey = {
+        id: data.key_id,
+        name: data.name,
+        key_prefix: data.key_prefix,
+        created_at: new Date().toISOString(),
+        last_used_at: null,
+        usage_count: 0,
+        is_active: true,
+        full_key: data.key
+      };
+      
+      setApiKeys([newKeyData, ...apiKeys]);
       setNewKeyName("");
       
       toast({
