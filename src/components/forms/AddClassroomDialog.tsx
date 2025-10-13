@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,11 +15,40 @@ interface AddClassroomDialogProps {
 export function AddClassroomDialog({ onClassroomAdded, children }: AddClassroomDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [userSchoolId, setUserSchoolId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     capacity: "",
   });
   const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('school_id')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          
+          if (profile?.school_id) {
+            setUserSchoolId(profile.school_id);
+          }
+        }
+      } catch (error) {
+        await logError('Failed to fetch user profile', error, {
+          component: 'AddClassroomDialog',
+          action: 'FETCH_PROFILE'
+        });
+      }
+    };
+
+    if (open) {
+      fetchUserProfile();
+    }
+  }, [open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,17 +61,105 @@ export function AddClassroomDialog({ onClassroomAdded, children }: AddClassroomD
       return;
     }
 
+    if (!userSchoolId) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de déterminer votre école.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
-      // First, we need to get or create a campus
-      let campusId = '00000000-0000-0000-0000-000000000001'; // Default campus
-      
+      // Get or create a campus
+      let { data: campus } = await supabase
+        .from('campuses')
+        .select('id')
+        .eq('school_id', userSchoolId)
+        .maybeSingle();
+
+      if (!campus) {
+        const { data: newCampus, error: campusError } = await supabase
+          .from('campuses')
+          .insert([{ name: 'Campus Principal', school_id: userSchoolId }])
+          .select('id')
+          .single();
+        
+        if (campusError) throw campusError;
+        campus = newCampus;
+      }
+
+      // Get or create academic year
+      let { data: academicYear } = await supabase
+        .from('academic_years')
+        .select('id')
+        .eq('school_id', userSchoolId)
+        .eq('is_current', true)
+        .maybeSingle();
+
+      if (!academicYear) {
+        const { data: newYear, error: yearError } = await supabase
+          .from('academic_years')
+          .insert([{
+            name: '2025-2026',
+            school_id: userSchoolId,
+            start_date: '2025-09-01',
+            end_date: '2026-06-30',
+            is_current: true
+          }])
+          .select('id')
+          .single();
+        
+        if (yearError) throw yearError;
+        academicYear = newYear;
+      }
+
+      // Get or create a default program and grade level
+      let { data: program } = await supabase
+        .from('programs')
+        .select('id')
+        .eq('school_id', userSchoolId)
+        .maybeSingle();
+
+      if (!program) {
+        const { data: newProgram, error: programError } = await supabase
+          .from('programs')
+          .insert([{ name: 'Programme Général', school_id: userSchoolId }])
+          .select('id')
+          .single();
+        
+        if (programError) throw programError;
+        program = newProgram;
+      }
+
+      let { data: gradeLevel } = await supabase
+        .from('grade_levels')
+        .select('id')
+        .eq('program_id', program.id)
+        .maybeSingle();
+
+      if (!gradeLevel) {
+        const { data: newGrade, error: gradeError } = await supabase
+          .from('grade_levels')
+          .insert([{
+            name: 'Niveau 1',
+            program_id: program.id,
+            level_order: 1
+          }])
+          .select('id')
+          .single();
+        
+        if (gradeError) throw gradeError;
+        gradeLevel = newGrade;
+      }
+
       const { error } = await supabase.from('classrooms').insert([{
         name: formData.name,
-        capacity: formData.capacity ? parseInt(formData.capacity) : null,
-        campus_id: campusId,
-        grade_level_id: '00000000-0000-0000-0000-000000000001', // Default grade level
-        academic_year_id: '00000000-0000-0000-0000-000000000001', // Default academic year
+        capacity: formData.capacity ? parseInt(formData.capacity) : 30,
+        campus_id: campus.id,
+        grade_level_id: gradeLevel.id,
+        academic_year_id: academicYear.id,
       }]);
 
       if (error) throw error;
@@ -101,7 +218,7 @@ export function AddClassroomDialog({ onClassroomAdded, children }: AddClassroomD
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Annuler
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading || !userSchoolId}>
               {loading ? "Ajout..." : "Ajouter"}
             </Button>
           </div>

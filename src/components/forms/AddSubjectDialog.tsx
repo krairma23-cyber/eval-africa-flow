@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,12 +16,41 @@ interface AddSubjectDialogProps {
 export function AddSubjectDialog({ onSubjectAdded, children }: AddSubjectDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [userSchoolId, setUserSchoolId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     code: "",
     description: "",
   });
   const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('school_id')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          
+          if (profile?.school_id) {
+            setUserSchoolId(profile.school_id);
+          }
+        }
+      } catch (error) {
+        await logError('Failed to fetch user profile', error, {
+          component: 'AddSubjectDialog',
+          action: 'FETCH_PROFILE'
+        });
+      }
+    };
+
+    if (open) {
+      fetchUserProfile();
+    }
+  }, [open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,11 +63,20 @@ export function AddSubjectDialog({ onSubjectAdded, children }: AddSubjectDialogP
       return;
     }
 
+    if (!userSchoolId) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de déterminer votre école.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const { error } = await supabase.from('subjects').insert([{
         ...formData,
-        school_id: '00000000-0000-0000-0000-000000000001', // Default school ID
+        school_id: userSchoolId,
       }]);
 
       if (error) throw error;
@@ -107,7 +145,7 @@ export function AddSubjectDialog({ onSubjectAdded, children }: AddSubjectDialogP
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Annuler
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading || !userSchoolId}>
               {loading ? "Ajout..." : "Ajouter"}
             </Button>
           </div>
