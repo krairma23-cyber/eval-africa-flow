@@ -290,19 +290,22 @@ export default function Settings() {
                     type="file"
                     accept="image/jpeg,image/jpg,image/png,image/webp"
                     onChange={handleLogoUpload}
+                    disabled={!schoolId || uploading}
                     className="hidden"
                   />
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
+                    disabled={uploading || !schoolId}
                   >
                     <Upload className="h-4 w-4 mr-2" />
-                    {uploading ? "Téléchargement..." : "Télécharger un logo"}
+                    {uploading
+                      ? "Téléchargement..."
+                      : (!schoolId ? "Chargement du profil..." : "Télécharger un logo")}
                   </Button>
                   <p className="text-xs text-muted-foreground">
-                    JPG, PNG ou WebP. Max 2MB.
+                    {!schoolId ? "Veuillez patienter, chargement du profil..." : "JPG, PNG ou WebP. Max 2MB."}
                   </p>
                 </div>
               </div>
