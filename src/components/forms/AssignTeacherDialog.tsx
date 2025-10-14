@@ -58,9 +58,10 @@ interface Subject {
 interface AssignTeacherDialogProps {
   children: React.ReactNode;
   onAssigned: () => void;
+  teacherId?: string;
 }
 
-export function AssignTeacherDialog({ children, onAssigned }: AssignTeacherDialogProps) {
+export function AssignTeacherDialog({ children, onAssigned, teacherId }: AssignTeacherDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
@@ -71,7 +72,7 @@ export function AssignTeacherDialog({ children, onAssigned }: AssignTeacherDialo
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      teacher_id: "",
+      teacher_id: teacherId || "",
       classroom_id: "",
       subject_id: "",
       coefficient: "1",
@@ -95,6 +96,11 @@ export function AssignTeacherDialog({ children, onAssigned }: AssignTeacherDialo
       if (teachersRes.data) setTeachers(teachersRes.data);
       if (classroomsRes.data) setClassrooms(classroomsRes.data);
       if (subjectsRes.data) setSubjects(subjectsRes.data);
+      
+      // Pre-fill teacher if teacherId is provided
+      if (teacherId) {
+        form.setValue("teacher_id", teacherId);
+      }
     } catch (error) {
       toast({
         title: "Erreur",
@@ -154,7 +160,7 @@ export function AssignTeacherDialog({ children, onAssigned }: AssignTeacherDialo
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Enseignant</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value} disabled={!!teacherId}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Sélectionner un enseignant" />
