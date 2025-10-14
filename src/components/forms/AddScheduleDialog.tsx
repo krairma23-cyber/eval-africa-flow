@@ -32,18 +32,29 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-  classroom_subject_id: z.string().min(1, "Veuillez sélectionner une affectation"),
+  classroom_id: z.string().min(1, "Veuillez sélectionner une classe"),
+  subject_id: z.string().min(1, "Veuillez sélectionner une matière"),
+  teacher_id: z.string().min(1, "Veuillez sélectionner un enseignant"),
   day_of_week: z.string().min(1, "Veuillez sélectionner un jour"),
   start_time: z.string().min(1, "L'heure de début est requise"),
   end_time: z.string().min(1, "L'heure de fin est requise"),
   room_number: z.string().optional(),
 });
 
-interface ClassroomSubject {
+interface Classroom {
   id: string;
-  classrooms: { name: string };
-  subjects: { name: string };
-  teachers: { first_name: string; last_name: string };
+  name: string;
+}
+
+interface Subject {
+  id: string;
+  name: string;
+}
+
+interface Teacher {
+  id: string;
+  first_name: string;
+  last_name: string;
 }
 
 interface AddScheduleDialogProps {
@@ -62,13 +73,17 @@ const DAYS = [
 export function AddScheduleDialog({ children, onScheduleAdded }: AddScheduleDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [classroomSubjects, setClassroomSubjects] = useState<ClassroomSubject[]>([]);
+  const [classrooms, setClassrooms] = useState<Classroom[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      classroom_subject_id: "",
+      classroom_id: "",
+      subject_id: "",
+      teacher_id: "",
       day_of_week: "",
       start_time: "",
       end_time: "",
@@ -78,28 +93,29 @@ export function AddScheduleDialog({ children, onScheduleAdded }: AddScheduleDial
 
   useEffect(() => {
     if (open) {
-      fetchClassroomSubjects();
+      fetchData();
     }
   }, [open]);
 
-  const fetchClassroomSubjects = async () => {
+  const fetchData = async () => {
     try {
-      const { data, error } = await supabase
-        .from("classroom_subjects")
-        .select(`
-          id,
-          classrooms (name),
-          subjects (name),
-          teachers (first_name, last_name)
-        `)
-        .order('id');
+      const [classroomsData, subjectsData, teachersData] = await Promise.all([
+        supabase.from("classrooms").select("id, name").order("name"),
+        supabase.from("subjects").select("id, name").order("name"),
+        supabase.from("teachers").select("id, first_name, last_name").order("last_name"),
+      ]);
 
-      if (error) throw error;
-      setClassroomSubjects(data || []);
+      if (classroomsData.error) throw classroomsData.error;
+      if (subjectsData.error) throw subjectsData.error;
+      if (teachersData.error) throw teachersData.error;
+
+      setClassrooms(classroomsData.data || []);
+      setSubjects(subjectsData.data || []);
+      setTeachers(teachersData.data || []);
     } catch (error) {
       toast({
         title: "Erreur",
-        description: "Impossible de charger les affectations",
+        description: "Impossible de charger les données",
         variant: "destructive",
       });
     }
@@ -109,7 +125,9 @@ export function AddScheduleDialog({ children, onScheduleAdded }: AddScheduleDial
     setLoading(true);
     try {
       const { error } = await supabase.from("schedules").insert({
-        classroom_subject_id: values.classroom_subject_id,
+        classroom_id: values.classroom_id,
+        subject_id: values.subject_id,
+        teacher_id: values.teacher_id,
         day_of_week: parseInt(values.day_of_week),
         start_time: values.start_time,
         end_time: values.end_time,
@@ -152,28 +170,72 @@ export function AddScheduleDialog({ children, onScheduleAdded }: AddScheduleDial
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="classroom_subject_id"
+              name="classroom_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Classe / Matière / Enseignant</FormLabel>
+                  <FormLabel>Classe</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Sélectionner une affectation" />
+                        <SelectValue placeholder="Sélectionner une classe" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="z-[100]">
-                      {classroomSubjects.length === 0 ? (
-                        <div className="p-2 text-sm text-muted-foreground">
-                          Aucune affectation disponible
-                        </div>
-                      ) : (
-                        classroomSubjects.map((cs) => (
-                          <SelectItem key={cs.id} value={cs.id}>
-                            {cs.classrooms.name} - {cs.subjects.name} ({cs.teachers.first_name} {cs.teachers.last_name})
-                          </SelectItem>
-                        ))
-                      )}
+                      {classrooms.map((classroom) => (
+                        <SelectItem key={classroom.id} value={classroom.id}>
+                          {classroom.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="subject_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Matière</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionner une matière" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="z-[100]">
+                      {subjects.map((subject) => (
+                        <SelectItem key={subject.id} value={subject.id}>
+                          {subject.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="teacher_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Enseignant</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionner un enseignant" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="z-[100]">
+                      {teachers.map((teacher) => (
+                        <SelectItem key={teacher.id} value={teacher.id}>
+                          {teacher.first_name} {teacher.last_name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />

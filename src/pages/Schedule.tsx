@@ -13,21 +13,15 @@ interface Schedule {
   start_time: string;
   end_time: string;
   room_number: string | null;
-  classroom_subjects: {
-    id: string;
-    classroom_id: string;
-    subject_id: string;
-    teacher_id: string;
-    classrooms: {
-      name: string;
-    };
-    subjects: {
-      name: string;
-    };
-    teachers: {
-      first_name: string;
-      last_name: string;
-    };
+  classrooms: {
+    name: string;
+  };
+  subjects: {
+    name: string;
+  };
+  teachers: {
+    first_name: string;
+    last_name: string;
   };
 }
 
@@ -56,15 +50,9 @@ export default function Schedule() {
         .from('schedules')
         .select(`
           *,
-          classroom_subjects (
-            id,
-            classroom_id,
-            subject_id,
-            teacher_id,
-            classrooms (name),
-            subjects (name),
-            teachers (first_name, last_name)
-          )
+          classrooms (name),
+          subjects (name),
+          teachers (first_name, last_name)
         `)
         .order('day_of_week')
         .order('start_time');
@@ -182,14 +170,14 @@ export default function Schedule() {
                           {schedule ? (
                             <div className="space-y-1">
                               <div className="font-semibold text-primary">
-                                {schedule.classroom_subjects.subjects.name}
+                                {schedule.subjects.name}
                               </div>
                               <div className="text-sm text-muted-foreground">
-                                {schedule.classroom_subjects.classrooms.name}
+                                {schedule.classrooms.name}
                               </div>
                               <div className="text-sm">
-                                {schedule.classroom_subjects.teachers.first_name}{" "}
-                                {schedule.classroom_subjects.teachers.last_name}
+                                {schedule.teachers.first_name}{" "}
+                                {schedule.teachers.last_name}
                               </div>
                               <div className="text-xs text-muted-foreground">
                                 {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}

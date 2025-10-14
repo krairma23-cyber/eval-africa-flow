@@ -2747,44 +2747,64 @@ export type Database = {
       }
       schedules: {
         Row: {
-          classroom_subject_id: string
+          classroom_id: string
           created_at: string | null
           day_of_week: number
           end_time: string
           id: string
           room_number: string | null
           start_time: string
+          subject_id: string
+          teacher_id: string
           term_id: string | null
           updated_at: string | null
         }
         Insert: {
-          classroom_subject_id: string
+          classroom_id: string
           created_at?: string | null
           day_of_week: number
           end_time: string
           id?: string
           room_number?: string | null
           start_time: string
+          subject_id: string
+          teacher_id: string
           term_id?: string | null
           updated_at?: string | null
         }
         Update: {
-          classroom_subject_id?: string
+          classroom_id?: string
           created_at?: string | null
           day_of_week?: number
           end_time?: string
           id?: string
           room_number?: string | null
           start_time?: string
+          subject_id?: string
+          teacher_id?: string
           term_id?: string | null
           updated_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "schedules_classroom_subject_id_fkey"
-            columns: ["classroom_subject_id"]
+            foreignKeyName: "schedules_classroom_id_fkey"
+            columns: ["classroom_id"]
             isOneToOne: false
-            referencedRelation: "classroom_subjects"
+            referencedRelation: "classrooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedules_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "schedules_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teachers"
             referencedColumns: ["id"]
           },
           {
