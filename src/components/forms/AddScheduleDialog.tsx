@@ -162,12 +162,18 @@ export function AddScheduleDialog({ children, onScheduleAdded }: AddScheduleDial
                         <SelectValue placeholder="Sélectionner une affectation" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
-                      {classroomSubjects.map((cs) => (
-                        <SelectItem key={cs.id} value={cs.id}>
-                          {cs.classrooms.name} - {cs.subjects.name} ({cs.teachers.first_name} {cs.teachers.last_name})
-                        </SelectItem>
-                      ))}
+                    <SelectContent className="z-[100]">
+                      {classroomSubjects.length === 0 ? (
+                        <div className="p-2 text-sm text-muted-foreground">
+                          Aucune affectation disponible
+                        </div>
+                      ) : (
+                        classroomSubjects.map((cs) => (
+                          <SelectItem key={cs.id} value={cs.id}>
+                            {cs.classrooms.name} - {cs.subjects.name} ({cs.teachers.first_name} {cs.teachers.last_name})
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -187,7 +193,7 @@ export function AddScheduleDialog({ children, onScheduleAdded }: AddScheduleDial
                         <SelectValue placeholder="Sélectionner un jour" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="z-[100]">
                       {DAYS.map((day) => (
                         <SelectItem key={day.value} value={day.value}>
                           {day.label}
