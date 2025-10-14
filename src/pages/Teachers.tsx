@@ -9,6 +9,8 @@ import { Search, Plus, GraduationCap, Mail, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddTeacherDialog } from "@/components/forms/AddTeacherDialog";
+import { EditTeacherDialog } from "@/components/forms/EditTeacherDialog";
+import { Pencil } from "lucide-react";
 import { logError } from "@/lib/logger";
 
 interface Teacher {
@@ -203,6 +205,14 @@ export default function Teachers() {
                 <p className="text-xs text-muted-foreground">
                   Ajouté le {formatDate(teacher.created_at)}
                 </p>
+                <div className="pt-2">
+                  <EditTeacherDialog teacher={teacher} onTeacherUpdated={fetchTeachers}>
+                    <Button variant="outline" size="sm" className="w-full">
+                      <Pencil className="h-4 w-4 mr-2" />
+                      Modifier
+                    </Button>
+                  </EditTeacherDialog>
+                </div>
               </CardContent>
             </Card>
           ))}

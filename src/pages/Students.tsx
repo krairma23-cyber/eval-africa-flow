@@ -10,6 +10,8 @@ import { Search, Plus, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
+import { EditStudentDialog } from "@/components/forms/EditStudentDialog";
+import { Pencil } from "lucide-react";
 
 interface Student {
   id: string;
@@ -21,6 +23,7 @@ interface Student {
   parent_name: string;
   parent_phone: string;
   parent_email: string;
+  address: string;
   avatar_url: string | null;
   created_at: string;
 }
@@ -203,6 +206,14 @@ export default function Students() {
                 <p className="text-xs text-muted-foreground">
                   Inscrit le {formatDate(student.created_at)}
                 </p>
+                <div className="pt-2">
+                  <EditStudentDialog student={student} onStudentUpdated={fetchStudents}>
+                    <Button variant="outline" size="sm" className="w-full">
+                      <Pencil className="h-4 w-4 mr-2" />
+                      Modifier
+                    </Button>
+                  </EditStudentDialog>
+                </div>
               </CardContent>
             </Card>
           ))}
