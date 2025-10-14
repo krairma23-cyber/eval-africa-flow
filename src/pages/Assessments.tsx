@@ -6,16 +6,21 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, ClipboardCheck, Calendar } from "lucide-react";
+import { Plus, Search, ClipboardCheck, Calendar, Pencil } from "lucide-react";
 import { AddAssessmentDialog } from "@/components/forms/AddAssessmentDialog";
+import { EditAssessmentDialog } from "@/components/forms/EditAssessmentDialog";
 import { logError } from "@/lib/logger";
 
 interface Assessment {
   id: string;
   title: string;
   description: string | null;
+  assessment_type_id: string;
+  classroom_subject_id: string;
+  term_id: string;
   assessment_date: string;
   max_score: number;
+  coefficient: number;
   created_at: string;
   assessment_types: {
     name: string;
@@ -168,11 +173,31 @@ export default function Assessments() {
           {filteredAssessments.map((assessment) => (
             <Card key={assessment.id} className="hover:shadow-md transition-shadow">
               <CardHeader>
-                <CardTitle className="flex items-center justify-between">
+                <CardTitle className="flex items-center justify-between gap-2">
                   <span className="truncate">{assessment.title}</span>
-                  <Badge variant={getTypeColor(assessment.assessment_types.name)}>
-                    {getTypeLabel(assessment.assessment_types.name)}
-                  </Badge>
+                  <div className="flex gap-2 items-center shrink-0">
+                    <Badge variant={getTypeColor(assessment.assessment_types.name)}>
+                      {getTypeLabel(assessment.assessment_types.name)}
+                    </Badge>
+                    <EditAssessmentDialog
+                      assessment={{
+                        id: assessment.id,
+                        title: assessment.title,
+                        description: assessment.description,
+                        assessment_type_id: assessment.assessment_type_id,
+                        classroom_subject_id: assessment.classroom_subject_id,
+                        term_id: assessment.term_id,
+                        assessment_date: assessment.assessment_date,
+                        max_score: assessment.max_score,
+                        coefficient: assessment.coefficient,
+                      }}
+                      onAssessmentUpdated={fetchAssessments}
+                    >
+                      <Button variant="ghost" size="icon">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </EditAssessmentDialog>
+                  </div>
                 </CardTitle>
                 <CardDescription>
                   {assessment.classroom_subjects.subjects.name} • {assessment.classroom_subjects.classrooms.name}

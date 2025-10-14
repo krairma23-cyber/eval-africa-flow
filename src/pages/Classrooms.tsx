@@ -6,13 +6,18 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, School, Calendar } from "lucide-react";
+import { Plus, Search, School, Calendar, Pencil } from "lucide-react";
 import { AddClassroomDialog } from "@/components/forms/AddClassroomDialog";
+import { EditClassroomDialog } from "@/components/forms/EditClassroomDialog";
 import { logError } from "@/lib/logger";
 
 interface Classroom {
   id: string;
   name: string;
+  campus_id: string;
+  grade_level_id: string;
+  academic_year_id: string;
+  capacity: number;
   created_at: string;
   grade_levels: {
     name: string;
@@ -138,7 +143,23 @@ export default function Classrooms() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>{classroom.name}</span>
-                  <School className="h-5 w-5 text-muted-foreground" />
+                  <div className="flex gap-2">
+                    <EditClassroomDialog
+                      classroom={{
+                        id: classroom.id,
+                        name: classroom.name,
+                        campus_id: classroom.campus_id,
+                        grade_level_id: classroom.grade_level_id,
+                        academic_year_id: classroom.academic_year_id,
+                        capacity: classroom.capacity,
+                      }}
+                      onClassroomUpdated={fetchClassrooms}
+                    >
+                      <Button variant="ghost" size="icon">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </EditClassroomDialog>
+                  </div>
                 </CardTitle>
                 <CardDescription>
                   Niveau {classroom.grade_levels.name} • {classroom.academic_years.name}

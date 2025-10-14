@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, BookOpen, Calendar } from "lucide-react";
+import { Plus, Search, BookOpen, Calendar, Pencil } from "lucide-react";
 import { AddSubjectDialog } from "@/components/forms/AddSubjectDialog";
+import { EditSubjectDialog } from "@/components/forms/EditSubjectDialog";
 import { logError } from "@/lib/logger";
 
 interface Subject {
@@ -153,7 +154,22 @@ export default function Subjects() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>{subject.name}</span>
-                  <Badge variant="outline">{subject.code}</Badge>
+                  <div className="flex gap-2 items-center">
+                    <Badge variant="outline">{subject.code}</Badge>
+                    <EditSubjectDialog
+                      subject={{
+                        id: subject.id,
+                        name: subject.name,
+                        code: subject.code,
+                        description: subject.description,
+                      }}
+                      onSubjectUpdated={fetchSubjects}
+                    >
+                      <Button variant="ghost" size="icon">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </EditSubjectDialog>
+                  </div>
                 </CardTitle>
                 <CardDescription>
                   {subject.description || "Aucune description"}
