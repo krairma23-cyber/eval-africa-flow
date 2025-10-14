@@ -26,6 +26,15 @@ interface Student {
   address: string;
   avatar_url: string | null;
   created_at: string;
+  enrollments: Array<{
+    classroom_id: string;
+    classrooms: {
+      name: string;
+      grade_levels: {
+        name: string;
+      };
+    };
+  }>;
 }
 
 export default function Students() {
@@ -42,7 +51,16 @@ export default function Students() {
     try {
       const { data, error } = await supabase
         .from('students')
-        .select('*')
+        .select(`
+          *,
+          enrollments(
+            classroom_id,
+            classrooms(
+              name,
+              grade_levels(name)
+            )
+          )
+        `)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -203,7 +221,14 @@ export default function Students() {
                     <strong>Téléphone:</strong> {student.parent_phone}
                   </p>
                 )}
-                <p className="text-xs text-muted-foreground">
+                {student.enrollments && student.enrollments.length > 0 && (
+                  <div className="pt-1">
+                    <Badge variant="secondary" className="text-xs">
+                      {student.enrollments[0].classrooms.name} - {student.enrollments[0].classrooms.grade_levels.name}
+                    </Badge>
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground pt-1">
                   Inscrit le {formatDate(student.created_at)}
                 </p>
                 <div className="pt-2">

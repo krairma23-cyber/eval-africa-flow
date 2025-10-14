@@ -25,6 +25,15 @@ interface Classroom {
   academic_years: {
     name: string;
   };
+  enrollments: Array<{
+    id: string;
+  }>;
+  classroom_subjects: Array<{
+    id: string;
+    subjects: {
+      name: string;
+    };
+  }>;
 }
 
 export default function Classrooms() {
@@ -45,7 +54,12 @@ export default function Classrooms() {
         .select(`
           *,
           grade_levels(name),
-          academic_years(name)
+          academic_years(name),
+          enrollments(id),
+          classroom_subjects(
+            id,
+            subjects(name)
+          )
         `)
         .order("name");
 
@@ -165,8 +179,29 @@ export default function Classrooms() {
                   Niveau {classroom.grade_levels.name} • {classroom.academic_years.name}
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="text-sm text-muted-foreground">
+              <CardContent className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">Élèves inscrits:</span>
+                  <Badge variant="outline">{classroom.enrollments?.length || 0} / {classroom.capacity}</Badge>
+                </div>
+                {classroom.classroom_subjects && classroom.classroom_subjects.length > 0 && (
+                  <div className="space-y-1">
+                    <span className="text-sm text-muted-foreground">Matières:</span>
+                    <div className="flex flex-wrap gap-1">
+                      {classroom.classroom_subjects.slice(0, 3).map((cs) => (
+                        <Badge key={cs.id} variant="secondary" className="text-xs">
+                          {cs.subjects.name}
+                        </Badge>
+                      ))}
+                      {classroom.classroom_subjects.length > 3 && (
+                        <Badge variant="secondary" className="text-xs">
+                          +{classroom.classroom_subjects.length - 3}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                )}
+                <div className="text-xs text-muted-foreground pt-2 border-t">
                   Créée le {formatDate(classroom.created_at)}
                 </div>
               </CardContent>
