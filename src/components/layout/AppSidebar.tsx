@@ -13,7 +13,8 @@ import {
   Code,
   HelpCircle,
   Bell,
-  UserCog
+  UserCog,
+  Calendar
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -36,6 +37,7 @@ const menuItems = [
   { title: "Enseignants", url: "/dashboard/teachers", icon: GraduationCap },
   { title: "Classes", url: "/dashboard/classrooms", icon: School },
   { title: "Matières", url: "/dashboard/subjects", icon: BookOpen },
+  { title: "Emploi du Temps", url: "/dashboard/schedule", icon: Calendar },
   { title: "Évaluations", url: "/dashboard/assessments", icon: ClipboardCheck },
   { title: "Bulletins", url: "/dashboard/reports", icon: FileText },
   { title: "Affectations", url: "/dashboard/assignments", icon: UserCog },

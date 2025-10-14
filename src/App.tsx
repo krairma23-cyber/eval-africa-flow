@@ -24,6 +24,7 @@ import Notifications from "./pages/Notifications";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import DataPrivacy from "./pages/DataPrivacy";
 import Assignments from "./pages/Assignments";
+import Schedule from "./pages/Schedule";
 import PaymentCallback from "./pages/PaymentCallback";
 import { CookieConsent } from "./components/gdpr/CookieConsent";
 import { TestModeBanner } from "./components/layout/TestModeBanner";
@@ -53,6 +54,7 @@ const App = () => (
           <Route path="assessments" element={<Assessments />} />
           <Route path="reports" element={<Reports />} />
           <Route path="assignments" element={<Assignments />} />
+          <Route path="schedule" element={<Schedule />} />
           <Route path="settings" element={<Settings />} />
           <Route path="billing" element={<Billing />} />
           <Route path="api" element={<ApiManagement />} />
