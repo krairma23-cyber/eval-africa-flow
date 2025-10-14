@@ -110,21 +110,23 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <div className="px-4 py-4 border-b border-border">
-            <div className="flex items-center gap-3">
+            <div className="flex items-start gap-3">
               {schoolLogo ? (
                 <img 
                   src={schoolLogo}
                   alt={schoolName}
                   loading="lazy"
                   onError={() => setSchoolLogo(null)}
-                  className="w-10 h-10 object-contain rounded"
+                  className="w-10 h-10 object-contain rounded flex-shrink-0"
                 />
               ) : (
-                <School className="w-10 h-10 text-primary" />
+                <School className="w-10 h-10 text-primary flex-shrink-0" />
               )}
-              <SidebarGroupLabel className="text-lg font-semibold text-primary">
-                {schoolName}
-              </SidebarGroupLabel>
+              <div className="flex-1 min-w-0">
+                <SidebarGroupLabel className="text-lg font-semibold text-primary break-words whitespace-normal leading-tight">
+                  {schoolName}
+                </SidebarGroupLabel>
+              </div>
             </div>
           </div>
           <SidebarGroupContent>
