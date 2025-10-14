@@ -11,7 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
 import { EditStudentDialog } from "@/components/forms/EditStudentDialog";
-import { Pencil } from "lucide-react";
+import { EnrollStudentDialog } from "@/components/forms/EnrollStudentDialog";
+import { Pencil, UserPlus } from "lucide-react";
 
 interface Student {
   id: string;
@@ -231,9 +232,24 @@ export default function Students() {
                 <p className="text-xs text-muted-foreground pt-1">
                   Inscrit le {formatDate(student.created_at)}
                 </p>
-                <div className="pt-2">
+                <div className="pt-2 flex gap-2">
+                  {!student.enrollments || student.enrollments.length === 0 ? (
+                    <EnrollStudentDialog studentId={student.id} onEnrollmentAdded={fetchStudents}>
+                      <Button variant="default" size="sm" className="flex-1 h-8">
+                        <UserPlus className="h-3 w-3 mr-2" />
+                        Inscrire
+                      </Button>
+                    </EnrollStudentDialog>
+                  ) : (
+                    <EnrollStudentDialog studentId={student.id} onEnrollmentAdded={fetchStudents}>
+                      <Button variant="outline" size="sm" className="flex-1 h-8">
+                        <UserPlus className="h-3 w-3 mr-2" />
+                        Changer
+                      </Button>
+                    </EnrollStudentDialog>
+                  )}
                   <EditStudentDialog student={student} onStudentUpdated={fetchStudents}>
-                    <Button variant="outline" size="sm" className="w-full h-8">
+                    <Button variant="outline" size="sm" className="flex-1 h-8">
                       <Pencil className="h-3 w-3 mr-2" />
                       Modifier
                     </Button>

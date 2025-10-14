@@ -56,10 +56,12 @@ interface AcademicYear {
 
 interface EnrollStudentDialogProps {
   children: React.ReactNode;
-  onEnrolled: () => void;
+  onEnrollmentAdded?: () => void;
+  onEnrolled?: () => void;
+  studentId?: string;
 }
 
-export function EnrollStudentDialog({ children, onEnrolled }: EnrollStudentDialogProps) {
+export function EnrollStudentDialog({ children, onEnrolled, onEnrollmentAdded, studentId }: EnrollStudentDialogProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState<Student[]>([]);
@@ -70,7 +72,7 @@ export function EnrollStudentDialog({ children, onEnrolled }: EnrollStudentDialo
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      student_id: "",
+      student_id: studentId || "",
       classroom_id: "",
       academic_year_id: "",
     },
@@ -100,6 +102,10 @@ export function EnrollStudentDialog({ children, onEnrolled }: EnrollStudentDialo
           form.setValue("academic_year_id", currentYear.id);
         }
       }
+      // Pre-fill student if studentId is provided
+      if (studentId) {
+        form.setValue("student_id", studentId);
+      }
     } catch (error) {
       toast({
         title: "Erreur",
@@ -128,7 +134,8 @@ export function EnrollStudentDialog({ children, onEnrolled }: EnrollStudentDialo
 
       form.reset();
       setOpen(false);
-      onEnrolled();
+      onEnrolled?.();
+      onEnrollmentAdded?.();
     } catch (error: any) {
       toast({
         title: "Erreur",
@@ -159,7 +166,7 @@ export function EnrollStudentDialog({ children, onEnrolled }: EnrollStudentDialo
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Élève</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value} disabled={!!studentId}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Sélectionner un élève" />
