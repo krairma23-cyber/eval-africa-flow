@@ -4,11 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, Plus, Clock } from "lucide-react";
+import { Calendar, Plus, Clock, Edit } from "lucide-react";
 import { AddScheduleDialog } from "@/components/forms/AddScheduleDialog";
+import { EditScheduleDialog } from "@/components/forms/EditScheduleDialog";
 
 interface Schedule {
   id: string;
+  classroom_id: string;
+  subject_id: string;
+  teacher_id: string;
   day_of_week: number;
   start_time: string;
   end_time: string;
@@ -168,21 +172,29 @@ export default function Schedule() {
                       return (
                         <td key={day} className="border p-3">
                           {schedule ? (
-                            <div className="space-y-1">
-                              <div className="font-semibold text-primary">
-                                {schedule.subjects.name}
+                            <div className="space-y-2">
+                              <div className="space-y-1">
+                                <div className="font-semibold text-primary">
+                                  {schedule.subjects.name}
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  {schedule.classrooms.name}
+                                </div>
+                                <div className="text-sm">
+                                  {schedule.teachers.first_name}{" "}
+                                  {schedule.teachers.last_name}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}
+                                  {schedule.room_number && ` • Salle ${schedule.room_number}`}
+                                </div>
                               </div>
-                              <div className="text-sm text-muted-foreground">
-                                {schedule.classrooms.name}
-                              </div>
-                              <div className="text-sm">
-                                {schedule.teachers.first_name}{" "}
-                                {schedule.teachers.last_name}
-                              </div>
-                              <div className="text-xs text-muted-foreground">
-                                {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}
-                                {schedule.room_number && ` • Salle ${schedule.room_number}`}
-                              </div>
+                              <EditScheduleDialog schedule={schedule} onScheduleUpdated={fetchSchedules}>
+                                <Button variant="outline" size="sm" className="w-full">
+                                  <Edit className="h-3 w-3 mr-1" />
+                                  Modifier
+                                </Button>
+                              </EditScheduleDialog>
                             </div>
                           ) : (
                             <div className="text-center text-muted-foreground text-sm">-</div>
