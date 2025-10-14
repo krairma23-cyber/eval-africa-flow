@@ -169,37 +169,37 @@ export default function Students() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredStudents.map((student) => (
             <Card key={student.id} className="hover:shadow-md transition-shadow">
-              <CardHeader className="flex flex-col items-center">
-                <Avatar className="h-20 w-20 mb-4">
+              <CardHeader className="flex flex-col items-center pb-3 pt-4">
+                <Avatar className="h-16 w-16 mb-3">
                   <AvatarImage src={student.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${student.first_name} ${student.last_name}`} />
                   <AvatarFallback>{student.first_name[0]}{student.last_name[0]}</AvatarFallback>
                 </Avatar>
-                <CardTitle className="flex items-center justify-between w-full">
-                  <span>{student.first_name} {student.last_name}</span>
-                  <Badge variant={student.gender === 'M' ? 'default' : 'secondary'}>
+                <CardTitle className="flex items-center justify-between w-full text-lg">
+                  <span className="truncate">{student.first_name} {student.last_name}</span>
+                  <Badge variant={student.gender === 'M' ? 'default' : 'secondary'} className="ml-2 flex-shrink-0">
                     {student.gender === 'M' ? 'M' : 'F'}
                   </Badge>
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs">
                   N° élève: {student.student_number}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-1.5 pt-0 pb-4">
                 {student.date_of_birth && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     <strong>Âge:</strong> {getAge(student.date_of_birth)} ans
                   </p>
                 )}
                 {student.parent_name && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground truncate">
                     <strong>Parent:</strong> {student.parent_name}
                   </p>
                 )}
                 {student.parent_phone && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     <strong>Téléphone:</strong> {student.parent_phone}
                   </p>
                 )}
@@ -208,8 +208,8 @@ export default function Students() {
                 </p>
                 <div className="pt-2">
                   <EditStudentDialog student={student} onStudentUpdated={fetchStudents}>
-                    <Button variant="outline" size="sm" className="w-full">
-                      <Pencil className="h-4 w-4 mr-2" />
+                    <Button variant="outline" size="sm" className="w-full h-8">
+                      <Pencil className="h-3 w-3 mr-2" />
                       Modifier
                     </Button>
                   </EditStudentDialog>

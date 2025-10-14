@@ -166,39 +166,39 @@ export default function Teachers() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredTeachers.map((teacher) => (
             <Card key={teacher.id} className="hover:shadow-md transition-shadow">
-              <CardHeader className="flex flex-col items-center">
-                <Avatar className="h-20 w-20 mb-4">
+              <CardHeader className="flex flex-col items-center pb-3 pt-4">
+                <Avatar className="h-16 w-16 mb-3">
                   <AvatarImage src={teacher.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${teacher.first_name} ${teacher.last_name}`} />
                   <AvatarFallback>{teacher.first_name[0]}{teacher.last_name[0]}</AvatarFallback>
                 </Avatar>
-                <CardTitle className="flex items-center justify-between w-full">
-                  <span>{teacher.first_name} {teacher.last_name}</span>
+                <CardTitle className="flex items-center justify-between w-full text-lg">
+                  <span className="truncate">{teacher.first_name} {teacher.last_name}</span>
                   {teacher.specialization && (
-                    <Badge variant="secondary">{teacher.specialization}</Badge>
+                    <Badge variant="secondary" className="ml-2 flex-shrink-0 text-xs">{teacher.specialization}</Badge>
                   )}
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs">
                   N° enseignant: {teacher.teacher_number}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-1.5 pt-0 pb-4">
                 {teacher.email && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Mail className="h-4 w-4" />
-                    <span>{teacher.email}</span>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Mail className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">{teacher.email}</span>
                   </div>
                 )}
                 {teacher.phone && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Phone className="h-4 w-4" />
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Phone className="h-3 w-3 flex-shrink-0" />
                     <span>{teacher.phone}</span>
                   </div>
                 )}
                 {teacher.hire_date && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     <strong>Embauché le:</strong> {formatDate(teacher.hire_date)}
                   </p>
                 )}
@@ -207,8 +207,8 @@ export default function Teachers() {
                 </p>
                 <div className="pt-2">
                   <EditTeacherDialog teacher={teacher} onTeacherUpdated={fetchTeachers}>
-                    <Button variant="outline" size="sm" className="w-full">
-                      <Pencil className="h-4 w-4 mr-2" />
+                    <Button variant="outline" size="sm" className="w-full h-8">
+                      <Pencil className="h-3 w-3 mr-2" />
                       Modifier
                     </Button>
                   </EditTeacherDialog>
