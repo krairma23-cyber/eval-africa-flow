@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { logError } from "@/lib/logger";
+import { PaymentPhoneDialog } from "@/components/forms/PaymentPhoneDialog";
 
 interface SubscriptionPlan {
   id: string;
@@ -51,6 +52,8 @@ export default function Billing() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [isYearly, setIsYearly] = useState(false);
+  const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
+  const [pendingPlanId, setPendingPlanId] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -216,6 +219,23 @@ export default function Billing() {
   };
 
   const handleUpgrade = async (planId: string) => {
+    const selectedPlan = plans.find(p => p.id === planId);
+    if (!selectedPlan) return;
+
+    const amount = isYearly ? selectedPlan.price_yearly : selectedPlan.price_monthly;
+
+    // Handle free plan without phone number
+    if (amount === 0) {
+      await processUpgrade(planId, null);
+      return;
+    }
+
+    // For paid plans, ask for phone number first
+    setPendingPlanId(planId);
+    setPhoneDialogOpen(true);
+  };
+
+  const processUpgrade = async (planId: string, phoneNumber: string | null) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       
@@ -235,14 +255,13 @@ export default function Billing() {
 
       const amount = isYearly ? selectedPlan.price_yearly : selectedPlan.price_monthly;
 
-      // Handle free plan (Starter) - activate via secure edge function
+      // Handle free plan (Starter)
       if (amount === 0) {
         toast({
           title: "Activation du plan gratuit",
           description: "Activation en cours...",
         });
 
-        // Activate via secure edge function
         const { data: activateData, error: activateError } = await supabase.functions.invoke('activate-subscription', {
           body: {
             user_id: user.id,
@@ -268,19 +287,19 @@ export default function Billing() {
         return;
       }
 
-      // Handle paid plans - use Paystack
+      // Handle paid plans with phone number
       toast({
         title: "Initialisation du paiement",
         description: "Veuillez patienter...",
       });
 
-      // Initialize payment with Paystack
       const { data, error } = await supabase.functions.invoke('paystack-payment', {
         body: {
           email: user.email,
-          amount: amount, // Amount in FCFA
+          amount: amount,
           planId: selectedPlan.id,
           planName: selectedPlan.name,
+          phone_number: phoneNumber,
           callback_url: `${window.location.origin}/payment-callback`
         }
       });
@@ -288,7 +307,6 @@ export default function Billing() {
       if (error) throw error;
 
       if (data.authorization_url) {
-        // Store payment info for callback verification
         localStorage.setItem('pending_payment', JSON.stringify({
           reference: data.reference,
           plan_id: selectedPlan.id,
@@ -296,7 +314,6 @@ export default function Billing() {
           billing_period: isYearly ? 'yearly' : 'monthly'
         }));
 
-        // Redirect to Paystack payment page
         window.location.href = data.authorization_url;
       }
     } catch (error) {
@@ -666,6 +683,26 @@ export default function Billing() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <PaymentPhoneDialog
+        open={phoneDialogOpen}
+        onOpenChange={setPhoneDialogOpen}
+        onConfirm={(phone) => {
+          setPhoneDialogOpen(false);
+          if (pendingPlanId) {
+            processUpgrade(pendingPlanId, phone);
+            setPendingPlanId(null);
+          }
+        }}
+        planName={plans.find(p => p.id === pendingPlanId)?.name || ""}
+        amount={
+          pendingPlanId 
+            ? (isYearly 
+                ? plans.find(p => p.id === pendingPlanId)?.price_yearly 
+                : plans.find(p => p.id === pendingPlanId)?.price_monthly) || 0
+            : 0
+        }
+      />
     </div>
   );
 }

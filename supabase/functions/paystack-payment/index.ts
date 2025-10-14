@@ -10,6 +10,7 @@ interface PaymentRequest {
   amount: number;
   planId: string;
   planName: string;
+  phone_number?: string;
   callback_url?: string;
 }
 
@@ -26,7 +27,7 @@ serve(async (req) => {
       throw new Error('PAYSTACK_SECRET_KEY not configured');
     }
 
-    const { email, amount, planId, planName, callback_url } = await req.json() as PaymentRequest;
+    const { email, amount, planId, planName, phone_number, callback_url } = await req.json() as PaymentRequest;
 
     // Validate input
     if (!email || !amount || !planId) {
@@ -41,29 +42,36 @@ serve(async (req) => {
     // 1 FCFA = 100 kobo, so multiply by 100
     const amountInKobo = Math.round(amount * 100);
     
+    const paymentBody: any = {
+      email,
+      amount: amountInKobo,
+      currency: 'XOF',
+      callback_url: callback_url || `${req.headers.get('origin')}/billing?payment=success`,
+      metadata: {
+        plan_id: planId,
+        plan_name: planName,
+        custom_fields: [
+          {
+            display_name: "Plan",
+            variable_name: "plan_name",
+            value: planName
+          }
+        ]
+      }
+    };
+
+    // Add phone number if provided (not stored, only for this transaction)
+    if (phone_number) {
+      paymentBody.metadata.phone_last_4 = phone_number.slice(-4);
+    }
+    
     const paystackResponse = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${paystackSecretKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        email,
-        amount: amountInKobo,
-        currency: 'XOF', // West African CFA franc
-        callback_url: callback_url || `${req.headers.get('origin')}/billing?payment=success`,
-        metadata: {
-          plan_id: planId,
-          plan_name: planName,
-          custom_fields: [
-            {
-              display_name: "Plan",
-              variable_name: "plan_name",
-              value: planName
-            }
-          ]
-        }
-      })
+      body: JSON.stringify(paymentBody)
     });
 
     const paystackData = await paystackResponse.json();
