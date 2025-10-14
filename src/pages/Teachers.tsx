@@ -10,8 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddTeacherDialog } from "@/components/forms/AddTeacherDialog";
 import { EditTeacherDialog } from "@/components/forms/EditTeacherDialog";
-import { AssignTeacherDialog } from "@/components/forms/AssignTeacherDialog";
-import { Pencil, BookOpen } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { logError } from "@/lib/logger";
 
 interface Teacher {
@@ -206,15 +205,9 @@ export default function Teachers() {
                 <p className="text-xs text-muted-foreground">
                   Ajouté le {formatDate(teacher.created_at)}
                 </p>
-                <div className="pt-2 flex gap-2">
-                  <AssignTeacherDialog teacherId={teacher.id} onAssigned={fetchTeachers}>
-                    <Button variant="default" size="sm" className="flex-1 h-8">
-                      <BookOpen className="h-3 w-3 mr-2" />
-                      Affecter
-                    </Button>
-                  </AssignTeacherDialog>
+                <div className="pt-2">
                   <EditTeacherDialog teacher={teacher} onTeacherUpdated={fetchTeachers}>
-                    <Button variant="outline" size="sm" className="flex-1 h-8">
+                    <Button variant="outline" size="sm" className="w-full h-8">
                       <Pencil className="h-3 w-3 mr-2" />
                       Modifier
                     </Button>
