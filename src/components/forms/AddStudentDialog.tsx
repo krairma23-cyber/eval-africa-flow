@@ -71,6 +71,18 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
           
           if (profile?.school_id) {
             setUserSchoolId(profile.school_id);
+            
+            // Générer un matricule automatique
+            const year = new Date().getFullYear().toString().slice(-2);
+            const { count } = await supabase
+              .from('students')
+              .select('*', { count: 'exact', head: true })
+              .eq('school_id', profile.school_id);
+            
+            const nextNumber = (count || 0) + 1;
+            const studentNumber = `EL${year}${nextNumber.toString().padStart(4, '0')}`;
+            
+            setFormData(prev => ({ ...prev, student_number: studentNumber }));
           } else {
             toast({
               title: "Erreur",
@@ -253,12 +265,13 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
             </div>
           </div>
           <div>
-            <Label htmlFor="student_number">Numéro d'élève *</Label>
+            <Label htmlFor="student_number">Matricule *</Label>
             <Input
               id="student_number"
               value={formData.student_number}
               onChange={(e) => setFormData(prev => ({ ...prev, student_number: e.target.value }))}
               required
+              placeholder="Généré automatiquement"
             />
           </div>
           <div>
