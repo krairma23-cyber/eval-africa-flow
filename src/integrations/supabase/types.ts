@@ -2832,6 +2832,8 @@ export type Database = {
           name: string
           neighborhood: string | null
           phone: string | null
+          phone_2: string | null
+          postal_code: string | null
           updated_at: string | null
         }
         Insert: {
@@ -2849,6 +2851,8 @@ export type Database = {
           name: string
           neighborhood?: string | null
           phone?: string | null
+          phone_2?: string | null
+          postal_code?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -2866,6 +2870,8 @@ export type Database = {
           name?: string
           neighborhood?: string | null
           phone?: string | null
+          phone_2?: string | null
+          postal_code?: string | null
           updated_at?: string | null
         }
         Relationships: []

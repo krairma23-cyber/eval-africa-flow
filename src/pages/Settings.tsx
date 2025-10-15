@@ -29,6 +29,9 @@ export default function Settings() {
   const [municipality, setMunicipality] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
   const [geographicalLocation, setGeographicalLocation] = useState("");
+  const [email, setEmail] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [phone2, setPhone2] = useState("");
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [reportReminders, setReportReminders] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
@@ -69,7 +72,7 @@ export default function Settings() {
         // Get school data including logo, address, and academic year
         const { data: school } = await supabase
           .from('schools')
-          .select('name, logo_url, address, academic_year, city, phone, municipality, neighborhood, geographical_location')
+          .select('name, logo_url, address, academic_year, city, phone, municipality, neighborhood, geographical_location, email, postal_code, phone_2')
           .eq('id', profile.school_id)
           .single();
 
@@ -82,6 +85,9 @@ export default function Settings() {
           setMunicipality((school as any).municipality || "");
           setNeighborhood((school as any).neighborhood || "");
           setGeographicalLocation((school as any).geographical_location || "");
+          setEmail((school as any).email || "");
+          setPostalCode((school as any).postal_code || "");
+          setPhone2((school as any).phone_2 || "");
           
           if (school.logo_url) {
             const raw = school.logo_url.trim();
@@ -218,6 +224,9 @@ export default function Settings() {
           municipality: municipality,
           neighborhood: neighborhood,
           geographical_location: geographicalLocation,
+          email: email,
+          postal_code: postalCode,
+          phone_2: phone2,
         })
         .eq('id', schoolId);
 
@@ -369,6 +378,35 @@ export default function Settings() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="Exemple: +33 1 23 45 67 89"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="phone2">Téléphone 2</Label>
+              <Input
+                id="phone2"
+                type="tel"
+                value={phone2}
+                onChange={(e) => setPhone2(e.target.value)}
+                placeholder="Exemple: +33 1 98 76 54 32"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Exemple: contact@ecole.fr"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="postal-code">Code postal</Label>
+              <Input
+                id="postal-code"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+                placeholder="Exemple: 75015"
               />
             </div>
             <div className="grid gap-2">
