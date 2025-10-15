@@ -10,7 +10,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddTeacherDialog } from "@/components/forms/AddTeacherDialog";
 import { EditTeacherDialog } from "@/components/forms/EditTeacherDialog";
-import { Pencil } from "lucide-react";
+import { AssignTeacherDialog } from "@/components/forms/AssignTeacherDialog";
+import { TeacherClassesDialog } from "@/components/forms/TeacherClassesDialog";
+import { Pencil, BookOpen, UserPlus } from "lucide-react";
 import { logError } from "@/lib/logger";
 
 interface Teacher {
@@ -205,7 +207,24 @@ export default function Teachers() {
                 <p className="text-xs text-muted-foreground">
                   Ajouté le {formatDate(teacher.created_at)}
                 </p>
-                <div className="pt-2">
+                <div className="pt-2 space-y-1.5">
+                  <TeacherClassesDialog 
+                    teacherId={teacher.id} 
+                    teacherName={`${teacher.first_name} ${teacher.last_name}`}
+                  >
+                    <Button variant="default" size="sm" className="w-full h-8">
+                      <BookOpen className="h-3 w-3 mr-2" />
+                      Mes Classes
+                    </Button>
+                  </TeacherClassesDialog>
+                  
+                  <AssignTeacherDialog teacherId={teacher.id} onAssigned={fetchTeachers}>
+                    <Button variant="outline" size="sm" className="w-full h-8">
+                      <UserPlus className="h-3 w-3 mr-2" />
+                      Assigner
+                    </Button>
+                  </AssignTeacherDialog>
+
                   <EditTeacherDialog teacher={teacher} onTeacherUpdated={fetchTeachers}>
                     <Button variant="outline" size="sm" className="w-full h-8">
                       <Pencil className="h-3 w-3 mr-2" />
