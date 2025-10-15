@@ -3454,7 +3454,9 @@ export type Database = {
           id: string
           is_current: boolean | null
           name: string
+          school_id: string
           start_date: string
+          term_number: number | null
           updated_at: string | null
         }
         Insert: {
@@ -3464,7 +3466,9 @@ export type Database = {
           id?: string
           is_current?: boolean | null
           name: string
+          school_id: string
           start_date: string
+          term_number?: number | null
           updated_at?: string | null
         }
         Update: {
@@ -3474,7 +3478,9 @@ export type Database = {
           id?: string
           is_current?: boolean | null
           name?: string
+          school_id?: string
           start_date?: string
+          term_number?: number | null
           updated_at?: string | null
         }
         Relationships: [
