@@ -12,7 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
 import { EditStudentDialog } from "@/components/forms/EditStudentDialog";
 import { EnrollStudentDialog } from "@/components/forms/EnrollStudentDialog";
-import { Pencil, UserPlus } from "lucide-react";
+import { Pencil, UserPlus, DollarSign } from "lucide-react";
+import { ManagePaymentDialog } from "@/components/forms/ManagePaymentDialog";
 
 interface Student {
   id: string;
@@ -27,6 +28,11 @@ interface Student {
   address: string;
   avatar_url: string | null;
   created_at: string;
+  tuition_fee?: number;
+  amount_paid?: number;
+  payment_status?: string;
+  payment_due_date?: string;
+  payment_notes?: string;
   enrollments: Array<{
     classroom_id: string;
     classrooms: {
@@ -232,6 +238,36 @@ export default function Students() {
                 <p className="text-xs text-muted-foreground pt-1">
                   Inscrit le {formatDate(student.created_at)}
                 </p>
+                
+                {/* Payment Status */}
+                {student.tuition_fee && student.tuition_fee > 0 && (
+                  <div className="pt-2 border-t mt-2">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-xs font-medium">Scolarité:</span>
+                      <Badge 
+                        variant={
+                          student.payment_status === 'paid' ? 'default' : 
+                          student.payment_status === 'partial' ? 'secondary' : 
+                          'destructive'
+                        }
+                        className="text-xs"
+                      >
+                        {student.payment_status === 'paid' ? 'Payé' : 
+                         student.payment_status === 'partial' ? 'Partiel' : 
+                         'Non payé'}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Payé: {(student.amount_paid || 0).toLocaleString('fr-FR')} / {student.tuition_fee.toLocaleString('fr-FR')} FCFA
+                    </p>
+                    {student.payment_status !== 'paid' && (
+                      <p className="text-xs text-destructive font-medium">
+                        Reste: {((student.tuition_fee || 0) - (student.amount_paid || 0)).toLocaleString('fr-FR')} FCFA
+                      </p>
+                    )}
+                  </div>
+                )}
+                
                 <div className="pt-2 flex gap-2">
                   {!student.enrollments || student.enrollments.length === 0 ? (
                     <EnrollStudentDialog studentId={student.id} onEnrollmentAdded={fetchStudents}>
@@ -248,8 +284,23 @@ export default function Students() {
                       </Button>
                     </EnrollStudentDialog>
                   )}
+                  <ManagePaymentDialog
+                    studentId={student.id}
+                    studentName={`${student.first_name} ${student.last_name}`}
+                    currentTuitionFee={student.tuition_fee}
+                    currentAmountPaid={student.amount_paid}
+                    currentPaymentStatus={student.payment_status}
+                    currentDueDate={student.payment_due_date}
+                    currentNotes={student.payment_notes}
+                    onPaymentUpdated={fetchStudents}
+                  >
+                    <Button variant="outline" size="sm" className="h-8">
+                      <DollarSign className="h-3 w-3 mr-2" />
+                      Paiement
+                    </Button>
+                  </ManagePaymentDialog>
                   <EditStudentDialog student={student} onStudentUpdated={fetchStudents}>
-                    <Button variant="outline" size="sm" className="flex-1 h-8">
+                    <Button variant="outline" size="sm" className="h-8">
                       <Pencil className="h-3 w-3 mr-2" />
                       Modifier
                     </Button>

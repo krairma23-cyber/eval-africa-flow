@@ -3099,6 +3099,7 @@ export type Database = {
       students: {
         Row: {
           address: string | null
+          amount_paid: number | null
           avatar_url: string | null
           created_at: string | null
           date_of_birth: string | null
@@ -3109,12 +3110,17 @@ export type Database = {
           parent_email: string | null
           parent_name: string | null
           parent_phone: string | null
+          payment_due_date: string | null
+          payment_notes: string | null
+          payment_status: string | null
           school_id: string
           student_number: string
+          tuition_fee: number | null
           updated_at: string | null
         }
         Insert: {
           address?: string | null
+          amount_paid?: number | null
           avatar_url?: string | null
           created_at?: string | null
           date_of_birth?: string | null
@@ -3125,12 +3131,17 @@ export type Database = {
           parent_email?: string | null
           parent_name?: string | null
           parent_phone?: string | null
+          payment_due_date?: string | null
+          payment_notes?: string | null
+          payment_status?: string | null
           school_id: string
           student_number: string
+          tuition_fee?: number | null
           updated_at?: string | null
         }
         Update: {
           address?: string | null
+          amount_paid?: number | null
           avatar_url?: string | null
           created_at?: string | null
           date_of_birth?: string | null
@@ -3141,8 +3152,12 @@ export type Database = {
           parent_email?: string | null
           parent_name?: string | null
           parent_phone?: string | null
+          payment_due_date?: string | null
+          payment_notes?: string | null
+          payment_status?: string | null
           school_id?: string
           student_number?: string
+          tuition_fee?: number | null
           updated_at?: string | null
         }
         Relationships: [
