@@ -4,10 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar, Plus, Clock, Edit, UserCheck } from "lucide-react";
+import { Calendar, Plus, Clock, Edit } from "lucide-react";
 import { AddScheduleDialog } from "@/components/forms/AddScheduleDialog";
 import { EditScheduleDialog } from "@/components/forms/EditScheduleDialog";
-import { TeacherAttendanceDialog } from "@/components/forms/TeacherAttendanceDialog";
 
 interface Schedule {
   id: string;
@@ -119,20 +118,12 @@ export default function Schedule() {
             Gestion des horaires de cours
           </p>
         </div>
-        <div className="flex gap-2">
-          <TeacherAttendanceDialog>
-            <Button variant="outline">
-              <UserCheck className="h-4 w-4 mr-2" />
-              Présence enseignants
-            </Button>
-          </TeacherAttendanceDialog>
-          <AddScheduleDialog onScheduleAdded={fetchSchedules}>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Ajouter un créneau
-            </Button>
-          </AddScheduleDialog>
-        </div>
+        <AddScheduleDialog onScheduleAdded={fetchSchedules}>
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Ajouter un créneau
+          </Button>
+        </AddScheduleDialog>
       </div>
 
       {schedules.length === 0 ? (

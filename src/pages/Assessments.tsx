@@ -6,10 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, ClipboardCheck, Calendar, Pencil, FileEdit } from "lucide-react";
+import { Plus, Search, ClipboardCheck, Calendar, Pencil } from "lucide-react";
 import { AddAssessmentDialog } from "@/components/forms/AddAssessmentDialog";
 import { EditAssessmentDialog } from "@/components/forms/EditAssessmentDialog";
-import { EnterGradesDialog } from "@/components/forms/EnterGradesDialog";
 import { logError } from "@/lib/logger";
 
 interface Assessment {
@@ -40,8 +39,6 @@ export default function Assessments() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedAssessment, setSelectedAssessment] = useState<Assessment | null>(null);
-  const [gradesDialogOpen, setGradesDialogOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -206,7 +203,7 @@ export default function Assessments() {
                   {assessment.classroom_subjects.subjects.name} • {assessment.classroom_subjects.classrooms.name}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-2">
                 <div className="flex items-center text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4 mr-2" />
                   {formatDate(assessment.assessment_date)}
@@ -219,32 +216,10 @@ export default function Assessments() {
                     {assessment.description}
                   </p>
                 )}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full"
-                  onClick={() => {
-                    setSelectedAssessment(assessment);
-                    setGradesDialogOpen(true);
-                  }}
-                >
-                  <FileEdit className="h-4 w-4 mr-2" />
-                  Saisir les notes
-                </Button>
               </CardContent>
             </Card>
           ))}
         </div>
-      )}
-
-      {selectedAssessment && (
-        <EnterGradesDialog
-          assessmentId={selectedAssessment.id}
-          assessmentTitle={selectedAssessment.title}
-          maxScore={selectedAssessment.max_score}
-          open={gradesDialogOpen}
-          onOpenChange={setGradesDialogOpen}
-        />
       )}
     </div>
   );
