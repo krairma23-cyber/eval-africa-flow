@@ -268,40 +268,42 @@ export default function Students() {
                   </div>
                 )}
                 
-                <div className="pt-2 flex gap-2">
-                  {!student.enrollments || student.enrollments.length === 0 ? (
-                    <EnrollStudentDialog studentId={student.id} onEnrollmentAdded={fetchStudents}>
-                      <Button variant="default" size="sm" className="flex-1 h-8">
-                        <UserPlus className="h-3 w-3 mr-2" />
-                        Inscrire
-                      </Button>
-                    </EnrollStudentDialog>
-                  ) : (
-                    <EnrollStudentDialog studentId={student.id} onEnrollmentAdded={fetchStudents}>
+                <div className="pt-2 flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    {!student.enrollments || student.enrollments.length === 0 ? (
+                      <EnrollStudentDialog studentId={student.id} onEnrollmentAdded={fetchStudents}>
+                        <Button variant="default" size="sm" className="flex-1 h-8">
+                          <UserPlus className="h-3 w-3 mr-1" />
+                          Inscrire
+                        </Button>
+                      </EnrollStudentDialog>
+                    ) : (
+                      <EnrollStudentDialog studentId={student.id} onEnrollmentAdded={fetchStudents}>
+                        <Button variant="outline" size="sm" className="flex-1 h-8">
+                          <UserPlus className="h-3 w-3 mr-1" />
+                          Changer
+                        </Button>
+                      </EnrollStudentDialog>
+                    )}
+                    <ManagePaymentDialog
+                      studentId={student.id}
+                      studentName={`${student.first_name} ${student.last_name}`}
+                      currentTuitionFee={student.tuition_fee}
+                      currentAmountPaid={student.amount_paid}
+                      currentPaymentStatus={student.payment_status}
+                      currentDueDate={student.payment_due_date}
+                      currentNotes={student.payment_notes}
+                      onPaymentUpdated={fetchStudents}
+                    >
                       <Button variant="outline" size="sm" className="flex-1 h-8">
-                        <UserPlus className="h-3 w-3 mr-2" />
-                        Changer
+                        <DollarSign className="h-3 w-3 mr-1" />
+                        Paiement
                       </Button>
-                    </EnrollStudentDialog>
-                  )}
-                  <ManagePaymentDialog
-                    studentId={student.id}
-                    studentName={`${student.first_name} ${student.last_name}`}
-                    currentTuitionFee={student.tuition_fee}
-                    currentAmountPaid={student.amount_paid}
-                    currentPaymentStatus={student.payment_status}
-                    currentDueDate={student.payment_due_date}
-                    currentNotes={student.payment_notes}
-                    onPaymentUpdated={fetchStudents}
-                  >
-                    <Button variant="outline" size="sm" className="h-8">
-                      <DollarSign className="h-3 w-3 mr-2" />
-                      Paiement
-                    </Button>
-                  </ManagePaymentDialog>
+                    </ManagePaymentDialog>
+                  </div>
                   <EditStudentDialog student={student} onStudentUpdated={fetchStudents}>
-                    <Button variant="outline" size="sm" className="h-8">
-                      <Pencil className="h-3 w-3 mr-2" />
+                    <Button variant="outline" size="sm" className="w-full h-8">
+                      <Pencil className="h-3 w-3 mr-1" />
                       Modifier
                     </Button>
                   </EditStudentDialog>
