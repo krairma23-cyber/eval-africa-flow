@@ -15,7 +15,7 @@ import {
   Bell,
   UserCog,
   Calendar,
-  ClipboardList
+  
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -40,7 +40,7 @@ const menuItems = [
   { title: "Matières", url: "/dashboard/subjects", icon: BookOpen },
   { title: "Emploi du Temps", url: "/dashboard/schedule", icon: Calendar },
   { title: "Évaluations", url: "/dashboard/assessments", icon: ClipboardCheck },
-  { title: "Séquences d'Examen", url: "/dashboard/exam-sequences", icon: ClipboardList },
+  
   { title: "Bulletins", url: "/dashboard/reports", icon: FileText },
   { title: "Affectations", url: "/dashboard/assignments", icon: UserCog },
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
