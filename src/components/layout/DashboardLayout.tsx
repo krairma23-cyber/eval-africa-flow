@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -13,27 +13,86 @@ export function DashboardLayout() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [setupComplete, setSetupComplete] = useState<boolean | null>(null);
   const { toast } = useToast();
+  const location = useLocation();
 
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          await checkSetupStatus(session.user.id);
+        }
+        
         setLoading(false);
       }
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        await checkSetupStatus(session.user.id);
+      }
+      
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const checkSetupStatus = async (userId: string) => {
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('school_id')
+        .eq('user_id', userId)
+        .single();
+
+      if (!profile?.school_id) {
+        setSetupComplete(false);
+        return;
+      }
+
+      // Vérifier si l'école est configurée
+      const { data: school } = await supabase
+        .from('schools')
+        .select('name, address, phone, email')
+        .eq('id', profile.school_id)
+        .single();
+
+      const schoolConfigured = !!(
+        school?.name &&
+        school?.address &&
+        school?.phone &&
+        school?.email
+      );
+
+      // Vérifier si des enseignants sont ajoutés
+      const { count: teachersCount } = await supabase
+        .from('teachers')
+        .select('*', { count: 'exact', head: true })
+        .eq('school_id', profile.school_id);
+
+      // Vérifier si des élèves sont ajoutés
+      const { count: studentsCount } = await supabase
+        .from('students')
+        .select('*', { count: 'exact', head: true })
+        .eq('school_id', profile.school_id);
+
+      const isComplete = schoolConfigured && (teachersCount || 0) > 0 && (studentsCount || 0) > 0;
+      setSetupComplete(isComplete);
+    } catch (error) {
+      console.error('Error checking setup status:', error);
+      setSetupComplete(true); // En cas d'erreur, on laisse passer
+    }
+  };
 
   const handleSignOut = async () => {
     try {
@@ -83,6 +142,11 @@ export function DashboardLayout() {
 
   if (!user || !session) {
     return <Navigate to="/auth" replace />;
+  }
+
+  // Rediriger vers la page de configuration si nécessaire
+  if (setupComplete === false && !location.pathname.includes('/setup')) {
+    return <Navigate to="/setup" replace />;
   }
 
   return (
