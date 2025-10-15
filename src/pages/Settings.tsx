@@ -9,7 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon, Globe, Database, Zap } from "lucide-react";
+import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon, Globe, Database, Zap, CreditCard } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
   const [loading, setLoading] = useState(false);
@@ -19,6 +20,7 @@ export default function Settings() {
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Settings state
   const [schoolName, setSchoolName] = useState("École Primaire Example");
@@ -334,6 +336,25 @@ export default function Settings() {
                 </div>
               </div>
             </div>
+            <Separator />
+            
+            {/* Bouton Transactions */}
+            <div className="grid gap-2">
+              <Label>Gestion des paiements</Label>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => navigate('/dashboard/billing')}
+                className="w-full justify-start"
+              >
+                <CreditCard className="h-4 w-4 mr-2" />
+                Voir toutes les transactions et abonnements
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Gérez les abonnements, consultez l'historique des paiements et les factures
+              </p>
+            </div>
+            
             <Separator />
             <div className="grid gap-2">
               <Label htmlFor="school-name">Nom de l'établissement</Label>
