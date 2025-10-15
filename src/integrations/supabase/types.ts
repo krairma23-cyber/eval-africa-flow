@@ -2821,12 +2821,16 @@ export type Database = {
           academic_year: string | null
           address: string | null
           admi_yann: number[] | null
+          city: string | null
           country: string | null
           created_at: string | null
           email: string | null
+          geographical_location: string | null
           id: string
           logo_url: string | null
+          municipality: string | null
           name: string
+          neighborhood: string | null
           phone: string | null
           updated_at: string | null
         }
@@ -2834,12 +2838,16 @@ export type Database = {
           academic_year?: string | null
           address?: string | null
           admi_yann?: number[] | null
+          city?: string | null
           country?: string | null
           created_at?: string | null
           email?: string | null
+          geographical_location?: string | null
           id?: string
           logo_url?: string | null
+          municipality?: string | null
           name: string
+          neighborhood?: string | null
           phone?: string | null
           updated_at?: string | null
         }
@@ -2847,12 +2855,16 @@ export type Database = {
           academic_year?: string | null
           address?: string | null
           admi_yann?: number[] | null
+          city?: string | null
           country?: string | null
           created_at?: string | null
           email?: string | null
+          geographical_location?: string | null
           id?: string
           logo_url?: string | null
+          municipality?: string | null
           name?: string
+          neighborhood?: string | null
           phone?: string | null
           updated_at?: string | null
         }

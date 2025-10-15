@@ -24,6 +24,11 @@ export default function Settings() {
   const [schoolName, setSchoolName] = useState("École Primaire Example");
   const [schoolAddress, setSchoolAddress] = useState("123 Rue de l'École, Paris");
   const [academicYear, setAcademicYear] = useState("2025-2026");
+  const [city, setCity] = useState("");
+  const [phone, setPhone] = useState("");
+  const [municipality, setMunicipality] = useState("");
+  const [neighborhood, setNeighborhood] = useState("");
+  const [geographicalLocation, setGeographicalLocation] = useState("");
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [reportReminders, setReportReminders] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
@@ -64,7 +69,7 @@ export default function Settings() {
         // Get school data including logo, address, and academic year
         const { data: school } = await supabase
           .from('schools')
-          .select('name, logo_url, address, academic_year')
+          .select('name, logo_url, address, academic_year, city, phone, municipality, neighborhood, geographical_location')
           .eq('id', profile.school_id)
           .single();
 
@@ -72,6 +77,11 @@ export default function Settings() {
           setSchoolName(school.name || "École Primaire Example");
           setSchoolAddress(school.address || "123 Rue de l'École, Paris");
           setAcademicYear(school.academic_year || "2025-2026");
+          setCity((school as any).city || "");
+          setPhone((school as any).phone || "");
+          setMunicipality((school as any).municipality || "");
+          setNeighborhood((school as any).neighborhood || "");
+          setGeographicalLocation((school as any).geographical_location || "");
           
           if (school.logo_url) {
             const raw = school.logo_url.trim();
@@ -203,6 +213,11 @@ export default function Settings() {
           name: schoolName,
           address: schoolAddress,
           academic_year: academicYear,
+          city: city,
+          phone: phone,
+          municipality: municipality,
+          neighborhood: neighborhood,
+          geographical_location: geographicalLocation,
         })
         .eq('id', schoolId);
 
@@ -334,6 +349,54 @@ export default function Settings() {
                 id="academic-year"
                 value={academicYear}
                 onChange={(e) => setAcademicYear(e.target.value)}
+              />
+            </div>
+            <Separator />
+            <div className="grid gap-2">
+              <Label htmlFor="city">Ville</Label>
+              <Input
+                id="city"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Exemple: Paris"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="phone">Téléphone</Label>
+              <Input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Exemple: +33 1 23 45 67 89"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="municipality">Commune</Label>
+              <Input
+                id="municipality"
+                value={municipality}
+                onChange={(e) => setMunicipality(e.target.value)}
+                placeholder="Exemple: 15e arrondissement"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="neighborhood">Quartier</Label>
+              <Input
+                id="neighborhood"
+                value={neighborhood}
+                onChange={(e) => setNeighborhood(e.target.value)}
+                placeholder="Exemple: Grenelle"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="geographical-location">Situation géographique</Label>
+              <Textarea
+                id="geographical-location"
+                value={geographicalLocation}
+                onChange={(e) => setGeographicalLocation(e.target.value)}
+                placeholder="Description de la situation géographique de l'établissement"
+                rows={2}
               />
             </div>
           </CardContent>
