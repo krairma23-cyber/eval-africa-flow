@@ -12,6 +12,24 @@ import { EditClassroomDialog } from "@/components/forms/EditClassroomDialog";
 import { ViewClassStudentsDialog } from "@/components/forms/ViewClassStudentsDialog";
 import { logError } from "@/lib/logger";
 
+// Fonction pour obtenir la couleur selon le niveau
+const getGradeLevelColor = (gradeName: string): string => {
+  const name = gradeName.toLowerCase();
+  if (name.includes('cp')) return 'hsl(var(--grade-cp))';
+  if (name.includes('ce1')) return 'hsl(var(--grade-ce1))';
+  if (name.includes('ce2')) return 'hsl(var(--grade-ce2))';
+  if (name.includes('cm1')) return 'hsl(var(--grade-cm1))';
+  if (name.includes('cm2')) return 'hsl(var(--grade-cm2))';
+  if (name.includes('6') || name.includes('sixième')) return 'hsl(var(--grade-6))';
+  if (name.includes('5') || name.includes('cinquième')) return 'hsl(var(--grade-5))';
+  if (name.includes('4') || name.includes('quatrième')) return 'hsl(var(--grade-4))';
+  if (name.includes('3') || name.includes('troisième')) return 'hsl(var(--grade-3))';
+  if (name.includes('2') || name.includes('seconde')) return 'hsl(var(--grade-2nd))';
+  if (name.includes('1') || name.includes('première')) return 'hsl(var(--grade-1st))';
+  if (name.includes('terminale')) return 'hsl(var(--grade-term))';
+  return 'hsl(var(--primary))';
+};
+
 interface Classroom {
   id: string;
   name: string;
@@ -153,11 +171,23 @@ export default function Classrooms() {
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredClassrooms.map((classroom) => (
-            <Card key={classroom.id} className="hover:shadow-md transition-shadow">
+          {filteredClassrooms.map((classroom) => {
+            const gradeColor = getGradeLevelColor(classroom.grade_levels.name);
+            return (
+            <Card 
+              key={classroom.id} 
+              className="hover:shadow-md transition-shadow border-l-4" 
+              style={{ borderLeftColor: gradeColor }}
+            >
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  <span>{classroom.name}</span>
+                  <span className="flex items-center gap-2">
+                    <span 
+                      className="w-3 h-3 rounded-full" 
+                      style={{ backgroundColor: gradeColor }}
+                    />
+                    {classroom.name}
+                  </span>
                   <div className="flex gap-2">
                     <EditClassroomDialog
                       classroom={{
@@ -177,7 +207,17 @@ export default function Classrooms() {
                   </div>
                 </CardTitle>
                 <CardDescription>
-                  Niveau {classroom.grade_levels.name} • {classroom.academic_years.name}
+                  <Badge 
+                    variant="outline" 
+                    style={{ 
+                      borderColor: gradeColor,
+                      color: gradeColor 
+                    }}
+                  >
+                    {classroom.grade_levels.name}
+                  </Badge>
+                  <span className="mx-2">•</span>
+                  {classroom.academic_years.name}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -213,7 +253,8 @@ export default function Classrooms() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
