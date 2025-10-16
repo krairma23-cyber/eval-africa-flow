@@ -15,18 +15,31 @@ import { logError } from "@/lib/logger";
 // Fonction pour obtenir la couleur selon le niveau
 const getGradeLevelColor = (gradeName: string): string => {
   const name = gradeName.toLowerCase();
+  
+  // Primaire
   if (name.includes('cp')) return 'hsl(var(--grade-cp))';
   if (name.includes('ce1')) return 'hsl(var(--grade-ce1))';
   if (name.includes('ce2')) return 'hsl(var(--grade-ce2))';
   if (name.includes('cm1')) return 'hsl(var(--grade-cm1))';
   if (name.includes('cm2')) return 'hsl(var(--grade-cm2))';
-  if (name.includes('6') || name.includes('sixième')) return 'hsl(var(--grade-6))';
-  if (name.includes('5') || name.includes('cinquième')) return 'hsl(var(--grade-5))';
-  if (name.includes('4') || name.includes('quatrième')) return 'hsl(var(--grade-4))';
-  if (name.includes('3') || name.includes('troisième')) return 'hsl(var(--grade-3))';
-  if (name.includes('2') || name.includes('seconde')) return 'hsl(var(--grade-2nd))';
-  if (name.includes('1') || name.includes('première')) return 'hsl(var(--grade-1st))';
-  if (name.includes('terminale')) return 'hsl(var(--grade-term))';
+  
+  // Lycée - vérifier en premier les noms complets
+  if (name.includes('terminale') || name.includes('term')) return 'hsl(var(--grade-term))';
+  if (name.includes('première') || name.includes('1ère') || name === '1ère' || name === 'première') return 'hsl(var(--grade-1st))';
+  if (name.includes('seconde') || name.includes('2nde') || name === '2nde' || name === 'seconde') return 'hsl(var(--grade-2nd))';
+  
+  // Collège - vérifier les noms complets avant les chiffres
+  if (name.includes('sixième') || name === '6ème' || name === 'sixième') return 'hsl(var(--grade-6))';
+  if (name.includes('cinquième') || name === '5ème' || name === 'cinquième') return 'hsl(var(--grade-5))';
+  if (name.includes('quatrième') || name === '4ème' || name === 'quatrième') return 'hsl(var(--grade-4))';
+  if (name.includes('troisième') || name === '3ème' || name === 'troisième') return 'hsl(var(--grade-3))';
+  
+  // Fallback pour les chiffres seuls (si le nom n'est que le chiffre)
+  if (name === '6') return 'hsl(var(--grade-6))';
+  if (name === '5') return 'hsl(var(--grade-5))';
+  if (name === '4') return 'hsl(var(--grade-4))';
+  if (name === '3') return 'hsl(var(--grade-3))';
+  
   return 'hsl(var(--primary))';
 };
 
