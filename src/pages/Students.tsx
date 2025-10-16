@@ -37,6 +37,7 @@ interface Student {
     classroom_id: string;
     classrooms: {
       name: string;
+      color: string;
       grade_levels: {
         name: string;
       };
@@ -64,6 +65,7 @@ export default function Students() {
             classroom_id,
             classrooms(
               name,
+              color,
               grade_levels(name)
             )
           )
@@ -229,7 +231,11 @@ export default function Students() {
                   </p>
                 )}
                 {student.enrollments && student.enrollments.length > 0 && (
-                  <div className="pt-1">
+                  <div className="pt-1 flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded-full flex-shrink-0" 
+                      style={{ backgroundColor: student.enrollments[0].classrooms.color }}
+                    />
                     <Badge variant="secondary" className="text-xs">
                       {student.enrollments[0].classrooms.name} - {student.enrollments[0].classrooms.grade_levels.name}
                     </Badge>

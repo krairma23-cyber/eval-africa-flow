@@ -27,6 +27,7 @@ interface ViewClassStudentsDialogProps {
 export function ViewClassStudentsDialog({ classroomId, classroomName, children }: ViewClassStudentsDialogProps) {
   const [open, setOpen] = useState(false);
   const [students, setStudents] = useState<Student[]>([]);
+  const [classroomColor, setClassroomColor] = useState<string>('#3b82f6');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -39,6 +40,18 @@ export function ViewClassStudentsDialog({ classroomId, classroomName, children }
   const fetchStudents = async () => {
     try {
       setLoading(true);
+      
+      // Fetch classroom color
+      const { data: classroomData, error: classroomError } = await supabase
+        .from("classrooms")
+        .select("color")
+        .eq("id", classroomId)
+        .single();
+
+      if (classroomError) throw classroomError;
+      if (classroomData?.color) setClassroomColor(classroomData.color);
+
+      // Fetch students
       const { data, error } = await supabase
         .from("enrollments")
         .select(`
@@ -110,11 +123,15 @@ export function ViewClassStudentsDialog({ classroomId, classroomName, children }
               <div
                 key={student.id}
                 className="border rounded-lg p-4 hover:bg-accent/50 transition-colors"
+                style={{ borderLeftColor: classroomColor, borderLeftWidth: '4px' }}
               >
                 <div className="flex items-start justify-between">
                   <div className="space-y-1 flex-1">
                     <div className="flex items-center gap-2">
-                      <UserCheck className="h-4 w-4 text-muted-foreground" />
+                      <div 
+                        className="w-3 h-3 rounded-full flex-shrink-0" 
+                        style={{ backgroundColor: classroomColor }}
+                      />
                       <h4 className="font-semibold">
                         {student.first_name} {student.last_name}
                       </h4>
