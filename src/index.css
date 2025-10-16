@@ -42,13 +42,13 @@ All colors MUST be HSL.
     --grade-ce2: 10 78% 60%;    /* Coral */
     --grade-cm1: 280 87% 65%;   /* Purple */
     --grade-cm2: 217 91% 60%;   /* Blue */
-    --grade-6: 142 76% 36%;     /* Green */
-    --grade-5: 175 79% 39%;     /* Teal */
+    --grade-6: 45 93% 58%;      /* Jaune */
+    --grade-5: 33 100% 53%;     /* Orange */
     --grade-4: 263 70% 50%;     /* Violet */
-    --grade-3: 338 78% 56%;     /* Pink */
-    --grade-2nd: 195 100% 39%;  /* Cyan */
-    --grade-1st: 31 97% 52%;    /* Amber */
-    --grade-term: 355 78% 60%;  /* Rose */
+    --grade-3: 142 76% 36%;     /* Verte */
+    --grade-2nd: 217 91% 60%;   /* Bleu */
+    --grade-1st: 0 84% 60%;     /* Rouge */
+    --grade-term: 0 0% 15%;     /* Noir */
     
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--ai-secondary)));
