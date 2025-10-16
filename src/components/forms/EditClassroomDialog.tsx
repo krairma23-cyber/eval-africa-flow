@@ -49,6 +49,18 @@ const predefinedColors = [
   { name: "Orange", value: "#f97316" },
   { name: "Violet", value: "#8b5cf6" },
   { name: "Rose", value: "#ec4899" },
+  { name: "Cyan", value: "#06b6d4" },
+  { name: "Indigo", value: "#6366f1" },
+  { name: "Fuchsia", value: "#d946ef" },
+  { name: "Lime", value: "#84cc16" },
+  { name: "Emeraude", value: "#059669" },
+  { name: "Ambre", value: "#f59e0b" },
+  { name: "Teal", value: "#14b8a6" },
+  { name: "Pourpre", value: "#a855f7" },
+  { name: "Marron", value: "#92400e" },
+  { name: "Gris", value: "#6b7280" },
+  { name: "Bleu Ciel", value: "#0ea5e9" },
+  { name: "Corail", value: "#ff6b6b" },
   { name: "Noir", value: "#000000" },
 ];
 
