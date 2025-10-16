@@ -38,7 +38,19 @@ const formSchema = z.object({
   grade_level_id: z.string().min(1, "Le niveau est requis"),
   academic_year_id: z.string().min(1, "L'année académique est requise"),
   capacity: z.coerce.number().min(1, "La capacité doit être au moins 1"),
+  color: z.string().min(1, "La couleur est requise"),
 });
+
+const predefinedColors = [
+  { name: "Bleu", value: "#3b82f6" },
+  { name: "Rouge", value: "#ef4444" },
+  { name: "Vert", value: "#10b981" },
+  { name: "Jaune", value: "#f59e0b" },
+  { name: "Orange", value: "#f97316" },
+  { name: "Violet", value: "#8b5cf6" },
+  { name: "Rose", value: "#ec4899" },
+  { name: "Noir", value: "#000000" },
+];
 
 interface Campus {
   id: string;
@@ -63,6 +75,7 @@ interface EditClassroomDialogProps {
     grade_level_id: string;
     academic_year_id: string;
     capacity: number;
+    color?: string;
   };
   onClassroomUpdated: () => void;
   children: React.ReactNode;
@@ -88,6 +101,7 @@ export function EditClassroomDialog({
       grade_level_id: classroom.grade_level_id,
       academic_year_id: classroom.academic_year_id,
       capacity: classroom.capacity,
+      color: classroom.color || "#3b82f6",
     },
   });
 
@@ -137,6 +151,7 @@ export function EditClassroomDialog({
           grade_level_id: values.grade_level_id,
           academic_year_id: values.academic_year_id,
           capacity: values.capacity,
+          color: values.color,
         })
         .eq("id", classroom.id);
 
@@ -282,6 +297,34 @@ export function EditClassroomDialog({
                   <FormLabel>Capacité</FormLabel>
                   <FormControl>
                     <Input type="number" placeholder="30" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="color"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Couleur de la classe</FormLabel>
+                  <FormControl>
+                    <div className="flex gap-2">
+                      {predefinedColors.map((color) => (
+                        <button
+                          key={color.value}
+                          type="button"
+                          onClick={() => field.onChange(color.value)}
+                          className="w-8 h-8 rounded-full border-2 transition-all hover:scale-110"
+                          style={{ 
+                            backgroundColor: color.value,
+                            borderColor: field.value === color.value ? "#000" : "transparent"
+                          }}
+                          title={color.name}
+                        />
+                      ))}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

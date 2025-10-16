@@ -19,7 +19,19 @@ export function AddClassroomDialog({ onClassroomAdded, children }: AddClassroomD
   const [formData, setFormData] = useState({
     name: "",
     capacity: "",
+    color: "#3b82f6",
   });
+
+  const predefinedColors = [
+    { name: "Bleu", value: "#3b82f6" },
+    { name: "Rouge", value: "#ef4444" },
+    { name: "Vert", value: "#10b981" },
+    { name: "Jaune", value: "#f59e0b" },
+    { name: "Orange", value: "#f97316" },
+    { name: "Violet", value: "#8b5cf6" },
+    { name: "Rose", value: "#ec4899" },
+    { name: "Noir", value: "#000000" },
+  ];
   const { toast } = useToast();
 
   useEffect(() => {
@@ -160,6 +172,7 @@ export function AddClassroomDialog({ onClassroomAdded, children }: AddClassroomD
         campus_id: campus.id,
         grade_level_id: gradeLevel.id,
         academic_year_id: academicYear.id,
+        color: formData.color,
       }]);
 
       if (error) throw error;
@@ -172,6 +185,7 @@ export function AddClassroomDialog({ onClassroomAdded, children }: AddClassroomD
       setFormData({
         name: "",
         capacity: "",
+        color: "#3b82f6",
       });
       setOpen(false);
       onClassroomAdded();
@@ -213,6 +227,24 @@ export function AddClassroomDialog({ onClassroomAdded, children }: AddClassroomD
               placeholder="ex: 30"
               min="1"
             />
+          </div>
+          <div>
+            <Label htmlFor="color">Couleur de la classe</Label>
+            <div className="flex gap-2 mt-2">
+              {predefinedColors.map((color) => (
+                <button
+                  key={color.value}
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, color: color.value }))}
+                  className="w-8 h-8 rounded-full border-2 transition-all hover:scale-110"
+                  style={{ 
+                    backgroundColor: color.value,
+                    borderColor: formData.color === color.value ? "#000" : "transparent"
+                  }}
+                  title={color.name}
+                />
+              ))}
+            </div>
           </div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>

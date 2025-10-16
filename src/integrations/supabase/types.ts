@@ -616,6 +616,7 @@ export type Database = {
           academic_year_id: string
           campus_id: string
           capacity: number | null
+          color: string | null
           created_at: string | null
           grade_level_id: string
           id: string
@@ -626,6 +627,7 @@ export type Database = {
           academic_year_id: string
           campus_id: string
           capacity?: number | null
+          color?: string | null
           created_at?: string | null
           grade_level_id: string
           id?: string
@@ -636,6 +638,7 @@ export type Database = {
           academic_year_id?: string
           campus_id?: string
           capacity?: number | null
+          color?: string | null
           created_at?: string | null
           grade_level_id?: string
           id?: string

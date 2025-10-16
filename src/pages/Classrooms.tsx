@@ -37,6 +37,7 @@ interface Classroom {
   grade_level_id: string;
   academic_year_id: string;
   capacity: number;
+  color: string;
   created_at: string;
   grade_levels: {
     name: string;
@@ -172,19 +173,19 @@ export default function Classrooms() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredClassrooms.map((classroom) => {
-            const gradeColor = getGradeLevelColor(classroom.grade_levels.name);
+            const classroomColor = classroom.color || getGradeLevelColor(classroom.grade_levels.name);
             return (
             <Card 
               key={classroom.id} 
               className="hover:shadow-md transition-shadow border-l-4" 
-              style={{ borderLeftColor: gradeColor }}
+              style={{ borderLeftColor: classroomColor }}
             >
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span className="flex items-center gap-2">
                     <span 
                       className="w-3 h-3 rounded-full" 
-                      style={{ backgroundColor: gradeColor }}
+                      style={{ backgroundColor: classroomColor }}
                     />
                     {classroom.name}
                   </span>
@@ -197,6 +198,7 @@ export default function Classrooms() {
                         grade_level_id: classroom.grade_level_id,
                         academic_year_id: classroom.academic_year_id,
                         capacity: classroom.capacity,
+                        color: classroom.color,
                       }}
                       onClassroomUpdated={fetchClassrooms}
                     >
@@ -210,8 +212,8 @@ export default function Classrooms() {
                   <Badge 
                     variant="outline" 
                     style={{ 
-                      borderColor: gradeColor,
-                      color: gradeColor 
+                      borderColor: classroomColor,
+                      color: classroomColor 
                     }}
                   >
                     {classroom.grade_levels.name}
