@@ -97,6 +97,35 @@ export function AddScheduleDialog({ children, onScheduleAdded }: AddScheduleDial
     }
   }, [open]);
 
+  // Auto-fill teacher when classroom and subject are selected
+  useEffect(() => {
+    const classroomId = form.watch("classroom_id");
+    const subjectId = form.watch("subject_id");
+
+    if (classroomId && subjectId) {
+      const fetchAssignedTeacher = async () => {
+        try {
+          const { data, error } = await supabase
+            .from("classroom_subjects")
+            .select("teacher_id")
+            .eq("classroom_id", classroomId)
+            .eq("subject_id", subjectId)
+            .maybeSingle();
+
+          if (error) throw error;
+
+          if (data?.teacher_id) {
+            form.setValue("teacher_id", data.teacher_id);
+          }
+        } catch (error) {
+          console.error("Error fetching assigned teacher:", error);
+        }
+      };
+
+      fetchAssignedTeacher();
+    }
+  }, [form.watch("classroom_id"), form.watch("subject_id")]);
+
   const fetchData = async () => {
     try {
       const [classroomsData, subjectsData, teachersData] = await Promise.all([
