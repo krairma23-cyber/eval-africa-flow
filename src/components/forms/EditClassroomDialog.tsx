@@ -322,13 +322,13 @@ export function EditClassroomDialog({
                 <FormItem>
                   <FormLabel>Couleur de la classe</FormLabel>
                   <FormControl>
-                    <div className="flex gap-2">
+                    <div className="grid grid-cols-10 gap-2">
                       {predefinedColors.map((color) => (
                         <button
                           key={color.value}
                           type="button"
                           onClick={() => field.onChange(color.value)}
-                          className="w-8 h-8 rounded-full border-2 transition-all hover:scale-110"
+                          className="w-10 h-10 rounded-full border-2 transition-all hover:scale-110"
                           style={{ 
                             backgroundColor: color.value,
                             borderColor: field.value === color.value ? "#000" : "transparent"
