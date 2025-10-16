@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, Plus, Users } from "lucide-react";
+import { Search, Plus, Users, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
@@ -14,6 +14,8 @@ import { EditStudentDialog } from "@/components/forms/EditStudentDialog";
 import { EnrollStudentDialog } from "@/components/forms/EnrollStudentDialog";
 import { Pencil, UserPlus, DollarSign } from "lucide-react";
 import { ManagePaymentDialog } from "@/components/forms/ManagePaymentDialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 interface Student {
   id: string;
@@ -49,6 +51,11 @@ export default function Students() {
   const [students, setStudents] = useState<Student[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [selectedClassroom, setSelectedClassroom] = useState<string>("all");
+  const [selectedGradeLevel, setSelectedGradeLevel] = useState<string>("all");
+  const [selectedPaymentStatus, setSelectedPaymentStatus] = useState<string>("all");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -100,13 +107,47 @@ export default function Students() {
     }
   };
 
+  // Get unique classrooms and grade levels for filters
+  const uniqueClassrooms = Array.from(
+    new Set(
+      students
+        .filter(s => s.enrollments && s.enrollments.length > 0)
+        .map(s => s.enrollments[0].classrooms.name)
+    )
+  ).sort();
+
+  const uniqueGradeLevels = Array.from(
+    new Set(
+      students
+        .filter(s => s.enrollments && s.enrollments.length > 0)
+        .map(s => s.enrollments[0].classrooms.grade_levels.name)
+    )
+  ).sort();
+
   const filteredStudents = students
-    .filter(
-      (student) =>
+    .filter((student) => {
+      // Search filter
+      const matchesSearch = 
         student.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         student.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.student_number.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+        student.student_number.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      // Classroom filter
+      const matchesClassroom = selectedClassroom === "all" || 
+        (student.enrollments && student.enrollments.length > 0 && 
+         student.enrollments[0].classrooms.name === selectedClassroom);
+      
+      // Grade level filter
+      const matchesGradeLevel = selectedGradeLevel === "all" ||
+        (student.enrollments && student.enrollments.length > 0 &&
+         student.enrollments[0].classrooms.grade_levels.name === selectedGradeLevel);
+      
+      // Payment status filter
+      const matchesPaymentStatus = selectedPaymentStatus === "all" ||
+        student.payment_status === selectedPaymentStatus;
+      
+      return matchesSearch && matchesClassroom && matchesGradeLevel && matchesPaymentStatus;
+    })
     .sort((a, b) => {
       // Students without enrollment go last
       if (!a.enrollments || a.enrollments.length === 0) return 1;
@@ -118,8 +159,20 @@ export default function Students() {
       return classA.localeCompare(classB);
     });
 
+  // Pagination calculations
+  const totalStudents = filteredStudents.length;
+  const totalPages = Math.ceil(totalStudents / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedStudents = filteredStudents.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedClassroom, selectedGradeLevel, selectedPaymentStatus]);
+
   // Group students by classroom
-  const studentsByClassroom = filteredStudents.reduce((acc, student) => {
+  const studentsByClassroom = paginatedStudents.reduce((acc, student) => {
     if (student.enrollments && student.enrollments.length > 0) {
       const classroomName = student.enrollments[0].classrooms.name;
       if (!acc[classroomName]) {
@@ -201,14 +254,101 @@ export default function Students() {
         </AddStudentDialog>
       </div>
 
-      <div className="flex items-center space-x-2">
-        <Search className="h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Rechercher un élève..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-sm"
-        />
+      <div className="space-y-4">
+        <div className="flex items-center space-x-2">
+          <Search className="h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Rechercher un élève..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="max-w-sm"
+          />
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Filter className="h-4 w-4" />
+              Filtres avancés
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-2 block">Classe</label>
+                <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Toutes les classes" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Toutes les classes</SelectItem>
+                    {uniqueClassrooms.map((classroom) => (
+                      <SelectItem key={classroom} value={classroom}>
+                        {classroom}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Niveau</label>
+                <Select value={selectedGradeLevel} onValueChange={setSelectedGradeLevel}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Tous les niveaux" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tous les niveaux</SelectItem>
+                    {uniqueGradeLevels.map((level) => (
+                      <SelectItem key={level} value={level}>
+                        {level}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Statut de paiement</label>
+                <Select value={selectedPaymentStatus} onValueChange={setSelectedPaymentStatus}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Tous les statuts" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tous les statuts</SelectItem>
+                    <SelectItem value="paid">Payé</SelectItem>
+                    <SelectItem value="partial">Partiel</SelectItem>
+                    <SelectItem value="pending">Non payé</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Élèves par page</label>
+                <Select value={itemsPerPage.toString()} onValueChange={(v) => setItemsPerPage(Number(v))}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10 par page</SelectItem>
+                    <SelectItem value="20">20 par page</SelectItem>
+                    <SelectItem value="50">50 par page</SelectItem>
+                    <SelectItem value="100">100 par page</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
+              <span>
+                {totalStudents} élève{totalStudents > 1 ? 's' : ''} trouvé{totalStudents > 1 ? 's' : ''}
+              </span>
+              <span>
+                Page {currentPage} sur {totalPages}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {filteredStudents.length === 0 ? (
@@ -372,6 +512,56 @@ export default function Students() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {totalPages > 1 && filteredStudents.length > 0 && (
+        <div className="mt-8 flex justify-center">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                />
+              </PaginationItem>
+              
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                // Show first page, last page, current page, and pages around current
+                if (
+                  page === 1 ||
+                  page === totalPages ||
+                  (page >= currentPage - 1 && page <= currentPage + 1)
+                ) {
+                  return (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => setCurrentPage(page)}
+                        isActive={currentPage === page}
+                        className="cursor-pointer"
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  );
+                } else if (page === currentPage - 2 || page === currentPage + 2) {
+                  return (
+                    <PaginationItem key={page}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  );
+                }
+                return null;
+              })}
+
+              <PaginationItem>
+                <PaginationNext 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
         </div>
       )}
     </div>
