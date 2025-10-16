@@ -100,12 +100,48 @@ export default function Students() {
     }
   };
 
-  const filteredStudents = students.filter(
-    (student) =>
-      student.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.student_number.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = students
+    .filter(
+      (student) =>
+        student.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        student.student_number.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      // Students without enrollment go last
+      if (!a.enrollments || a.enrollments.length === 0) return 1;
+      if (!b.enrollments || b.enrollments.length === 0) return -1;
+      
+      // Sort by classroom name
+      const classA = a.enrollments[0].classrooms.name;
+      const classB = b.enrollments[0].classrooms.name;
+      return classA.localeCompare(classB);
+    });
+
+  // Group students by classroom
+  const studentsByClassroom = filteredStudents.reduce((acc, student) => {
+    if (student.enrollments && student.enrollments.length > 0) {
+      const classroomName = student.enrollments[0].classrooms.name;
+      if (!acc[classroomName]) {
+        acc[classroomName] = {
+          color: student.enrollments[0].classrooms.color,
+          gradeLevel: student.enrollments[0].classrooms.grade_levels.name,
+          students: []
+        };
+      }
+      acc[classroomName].students.push(student);
+    } else {
+      if (!acc['Sans classe']) {
+        acc['Sans classe'] = {
+          color: '#gray',
+          gradeLevel: '',
+          students: []
+        };
+      }
+      acc['Sans classe'].students.push(student);
+    }
+    return acc;
+  }, {} as Record<string, { color: string; gradeLevel: string; students: Student[] }>);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR');
@@ -196,8 +232,24 @@ export default function Students() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredStudents.map((student) => (
+        <div className="space-y-6">
+          {Object.entries(studentsByClassroom).map(([classroomName, classroomData]) => (
+            <div key={classroomName}>
+              <div className="flex items-center gap-3 mb-3">
+                <div 
+                  className="w-4 h-4 rounded-full flex-shrink-0" 
+                  style={{ backgroundColor: classroomData.color }}
+                />
+                <h2 className="text-xl font-semibold text-foreground">
+                  {classroomName}
+                  {classroomData.gradeLevel && ` - ${classroomData.gradeLevel}`}
+                </h2>
+                <Badge variant="outline" className="text-sm">
+                  {classroomData.students.length} élève{classroomData.students.length > 1 ? 's' : ''}
+                </Badge>
+              </div>
+              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {classroomData.students.map((student) => (
             <Card key={student.id} className="hover:shadow-md transition-shadow">
               <CardHeader className="flex flex-col items-center pb-3 pt-4">
                 <Avatar className="h-16 w-16 mb-3">
@@ -316,6 +368,9 @@ export default function Students() {
                 </div>
               </CardContent>
             </Card>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       )}
