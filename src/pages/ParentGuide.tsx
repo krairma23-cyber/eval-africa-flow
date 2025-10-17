@@ -190,7 +190,7 @@ export default function ParentGuide() {
 
         {/* FAQ Section */}
         <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6 text-center">Questions Fréquentes</h2>
+          <h2 className="text-3xl font-bold mb-6 text-center">FAQ</h2>
           <div className="space-y-4 max-w-3xl mx-auto">
             {faqs.map((faq, index) => (
               <Card key={index} className="p-6">
