@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, BookOpen, Users, Calendar, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { EditAssignmentDialog } from "./EditAssignmentDialog";
 
 interface TeacherClass {
   id: string;
@@ -50,6 +51,8 @@ export function TeacherClassesDialog({ teacherId, teacherName, children }: Teach
   const [loading, setLoading] = useState(false);
   const [classes, setClasses] = useState<TeacherClass[]>([]);
   const [schedules, setSchedules] = useState<Record<string, Schedule[]>>({});
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState<TeacherClass | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -118,6 +121,15 @@ export function TeacherClassesDialog({ teacherId, teacherName, children }: Teach
   const navigateToClassroom = (classroomId: string) => {
     setOpen(false);
     navigate(`/dashboard/classrooms?highlight=${classroomId}`);
+  };
+
+  const handleEditClick = (classItem: TeacherClass) => {
+    setSelectedAssignment(classItem);
+    setEditDialogOpen(true);
+  };
+
+  const handleAssignmentUpdated = () => {
+    fetchTeacherClasses();
   };
 
   return (
@@ -197,6 +209,7 @@ export function TeacherClassesDialog({ teacherId, teacherName, children }: Teach
                         variant="outline" 
                         size="sm" 
                         className="px-3"
+                        onClick={() => handleEditClick(classItem)}
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -208,6 +221,19 @@ export function TeacherClassesDialog({ teacherId, teacherName, children }: Teach
           </div>
         )}
       </DialogContent>
+
+      {selectedAssignment && (
+        <EditAssignmentDialog
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          assignmentId={selectedAssignment.id}
+          currentSubjectId={selectedAssignment.subject_id}
+          currentCoefficient={selectedAssignment.coefficient}
+          teacherId={teacherId}
+          classroomId={selectedAssignment.classroom_id}
+          onUpdated={handleAssignmentUpdated}
+        />
+      )}
     </Dialog>
   );
 }
