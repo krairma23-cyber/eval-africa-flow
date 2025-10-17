@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, BookOpen, Users, Calendar } from "lucide-react";
+import { Loader2, BookOpen, Users, Calendar, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface TeacherClass {
@@ -184,14 +184,23 @@ export function TeacherClassesDialog({ teacherId, teacherName, children }: Teach
                       </div>
                     )}
 
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full mt-2"
-                      onClick={() => navigateToClassroom(classItem.classroom_id)}
-                    >
-                      Voir la classe
-                    </Button>
+                    <div className="flex gap-2 mt-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => navigateToClassroom(classItem.classroom_id)}
+                      >
+                        Voir la classe
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="px-3"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               );
