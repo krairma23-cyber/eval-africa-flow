@@ -191,16 +191,25 @@ export function EnterGradesDialog({
       // Prepare data for upsert
       const resultsToSave = students
         .filter((student) => student.result && (student.result.score !== null || student.result.is_absent))
-        .map((student) => ({
-          id: student.result?.id || undefined,
-          assessment_id: assessmentId,
-          student_id: student.id,
-          score: student.result?.score,
-          is_absent: student.result?.is_absent || false,
-          comment: student.result?.comment,
-          graded_by: user.id,
-          graded_at: new Date().toISOString(),
-        }));
+        .map((student) => {
+          const hasExistingResult = student.result?.id && student.result.id.length > 0;
+          const resultData: any = {
+            assessment_id: assessmentId,
+            student_id: student.id,
+            score: student.result?.score,
+            is_absent: student.result?.is_absent || false,
+            comment: student.result?.comment,
+            graded_by: user.id,
+            graded_at: new Date().toISOString(),
+          };
+
+          // Only include id for existing results (updates)
+          if (hasExistingResult) {
+            resultData.id = student.result.id;
+          }
+
+          return resultData;
+        });
 
       if (resultsToSave.length === 0) {
         toast({
@@ -212,9 +221,7 @@ export function EnterGradesDialog({
 
       const { error } = await supabase
         .from("assessment_results")
-        .upsert(resultsToSave, {
-          onConflict: "id",
-        });
+        .upsert(resultsToSave);
 
       if (error) throw error;
 
