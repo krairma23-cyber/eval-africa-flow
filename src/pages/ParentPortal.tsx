@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Download, TrendingUp, Calendar, User, LogOut } from "lucide-react";
+import { FileText, Download, TrendingUp, Calendar, User, LogOut, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -25,6 +25,8 @@ export default function ParentPortal() {
   const [parentPassword, setParentPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [reports, setReports] = useState<StudentReport[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showAllReports, setShowAllReports] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -107,11 +109,24 @@ export default function ParentPortal() {
   };
 
   const downloadReport = (reportId: string) => {
-    toast({
-      title: "Téléchargement en cours",
-      description: "Le bulletin sera téléchargé au format PDF",
-    });
+    const report = reports.find(r => r.id === reportId);
+    if (report) {
+      toast({
+        title: "Téléchargement démarré",
+        description: `Bulletin de ${report.student_name} - ${report.term}`,
+      });
+      // TODO: Implémenter le vrai téléchargement PDF depuis la base de données
+      console.log("Downloading report:", reportId);
+    }
   };
+
+  const filteredReports = reports.filter(report =>
+    report.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    report.class_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    report.term.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const displayedReports = showAllReports ? filteredReports : filteredReports.slice(0, 2);
 
   if (!isAuthenticated) {
     return (
@@ -239,16 +254,40 @@ export default function ParentPortal() {
 
         {/* Reports Section */}
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <h2 className="text-2xl font-bold">Bulletins Scolaires</h2>
-            <Button variant="outline">
-              <Calendar className="h-4 w-4 mr-2" />
-              Historique Complet
-            </Button>
+            <div className="flex gap-2">
+              <div className="relative flex-1 md:w-64">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Rechercher par nom d'élève..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              <Button 
+                variant="outline"
+                onClick={() => setShowAllReports(!showAllReports)}
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                {showAllReports ? "Voir Récents" : "Historique Complet"}
+              </Button>
+            </div>
           </div>
 
-          <div className="grid gap-4">
-            {reports.map((report) => (
+          {filteredReports.length === 0 ? (
+            <Card className="p-8 text-center">
+              <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground">
+                {searchQuery 
+                  ? "Aucun bulletin trouvé pour cette recherche" 
+                  : "Aucun bulletin disponible pour le moment"}
+              </p>
+            </Card>
+          ) : (
+            <div className="grid gap-4">
+              {displayedReports.map((report) => (
               <Card key={report.id} className="p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -284,8 +323,20 @@ export default function ParentPortal() {
                   </Button>
                 </div>
               </Card>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
+
+          {!showAllReports && filteredReports.length > 2 && (
+            <div className="text-center">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowAllReports(true)}
+              >
+                Voir tous les bulletins ({filteredReports.length})
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Help Section */}
