@@ -188,6 +188,17 @@ export function EnterGradesDialog({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("User not authenticated");
 
+      // Get teacher_id for the current user
+      const { data: teacherData, error: teacherError } = await supabase
+        .from("teachers")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (teacherError) throw teacherError;
+      
+      const teacherId = teacherData?.id || null;
+
       // Prepare data for upsert
       const resultsToSave = students
         .filter((student) => student.result && (student.result.score !== null || student.result.is_absent))
@@ -199,7 +210,7 @@ export function EnterGradesDialog({
             score: student.result?.score,
             is_absent: student.result?.is_absent || false,
             comment: student.result?.comment,
-            graded_by: user.id,
+            graded_by: teacherId,
             graded_at: new Date().toISOString(),
           };
 
