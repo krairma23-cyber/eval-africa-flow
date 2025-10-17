@@ -130,7 +130,7 @@ export default function ParentGuide() {
               <Button 
                 variant="outline" 
                 className="w-full justify-start"
-                onClick={() => window.open("/demo-parent", "_blank")}
+                onClick={() => navigate("/parent-portal")}
               >
                 <Smartphone className="h-4 w-4 mr-2" />
                 Voir la Démo Interactive
@@ -141,11 +141,19 @@ export default function ParentGuide() {
           <Card className="p-6 bg-accent/5 border-accent/20">
             <h3 className="font-semibold text-lg mb-3">Ressources</h3>
             <div className="space-y-3">
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => window.open("mailto:support@evalscol.ci?subject=Demande de Guide PDF")}
+              >
                 <Download className="h-4 w-4 mr-2" />
                 Télécharger le Guide PDF
               </Button>
-              <Button variant="outline" className="w-full justify-start">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => navigate("/support")}
+              >
                 <HelpCircle className="h-4 w-4 mr-2" />
                 Support Technique
               </Button>
@@ -205,10 +213,17 @@ export default function ParentGuide() {
               l'utilisation du portail parent EvalScol.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg">
+              <Button 
+                size="lg"
+                onClick={() => navigate("/support")}
+              >
                 Contacter le Support
               </Button>
-              <Button size="lg" variant="outline">
+              <Button 
+                size="lg" 
+                variant="outline"
+                onClick={() => window.open("mailto:support@evalscol.ci?subject=Question Parent")}
+              >
                 Envoyer un Message
               </Button>
             </div>

@@ -295,10 +295,13 @@ export default function ParentPortal() {
             Consultez notre guide parent ou contactez l'administration de l'école pour toute question.
           </p>
           <div className="flex gap-3">
-            <Button variant="outline" onClick={() => navigate("/")}>
+            <Button variant="outline" onClick={() => navigate("/parent-guide")}>
               Guide Parents
             </Button>
-            <Button variant="outline">
+            <Button 
+              variant="outline"
+              onClick={() => window.open("mailto:contact@evalscol.ci?subject=Contact École")}
+            >
               Contacter l'École
             </Button>
           </div>
