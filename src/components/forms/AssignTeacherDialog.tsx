@@ -67,6 +67,7 @@ export function AssignTeacherDialog({ children, onAssigned, teacherId }: AssignT
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [filteredSubjects, setFilteredSubjects] = useState<Subject[]>([]);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -85,6 +86,17 @@ export function AssignTeacherDialog({ children, onAssigned, teacherId }: AssignT
     }
   }, [open]);
 
+  useEffect(() => {
+    const selectedTeacherId = form.watch("teacher_id");
+    const selectedClassroomId = form.watch("classroom_id");
+    
+    if (selectedTeacherId && selectedClassroomId) {
+      filterSubjects(selectedTeacherId, selectedClassroomId);
+    } else {
+      setFilteredSubjects(subjects);
+    }
+  }, [form.watch("teacher_id"), form.watch("classroom_id"), subjects]);
+
   const fetchData = async () => {
     try {
       const [teachersRes, classroomsRes, subjectsRes] = await Promise.all([
@@ -95,7 +107,10 @@ export function AssignTeacherDialog({ children, onAssigned, teacherId }: AssignT
 
       if (teachersRes.data) setTeachers(teachersRes.data);
       if (classroomsRes.data) setClassrooms(classroomsRes.data);
-      if (subjectsRes.data) setSubjects(subjectsRes.data);
+      if (subjectsRes.data) {
+        setSubjects(subjectsRes.data);
+        setFilteredSubjects(subjectsRes.data);
+      }
       
       // Pre-fill teacher if teacherId is provided
       if (teacherId) {
@@ -107,6 +122,32 @@ export function AssignTeacherDialog({ children, onAssigned, teacherId }: AssignT
         description: "Impossible de charger les données",
         variant: "destructive",
       });
+    }
+  };
+
+  const filterSubjects = async (teacherId: string, classroomId: string) => {
+    try {
+      // Récupérer les matières déjà assignées à cet enseignant dans cette classe
+      const { data: existingAssignments } = await supabase
+        .from("classroom_subjects")
+        .select("subject_id")
+        .eq("teacher_id", teacherId)
+        .eq("classroom_id", classroomId);
+
+      const assignedSubjectIds = existingAssignments?.map(a => a.subject_id) || [];
+      
+      // Filtrer les matières pour exclure celles déjà assignées
+      const available = subjects.filter(subject => !assignedSubjectIds.includes(subject.id));
+      setFilteredSubjects(available);
+      
+      // Réinitialiser la sélection de matière si elle n'est plus disponible
+      const currentSubjectId = form.getValues("subject_id");
+      if (currentSubjectId && assignedSubjectIds.includes(currentSubjectId)) {
+        form.setValue("subject_id", "");
+      }
+    } catch (error) {
+      console.error("Erreur lors du filtrage des matières:", error);
+      setFilteredSubjects(subjects);
     }
   };
 
@@ -218,11 +259,17 @@ export function AssignTeacherDialog({ children, onAssigned, teacherId }: AssignT
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {subjects.map((subject) => (
-                        <SelectItem key={subject.id} value={subject.id}>
-                          {subject.name}
-                        </SelectItem>
-                      ))}
+                      {filteredSubjects.length > 0 ? (
+                        filteredSubjects.map((subject) => (
+                          <SelectItem key={subject.id} value={subject.id}>
+                            {subject.name}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                          Toutes les matières sont déjà assignées à cet enseignant pour cette classe
+                        </div>
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
