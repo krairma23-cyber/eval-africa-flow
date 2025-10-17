@@ -400,19 +400,15 @@ export default function Support() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <p><strong>Support général:</strong></p>
-                  <p className="text-muted-foreground">support@evalscol.com</p>
-                </div>
-                <div className="space-y-2">
-                  <p><strong>Support technique:</strong></p>
-                  <p className="text-muted-foreground">tech@evalscol.com</p>
+                  <p><strong>Email de support:</strong></p>
+                  <p className="text-muted-foreground">support@ecommerce-simple.com</p>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
                   Réponse sous 24h en moyenne
                 </div>
                 <Button asChild>
-                  <a href="mailto:support@evalscol.com">
+                  <a href="mailto:support@ecommerce-simple.com">
                     <Mail className="h-4 w-4 mr-2" />
                     Envoyer un email
                   </a>
@@ -432,8 +428,12 @@ export default function Support() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <p><strong>France:</strong></p>
-                  <p className="text-muted-foreground">+33 1 23 45 67 89</p>
+                  <p><strong>Téléphone 1:</strong></p>
+                  <p className="text-muted-foreground">+225 0707041903</p>
+                </div>
+                <div className="space-y-2">
+                  <p><strong>Téléphone 2:</strong></p>
+                  <p className="text-muted-foreground">+225 0101821329</p>
                 </div>
                 <div className="space-y-2">
                   <p><strong>Horaires:</strong></p>
@@ -444,7 +444,7 @@ export default function Support() {
                   Support disponible maintenant
                 </div>
                 <Button asChild>
-                  <a href="tel:+33123456789">
+                  <a href="tel:+2250707041903">
                     <Phone className="h-4 w-4 mr-2" />
                     Appeler maintenant
                   </a>
