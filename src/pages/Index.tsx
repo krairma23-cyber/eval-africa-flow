@@ -18,7 +18,7 @@ const Index = () => {
             <img 
               src="/logo.png" 
               alt="EvalScol Logo" 
-              className="h-[19px] w-[19px] object-contain"
+              className="h-32 w-auto object-contain"
             />
           </div>
           <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4">
