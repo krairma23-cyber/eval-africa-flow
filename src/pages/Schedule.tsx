@@ -209,34 +209,35 @@ export default function Schedule() {
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardContent className="p-0 overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-muted/50">
-                  <th className="border p-3 text-left font-semibold min-w-[100px] sticky left-0 bg-muted/50 z-10">
-                    Horaire
-                  </th>
-                  {[1, 2, 3, 4, 5].map((day) => (
-                    <th key={day} className="border p-3 text-center font-semibold min-w-[200px]">
-                      {DAYS[day]}
+        <Card className="overflow-hidden">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-muted/50">
+                    <th className="border p-2 text-left font-semibold w-24 sticky left-0 bg-muted/50 z-10">
+                      Horaire
                     </th>
-                  ))}
-                </tr>
-              </thead>
+                    {[1, 2, 3, 4, 5].map((day) => (
+                      <th key={day} className="border p-2 text-center font-semibold w-48">
+                        {DAYS[day]}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
               <tbody>
                 {timeSlots.map((timeSlot) => (
                   <tr key={timeSlot} className="hover:bg-accent/30 transition-colors">
-                    <td className="border p-3 font-medium text-sm sticky left-0 bg-background z-10">
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        {formatTime(timeSlot)}
+                    <td className="border p-2 font-medium text-sm sticky left-0 bg-background z-10">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-3 w-3 text-muted-foreground" />
+                        <span className="text-xs">{formatTime(timeSlot)}</span>
                       </div>
                     </td>
                     {[1, 2, 3, 4, 5].map((day) => {
                       const schedule = getScheduleForDayAndTime(day, timeSlot);
                       return (
-                        <td key={day} className="border p-3">
+                        <td key={day} className="border p-2">
                           {schedule ? (
                             <div className="space-y-2">
                               <div className="space-y-1">
@@ -272,6 +273,7 @@ export default function Schedule() {
                 ))}
               </tbody>
             </table>
+            </div>
           </CardContent>
         </Card>
       )}
