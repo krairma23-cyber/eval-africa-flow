@@ -94,6 +94,11 @@ export function DashboardLayout() {
           <header className="h-14 border-b bg-background flex items-center justify-between px-4">
             <div className="flex items-center gap-2">
               <SidebarTrigger />
+              <img 
+                src="/logo.png" 
+                alt="EvalScol Logo" 
+                className="h-[19px] w-[19px] object-contain"
+              />
               <h1 className="font-semibold text-lg">EvalScol</h1>
             </div>
             
