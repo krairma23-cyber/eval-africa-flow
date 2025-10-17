@@ -12,7 +12,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, BookOpen, Users, Calendar, Pencil } from "lucide-react";
+import { Loader2, BookOpen, Users, Calendar, Pencil, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useNavigate } from "react-router-dom";
 import { EditAssignmentDialog } from "./EditAssignmentDialog";
 
@@ -53,6 +63,9 @@ export function TeacherClassesDialog({ teacherId, teacherName, children }: Teach
   const [schedules, setSchedules] = useState<Record<string, Schedule[]>>({});
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState<TeacherClass | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [assignmentToDelete, setAssignmentToDelete] = useState<TeacherClass | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -130,6 +143,42 @@ export function TeacherClassesDialog({ teacherId, teacherName, children }: Teach
 
   const handleAssignmentUpdated = () => {
     fetchTeacherClasses();
+  };
+
+  const handleDeleteClick = (classItem: TeacherClass) => {
+    setAssignmentToDelete(classItem);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!assignmentToDelete) return;
+    
+    setDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('classroom_subjects')
+        .delete()
+        .eq('id', assignmentToDelete.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Assignation supprimée",
+        description: `${assignmentToDelete.subjects.name} retiré de ${assignmentToDelete.classrooms.name}`,
+      });
+
+      fetchTeacherClasses();
+      setDeleteDialogOpen(false);
+    } catch (error: any) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer l'assignation",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleting(false);
+      setAssignmentToDelete(null);
+    }
   };
 
   return (
@@ -213,6 +262,14 @@ export function TeacherClassesDialog({ teacherId, teacherName, children }: Teach
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="px-3 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        onClick={() => handleDeleteClick(classItem)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -234,6 +291,37 @@ export function TeacherClassesDialog({ teacherId, teacherName, children }: Teach
           onUpdated={handleAssignmentUpdated}
         />
       )}
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir retirer l'assignation de{" "}
+              <strong>{assignmentToDelete?.subjects.name}</strong> de la classe{" "}
+              <strong>{assignmentToDelete?.classrooms.name}</strong> ?
+              Cette action est irréversible.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Suppression...
+                </>
+              ) : (
+                "Supprimer"
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
