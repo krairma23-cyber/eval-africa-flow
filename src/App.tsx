@@ -28,6 +28,8 @@ import Schedule from "./pages/Schedule";
 import PaymentCallback from "./pages/PaymentCallback";
 import ParentPortal from "./pages/ParentPortal";
 import ParentGuide from "./pages/ParentGuide";
+import Terms from "./pages/Terms";
+import AssessmentTypes from "./pages/AssessmentTypes";
 
 import { CookieConsent } from "./components/gdpr/CookieConsent";
 import { TestModeBanner } from "./components/layout/TestModeBanner";
@@ -58,7 +60,8 @@ const App = () => (
           <Route path="subjects" element={<Subjects />} />
           <Route path="classrooms" element={<Classrooms />} />
           <Route path="assessments" element={<Assessments />} />
-          
+          <Route path="terms" element={<Terms />} />
+          <Route path="assessment-types" element={<AssessmentTypes />} />
           <Route path="reports" element={<Reports />} />
           <Route path="assignments" element={<Assignments />} />
           <Route path="schedule" element={<Schedule />} />
