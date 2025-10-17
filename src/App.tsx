@@ -26,7 +26,8 @@ import DataPrivacy from "./pages/DataPrivacy";
 import Assignments from "./pages/Assignments";
 import Schedule from "./pages/Schedule";
 import PaymentCallback from "./pages/PaymentCallback";
-
+import ParentPortal from "./pages/ParentPortal";
+import ParentGuide from "./pages/ParentGuide";
 
 import { CookieConsent } from "./components/gdpr/CookieConsent";
 import { TestModeBanner } from "./components/layout/TestModeBanner";
@@ -46,6 +47,8 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/payment-callback" element={<PaymentCallback />} />
+          <Route path="/parent-portal" element={<ParentPortal />} />
+          <Route path="/parent-guide" element={<ParentGuide />} />
           
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
