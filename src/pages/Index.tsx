@@ -15,7 +15,11 @@ const Index = () => {
         {/* Hero Section */}
         <header className="text-center mb-12 lg:mb-16">
           <div className="inline-flex items-center justify-center gap-3 mb-4">
-            <GraduationCap className="h-16 w-16 text-primary" aria-label="Icône de graduation" />
+            <img 
+              src="/logo.png" 
+              alt="EvalScol Logo" 
+              className="h-20 w-auto object-contain"
+            />
           </div>
           <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4">
             EvalScol Africa Flow - Plateforme SaaS de Gestion des Évaluations Scolaires en Afrique
