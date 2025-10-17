@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -60,11 +61,32 @@ export default function Classrooms() {
   const [classrooms, setClassrooms] = useState<Classroom[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const classroomRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const { toast } = useToast();
 
   useEffect(() => {
     fetchClassrooms();
   }, []);
+
+  useEffect(() => {
+    const highlight = searchParams.get("highlight");
+    if (highlight && classrooms.length > 0) {
+      setHighlightedId(highlight);
+      setTimeout(() => {
+        const element = classroomRefs.current[highlight];
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          // Remove highlight after animation
+          setTimeout(() => {
+            setHighlightedId(null);
+            setSearchParams({}, { replace: true });
+          }, 3000);
+        }
+      }, 100);
+    }
+  }, [classrooms, searchParams]);
 
   const fetchClassrooms = async () => {
     try {
@@ -174,10 +196,14 @@ export default function Classrooms() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredClassrooms.map((classroom) => {
             const classroomColor = classroom.color || getGradeLevelColor(classroom.grade_levels.name);
+            const isHighlighted = highlightedId === classroom.id;
             return (
             <Card 
-              key={classroom.id} 
-              className="hover:shadow-md transition-shadow border-l-4" 
+              key={classroom.id}
+              ref={(el) => (classroomRefs.current[classroom.id] = el)}
+              className={`hover:shadow-md transition-all border-l-4 ${
+                isHighlighted ? "ring-2 ring-primary ring-offset-2 shadow-lg animate-pulse" : ""
+              }`}
               style={{ borderLeftColor: classroomColor }}
             >
               <CardHeader>
