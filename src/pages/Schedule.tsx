@@ -215,11 +215,11 @@ export default function Schedule() {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-muted/50">
-                    <th className="border p-2 text-left font-semibold w-24 sticky left-0 bg-muted/50 z-10">
+                    <th className="border p-1 text-left font-semibold text-xs w-16 sticky left-0 bg-muted/50 z-10">
                       Horaire
                     </th>
                     {[1, 2, 3, 4, 5].map((day) => (
-                      <th key={day} className="border p-2 text-center font-semibold w-48">
+                      <th key={day} className="border p-1 text-center font-semibold text-xs w-36">
                         {DAYS[day]}
                       </th>
                     ))}
@@ -228,43 +228,43 @@ export default function Schedule() {
               <tbody>
                 {timeSlots.map((timeSlot) => (
                   <tr key={timeSlot} className="hover:bg-accent/30 transition-colors">
-                    <td className="border p-2 font-medium text-sm sticky left-0 bg-background z-10">
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-xs">{formatTime(timeSlot)}</span>
+                    <td className="border p-1 font-medium sticky left-0 bg-background z-10">
+                      <div className="flex items-center gap-0.5">
+                        <Clock className="h-2.5 w-2.5 text-muted-foreground" />
+                        <span className="text-[10px]">{formatTime(timeSlot)}</span>
                       </div>
                     </td>
                     {[1, 2, 3, 4, 5].map((day) => {
                       const schedule = getScheduleForDayAndTime(day, timeSlot);
                       return (
-                        <td key={day} className="border p-2">
+                        <td key={day} className="border p-1">
                           {schedule ? (
-                            <div className="space-y-2">
-                              <div className="space-y-1">
-                                <div className="font-semibold text-primary">
+                            <div className="space-y-1">
+                              <div className="space-y-0.5">
+                                <div className="font-semibold text-primary text-xs">
                                   {schedule.subjects.name}
                                 </div>
-                                <div className="text-sm text-muted-foreground">
+                                <div className="text-[10px] text-muted-foreground">
                                   {schedule.classrooms.name}
                                 </div>
-                                <div className="text-sm">
+                                <div className="text-[10px]">
                                   {schedule.teachers.first_name}{" "}
                                   {schedule.teachers.last_name}
                                 </div>
-                                <div className="text-xs text-muted-foreground">
+                                <div className="text-[9px] text-muted-foreground">
                                   {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}
-                                  {schedule.room_number && ` • Salle ${schedule.room_number}`}
+                                  {schedule.room_number && ` • ${schedule.room_number}`}
                                 </div>
                               </div>
                               <EditScheduleDialog schedule={schedule} onScheduleUpdated={fetchSchedules}>
-                                <Button variant="outline" size="sm" className="w-full">
-                                  <Edit className="h-3 w-3 mr-1" />
+                                <Button variant="outline" size="sm" className="w-full h-6 text-[10px] px-1">
+                                  <Edit className="h-2.5 w-2.5 mr-0.5" />
                                   Modifier
                                 </Button>
                               </EditScheduleDialog>
                             </div>
                           ) : (
-                            <div className="text-center text-muted-foreground text-sm">-</div>
+                            <div className="text-center text-muted-foreground text-xs">-</div>
                           )}
                         </td>
                       );
