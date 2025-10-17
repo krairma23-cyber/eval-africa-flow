@@ -8,6 +8,13 @@ import { Calendar, Plus, Clock, Edit, UserCheck } from "lucide-react";
 import { AddScheduleDialog } from "@/components/forms/AddScheduleDialog";
 import { EditScheduleDialog } from "@/components/forms/EditScheduleDialog";
 import { TeacherAttendanceDialog } from "@/components/forms/TeacherAttendanceDialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Schedule {
   id: string;
@@ -40,13 +47,21 @@ const DAYS = [
   "Samedi"
 ];
 
+interface Classroom {
+  id: string;
+  name: string;
+}
+
 export default function Schedule() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
+  const [classrooms, setClassrooms] = useState<Classroom[]>([]);
+  const [selectedClassroom, setSelectedClassroom] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchSchedules();
+    fetchClassrooms();
   }, []);
 
   const fetchSchedules = async () => {
@@ -75,14 +90,37 @@ export default function Schedule() {
     }
   };
 
+  const fetchClassrooms = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('classrooms')
+        .select('id, name')
+        .order('name');
+
+      if (error) throw error;
+      setClassrooms(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les classes",
+        variant: "destructive",
+      });
+    }
+  };
+
   const formatTime = (time: string) => {
     return time.substring(0, 5);
   };
 
+  // Filter schedules by classroom
+  const filteredSchedules = selectedClassroom === "all" 
+    ? schedules 
+    : schedules.filter(s => s.classroom_id === selectedClassroom);
+
   // Generate unique time slots
   const getTimeSlots = () => {
     const slots = new Set<string>();
-    schedules.forEach(schedule => {
+    filteredSchedules.forEach(schedule => {
       slots.add(schedule.start_time);
     });
     return Array.from(slots).sort();
@@ -90,7 +128,7 @@ export default function Schedule() {
 
   // Group schedules by day and time
   const getScheduleForDayAndTime = (day: number, time: string) => {
-    return schedules.find(s => s.day_of_week === day && s.start_time === time);
+    return filteredSchedules.find(s => s.day_of_week === day && s.start_time === time);
   };
 
   if (loading) {
@@ -109,29 +147,48 @@ export default function Schedule() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-            <Calendar className="h-8 w-8" />
-            Emploi du Temps
-          </h1>
-          <p className="text-muted-foreground">
-            Gestion des horaires de cours
-          </p>
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
+              <Calendar className="h-8 w-8" />
+              Emploi du Temps
+            </h1>
+            <p className="text-muted-foreground">
+              Gestion des horaires de cours
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <TeacherAttendanceDialog>
+              <Button variant="outline">
+                <UserCheck className="h-4 w-4 mr-2" />
+                Présence enseignants
+              </Button>
+            </TeacherAttendanceDialog>
+            <AddScheduleDialog onScheduleAdded={fetchSchedules}>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Ajouter un créneau
+              </Button>
+            </AddScheduleDialog>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <TeacherAttendanceDialog>
-            <Button variant="outline">
-              <UserCheck className="h-4 w-4 mr-2" />
-              Présence enseignants
-            </Button>
-          </TeacherAttendanceDialog>
-          <AddScheduleDialog onScheduleAdded={fetchSchedules}>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Ajouter un créneau
-            </Button>
-          </AddScheduleDialog>
+
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium">Filtrer par classe:</label>
+          <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
+            <SelectTrigger className="w-[250px]">
+              <SelectValue placeholder="Toutes les classes" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Toutes les classes</SelectItem>
+              {classrooms.map((classroom) => (
+                <SelectItem key={classroom.id} value={classroom.id}>
+                  {classroom.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

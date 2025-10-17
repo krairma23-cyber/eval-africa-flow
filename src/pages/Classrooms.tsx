@@ -6,11 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, School, Calendar, Pencil, Users } from "lucide-react";
+import { Plus, Search, School, Pencil, Users } from "lucide-react";
 import { AddClassroomDialog } from "@/components/forms/AddClassroomDialog";
 import { EditClassroomDialog } from "@/components/forms/EditClassroomDialog";
 import { ViewClassStudentsDialog } from "@/components/forms/ViewClassStudentsDialog";
-import { ViewClassScheduleDialog } from "@/components/forms/ViewClassScheduleDialog";
 import { logError } from "@/lib/logger";
 
 // Fonction pour obtenir la couleur selon le niveau
@@ -234,12 +233,6 @@ export default function Classrooms() {
                     Voir les élèves
                   </Button>
                 </ViewClassStudentsDialog>
-                <ViewClassScheduleDialog classroomId={classroom.id} classroomName={classroom.name}>
-                  <Button variant="outline" size="sm" className="w-full">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Emploi du temps
-                  </Button>
-                </ViewClassScheduleDialog>
                 {classroom.classroom_subjects && classroom.classroom_subjects.length > 0 && (
                   <div className="space-y-1">
                     <span className="text-sm text-muted-foreground">Matières:</span>
