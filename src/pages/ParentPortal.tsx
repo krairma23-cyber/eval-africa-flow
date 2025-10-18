@@ -96,6 +96,7 @@ export default function ParentPortal() {
   const loadReports = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      console.log('Loading reports for user:', user?.email);
       if (!user?.email) return;
 
       // Récupérer les élèves liés à cet email parent
@@ -122,7 +123,9 @@ export default function ParentPortal() {
         .eq('parent_email', user.email);
 
       if (studentsError) throw studentsError;
+      console.log('Students found:', students);
       if (!students || students.length === 0) {
+        console.log('No students found for this parent email');
         setReports([]);
         return;
       }
@@ -230,6 +233,7 @@ export default function ParentPortal() {
         }
       }
 
+      console.log('All reports loaded:', allReports);
       setReports(allReports);
     } catch (error) {
       console.error('Error loading reports:', error);
@@ -328,11 +332,19 @@ export default function ParentPortal() {
     }
   };
 
-  const filteredReports = reports.filter(report =>
-    report.student_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    report.class_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    report.term.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredReports = reports.filter(report => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return true;
+    
+    const matches = report.student_name.toLowerCase().includes(query) ||
+      report.class_name.toLowerCase().includes(query) ||
+      report.term.toLowerCase().includes(query);
+    
+    console.log('Filtering:', { query, student: report.student_name, matches });
+    return matches;
+  });
+  
+  console.log('Search query:', searchQuery, 'Total reports:', reports.length, 'Filtered:', filteredReports.length);
 
   const displayedReports = showAllReports ? filteredReports : filteredReports.slice(0, 2);
 
