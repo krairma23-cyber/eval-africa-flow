@@ -10,6 +10,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Search, FileText, Download, TrendingUp, TrendingDown } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 interface StudentGrade {
   student_id: string;
@@ -165,10 +167,84 @@ export default function Reports() {
   };
 
   const exportToPDF = (grade: StudentGrade) => {
-    toast({
-      title: "Export PDF",
-      description: `Bulletin de ${grade.student_first_name} ${grade.student_last_name} en préparation...`,
-    });
+    try {
+      const doc = new jsPDF();
+      
+      // Header
+      doc.setFontSize(20);
+      doc.setFont("helvetica", "bold");
+      doc.text("BULLETIN SCOLAIRE", 105, 20, { align: "center" });
+      
+      // Student info
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Élève: ${grade.student_first_name} ${grade.student_last_name}`, 20, 35);
+      doc.text(`Classe: ${grade.classroom_name}`, 20, 42);
+      doc.text(`Période: ${grade.term_name}`, 20, 49);
+      
+      // Overall average
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      const avgColor = grade.overall_average >= 10 ? [0, 128, 0] : [255, 0, 0];
+      doc.setTextColor(avgColor[0], avgColor[1], avgColor[2]);
+      doc.text(`Moyenne Générale: ${grade.overall_average.toFixed(2)}/20`, 20, 60);
+      doc.setTextColor(0, 0, 0);
+      
+      // Appreciation
+      let appreciation = "Insuffisant";
+      if (grade.overall_average >= 16) appreciation = "Excellent";
+      else if (grade.overall_average >= 14) appreciation = "Très bien";
+      else if (grade.overall_average >= 12) appreciation = "Bien";
+      else if (grade.overall_average >= 10) appreciation = "Passable";
+      
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "italic");
+      doc.text(`Appréciation: ${appreciation}`, 20, 68);
+      
+      // Subject grades table
+      const tableData = grade.subject_grades.map(subject => [
+        subject.subject_name,
+        subject.avg_score.toFixed(2),
+        subject.coefficient.toString(),
+        subject.weighted_score.toFixed(2)
+      ]);
+      
+      autoTable(doc, {
+        startY: 75,
+        head: [["Matière", "Note /20", "Coefficient", "Note pondérée"]],
+        body: tableData,
+        theme: "grid",
+        headStyles: { fillColor: [41, 128, 185], fontStyle: "bold" },
+        styles: { fontSize: 10 },
+        columnStyles: {
+          0: { cellWidth: 80 },
+          1: { cellWidth: 30, halign: "center" },
+          2: { cellWidth: 30, halign: "center" },
+          3: { cellWidth: 40, halign: "center" }
+        }
+      });
+      
+      // Footer
+      const finalY = (doc as any).lastAutoTable.finalY || 150;
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Généré le ${new Date().toLocaleDateString("fr-FR")}`, 20, finalY + 15);
+      
+      // Save PDF
+      doc.save(`Bulletin_${grade.student_first_name}_${grade.student_last_name}_${grade.term_name}.pdf`);
+      
+      toast({
+        title: "Succès",
+        description: `Bulletin de ${grade.student_first_name} ${grade.student_last_name} téléchargé`,
+      });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de générer le PDF",
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {
