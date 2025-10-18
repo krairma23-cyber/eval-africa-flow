@@ -7,16 +7,28 @@ import { FileText, Download, TrendingUp, Calendar, User, LogOut, Search } from "
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
+interface SubjectGrade {
+  subject_name: string;
+  avg_score: number;
+  coefficient: number;
+  weighted_score: number;
+}
 
 interface StudentReport {
   id: string;
+  student_id: string;
   student_name: string;
   class_name: string;
   term: string;
+  term_id: string;
   average: number;
   rank: number;
   total_students: number;
   date: string;
+  subject_grades: SubjectGrade[];
 }
 
 export default function ParentPortal() {
@@ -82,41 +94,237 @@ export default function ParentPortal() {
   };
 
   const loadReports = async () => {
-    // TODO: Charger les vrais rapports depuis la base de données
-    // Pour l'instant, données de démonstration
-    setReports([
-      {
-        id: "1",
-        student_name: "Jean Kouadio",
-        class_name: "6ème A",
-        term: "1er Trimestre 2024-2025",
-        average: 14.5,
-        rank: 3,
-        total_students: 35,
-        date: "2024-12-15",
-      },
-      {
-        id: "2",
-        student_name: "Jean Kouadio",
-        class_name: "6ème A",
-        term: "2ème Trimestre 2024-2025",
-        average: 15.2,
-        rank: 2,
-        total_students: 35,
-        date: "2025-03-20",
-      },
-    ]);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.email) return;
+
+      // Récupérer les élèves liés à cet email parent
+      const { data: students, error: studentsError } = await supabase
+        .from('students')
+        .select(`
+          id,
+          first_name,
+          last_name,
+          school_id,
+          enrollments (
+            id,
+            classroom_id,
+            academic_year_id,
+            classrooms (
+              name,
+              campus_id,
+              campuses (
+                school_id
+              )
+            )
+          )
+        `)
+        .eq('parent_email', user.email);
+
+      if (studentsError) throw studentsError;
+      if (!students || students.length === 0) {
+        setReports([]);
+        return;
+      }
+
+      // Pour chaque élève, récupérer ses bulletins
+      const allReports: StudentReport[] = [];
+
+      for (const student of students) {
+        const enrollment = student.enrollments?.[0];
+        if (!enrollment) continue;
+
+        const { data: terms, error: termsError } = await supabase
+          .from('terms')
+          .select('id, name, school_id')
+          .eq('school_id', student.school_id)
+          .order('created_at', { ascending: false });
+
+        if (termsError) continue;
+
+        for (const term of terms || []) {
+          // Récupérer toutes les notes de l'élève pour cette période
+          const { data: assessmentResults } = await supabase
+            .from('assessment_results')
+            .select(`
+              id,
+              score,
+              assessments (
+                id,
+                classroom_subject_id,
+                term_id,
+                coefficient,
+                classroom_subjects (
+                  coefficient,
+                  subjects (
+                    name
+                  )
+                )
+              )
+            `)
+            .eq('student_id', student.id)
+            .not('score', 'is', null);
+
+          // Filtrer les résultats pour ce terme
+          const termResults = assessmentResults?.filter(
+            r => r.assessments?.term_id === term.id
+          ) || [];
+
+          if (termResults.length === 0) continue;
+
+          // Calculer la moyenne par matière
+          const subjectGrades: { [key: string]: SubjectGrade } = {};
+
+          termResults.forEach(result => {
+            const subject = result.assessments?.classroom_subjects?.subjects;
+            const subjectName = subject?.name || 'Matière inconnue';
+            const coefficient = result.assessments?.classroom_subjects?.coefficient || 1;
+            const score = result.score || 0;
+
+            if (!subjectGrades[subjectName]) {
+              subjectGrades[subjectName] = {
+                subject_name: subjectName,
+                avg_score: 0,
+                coefficient: coefficient,
+                weighted_score: 0
+              };
+            }
+
+            subjectGrades[subjectName].avg_score += score;
+          });
+
+          // Calculer les moyennes et notes pondérées
+          const subjectArray = Object.values(subjectGrades).map(subject => {
+            const count = termResults.filter(
+              r => r.assessments?.classroom_subjects?.subjects?.name === subject.subject_name
+            ).length;
+            subject.avg_score = subject.avg_score / count;
+            subject.weighted_score = subject.avg_score * subject.coefficient;
+            return subject;
+          });
+
+          // Calculer la moyenne générale
+          const totalWeighted = subjectArray.reduce((sum, s) => sum + s.weighted_score, 0);
+          const totalCoeff = subjectArray.reduce((sum, s) => sum + s.coefficient, 0);
+          const overallAverage = totalCoeff > 0 ? totalWeighted / totalCoeff : 0;
+
+          // Récupérer le nombre total d'élèves dans la classe
+          const { count: totalStudents } = await supabase
+            .from('enrollments')
+            .select('*', { count: 'exact', head: true })
+            .eq('classroom_id', enrollment.classroom_id);
+
+          allReports.push({
+            id: `${student.id}-${term.id}`,
+            student_id: student.id,
+            student_name: `${student.first_name} ${student.last_name}`,
+            class_name: enrollment.classrooms?.name || 'Classe inconnue',
+            term: term.name,
+            term_id: term.id,
+            average: overallAverage,
+            rank: 1, // TODO: Calculer le rang réel
+            total_students: totalStudents || 0,
+            date: new Date().toISOString(),
+            subject_grades: subjectArray
+          });
+        }
+      }
+
+      setReports(allReports);
+    } catch (error) {
+      console.error('Error loading reports:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les bulletins",
+        variant: "destructive",
+      });
+    }
   };
 
   const downloadReport = (reportId: string) => {
     const report = reports.find(r => r.id === reportId);
-    if (report) {
+    if (!report) return;
+
+    try {
+      const doc = new jsPDF();
+      
+      // Header
+      doc.setFontSize(20);
+      doc.setFont("helvetica", "bold");
+      doc.text("BULLETIN SCOLAIRE", 105, 20, { align: "center" });
+      
+      // Student info
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      doc.text(`Élève: ${report.student_name}`, 20, 35);
+      doc.text(`Classe: ${report.class_name}`, 20, 42);
+      doc.text(`Période: ${report.term}`, 20, 49);
+      
+      // Overall average
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      const avgColor = report.average >= 10 ? [0, 128, 0] : [255, 0, 0];
+      doc.setTextColor(avgColor[0], avgColor[1], avgColor[2]);
+      doc.text(`Moyenne Générale: ${report.average.toFixed(2)}/20`, 20, 60);
+      doc.setTextColor(0, 0, 0);
+      
+      // Appreciation
+      let appreciation = "Insuffisant";
+      if (report.average >= 16) appreciation = "Excellent";
+      else if (report.average >= 14) appreciation = "Très bien";
+      else if (report.average >= 12) appreciation = "Bien";
+      else if (report.average >= 10) appreciation = "Passable";
+      
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "italic");
+      doc.text(`Appréciation: ${appreciation}`, 20, 68);
+      doc.text(`Rang: ${report.rank}/${report.total_students}`, 20, 75);
+      
+      // Subject grades table
+      if (report.subject_grades && report.subject_grades.length > 0) {
+        const tableData = report.subject_grades.map(subject => [
+          subject.subject_name,
+          subject.avg_score.toFixed(2),
+          subject.coefficient.toString(),
+          subject.weighted_score.toFixed(2)
+        ]);
+        
+        autoTable(doc, {
+          startY: 82,
+          head: [["Matière", "Note /20", "Coefficient", "Note pondérée"]],
+          body: tableData,
+          theme: "grid",
+          headStyles: { fillColor: [41, 128, 185], fontStyle: "bold" },
+          styles: { fontSize: 10 },
+          columnStyles: {
+            0: { cellWidth: 80 },
+            1: { cellWidth: 30, halign: "center" },
+            2: { cellWidth: 30, halign: "center" },
+            3: { cellWidth: 40, halign: "center" }
+          }
+        });
+        
+        // Footer
+        const finalY = (doc as any).lastAutoTable.finalY || 150;
+        doc.setFontSize(8);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Généré le ${new Date().toLocaleDateString("fr-FR")}`, 20, finalY + 15);
+      }
+      
+      // Save PDF
+      doc.save(`Bulletin_${report.student_name.replace(/\s/g, '_')}_${report.term.replace(/\s/g, '_')}.pdf`);
+      
       toast({
-        title: "Téléchargement démarré",
-        description: `Bulletin de ${report.student_name} - ${report.term}`,
+        title: "Succès",
+        description: `Bulletin de ${report.student_name} téléchargé`,
       });
-      // TODO: Implémenter le vrai téléchargement PDF depuis la base de données
-      console.log("Downloading report:", reportId);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de générer le PDF",
+        variant: "destructive",
+      });
     }
   };
 
@@ -211,46 +419,53 @@ export default function ParentPortal() {
         </header>
 
         {/* Stats Overview */}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <User className="h-6 w-6 text-primary" />
+        {reports.length > 0 && (
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <Card className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-primary/10 rounded-lg">
+                  <User className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Élève</p>
+                  <p className="text-2xl font-bold">{reports[0].student_name}</p>
+                  <p className="text-sm text-muted-foreground">{reports[0].class_name}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Élève</p>
-                <p className="text-2xl font-bold">Jean Kouadio</p>
-                <p className="text-sm text-muted-foreground">6ème A</p>
-              </div>
-            </div>
-          </Card>
+            </Card>
 
-          <Card className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-accent/10 rounded-lg">
-                <TrendingUp className="h-6 w-6 text-accent" />
+            <Card className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-accent/10 rounded-lg">
+                  <TrendingUp className="h-6 w-6 text-accent" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Dernière Moyenne</p>
+                  <p className="text-2xl font-bold">{reports[0].average.toFixed(2)}/20</p>
+                  {reports.length > 1 && (
+                    <p className={`text-sm ${reports[0].average >= reports[1].average ? 'text-green-600' : 'text-red-600'}`}>
+                      {reports[0].average >= reports[1].average ? '↑' : '↓'} 
+                      {' '}{Math.abs(reports[0].average - reports[1].average).toFixed(1)} points
+                    </p>
+                  )}
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Moyenne Générale</p>
-                <p className="text-2xl font-bold">15.2/20</p>
-                <p className="text-sm text-green-600">↑ +0.7 points</p>
-              </div>
-            </div>
-          </Card>
+            </Card>
 
-          <Card className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-primary/10 rounded-lg">
-                <FileText className="h-6 w-6 text-primary" />
+            <Card className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-primary/10 rounded-lg">
+                  <FileText className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Classement</p>
+                  <p className="text-2xl font-bold">{reports[0].rank}/{reports[0].total_students}</p>
+                  <p className="text-sm text-muted-foreground">élèves</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Classement</p>
-                <p className="text-2xl font-bold">2/35</p>
-                <p className="text-sm text-muted-foreground">élèves</p>
-              </div>
-            </div>
-          </Card>
-        </div>
+            </Card>
+          </div>
+        )}
 
         {/* Reports Section */}
         <div className="space-y-6">
