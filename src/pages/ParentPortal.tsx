@@ -173,7 +173,29 @@ export default function ParentPortal() {
             r => r.assessments?.term_id === term.id
           ) || [];
 
-          if (termResults.length === 0) continue;
+          // Récupérer le nombre total d'élèves dans la classe
+          const { count: totalStudents } = await supabase
+            .from('enrollments')
+            .select('*', { count: 'exact', head: true })
+            .eq('classroom_id', enrollment.classroom_id);
+
+          if (termResults.length === 0) {
+            // Créer un bulletin vide pour les élèves sans notes
+            allReports.push({
+              id: `${student.id}-${term.id}`,
+              student_id: student.id,
+              student_name: `${student.first_name} ${student.last_name}`,
+              class_name: enrollment.classrooms?.name || 'Classe inconnue',
+              term: term.name,
+              term_id: term.id,
+              average: 0,
+              rank: 0,
+              total_students: totalStudents || 0,
+              date: new Date().toISOString(),
+              subject_grades: []
+            });
+            continue;
+          }
 
           // Calculer la moyenne par matière
           const subjectGrades: { [key: string]: SubjectGrade } = {};
@@ -211,12 +233,6 @@ export default function ParentPortal() {
           const totalCoeff = subjectArray.reduce((sum, s) => sum + s.coefficient, 0);
           const overallAverage = totalCoeff > 0 ? totalWeighted / totalCoeff : 0;
 
-          // Récupérer le nombre total d'élèves dans la classe
-          const { count: totalStudents } = await supabase
-            .from('enrollments')
-            .select('*', { count: 'exact', head: true })
-            .eq('classroom_id', enrollment.classroom_id);
-
           allReports.push({
             id: `${student.id}-${term.id}`,
             student_id: student.id,
@@ -225,8 +241,11 @@ export default function ParentPortal() {
             term: term.name,
             term_id: term.id,
             average: overallAverage,
-            rank: 1, // TODO: Calculer le rang réel
-            total_students: totalStudents || 0,
+            rank: overallAverage > 0 ? 1 : 0, // TODO: Calculer le rang réel
+            total_students: (await supabase
+              .from('enrollments')
+              .select('*', { count: 'exact', head: true })
+              .eq('classroom_id', enrollment.classroom_id)).count || 0,
             date: new Date().toISOString(),
             subject_grades: subjectArray
           });
@@ -528,23 +547,34 @@ export default function ParentPortal() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4 mt-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Moyenne</p>
-                        <p className="text-xl font-bold text-primary">{report.average}/20</p>
+                    {report.average > 0 ? (
+                      <div className="grid grid-cols-3 gap-4 mt-4">
+                        <div>
+                          <p className="text-sm text-muted-foreground">Moyenne</p>
+                          <p className="text-xl font-bold text-primary">{report.average.toFixed(2)}/20</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Rang</p>
+                          <p className="text-xl font-bold">{report.rank}/{report.total_students}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted-foreground">Date</p>
+                          <p className="text-sm font-medium">{new Date(report.date).toLocaleDateString('fr-FR')}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Rang</p>
-                        <p className="text-xl font-bold">{report.rank}/{report.total_students}</p>
+                    ) : (
+                      <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+                        <p className="text-sm text-muted-foreground">
+                          Aucune note disponible pour cette période
+                        </p>
                       </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Date</p>
-                        <p className="text-sm font-medium">{new Date(report.date).toLocaleDateString('fr-FR')}</p>
-                      </div>
-                    </div>
+                    )}
                   </div>
 
-                  <Button onClick={() => downloadReport(report.id)}>
+                  <Button 
+                    onClick={() => downloadReport(report.id)}
+                    disabled={report.average === 0}
+                  >
                     <Download className="h-4 w-4 mr-2" />
                     Télécharger PDF
                   </Button>
