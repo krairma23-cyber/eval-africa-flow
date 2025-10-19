@@ -3,12 +3,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Download, TrendingUp, Calendar, User, LogOut, Search } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { FileText, Download, TrendingUp, Calendar, User, LogOut, Search, CreditCard, DollarSign } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { TuitionPaymentDialog } from "@/components/payment/TuitionPaymentDialog";
 
 interface SubjectGrade {
   subject_name: string;
@@ -31,14 +32,24 @@ interface StudentReport {
   subject_grades: SubjectGrade[];
 }
 
+interface StudentPaymentInfo {
+  student_id: string;
+  student_name: string;
+  tuition_fee: number;
+  amount_paid: number;
+  payment_status: string;
+}
+
 export default function ParentPortal() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [parentEmail, setParentEmail] = useState("");
   const [parentPassword, setParentPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [reports, setReports] = useState<StudentReport[]>([]);
+  const [paymentInfo, setPaymentInfo] = useState<StudentPaymentInfo[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showAllReports, setShowAllReports] = useState(false);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -46,11 +57,25 @@ export default function ParentPortal() {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    const paymentSuccess = searchParams.get('payment');
+    if (paymentSuccess === 'success' && isAuthenticated) {
+      toast({
+        title: "Paiement en cours de traitement",
+        description: "Votre paiement est en cours de vérification...",
+      });
+      setTimeout(() => {
+        loadReports();
+      }, 2000);
+    }
+  }, [searchParams, isAuthenticated]);
+
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
       setIsAuthenticated(true);
       loadReports();
+      loadPaymentInfo();
     }
   };
 
@@ -264,6 +289,32 @@ export default function ParentPortal() {
     }
   };
 
+  const loadPaymentInfo = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user?.email) return;
+
+      const { data: students, error } = await supabase
+        .from('students')
+        .select('id, first_name, last_name, tuition_fee, amount_paid, payment_status')
+        .eq('parent_email', user.email);
+
+      if (error) throw error;
+
+      const payments: StudentPaymentInfo[] = (students || []).map(s => ({
+        student_id: s.id,
+        student_name: `${s.first_name} ${s.last_name}`,
+        tuition_fee: s.tuition_fee || 0,
+        amount_paid: s.amount_paid || 0,
+        payment_status: s.payment_status || 'unpaid'
+      }));
+
+      setPaymentInfo(payments);
+    } catch (error) {
+      console.error('Error loading payment info:', error);
+    }
+  };
+
   const downloadReport = (reportId: string) => {
     const report = reports.find(r => r.id === reportId);
     if (!report) return;
@@ -448,6 +499,71 @@ export default function ParentPortal() {
             Déconnexion
           </Button>
         </header>
+
+        {/* Payment Section */}
+        {paymentInfo.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-4">Frais de Scolarité</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              {paymentInfo.map((payment) => (
+                <Card key={payment.student_id} className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                          <CreditCard className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">{payment.student_name}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {payment.payment_status === 'paid' ? 'Payé' : 
+                             payment.payment_status === 'partial' ? 'Paiement partiel' : 
+                             'Non payé'}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Frais totaux</span>
+                          <span className="font-semibold">{payment.tuition_fee.toLocaleString('fr-FR')} FCFA</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Déjà payé</span>
+                          <span className="font-semibold text-green-600">{payment.amount_paid.toLocaleString('fr-FR')} FCFA</span>
+                        </div>
+                        {payment.tuition_fee > payment.amount_paid && (
+                          <div className="flex justify-between text-sm pt-2 border-t">
+                            <span className="text-muted-foreground">Reste à payer</span>
+                            <span className="font-bold text-red-600">
+                              {(payment.tuition_fee - payment.amount_paid).toLocaleString('fr-FR')} FCFA
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {payment.tuition_fee > payment.amount_paid && (
+                    <TuitionPaymentDialog
+                      studentId={payment.student_id}
+                      studentName={payment.student_name}
+                      tuitionFee={payment.tuition_fee}
+                      amountPaid={payment.amount_paid}
+                      paymentStatus={payment.payment_status}
+                      onPaymentCompleted={loadPaymentInfo}
+                    >
+                      <Button className="w-full">
+                        <DollarSign className="h-4 w-4 mr-2" />
+                        Payer maintenant
+                      </Button>
+                    </TuitionPaymentDialog>
+                  )}
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Stats Overview */}
         {reports.length > 0 && (
