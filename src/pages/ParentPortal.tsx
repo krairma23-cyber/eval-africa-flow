@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Download, TrendingUp, Calendar, User, LogOut, Search, CreditCard, DollarSign } from "lucide-react";
+import { FileText, Download, TrendingUp, Calendar, User, LogOut, Search, CreditCard, DollarSign, Check } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -544,7 +544,7 @@ export default function ParentPortal() {
                     </div>
                   </div>
 
-                  {payment.tuition_fee > payment.amount_paid && (
+                  {payment.tuition_fee > payment.amount_paid ? (
                     <TuitionPaymentDialog
                       studentId={payment.student_id}
                       studentName={payment.student_name}
@@ -558,6 +558,11 @@ export default function ParentPortal() {
                         Payer maintenant
                       </Button>
                     </TuitionPaymentDialog>
+                  ) : (
+                    <Button className="w-full" variant="outline" disabled>
+                      <Check className="h-4 w-4 mr-2 text-green-600" />
+                      Frais de scolarité payés
+                    </Button>
                   )}
                 </Card>
               ))}
