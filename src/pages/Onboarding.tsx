@@ -1,48 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { CheckCircle2, ArrowRight, ArrowLeft, School, Building2, BookOpen, ClipboardCheck } from "lucide-react";
-import { SchoolInfoStep } from "@/components/onboarding/SchoolInfoStep";
-import { CampusSetupStep } from "@/components/onboarding/CampusSetupStep";
-import { ProgramSetupStep } from "@/components/onboarding/ProgramSetupStep";
-import { AssessmentTypesStep } from "@/components/onboarding/AssessmentTypesStep";
-import { CompletionStep } from "@/components/onboarding/CompletionStep";
-import { motion, AnimatePresence } from "framer-motion";
-
-const STEPS = [
-  { id: 1, title: "École", icon: School },
-  { id: 2, title: "Campus", icon: Building2 },
-  { id: 3, title: "Programmes", icon: BookOpen },
-  { id: 4, title: "Évaluations", icon: ClipboardCheck },
-  { id: 5, title: "Terminé", icon: CheckCircle2 },
-];
+import { Card, CardContent } from "@/components/ui/card";
+import { CheckCircle2, Users, BookOpen, ClipboardCheck, Settings, ArrowRight, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Onboarding() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [schoolData, setSchoolData] = useState<any>(null);
-  const [campusData, setCampusData] = useState<any>(null);
-  const [programData, setProgramData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  const progress = (currentStep / STEPS.length) * 100;
-
-  const handleNext = () => {
-    if (currentStep < STEPS.length) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
 
   const handleComplete = async () => {
     setLoading(true);
@@ -59,8 +27,8 @@ export default function Onboarding() {
       if (error) throw error;
 
       toast({
-        title: "Configuration terminée !",
-        description: "Votre école est prête à utiliser EvalScol",
+        title: "Bienvenue sur EvalScol !",
+        description: "Vous pouvez maintenant commencer à utiliser la plateforme",
       });
 
       navigate("/dashboard");
@@ -75,116 +43,120 @@ export default function Onboarding() {
     }
   };
 
+  const steps = [
+    {
+      icon: Settings,
+      title: "1. Configurez votre école",
+      description: "Dans Réglages, ajoutez les informations de votre établissement",
+    },
+    {
+      icon: Users,
+      title: "2. Ajoutez vos enseignants et élèves",
+      description: "Créez les profils de votre équipe et de vos étudiants",
+    },
+    {
+      icon: BookOpen,
+      title: "3. Organisez vos classes",
+      description: "Créez vos classes, matières et programmes",
+    },
+    {
+      icon: ClipboardCheck,
+      title: "4. Commencez les évaluations",
+      description: "Créez vos premières évaluations et suivez les résultats",
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="container max-w-5xl mx-auto py-8 px-4">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <img 
-            src="/evalscol-logo.png" 
-            alt="EvalScol Logo" 
-            className="h-16 w-16 mx-auto mb-4 object-contain"
-          />
-          <h1 className="text-3xl font-bold mb-2">
-            Bienvenue sur EvalScol
-          </h1>
-          <p className="text-muted-foreground">
-            Configurons votre établissement en quelques étapes simples
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-4xl"
+      >
+        <Card className="border-primary/20">
+          <CardContent className="p-8 md:p-12">
+            {/* Header */}
+            <div className="text-center mb-12">
+              <div className="mx-auto w-20 h-20 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mb-6 relative">
+                <Sparkles className="h-10 w-10 text-primary-foreground" />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-accent animate-pulse opacity-50" />
+              </div>
+              <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Bienvenue sur EvalScol !
+              </h1>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                La plateforme intelligente de gestion des évaluations scolaires
+              </p>
+            </div>
 
-        {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-2">
-            {STEPS.map((step, index) => {
-              const StepIcon = step.icon;
-              return (
-                <div key={step.id} className="flex items-center">
-                  <div className={`flex flex-col items-center gap-2 ${index < currentStep ? 'opacity-100' : 'opacity-40'}`}>
-                    <div className={`
-                      w-12 h-12 rounded-full flex items-center justify-center transition-all
-                      ${index < currentStep 
-                        ? 'bg-primary text-primary-foreground' 
-                        : index === currentStep - 1 
-                        ? 'bg-primary text-primary-foreground ring-4 ring-primary/20' 
-                        : 'bg-muted text-muted-foreground'
-                      }
-                    `}>
-                      <StepIcon className="h-5 w-5" />
-                    </div>
-                    <span className="text-xs font-medium">{step.title}</span>
-                  </div>
-                  {index < STEPS.length - 1 && (
-                    <div className={`h-0.5 w-12 mx-2 transition-all ${
-                      index < currentStep - 1 ? 'bg-primary' : 'bg-muted'
-                    }`} />
-                  )}
-                </div>
-              );
-            })}
-          </div>
-          <Progress value={progress} className="h-2" />
-        </div>
+            {/* Quick Start Guide */}
+            <div className="mb-12">
+              <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-primary" />
+                Pour bien démarrer :
+              </h2>
+              <div className="grid gap-4 md:grid-cols-2">
+                {steps.map((step, index) => {
+                  const StepIcon = step.icon;
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="p-4 rounded-lg border bg-card/50 hover:border-primary/40 transition-all"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="p-2 rounded-lg bg-primary/10">
+                          <StepIcon className="h-5 w-5 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-medium mb-1">{step.title}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {step.description}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
 
-        {/* Step Content */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentStep}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Card>
-              <CardContent className="p-6">
-                {currentStep === 1 && (
-                  <SchoolInfoStep 
-                    onNext={handleNext}
-                    onDataChange={setSchoolData}
-                    initialData={schoolData}
-                  />
-                )}
-                {currentStep === 2 && (
-                  <CampusSetupStep 
-                    onNext={handleNext}
-                    onBack={handleBack}
-                    onDataChange={setCampusData}
-                    initialData={campusData}
-                    schoolData={schoolData}
-                  />
-                )}
-                {currentStep === 3 && (
-                  <ProgramSetupStep 
-                    onNext={handleNext}
-                    onBack={handleBack}
-                    onDataChange={setProgramData}
-                    initialData={programData}
-                    schoolData={schoolData}
-                  />
-                )}
-                {currentStep === 4 && (
-                  <AssessmentTypesStep 
-                    onNext={handleNext}
-                    onBack={handleBack}
-                    schoolData={schoolData}
-                  />
-                )}
-                {currentStep === 5 && (
-                  <CompletionStep 
-                    onComplete={handleComplete}
-                    loading={loading}
-                  />
-                )}
-              </CardContent>
-            </Card>
-          </motion.div>
-        </AnimatePresence>
+            {/* Features Highlight */}
+            <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-6 mb-8">
+              <h3 className="font-semibold mb-3 flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                Fonctionnalités principales
+              </h3>
+              <div className="grid md:grid-cols-3 gap-4 text-sm text-muted-foreground">
+                <div>✨ Assistant IA intégré</div>
+                <div>📊 Analytics prédictifs</div>
+                <div>🎙️ Commandes vocales</div>
+                <div>📱 Portail parent</div>
+                <div>📈 Rapports automatiques</div>
+                <div>🔒 Sécurité maximale</div>
+              </div>
+            </div>
 
-        {/* Footer */}
-        <div className="text-center mt-8 text-sm text-muted-foreground">
-          <p>Vous pourrez modifier ces paramètres plus tard dans les réglages</p>
-        </div>
-      </div>
+            {/* CTA */}
+            <div className="text-center">
+              <Button 
+                size="lg" 
+                onClick={handleComplete} 
+                disabled={loading}
+                className="px-8"
+              >
+                {loading ? "Chargement..." : "Commencer à utiliser EvalScol"}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              <p className="text-xs text-muted-foreground mt-4">
+                Toutes les configurations sont disponibles dans les paramètres du tableau de bord
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }
