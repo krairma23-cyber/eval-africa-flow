@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FileText, Download, TrendingUp, Calendar, User, LogOut, Search, CreditCard, DollarSign, Check } from "lucide-react";
+import { FileText, Download, TrendingUp, Calendar, User, LogOut, Search, CreditCard, DollarSign, Check, ArrowLeft } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -484,6 +484,13 @@ export default function ParentPortal() {
         {/* Header */}
         <header className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              size="icon"
+              onClick={() => navigate('/')}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
             <img 
               src="/logo.png" 
               alt="EvalScol Logo" 
