@@ -53,10 +53,17 @@ const menuItems = [
 ];
 
 export function AppSidebar() {
-  const { open } = useSidebar();
+  const { open, setOpen } = useSidebar();
   const location = useLocation();
   const [schoolLogo, setSchoolLogo] = useState<string | null>(null);
   const [schoolName, setSchoolName] = useState<string>("EvalScol");
+
+  // Close sidebar on mobile after navigation
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setOpen(false);
+    }
+  }, [location.pathname, setOpen]);
 
   useEffect(() => {
     loadSchoolLogo();
