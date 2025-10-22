@@ -7,10 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, School, Pencil, Users } from "lucide-react";
+import { Plus, Search, School, Pencil, Users, TrendingUp } from "lucide-react";
 import { AddClassroomDialog } from "@/components/forms/AddClassroomDialog";
 import { EditClassroomDialog } from "@/components/forms/EditClassroomDialog";
 import { ViewClassStudentsDialog } from "@/components/forms/ViewClassStudentsDialog";
+import { ViewClassRankingsDialog } from "@/components/forms/ViewClassRankingsDialog";
 import { logError } from "@/lib/logger";
 
 // Fonction pour obtenir la couleur selon le niveau
@@ -253,12 +254,20 @@ export default function Classrooms() {
                   <span className="text-muted-foreground">Élèves inscrits:</span>
                   <Badge variant="outline">{classroom.enrollments?.length || 0} / {classroom.capacity}</Badge>
                 </div>
-                <ViewClassStudentsDialog classroomId={classroom.id} classroomName={classroom.name}>
-                  <Button variant="outline" size="sm" className="w-full mt-2">
-                    <Users className="h-4 w-4 mr-2" />
-                    Voir les élèves
-                  </Button>
-                </ViewClassStudentsDialog>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <ViewClassStudentsDialog classroomId={classroom.id} classroomName={classroom.name}>
+                    <Button variant="outline" size="sm" className="w-full">
+                      <Users className="h-4 w-4 mr-2" />
+                      Élèves
+                    </Button>
+                  </ViewClassStudentsDialog>
+                  <ViewClassRankingsDialog classroomId={classroom.id} classroomName={classroom.name}>
+                    <Button variant="outline" size="sm" className="w-full">
+                      <TrendingUp className="h-4 w-4 mr-2" />
+                      Classement
+                    </Button>
+                  </ViewClassRankingsDialog>
+                </div>
                 {classroom.classroom_subjects && classroom.classroom_subjects.length > 0 && (
                   <div className="space-y-1">
                     <span className="text-sm text-muted-foreground">Matières:</span>

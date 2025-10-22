@@ -7,6 +7,7 @@ import { FileText, Download, TrendingUp, Calendar, User, LogOut, Search, CreditC
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { calculateRankings } from "@/lib/ranking-utils";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { TuitionPaymentDialog } from "@/components/payment/TuitionPaymentDialog";
@@ -30,6 +31,7 @@ interface StudentReport {
   total_students: number;
   date: string;
   subject_grades: SubjectGrade[];
+  classroom_id?: string;
 }
 
 interface StudentPaymentInfo {
@@ -198,12 +200,6 @@ export default function ParentPortal() {
             r => r.assessments?.term_id === term.id
           ) || [];
 
-          // Récupérer le nombre total d'élèves dans la classe
-          const { count: totalStudents } = await supabase
-            .from('enrollments')
-            .select('*', { count: 'exact', head: true })
-            .eq('classroom_id', enrollment.classroom_id);
-
           if (termResults.length === 0) {
             // Créer un bulletin vide pour les élèves sans notes
             allReports.push({
@@ -215,9 +211,10 @@ export default function ParentPortal() {
               term_id: term.id,
               average: 0,
               rank: 0,
-              total_students: totalStudents || 0,
+              total_students: 0, // Will be set after calculating all students
               date: new Date().toISOString(),
-              subject_grades: []
+              subject_grades: [],
+              classroom_id: enrollment.classroom_id
             });
             continue;
           }
@@ -258,6 +255,13 @@ export default function ParentPortal() {
           const totalCoeff = subjectArray.reduce((sum, s) => sum + s.coefficient, 0);
           const overallAverage = totalCoeff > 0 ? totalWeighted / totalCoeff : 0;
 
+          // Get total students count
+          const { count: totalStudents } = await supabase
+            .from('enrollments')
+            .select('*', { count: 'exact', head: true })
+            .eq('classroom_id', enrollment.classroom_id)
+            .eq('status', 'active');
+
           allReports.push({
             id: `${student.id}-${term.id}`,
             student_id: student.id,
@@ -266,18 +270,45 @@ export default function ParentPortal() {
             term: term.name,
             term_id: term.id,
             average: overallAverage,
-            rank: overallAverage > 0 ? 1 : 0, // TODO: Calculer le rang réel
-            total_students: (await supabase
-              .from('enrollments')
-              .select('*', { count: 'exact', head: true })
-              .eq('classroom_id', enrollment.classroom_id)).count || 0,
+            rank: 0, // Will be calculated after all reports are loaded
+            total_students: totalStudents || 0,
             date: new Date().toISOString(),
-            subject_grades: subjectArray
+            subject_grades: subjectArray,
+            classroom_id: enrollment.classroom_id
           });
         }
       }
 
-      console.log('All reports loaded:', allReports);
+      // Calculate rankings for each class and term combination
+      const classTermGroups: { [key: string]: StudentReport[] } = {};
+      
+      allReports.forEach(report => {
+        const key = `${report.classroom_id}-${report.term_id}`;
+        if (!classTermGroups[key]) {
+          classTermGroups[key] = [];
+        }
+        classTermGroups[key].push(report);
+      });
+
+      // Calculate rankings within each group and update total_students
+      Object.values(classTermGroups).forEach(group => {
+        const studentsData = group.map(r => ({
+          student_id: r.student_id,
+          average: r.average
+        }));
+
+        const rankings = calculateRankings(studentsData);
+
+        group.forEach(report => {
+          const ranking = rankings.find(r => r.student_id === report.student_id);
+          if (ranking) {
+            report.rank = ranking.rank;
+          }
+          report.total_students = group.length;
+        });
+      });
+
+      console.log('All reports loaded with rankings:', allReports);
       setReports(allReports);
     } catch (error) {
       console.error('Error loading reports:', error);

@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { Search, FileText, Download, TrendingUp, TrendingDown } from "lucide-react";
+import { calculateRankings } from "@/lib/ranking-utils";
+import { Search, FileText, Download, TrendingUp, TrendingDown, Trophy } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -18,7 +19,9 @@ interface StudentGrade {
   student_first_name: string;
   student_last_name: string;
   classroom_name: string;
+  classroom_id: string;
   term_name: string;
+  term_id: string;
   subject_grades: {
     subject_name: string;
     avg_score: number;
@@ -27,6 +30,8 @@ interface StudentGrade {
     weighted_score: number;
   }[];
   overall_average: number;
+  rank?: number;
+  total_students?: number;
 }
 
 export default function Reports() {
@@ -91,7 +96,9 @@ export default function Reports() {
             student_first_name: result.students.first_name,
             student_last_name: result.students.last_name,
             classroom_name: result.assessments.classroom_subjects.classrooms.name,
+            classroom_id: result.assessments.classroom_subjects.classrooms.id,
             term_name: result.assessments.terms.name,
+            term_id: result.assessments.terms.id,
             subject_grades: [],
             overall_average: 0
           });
@@ -126,6 +133,35 @@ export default function Reports() {
         const totalWeighted = studentGrade.subject_grades.reduce((sum, sg) => sum + sg.weighted_score, 0);
         const totalCoeff = studentGrade.subject_grades.reduce((sum, sg) => sum + sg.coefficient, 0);
         studentGrade.overall_average = totalCoeff > 0 ? totalWeighted / totalCoeff : 0;
+      });
+
+      // Calculate rankings for each classroom-term combination
+      const classTermGroups: { [key: string]: StudentGrade[] } = {};
+      
+      gradesArray.forEach(grade => {
+        const key = `${grade.classroom_id}-${grade.term_id}`;
+        if (!classTermGroups[key]) {
+          classTermGroups[key] = [];
+        }
+        classTermGroups[key].push(grade);
+      });
+
+      // Apply rankings to each group
+      Object.values(classTermGroups).forEach(group => {
+        const studentsData = group.map(g => ({
+          student_id: g.student_id,
+          average: g.overall_average
+        }));
+
+        const rankings = calculateRankings(studentsData);
+
+        group.forEach(grade => {
+          const ranking = rankings.find(r => r.student_id === grade.student_id);
+          if (ranking) {
+            grade.rank = ranking.rank;
+            grade.total_students = group.length;
+          }
+        });
       });
 
       setStudentGrades(gradesArray);
@@ -344,11 +380,24 @@ export default function Reports() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                      <span className="text-sm font-medium">Moyenne générale</span>
-                      <span className={`text-2xl font-bold ${getAverageColor(grade.overall_average)}`}>
-                        {grade.overall_average.toFixed(2)}/20
-                      </span>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                        <span className="text-sm font-medium">Moyenne générale</span>
+                        <span className={`text-2xl font-bold ${getAverageColor(grade.overall_average)}`}>
+                          {grade.overall_average.toFixed(2)}/20
+                        </span>
+                      </div>
+                      {grade.rank && grade.total_students && (
+                        <div className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                          <span className="text-xs font-medium flex items-center gap-1">
+                            <Trophy className="h-3 w-3" />
+                            Classement
+                          </span>
+                          <span className="text-sm font-bold">
+                            {grade.rank}/{grade.total_students}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -394,6 +443,7 @@ export default function Reports() {
                       <TableHead>Période</TableHead>
                       <TableHead>Nb Matières</TableHead>
                       <TableHead>Moyenne générale</TableHead>
+                      <TableHead>Classement</TableHead>
                       <TableHead>Appréciation</TableHead>
                       <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
@@ -411,6 +461,15 @@ export default function Reports() {
                           <span className={`font-bold ${getAverageColor(grade.overall_average)}`}>
                             {grade.overall_average.toFixed(2)}/20
                           </span>
+                        </TableCell>
+                        <TableCell>
+                          {grade.rank && grade.total_students ? (
+                            <span className="font-medium">
+                              {grade.rank}/{grade.total_students}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )}
                         </TableCell>
                         <TableCell>
                           {getAverageBadge(grade.overall_average)}
