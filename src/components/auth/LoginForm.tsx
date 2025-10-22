@@ -134,10 +134,7 @@ export function LoginForm() {
       });
 
       if (error) {
-        // Don't log errors in production
-        if (import.meta.env.DEV) {
-          console.error("Signup error:", error);
-        }
+        console.error("Signup error:", error);
         // Sanitize error messages
         const message = error.message.includes("already registered") 
           ? "Cette adresse email est déjà utilisée."
@@ -162,10 +159,7 @@ export function LoginForm() {
         setActiveTab("signin");
       }
     } catch (error: any) {
-      // Don't log errors in production
-      if (import.meta.env.DEV) {
-        console.error("Signup exception:", error);
-      }
+      console.error("Signup exception:", error);
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de l'inscription",
@@ -377,14 +371,14 @@ export function LoginForm() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signupPassword">Mot de passe (min. 8 caractères)</Label>
+                  <Label htmlFor="signupPassword">Mot de passe</Label>
                   <Input
                     id="signupPassword"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    minLength={8}
+                    minLength={6}
                   />
                 </div>
                 <div className="flex items-start space-x-2">

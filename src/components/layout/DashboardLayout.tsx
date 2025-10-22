@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, Navigate, useNavigate } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -13,9 +13,7 @@ export function DashboardLayout() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -23,11 +21,7 @@ export function DashboardLayout() {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        if (session?.user) {
-          checkOnboardingStatus(session.user.id);
-        } else {
-          setLoading(false);
-        }
+        setLoading(false);
       }
     );
 
@@ -35,33 +29,11 @@ export function DashboardLayout() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      if (session?.user) {
-        checkOnboardingStatus(session.user.id);
-      } else {
-        setLoading(false);
-      }
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const checkOnboardingStatus = async (userId: string) => {
-    try {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("onboarding_completed")
-        .eq("user_id", userId)
-        .single();
-
-      if (profile && !profile.onboarding_completed) {
-        setNeedsOnboarding(true);
-      }
-    } catch (error) {
-      console.error("Error checking onboarding status:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSignOut = async () => {
     try {
@@ -113,10 +85,6 @@ export function DashboardLayout() {
     return <Navigate to="/auth" replace />;
   }
 
-  if (needsOnboarding) {
-    return <Navigate to="/onboarding" replace />;
-  }
-
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -127,9 +95,9 @@ export function DashboardLayout() {
             <div className="flex items-center gap-2">
               <SidebarTrigger />
               <img 
-                src="/evalscol-logo.png" 
+                src="/logo.png" 
                 alt="EvalScol Logo" 
-                className="h-8 w-8 object-contain"
+                className="h-[19px] w-[19px] object-contain"
               />
               <h1 className="font-semibold text-lg">EvalScol</h1>
             </div>
