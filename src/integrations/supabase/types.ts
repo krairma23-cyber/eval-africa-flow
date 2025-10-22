@@ -1320,7 +1320,6 @@ export type Database = {
       }
       inscriptions: {
         Row: {
-          besoins: string | null
           consent_given: boolean | null
           created_at: string
           created_from_ip: unknown | null
@@ -1329,14 +1328,9 @@ export type Database = {
           gdpr_compliant: boolean | null
           id: string
           nom: string
-          prenom: string | null
-          secteur_interet: string | null
           telephone: string
-          updated_at: string | null
-          ville: string | null
         }
         Insert: {
-          besoins?: string | null
           consent_given?: boolean | null
           created_at?: string
           created_from_ip?: unknown | null
@@ -1345,14 +1339,9 @@ export type Database = {
           gdpr_compliant?: boolean | null
           id?: string
           nom: string
-          prenom?: string | null
-          secteur_interet?: string | null
           telephone: string
-          updated_at?: string | null
-          ville?: string | null
         }
         Update: {
-          besoins?: string | null
           consent_given?: boolean | null
           created_at?: string
           created_from_ip?: unknown | null
@@ -1361,71 +1350,7 @@ export type Database = {
           gdpr_compliant?: boolean | null
           id?: string
           nom?: string
-          prenom?: string | null
-          secteur_interet?: string | null
           telephone?: string
-          updated_at?: string | null
-          ville?: string | null
-        }
-        Relationships: []
-      }
-      inscriptions_pme: {
-        Row: {
-          adresse: string
-          annees_experience: string
-          categorie: string
-          consent_given: boolean
-          created_at: string
-          created_from_ip: unknown | null
-          data_encrypted: boolean
-          description: string
-          email: string
-          gdpr_compliant: boolean
-          id: string
-          nom_entreprise: string
-          region: string
-          site_web: string | null
-          telephone: string
-          updated_at: string
-          ville: string
-        }
-        Insert: {
-          adresse: string
-          annees_experience: string
-          categorie: string
-          consent_given?: boolean
-          created_at?: string
-          created_from_ip?: unknown | null
-          data_encrypted?: boolean
-          description: string
-          email: string
-          gdpr_compliant?: boolean
-          id?: string
-          nom_entreprise: string
-          region: string
-          site_web?: string | null
-          telephone: string
-          updated_at?: string
-          ville: string
-        }
-        Update: {
-          adresse?: string
-          annees_experience?: string
-          categorie?: string
-          consent_given?: boolean
-          created_at?: string
-          created_from_ip?: unknown | null
-          data_encrypted?: boolean
-          description?: string
-          email?: string
-          gdpr_compliant?: boolean
-          id?: string
-          nom_entreprise?: string
-          region?: string
-          site_web?: string | null
-          telephone?: string
-          updated_at?: string
-          ville?: string
         }
         Relationships: []
       }
@@ -1829,59 +1754,6 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
-      }
-      payment_transactions: {
-        Row: {
-          amount: number
-          created_at: string
-          id: string
-          metadata: Json | null
-          parent_email: string
-          parent_name: string
-          payment_date: string
-          payment_method: string
-          payment_reference: string
-          status: string
-          student_id: string
-          updated_at: string
-        }
-        Insert: {
-          amount: number
-          created_at?: string
-          id?: string
-          metadata?: Json | null
-          parent_email: string
-          parent_name: string
-          payment_date?: string
-          payment_method?: string
-          payment_reference: string
-          status?: string
-          student_id: string
-          updated_at?: string
-        }
-        Update: {
-          amount?: number
-          created_at?: string
-          id?: string
-          metadata?: Json | null
-          parent_email?: string
-          parent_name?: string
-          payment_date?: string
-          payment_method?: string
-          payment_reference?: string
-          status?: string
-          student_id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "payment_transactions_student_id_fkey"
-            columns: ["student_id"]
-            isOneToOne: false
-            referencedRelation: "students"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       payments: {
         Row: {
@@ -2439,7 +2311,6 @@ export type Database = {
           id: string
           last_name: string | null
           monthly_searches_limit: number | null
-          onboarding_completed: boolean | null
           phone: string | null
           school_id: string | null
           searches_count: number | null
@@ -2460,7 +2331,6 @@ export type Database = {
           id?: string
           last_name?: string | null
           monthly_searches_limit?: number | null
-          onboarding_completed?: boolean | null
           phone?: string | null
           school_id?: string | null
           searches_count?: number | null
@@ -2481,7 +2351,6 @@ export type Database = {
           id?: string
           last_name?: string | null
           monthly_searches_limit?: number | null
-          onboarding_completed?: boolean | null
           phone?: string | null
           school_id?: string | null
           searches_count?: number | null
@@ -4867,7 +4736,7 @@ export type Database = {
     }
     Enums: {
       alert_type: "price_drop" | "trend_spike" | "new_winner" | "competition"
-      app_role: "admin" | "moderator" | "user" | "teacher"
+      app_role: "admin" | "moderator" | "user"
       org_role: "owner" | "admin" | "member"
       pme_category:
         | "agriculture"
@@ -5012,7 +4881,7 @@ export const Constants = {
   public: {
     Enums: {
       alert_type: ["price_drop", "trend_spike", "new_winner", "competition"],
-      app_role: ["admin", "moderator", "user", "teacher"],
+      app_role: ["admin", "moderator", "user"],
       org_role: ["owner", "admin", "member"],
       pme_category: [
         "agriculture",
