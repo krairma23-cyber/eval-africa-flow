@@ -574,6 +574,47 @@ export default function Support() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Additional Help Section */}
+      <Card className="bg-gradient-to-br from-blue-900 to-blue-950 border-blue-800 text-white">
+        <CardContent className="py-8 px-6">
+          <div className="text-center space-y-6">
+            <h2 className="text-2xl font-bold">Besoin d'Aide Supplémentaire ?</h2>
+            <p className="text-blue-100 max-w-2xl mx-auto">
+              Notre équipe de support est disponible pour répondre à toutes vos questions concernant l'utilisation du portail parent EvalScol.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <Button 
+                size="lg"
+                className="bg-purple-600 hover:bg-purple-700 text-white border-0 min-w-[200px]"
+                asChild
+              >
+                <a href="#contact" onClick={() => {
+                  const contactTab = document.querySelector('[value="contact"]') as HTMLElement;
+                  contactTab?.click();
+                }}>
+                  <MessageCircle className="h-5 w-5 mr-2" />
+                  Contacter le Support
+                </a>
+              </Button>
+              <Button 
+                size="lg"
+                variant="outline"
+                className="bg-transparent border-2 border-white text-white hover:bg-white/10 min-w-[200px]"
+                asChild
+              >
+                <a href="#tickets" onClick={() => {
+                  const ticketsTab = document.querySelector('[value="tickets"]') as HTMLElement;
+                  ticketsTab?.click();
+                }}>
+                  <Send className="h-5 w-5 mr-2" />
+                  Envoyer un Message
+                </a>
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

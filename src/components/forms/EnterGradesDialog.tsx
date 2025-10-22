@@ -128,8 +128,7 @@ export function EnterGradesDialog({
           return {
             ...student,
             result: {
-              ...student.result,
-              id: student.result?.id || "",
+              id: student.result?.id || undefined,
               score,
               is_absent: student.result?.is_absent || false,
               comment: student.result?.comment || null,
@@ -148,8 +147,7 @@ export function EnterGradesDialog({
           return {
             ...student,
             result: {
-              ...student.result,
-              id: student.result?.id || "",
+              id: student.result?.id || undefined,
               score: isAbsent ? null : student.result?.score || null,
               is_absent: isAbsent,
               comment: student.result?.comment || null,
@@ -168,8 +166,7 @@ export function EnterGradesDialog({
           return {
             ...student,
             result: {
-              ...student.result,
-              id: student.result?.id || "",
+              id: student.result?.id || undefined,
               score: student.result?.score || null,
               is_absent: student.result?.is_absent || false,
               comment: comment || null,
@@ -215,6 +212,7 @@ export function EnterGradesDialog({
           };
 
           // Only include id for existing results (updates)
+          // For new results, do NOT include id at all so DB can generate it
           if (hasExistingResult) {
             resultData.id = student.result.id;
           }
