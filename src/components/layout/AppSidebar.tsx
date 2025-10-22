@@ -58,14 +58,12 @@ export function AppSidebar() {
   const [schoolLogo, setSchoolLogo] = useState<string | null>(null);
   const [schoolName, setSchoolName] = useState<string>("EvalScol");
 
-  // Close sidebar automatically after navigation (mobile uses openMobile)
+  // Close sidebar automatically after navigation on mobile only
   useEffect(() => {
     if (isMobile) {
       setOpenMobile(false);
-    } else {
-      setOpen(false);
     }
-  }, [location.pathname, isMobile, setOpen, setOpenMobile]);
+  }, [location.pathname, isMobile, setOpenMobile]);
 
   useEffect(() => {
     loadSchoolLogo();
