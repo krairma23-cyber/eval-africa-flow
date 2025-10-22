@@ -244,7 +244,7 @@ export default function Support() {
           {/* FAQ */}
           <Card>
             <CardHeader>
-              <CardTitle>FAQ</CardTitle>
+              <CardTitle>Questions fréquentes</CardTitle>
               <CardDescription>
                 Les réponses aux questions les plus courantes
               </CardDescription>
