@@ -65,12 +65,68 @@ export function GenerateReportsDialog({ onReportsGenerated, children }: Generate
 
     setLoading(true);
     try {
-      // Simulate report generation process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("User not authenticated");
+
+      let totalGenerated = 0;
+
+      // For each selected classroom, generate reports for all students
+      for (const classroomId of selectedClassrooms) {
+        // Get all students enrolled in this classroom
+        const { data: enrollments, error: enrollError } = await supabase
+          .from('enrollments')
+          .select('student_id')
+          .eq('classroom_id', classroomId)
+          .eq('status', 'active');
+
+        if (enrollError) {
+          console.error('Error fetching enrollments:', enrollError);
+          continue;
+        }
+
+        // For each student, create or update report card
+        for (const enrollment of enrollments || []) {
+          // Check if report card already exists
+          const { data: existing } = await supabase
+            .from('report_cards')
+            .select('id')
+            .eq('student_id', enrollment.student_id)
+            .eq('classroom_id', classroomId)
+            .eq('term_id', selectedTerm)
+            .maybeSingle();
+
+          if (existing) {
+            // Update existing report card
+            const { error: updateError } = await supabase
+              .from('report_cards')
+              .update({
+                generated_at: new Date().toISOString(),
+                generated_by: user.id,
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', existing.id);
+
+            if (!updateError) totalGenerated++;
+          } else {
+            // Create new report card
+            const { error: insertError } = await supabase
+              .from('report_cards')
+              .insert({
+                student_id: enrollment.student_id,
+                classroom_id: classroomId,
+                term_id: selectedTerm,
+                generated_at: new Date().toISOString(),
+                generated_by: user.id,
+              });
+
+            if (!insertError) totalGenerated++;
+          }
+        }
+      }
       
       toast({
         title: "Succès",
-        description: `Bulletins générés pour ${selectedClassrooms.length} classe(s)`,
+        description: `${totalGenerated} bulletin(s) généré(s) avec succès`,
       });
       
       setSelectedClassrooms([]);
@@ -79,7 +135,11 @@ export function GenerateReportsDialog({ onReportsGenerated, children }: Generate
       onReportsGenerated();
     } catch (error) {
       await logError('Failed to generate reports', error, { component: 'GenerateReportsDialog', action: 'GENERATE_REPORTS' });
-      toast({ title: "Erreur", description: "Impossible de générer les bulletins", variant: "destructive" });
+      toast({ 
+        title: "Erreur", 
+        description: "Impossible de générer les bulletins. Vérifiez que les données nécessaires existent.", 
+        variant: "destructive" 
+      });
     } finally {
       setLoading(false);
     }

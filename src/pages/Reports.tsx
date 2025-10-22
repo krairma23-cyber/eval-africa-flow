@@ -9,12 +9,12 @@ import { useToast } from "@/hooks/use-toast";
 import { Plus, Search, FileText, Download, Calendar } from "lucide-react";
 import { GenerateReportsDialog } from "@/components/forms/GenerateReportsDialog";
 
-interface Report {
+interface ReportCard {
   id: string;
-  period: string;
-  school_year: string;
-  generated_at: string;
-  created_at: string;
+  generated_at: string | null;
+  overall_average: number | null;
+  general_comment: string | null;
+  pdf_url: string | null;
   students: {
     first_name: string;
     last_name: string;
@@ -22,10 +22,13 @@ interface Report {
   classrooms: {
     name: string;
   };
+  terms: {
+    name: string;
+  };
 }
 
 export default function Reports() {
-  const [reports, setReports] = useState<Report[]>([]);
+  const [reports, setReports] = useState<ReportCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
@@ -37,9 +40,26 @@ export default function Reports() {
   const fetchReports = async () => {
     try {
       setLoading(true);
-      // Since reports table doesn't exist yet, we'll use a placeholder
-      const data: Report[] = [];
-      const error = null;
+      const { data, error } = await supabase
+        .from('report_cards')
+        .select(`
+          id,
+          generated_at,
+          overall_average,
+          general_comment,
+          pdf_url,
+          students (
+            first_name,
+            last_name
+          ),
+          classrooms (
+            name
+          ),
+          terms (
+            name
+          )
+        `)
+        .order('generated_at', { ascending: false });
 
       if (error) throw error;
       setReports(data || []);
@@ -58,24 +78,18 @@ export default function Reports() {
   const filteredReports = reports.filter((report) =>
     `${report.students.first_name} ${report.students.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
     report.classrooms.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    report.period.toLowerCase().includes(searchTerm.toLowerCase())
+    (report.terms?.name || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("fr-FR");
   };
 
-  const getPeriodColor = (period: string) => {
-    switch (period.toLowerCase()) {
-      case "trimestre 1":
-        return "default";
-      case "trimestre 2":
-        return "secondary";
-      case "trimestre 3":
-        return "outline";
-      default:
-        return "default";
-    }
+  const getTermColor = (termName: string) => {
+    if (termName.includes("1")) return "default";
+    if (termName.includes("2")) return "secondary";
+    if (termName.includes("3")) return "outline";
+    return "default";
   };
 
   if (loading) {
@@ -148,28 +162,40 @@ export default function Reports() {
                   <span className="truncate">
                     {report.students.first_name} {report.students.last_name}
                   </span>
-                  <Badge variant={getPeriodColor(report.period)}>
-                    {report.period}
+                  <Badge variant={getTermColor(report.terms?.name || '')}>
+                    {report.terms?.name || 'N/A'}
                   </Badge>
                 </CardTitle>
-                <CardDescription>
-                  {report.classrooms.name} • {report.school_year}
+                <CardDescription className="space-y-1">
+                  <div>{report.classrooms.name}</div>
+                  {report.overall_average !== null && (
+                    <div className="font-medium text-primary">
+                      Moyenne: {report.overall_average.toFixed(2)}/20
+                    </div>
+                  )}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Généré le {formatDate(report.generated_at)}
-                </div>
+                {report.generated_at && (
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Généré le {formatDate(report.generated_at)}
+                  </div>
+                )}
                 <Button 
                   variant="outline" 
                   size="sm" 
                   className="w-full"
                   onClick={() => {
-                    toast({
-                      title: "Téléchargement simulé",
-                      description: "Le bulletin serait téléchargé en PDF",
-                    });
+                    if (report.pdf_url) {
+                      window.open(report.pdf_url, '_blank');
+                    } else {
+                      toast({
+                        title: "PDF non disponible",
+                        description: "Le PDF du bulletin n'est pas encore généré",
+                        variant: "destructive",
+                      });
+                    }
                   }}
                 >
                   <Download className="h-4 w-4 mr-2" />
