@@ -1320,6 +1320,7 @@ export type Database = {
       }
       inscriptions: {
         Row: {
+          besoins: string | null
           consent_given: boolean | null
           created_at: string
           created_from_ip: unknown | null
@@ -1328,9 +1329,14 @@ export type Database = {
           gdpr_compliant: boolean | null
           id: string
           nom: string
+          prenom: string | null
+          secteur_interet: string | null
           telephone: string
+          updated_at: string | null
+          ville: string | null
         }
         Insert: {
+          besoins?: string | null
           consent_given?: boolean | null
           created_at?: string
           created_from_ip?: unknown | null
@@ -1339,9 +1345,14 @@ export type Database = {
           gdpr_compliant?: boolean | null
           id?: string
           nom: string
+          prenom?: string | null
+          secteur_interet?: string | null
           telephone: string
+          updated_at?: string | null
+          ville?: string | null
         }
         Update: {
+          besoins?: string | null
           consent_given?: boolean | null
           created_at?: string
           created_from_ip?: unknown | null
@@ -1350,7 +1361,71 @@ export type Database = {
           gdpr_compliant?: boolean | null
           id?: string
           nom?: string
+          prenom?: string | null
+          secteur_interet?: string | null
           telephone?: string
+          updated_at?: string | null
+          ville?: string | null
+        }
+        Relationships: []
+      }
+      inscriptions_pme: {
+        Row: {
+          adresse: string
+          annees_experience: string
+          categorie: string
+          consent_given: boolean
+          created_at: string
+          created_from_ip: unknown | null
+          data_encrypted: boolean
+          description: string
+          email: string
+          gdpr_compliant: boolean
+          id: string
+          nom_entreprise: string
+          region: string
+          site_web: string | null
+          telephone: string
+          updated_at: string
+          ville: string
+        }
+        Insert: {
+          adresse: string
+          annees_experience: string
+          categorie: string
+          consent_given?: boolean
+          created_at?: string
+          created_from_ip?: unknown | null
+          data_encrypted?: boolean
+          description: string
+          email: string
+          gdpr_compliant?: boolean
+          id?: string
+          nom_entreprise: string
+          region: string
+          site_web?: string | null
+          telephone: string
+          updated_at?: string
+          ville: string
+        }
+        Update: {
+          adresse?: string
+          annees_experience?: string
+          categorie?: string
+          consent_given?: boolean
+          created_at?: string
+          created_from_ip?: unknown | null
+          data_encrypted?: boolean
+          description?: string
+          email?: string
+          gdpr_compliant?: boolean
+          id?: string
+          nom_entreprise?: string
+          region?: string
+          site_web?: string | null
+          telephone?: string
+          updated_at?: string
+          ville?: string
         }
         Relationships: []
       }
