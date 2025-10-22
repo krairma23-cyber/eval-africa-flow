@@ -79,10 +79,19 @@ export function AddAssessmentDialog({ onAssessmentAdded, children }: AddAssessme
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.assessment_date || !formData.classroom_subject_id || !formData.assessment_type_id || !formData.term_id) {
+    
+    // Vérification des champs obligatoires avec message spécifique
+    const missingFields = [];
+    if (!formData.title) missingFields.push("Titre");
+    if (!formData.assessment_date) missingFields.push("Date d'évaluation");
+    if (!formData.assessment_type_id) missingFields.push("Type d'évaluation");
+    if (!formData.classroom_subject_id) missingFields.push("Matière/Classe");
+    if (!formData.term_id) missingFields.push("Période");
+    
+    if (missingFields.length > 0) {
       toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs obligatoires",
+        title: "Champs manquants",
+        description: `Veuillez remplir : ${missingFields.join(", ")}`,
         variant: "destructive",
       });
       return;
