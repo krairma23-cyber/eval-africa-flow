@@ -420,7 +420,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           metadata: Json | null
           new_data: Json | null
           old_data: Json | null
@@ -432,7 +432,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           new_data?: Json | null
           old_data?: Json | null
@@ -444,7 +444,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           new_data?: Json | null
           old_data?: Json | null
@@ -676,7 +676,7 @@ export type Database = {
           error_message: string | null
           execution_time_ms: number | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           request_data: Json | null
           resource_id: string | null
           resource_type: string
@@ -691,7 +691,7 @@ export type Database = {
           error_message?: string | null
           execution_time_ms?: number | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           request_data?: Json | null
           resource_id?: string | null
           resource_type: string
@@ -706,7 +706,7 @@ export type Database = {
           error_message?: string | null
           execution_time_ms?: number | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           request_data?: Json | null
           resource_id?: string | null
           resource_type?: string
@@ -843,7 +843,7 @@ export type Database = {
           accessed_by: string | null
           created_at: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           justification: string | null
           record_id: string | null
           table_name: string
@@ -854,7 +854,7 @@ export type Database = {
           accessed_by?: string | null
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           justification?: string | null
           record_id?: string | null
           table_name: string
@@ -865,7 +865,7 @@ export type Database = {
           accessed_by?: string | null
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           justification?: string | null
           record_id?: string | null
           table_name?: string
@@ -1323,7 +1323,7 @@ export type Database = {
           besoins: string | null
           consent_given: boolean | null
           created_at: string
-          created_from_ip: unknown | null
+          created_from_ip: unknown
           data_encrypted: boolean | null
           email: string
           gdpr_compliant: boolean | null
@@ -1339,7 +1339,7 @@ export type Database = {
           besoins?: string | null
           consent_given?: boolean | null
           created_at?: string
-          created_from_ip?: unknown | null
+          created_from_ip?: unknown
           data_encrypted?: boolean | null
           email: string
           gdpr_compliant?: boolean | null
@@ -1355,7 +1355,7 @@ export type Database = {
           besoins?: string | null
           consent_given?: boolean | null
           created_at?: string
-          created_from_ip?: unknown | null
+          created_from_ip?: unknown
           data_encrypted?: boolean | null
           email?: string
           gdpr_compliant?: boolean | null
@@ -1376,7 +1376,7 @@ export type Database = {
           categorie: string
           consent_given: boolean
           created_at: string
-          created_from_ip: unknown | null
+          created_from_ip: unknown
           data_encrypted: boolean
           description: string
           email: string
@@ -1395,7 +1395,7 @@ export type Database = {
           categorie: string
           consent_given?: boolean
           created_at?: string
-          created_from_ip?: unknown | null
+          created_from_ip?: unknown
           data_encrypted?: boolean
           description: string
           email: string
@@ -1414,7 +1414,7 @@ export type Database = {
           categorie?: string
           consent_given?: boolean
           created_at?: string
-          created_from_ip?: unknown | null
+          created_from_ip?: unknown
           data_encrypted?: boolean
           description?: string
           email?: string
@@ -1798,7 +1798,7 @@ export type Database = {
           currency: string | null
           fraud_score: number | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           payment_reference: string | null
           security_flags: Json | null
           status: string | null
@@ -1810,7 +1810,7 @@ export type Database = {
           currency?: string | null
           fraud_score?: number | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           payment_reference?: string | null
           security_flags?: Json | null
           status?: string | null
@@ -1822,7 +1822,7 @@ export type Database = {
           currency?: string | null
           fraud_score?: number | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           payment_reference?: string | null
           security_flags?: Json | null
           status?: string | null
@@ -3080,7 +3080,7 @@ export type Database = {
           endpoint: string | null
           id: string
           incident_type: string
-          ip_address: unknown | null
+          ip_address: unknown
           resolved: boolean
           severity: string
           user_id: string | null
@@ -3091,7 +3091,7 @@ export type Database = {
           endpoint?: string | null
           id?: string
           incident_type: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           resolved?: boolean
           severity: string
           user_id?: string | null
@@ -3102,7 +3102,7 @@ export type Database = {
           endpoint?: string | null
           id?: string
           incident_type?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           resolved?: boolean
           severity?: string
           user_id?: string | null
@@ -3116,7 +3116,7 @@ export type Database = {
           endpoint: string | null
           event_type: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           severity: string
           user_agent: string | null
           user_id: string | null
@@ -3127,7 +3127,7 @@ export type Database = {
           endpoint?: string | null
           event_type: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           severity: string
           user_agent?: string | null
           user_id?: string | null
@@ -3138,7 +3138,7 @@ export type Database = {
           endpoint?: string | null
           event_type?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           severity?: string
           user_agent?: string | null
           user_id?: string | null
@@ -3226,6 +3226,57 @@ export type Database = {
             columns: ["org_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      student_attendance: {
+        Row: {
+          classroom_id: string
+          created_at: string
+          date: string
+          id: string
+          marked_by: string | null
+          notes: string | null
+          status: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          classroom_id: string
+          created_at?: string
+          date?: string
+          id?: string
+          marked_by?: string | null
+          notes?: string | null
+          status: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          classroom_id?: string
+          created_at?: string
+          date?: string
+          id?: string
+          marked_by?: string | null
+          notes?: string | null
+          status?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_attendance_classroom_id_fkey"
+            columns: ["classroom_id"]
+            isOneToOne: false
+            referencedRelation: "classrooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_attendance_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
             referencedColumns: ["id"]
           },
         ]
@@ -3524,6 +3575,47 @@ export type Database = {
           },
         ]
       }
+      teacher_attendance: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          marked_by: string | null
+          notes: string | null
+          status: string
+          teacher_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          id?: string
+          marked_by?: string | null
+          notes?: string | null
+          status: string
+          teacher_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          marked_by?: string | null
+          notes?: string | null
+          status?: string
+          teacher_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_attendance_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teachers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teachers: {
         Row: {
           avatar_url: string | null
@@ -3690,7 +3782,7 @@ export type Database = {
           action_type: string
           created_at: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           user_agent: string | null
           user_id: string
         }
@@ -3699,7 +3791,7 @@ export type Database = {
           action_type: string
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id: string
         }
@@ -3708,7 +3800,7 @@ export type Database = {
           action_type?: string
           created_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string
         }
@@ -3720,7 +3812,7 @@ export type Database = {
           action_type: string
           created_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           user_agent: string | null
           user_id: string
         }
@@ -3729,7 +3821,7 @@ export type Database = {
           action_type: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id: string
         }
@@ -3738,7 +3830,7 @@ export type Database = {
           action_type?: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string
         }
@@ -3951,7 +4043,7 @@ export type Database = {
           created_at: string
           expires_at: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           is_active: boolean
           last_activity: string
           session_token: string
@@ -3962,7 +4054,7 @@ export type Database = {
           created_at?: string
           expires_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_active?: boolean
           last_activity?: string
           session_token: string
@@ -3973,7 +4065,7 @@ export type Database = {
           created_at?: string
           expires_at?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_active?: boolean
           last_activity?: string
           session_token?: string
@@ -4091,14 +4183,8 @@ export type Database = {
           registration_date: string
         }[]
       }
-      apply_standard_rls: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      automated_security_cleanup: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      apply_standard_rls: { Args: never; Returns: undefined }
+      automated_security_cleanup: { Args: never; Returns: undefined }
       check_admin_access_rate_limit: {
         Args: {
           p_admin_id: string
@@ -4121,22 +4207,19 @@ export type Database = {
         Args: { p_endpoint: string; p_ip: unknown; p_max_attempts?: number }
         Returns: boolean
       }
-      check_enhanced_rate_limit: {
-        Args:
-          | { p_email?: string; p_ip: unknown }
-          | {
+      check_enhanced_rate_limit:
+        | { Args: { p_email?: string; p_ip: unknown }; Returns: boolean }
+        | {
+            Args: {
               p_endpoint: string
               p_ip_address: unknown
               p_max_requests?: number
               p_user_id?: string
               p_window_minutes?: number
             }
-        Returns: boolean
-      }
-      check_password_breach: {
-        Args: { p_password: string }
-        Returns: Json
-      }
+            Returns: Json
+          }
+      check_password_breach: { Args: { p_password: string }; Returns: Json }
       check_payment_rate_limit: {
         Args: {
           p_ip_address?: unknown
@@ -4150,10 +4233,7 @@ export type Database = {
         Args: { p_amount: number; p_ip_address?: unknown; p_user_id: string }
         Returns: Json
       }
-      check_product_search_limit: {
-        Args: { p_user_id: string }
-        Returns: Json
-      }
+      check_product_search_limit: { Args: { p_user_id: string }; Returns: Json }
       check_rbac_access: {
         Args: { p_action: string; p_resource: string; p_user_id: string }
         Returns: boolean
@@ -4167,34 +4247,13 @@ export type Database = {
         }
         Returns: boolean
       }
-      check_search_limit: {
-        Args: { user_uuid: string }
-        Returns: boolean
-      }
-      cleanup_expired_customer_data: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_old_contact_messages: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      cleanup_old_cron_jobs: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_old_event_registrations: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      cleanup_old_security_data: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_security_logs: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      check_search_limit: { Args: { user_uuid: string }; Returns: boolean }
+      cleanup_expired_customer_data: { Args: never; Returns: undefined }
+      cleanup_old_contact_messages: { Args: never; Returns: number }
+      cleanup_old_cron_jobs: { Args: never; Returns: undefined }
+      cleanup_old_event_registrations: { Args: never; Returns: number }
+      cleanup_old_security_data: { Args: never; Returns: undefined }
+      cleanup_security_logs: { Args: never; Returns: undefined }
       create_secure_otp: {
         Args: { p_otp_plain: string; p_user_id: string }
         Returns: string
@@ -4216,7 +4275,7 @@ export type Database = {
         Returns: string
       }
       detect_suspicious_data_access: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           alert_type: string
           details: Json
@@ -4246,12 +4305,9 @@ export type Database = {
         Args: { p_data: string; p_key_name?: string }
         Returns: string
       }
-      generate_invoice_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      generate_invoice_number: { Args: never; Returns: string }
       get_admin_stats: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           admin_users: number
           recent_contacts: number
@@ -4259,12 +4315,9 @@ export type Database = {
           total_users: number
         }[]
       }
-      get_current_user_school_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      get_current_user_school_id: { Args: never; Returns: string }
       get_enhanced_security_overview: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           last_updated: string
           metric_name: string
@@ -4274,7 +4327,7 @@ export type Database = {
         }[]
       }
       get_feedback_statistics: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           avg_rating: number
           feedback_by_type: Json
@@ -4283,19 +4336,16 @@ export type Database = {
           total_feedback: number
         }[]
       }
-      get_owner_column: {
-        Args: { p_table: unknown }
-        Returns: string
-      }
+      get_owner_column: { Args: { p_table: unknown }; Returns: string }
       get_public_registration_stats: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           date: string
           registrations: number
         }[]
       }
       get_recent_security_events: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           description: string
           event_time: string
@@ -4305,7 +4355,7 @@ export type Database = {
         }[]
       }
       get_rls_summary: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           category: string
           owner_column: string
@@ -4349,7 +4399,7 @@ export type Database = {
         }[]
       }
       get_security_config_recommendations: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           action_required: string
           current_status: string
@@ -4359,7 +4409,7 @@ export type Database = {
         }[]
       }
       get_security_dashboard: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           last_updated: string
           metric: string
@@ -4368,7 +4418,7 @@ export type Database = {
         }[]
       }
       get_security_dashboard_metrics: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           last_updated: string
           metric_name: string
@@ -4379,7 +4429,7 @@ export type Database = {
         }[]
       }
       get_security_dashboard_summary: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           last_updated: string
           metric_name: string
@@ -4388,7 +4438,7 @@ export type Database = {
         }[]
       }
       get_security_monitoring_dashboard: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           last_updated: string
           metric_category: string
@@ -4399,7 +4449,7 @@ export type Database = {
         }[]
       }
       get_security_overview: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           last_updated: string
           metric_name: string
@@ -4443,7 +4493,7 @@ export type Database = {
         }[]
       }
       get_students_for_user: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           address: string
           created_at: string
@@ -4500,7 +4550,7 @@ export type Database = {
         }[]
       }
       get_teachers_for_user: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           created_at: string
           email: string
@@ -4515,14 +4565,8 @@ export type Database = {
           updated_at: string
         }[]
       }
-      get_user_role: {
-        Args: { user_id?: string }
-        Returns: string
-      }
-      get_user_school_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      get_user_role: { Args: { user_id?: string }; Returns: string }
+      get_user_school_id: { Args: never; Returns: string }
       get_user_usage_stats: {
         Args: { p_user_id: string }
         Returns: {
@@ -4540,10 +4584,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_admin: {
-        Args: { check_user_id?: string }
-        Returns: boolean
-      }
+      is_admin: { Args: { check_user_id?: string }; Returns: boolean }
       is_org_admin: {
         Args: { p_org_id: string; p_user_id?: string }
         Returns: boolean
@@ -4556,14 +4597,8 @@ export type Database = {
         Args: { p_school_id: string; p_user_id?: string }
         Returns: boolean
       }
-      is_teacher: {
-        Args: { p_user_id?: string }
-        Returns: boolean
-      }
-      is_user_admin: {
-        Args: { check_user_id?: string }
-        Returns: boolean
-      }
+      is_teacher: { Args: { p_user_id?: string }; Returns: boolean }
+      is_user_admin: { Args: { check_user_id?: string }; Returns: boolean }
       log_comprehensive_audit: {
         Args: {
           p_action: string
@@ -4621,20 +4656,14 @@ export type Database = {
         }
         Returns: string
       }
-      migrate_to_encrypted_storage: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      migrate_to_encrypted_storage: { Args: never; Returns: string }
       process_webhook_event: {
         Args: { p_event_id: string; p_event_type: string }
         Returns: boolean
       }
-      remind_enable_password_protection: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      remind_enable_password_protection: { Args: never; Returns: string }
       run_security_audit: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           audit_category: string
           check_name: string
@@ -4643,10 +4672,7 @@ export type Database = {
           status: string
         }[]
       }
-      safe_to_mark_public: {
-        Args: { p_table: unknown }
-        Returns: boolean
-      }
+      safe_to_mark_public: { Args: { p_table: unknown }; Returns: boolean }
       secure_admin_access_customer_data: {
         Args: {
           p_access_reason: string
@@ -4737,10 +4763,7 @@ export type Database = {
           masked_phone: string
         }[]
       }
-      secure_migrate_customer_data: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      secure_migrate_customer_data: { Args: never; Returns: string }
       secure_organization_data_access: {
         Args: { p_access_reason: string; p_org_id: string }
         Returns: {
@@ -4769,7 +4792,7 @@ export type Database = {
         }[]
       }
       security_monitoring: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           alert_type: string
           count: number
@@ -4777,7 +4800,7 @@ export type Database = {
         }[]
       }
       security_status_report: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           details: string
           recommendation: string
@@ -4802,7 +4825,7 @@ export type Database = {
         Returns: Json
       }
       track_sensitive_data_access: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           access_count: number
           access_date: string

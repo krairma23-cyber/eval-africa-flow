@@ -90,8 +90,26 @@ export function TeacherAttendanceDialog({ children }: TeacherAttendanceDialogPro
     try {
       setSaving(true);
 
-      // Here you would typically save to an attendance table
-      // For now, we'll just show a success message
+      const { data: userData } = await supabase.auth.getUser();
+      const dateString = date.toISOString().split('T')[0];
+
+      // Prepare attendance records
+      const attendanceRecords = teachers.map((teacher) => ({
+        teacher_id: teacher.id,
+        date: dateString,
+        status: teacher.is_present ? 'present' : 'absent',
+        marked_by: userData.user?.id
+      }));
+
+      // Upsert all records
+      const { error } = await supabase
+        .from("teacher_attendance")
+        .upsert(attendanceRecords, {
+          onConflict: 'teacher_id,date'
+        });
+
+      if (error) throw error;
+
       const absentTeachers = teachers.filter((t) => !t.is_present);
 
       toast({

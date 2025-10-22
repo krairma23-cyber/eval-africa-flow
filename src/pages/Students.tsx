@@ -504,11 +504,47 @@ export default function Students() {
                       variant="default" 
                       size="sm" 
                       className="flex-1 h-8"
-                      onClick={() => {
-                        toast({
-                          title: "Présence marquée",
-                          description: `${student.first_name} ${student.last_name} est présent(e)`,
-                        });
+                      onClick={async () => {
+                        try {
+                          const { data: userData } = await supabase.auth.getUser();
+                          const classroomId = student.enrollments && student.enrollments.length > 0
+                            ? student.enrollments[0].classroom_id
+                            : null;
+
+                          if (!classroomId) {
+                            toast({
+                              title: "Erreur",
+                              description: "L'élève doit être inscrit dans une classe",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+
+                          const { error } = await supabase
+                            .from("student_attendance")
+                            .upsert({
+                              student_id: student.id,
+                              classroom_id: classroomId,
+                              date: new Date().toISOString().split('T')[0],
+                              status: 'present',
+                              marked_by: userData.user?.id
+                            }, {
+                              onConflict: 'student_id,date'
+                            });
+
+                          if (error) throw error;
+
+                          toast({
+                            title: "Présence marquée",
+                            description: `${student.first_name} ${student.last_name} est présent(e)`,
+                          });
+                        } catch (error) {
+                          toast({
+                            title: "Erreur",
+                            description: "Impossible d'enregistrer la présence",
+                            variant: "destructive",
+                          });
+                        }
                       }}
                     >
                       <Check className="h-3 w-3 mr-1" />
@@ -518,12 +554,48 @@ export default function Students() {
                       variant="destructive" 
                       size="sm" 
                       className="flex-1 h-8"
-                      onClick={() => {
-                        toast({
-                          title: "Absence marquée",
-                          description: `${student.first_name} ${student.last_name} est absent(e)`,
-                          variant: "destructive",
-                        });
+                      onClick={async () => {
+                        try {
+                          const { data: userData } = await supabase.auth.getUser();
+                          const classroomId = student.enrollments && student.enrollments.length > 0
+                            ? student.enrollments[0].classroom_id
+                            : null;
+
+                          if (!classroomId) {
+                            toast({
+                              title: "Erreur",
+                              description: "L'élève doit être inscrit dans une classe",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+
+                          const { error } = await supabase
+                            .from("student_attendance")
+                            .upsert({
+                              student_id: student.id,
+                              classroom_id: classroomId,
+                              date: new Date().toISOString().split('T')[0],
+                              status: 'absent',
+                              marked_by: userData.user?.id
+                            }, {
+                              onConflict: 'student_id,date'
+                            });
+
+                          if (error) throw error;
+
+                          toast({
+                            title: "Absence marquée",
+                            description: `${student.first_name} ${student.last_name} est absent(e)`,
+                            variant: "destructive",
+                          });
+                        } catch (error) {
+                          toast({
+                            title: "Erreur",
+                            description: "Impossible d'enregistrer l'absence",
+                            variant: "destructive",
+                          });
+                        }
                       }}
                     >
                       <X className="h-3 w-3 mr-1" />
