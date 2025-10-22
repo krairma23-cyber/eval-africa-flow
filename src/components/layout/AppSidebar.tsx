@@ -53,10 +53,17 @@ const menuItems = [
 ];
 
 export function AppSidebar() {
-  const { open } = useSidebar();
+  const { isMobile, setOpen, setOpenMobile } = useSidebar();
   const location = useLocation();
   const [schoolLogo, setSchoolLogo] = useState<string | null>(null);
   const [schoolName, setSchoolName] = useState<string>("EvalScol");
+
+  // Close sidebar automatically after navigation on mobile only
+  useEffect(() => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  }, [location.pathname, isMobile, setOpenMobile]);
 
   useEffect(() => {
     loadSchoolLogo();
@@ -139,6 +146,7 @@ export function AppSidebar() {
                     <NavLink 
                       to={item.url} 
                       className={getNavClass(item.url)}
+                      onClick={() => { if (isMobile) setOpenMobile(false); }}
                     >
                       <item.icon className="h-4 w-4" />
                       <span>{item.title}</span>

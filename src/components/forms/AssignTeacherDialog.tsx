@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
@@ -234,11 +235,13 @@ export function AssignTeacherDialog({ children, onAssigned, teacherId }: AssignT
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {classrooms.map((classroom) => (
-                        <SelectItem key={classroom.id} value={classroom.id}>
-                          {classroom.name}
-                        </SelectItem>
-                      ))}
+                      <ScrollArea className="h-[200px]">
+                        {classrooms.map((classroom) => (
+                          <SelectItem key={classroom.id} value={classroom.id}>
+                            {classroom.name}
+                          </SelectItem>
+                        ))}
+                      </ScrollArea>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -259,17 +262,19 @@ export function AssignTeacherDialog({ children, onAssigned, teacherId }: AssignT
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {filteredSubjects.length > 0 ? (
-                        filteredSubjects.map((subject) => (
-                          <SelectItem key={subject.id} value={subject.id}>
-                            {subject.name}
-                          </SelectItem>
-                        ))
-                      ) : (
-                        <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                          Toutes les matières sont déjà assignées à cet enseignant pour cette classe
-                        </div>
-                      )}
+                      <ScrollArea className="h-[200px]">
+                        {filteredSubjects.length > 0 ? (
+                          filteredSubjects.map((subject) => (
+                            <SelectItem key={subject.id} value={subject.id}>
+                              {subject.name}
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                            Toutes les matières sont déjà assignées à cet enseignant pour cette classe
+                          </div>
+                        )}
+                      </ScrollArea>
                     </SelectContent>
                   </Select>
                   <FormMessage />

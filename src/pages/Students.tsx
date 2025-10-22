@@ -12,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
 import { EditStudentDialog } from "@/components/forms/EditStudentDialog";
 import { EnrollStudentDialog } from "@/components/forms/EnrollStudentDialog";
-import { Pencil, UserPlus, DollarSign } from "lucide-react";
+import { Pencil, UserPlus, DollarSign, Check, X } from "lucide-react";
 import { ManagePaymentDialog } from "@/components/forms/ManagePaymentDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
@@ -498,6 +498,37 @@ export default function Students() {
                         Paiement
                       </Button>
                     </ManagePaymentDialog>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="default" 
+                      size="sm" 
+                      className="flex-1 h-8"
+                      onClick={() => {
+                        toast({
+                          title: "Présence marquée",
+                          description: `${student.first_name} ${student.last_name} est présent(e)`,
+                        });
+                      }}
+                    >
+                      <Check className="h-3 w-3 mr-1" />
+                      Présent
+                    </Button>
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      className="flex-1 h-8"
+                      onClick={() => {
+                        toast({
+                          title: "Absence marquée",
+                          description: `${student.first_name} ${student.last_name} est absent(e)`,
+                          variant: "destructive",
+                        });
+                      }}
+                    >
+                      <X className="h-3 w-3 mr-1" />
+                      Absent
+                    </Button>
                   </div>
                   <EditStudentDialog student={student} onStudentUpdated={fetchStudents}>
                     <Button variant="outline" size="sm" className="w-full h-8">

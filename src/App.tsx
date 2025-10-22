@@ -28,6 +28,9 @@ import Schedule from "./pages/Schedule";
 import PaymentCallback from "./pages/PaymentCallback";
 import ParentPortal from "./pages/ParentPortal";
 import ParentGuide from "./pages/ParentGuide";
+import Terms from "./pages/Terms";
+import AssessmentTypes from "./pages/AssessmentTypes";
+import Onboarding from "./pages/Onboarding";
 
 import { CookieConsent } from "./components/gdpr/CookieConsent";
 import { TestModeBanner } from "./components/layout/TestModeBanner";
@@ -45,6 +48,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/payment-callback" element={<PaymentCallback />} />
           <Route path="/parent-portal" element={<ParentPortal />} />
@@ -58,7 +62,8 @@ const App = () => (
           <Route path="subjects" element={<Subjects />} />
           <Route path="classrooms" element={<Classrooms />} />
           <Route path="assessments" element={<Assessments />} />
-          
+          <Route path="terms" element={<Terms />} />
+          <Route path="assessment-types" element={<AssessmentTypes />} />
           <Route path="reports" element={<Reports />} />
           <Route path="assignments" element={<Assignments />} />
           <Route path="schedule" element={<Schedule />} />

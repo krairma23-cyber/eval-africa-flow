@@ -108,22 +108,22 @@ export default function Dashboard() {
       </motion.div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" />
-            Vue d'ensemble
+        <TabsList className="grid w-full grid-cols-4 gap-2">
+          <TabsTrigger value="overview" className="flex items-center justify-center gap-2 px-2">
+            <TrendingUp className="h-4 w-4 shrink-0" />
+            <span className="hidden sm:inline">Vue d'ensemble</span>
           </TabsTrigger>
-          <TabsTrigger value="ai-assistant" className="flex items-center gap-2">
-            <Brain className="h-4 w-4" />
-            Assistant IA
+          <TabsTrigger value="ai-assistant" className="flex items-center justify-center gap-2 px-2">
+            <Brain className="h-4 w-4 shrink-0" />
+            <span className="hidden sm:inline">Assistant IA</span>
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center gap-2">
-            <Zap className="h-4 w-4" />
-            Analytics IA
+          <TabsTrigger value="analytics" className="flex items-center justify-center gap-2 px-2">
+            <Zap className="h-4 w-4 shrink-0" />
+            <span className="hidden sm:inline">Analytics IA</span>
           </TabsTrigger>
-          <TabsTrigger value="generator" className="flex items-center gap-2">
-            <ClipboardCheck className="h-4 w-4" />
-            Génération IA
+          <TabsTrigger value="generator" className="flex items-center justify-center gap-2 px-2">
+            <ClipboardCheck className="h-4 w-4 shrink-0" />
+            <span className="hidden sm:inline">Génération IA</span>
           </TabsTrigger>
         </TabsList>
 

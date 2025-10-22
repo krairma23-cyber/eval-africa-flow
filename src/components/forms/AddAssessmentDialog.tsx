@@ -79,10 +79,19 @@ export function AddAssessmentDialog({ onAssessmentAdded, children }: AddAssessme
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.assessment_date || !formData.classroom_subject_id || !formData.assessment_type_id || !formData.term_id) {
+    
+    // Vérification des champs obligatoires avec message spécifique
+    const missingFields = [];
+    if (!formData.title) missingFields.push("Titre");
+    if (!formData.assessment_date) missingFields.push("Date d'évaluation");
+    if (!formData.assessment_type_id) missingFields.push("Type d'évaluation");
+    if (!formData.classroom_subject_id) missingFields.push("Matière/Classe");
+    if (!formData.term_id) missingFields.push("Période");
+    
+    if (missingFields.length > 0) {
       toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs obligatoires",
+        title: "Champs manquants",
+        description: `Veuillez remplir : ${missingFields.join(", ")}`,
         variant: "destructive",
       });
       return;
@@ -90,12 +99,20 @@ export function AddAssessmentDialog({ onAssessmentAdded, children }: AddAssessme
 
     setLoading(true);
     try {
-      const { error } = await supabase.from('assessments').insert([{
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const payload = {
         ...formData,
         max_score: parseFloat(formData.max_score),
         coefficient: parseFloat(formData.coefficient),
-        created_by: (await supabase.auth.getUser()).data.user?.id,
-      }]);
+        // created_by intentionally omitted to avoid FK constraint issues
+      };
+
+      const { data, error } = await supabase
+        .from('assessments')
+        .insert(payload)
+        .select()
+        .maybeSingle();
 
       if (error) throw error;
 
@@ -121,9 +138,13 @@ export function AddAssessmentDialog({ onAssessmentAdded, children }: AddAssessme
         component: 'AddAssessmentDialog',
         action: 'ADD_ASSESSMENT'
       });
+      const errMsg = (error as any)?.message || "";
+      const isRLS = errMsg.toLowerCase().includes("row-level security");
       toast({
         title: "Erreur",
-        description: "Impossible de créer l'évaluation",
+        description: isRLS
+          ? "Accès refusé (RLS). Vérifiez que votre compte appartient à l'école de la classe sélectionnée."
+          : (import.meta.env.DEV && errMsg ? `Impossible de créer l'évaluation (${errMsg})` : "Impossible de créer l'évaluation"),
         variant: "destructive",
       });
     } finally {
