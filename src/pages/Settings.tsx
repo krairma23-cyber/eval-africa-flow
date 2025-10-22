@@ -9,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon, Globe, Database, Zap, CreditCard, Calendar, ClipboardList } from "lucide-react";
+import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon, Globe, Database, Zap, CreditCard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
@@ -353,41 +353,6 @@ export default function Settings() {
               <p className="text-xs text-muted-foreground">
                 Gérez les abonnements, consultez l'historique des paiements et les factures
               </p>
-            </div>
-            
-            <Separator />
-
-            {/* Boutons Configuration Évaluations */}
-            <div className="grid gap-4">
-              <Label>Configuration des évaluations</Label>
-              <div className="grid gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => navigate('/dashboard/assessment-types')}
-                  className="w-full justify-start"
-                >
-                  <ClipboardList className="h-4 w-4 mr-2" />
-                  Types d'évaluation
-                </Button>
-                <p className="text-xs text-muted-foreground">
-                  Gérez les types d'évaluations (Devoir, Contrôle, Examen, etc.)
-                </p>
-              </div>
-              <div className="grid gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => navigate('/dashboard/terms')}
-                  className="w-full justify-start"
-                >
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Trimestres / Périodes
-                </Button>
-                <p className="text-xs text-muted-foreground">
-                  Gérez les trimestres et périodes scolaires
-                </p>
-              </div>
             </div>
             
             <Separator />

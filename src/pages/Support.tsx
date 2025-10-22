@@ -400,15 +400,19 @@ export default function Support() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <p><strong>Email de support:</strong></p>
-                  <p className="text-muted-foreground">support@ecommerce-simple.com</p>
+                  <p><strong>Support général:</strong></p>
+                  <p className="text-muted-foreground">support@evalscol.com</p>
+                </div>
+                <div className="space-y-2">
+                  <p><strong>Support technique:</strong></p>
+                  <p className="text-muted-foreground">tech@evalscol.com</p>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
                   Réponse sous 24h en moyenne
                 </div>
                 <Button asChild>
-                  <a href="mailto:support@ecommerce-simple.com">
+                  <a href="mailto:support@evalscol.com">
                     <Mail className="h-4 w-4 mr-2" />
                     Envoyer un email
                   </a>
@@ -428,12 +432,8 @@ export default function Support() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <p><strong>Téléphone 1:</strong></p>
-                  <p className="text-muted-foreground">+225 0707041903</p>
-                </div>
-                <div className="space-y-2">
-                  <p><strong>Téléphone 2:</strong></p>
-                  <p className="text-muted-foreground">+225 0101821329</p>
+                  <p><strong>France:</strong></p>
+                  <p className="text-muted-foreground">+33 1 23 45 67 89</p>
                 </div>
                 <div className="space-y-2">
                   <p><strong>Horaires:</strong></p>
@@ -444,7 +444,7 @@ export default function Support() {
                   Support disponible maintenant
                 </div>
                 <Button asChild>
-                  <a href="tel:+2250707041903">
+                  <a href="tel:+33123456789">
                     <Phone className="h-4 w-4 mr-2" />
                     Appeler maintenant
                   </a>
@@ -574,47 +574,6 @@ export default function Support() {
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* Additional Help Section */}
-      <Card className="bg-gradient-to-br from-blue-900 to-blue-950 border-blue-800 text-white">
-        <CardContent className="py-8 px-6">
-          <div className="text-center space-y-6">
-            <h2 className="text-2xl font-bold">Besoin d'Aide Supplémentaire ?</h2>
-            <p className="text-blue-100 max-w-2xl mx-auto">
-              Notre équipe de support est disponible pour répondre à toutes vos questions concernant l'utilisation du portail parent EvalScol.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-              <Button 
-                size="lg"
-                className="bg-purple-600 hover:bg-purple-700 text-white border-0 min-w-[200px]"
-                asChild
-              >
-                <a href="#contact" onClick={() => {
-                  const contactTab = document.querySelector('[value="contact"]') as HTMLElement;
-                  contactTab?.click();
-                }}>
-                  <MessageCircle className="h-5 w-5 mr-2" />
-                  Contacter le Support
-                </a>
-              </Button>
-              <Button 
-                size="lg"
-                variant="outline"
-                className="bg-transparent border-2 border-white text-white hover:bg-white/10 min-w-[200px]"
-                asChild
-              >
-                <a href="#tickets" onClick={() => {
-                  const ticketsTab = document.querySelector('[value="tickets"]') as HTMLElement;
-                  ticketsTab?.click();
-                }}>
-                  <Send className="h-5 w-5 mr-2" />
-                  Envoyer un Message
-                </a>
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
