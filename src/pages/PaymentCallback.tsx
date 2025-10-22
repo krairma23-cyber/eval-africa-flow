@@ -75,10 +75,16 @@ export default function PaymentCallback() {
   }, [searchParams, navigate]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
+    <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="text-center space-y-6 max-w-md">
         <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
         <p className="text-lg">Vérification du paiement en cours...</p>
+        <button
+          onClick={() => navigate('/billing')}
+          className="px-6 py-3 border border-border rounded-lg hover:bg-accent transition-colors"
+        >
+          J'ai terminé la transaction
+        </button>
       </div>
     </div>
   );
