@@ -105,7 +105,7 @@ export function AddAssessmentDialog({ onAssessmentAdded, children }: AddAssessme
         ...formData,
         max_score: parseFloat(formData.max_score),
         coefficient: parseFloat(formData.coefficient),
-        created_by: user?.id || null,
+        // created_by intentionally omitted to avoid FK constraint issues
       };
 
       const { data, error } = await supabase
