@@ -2364,6 +2364,7 @@ export type Database = {
           id: string
           last_name: string | null
           monthly_searches_limit: number | null
+          onboarding_completed: boolean | null
           phone: string | null
           school_id: string | null
           searches_count: number | null
@@ -2384,6 +2385,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           monthly_searches_limit?: number | null
+          onboarding_completed?: boolean | null
           phone?: string | null
           school_id?: string | null
           searches_count?: number | null
@@ -2404,6 +2406,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           monthly_searches_limit?: number | null
+          onboarding_completed?: boolean | null
           phone?: string | null
           school_id?: string | null
           searches_count?: number | null
