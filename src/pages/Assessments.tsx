@@ -6,11 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Search, ClipboardCheck, Calendar, Pencil, FileEdit } from "lucide-react";
+import { Plus, Search, ClipboardCheck, Calendar, Pencil, FileEdit, GraduationCap } from "lucide-react";
 import { AddAssessmentDialog } from "@/components/forms/AddAssessmentDialog";
 import { EditAssessmentDialog } from "@/components/forms/EditAssessmentDialog";
 import { EnterGradesDialog } from "@/components/forms/EnterGradesDialog";
 import { logError } from "@/lib/logger";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 
 interface Assessment {
   id: string;
@@ -40,6 +42,7 @@ export default function Assessments() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedClassroom, setSelectedClassroom] = useState<string>("all");
   const [selectedAssessment, setSelectedAssessment] = useState<Assessment | null>(null);
   const [gradesDialogOpen, setGradesDialogOpen] = useState(false);
   const { toast } = useToast();
@@ -80,11 +83,31 @@ export default function Assessments() {
     }
   };
 
-  const filteredAssessments = assessments.filter((assessment) =>
-    assessment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    assessment.classroom_subjects.subjects.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    assessment.classroom_subjects.classrooms.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredAssessments = assessments.filter((assessment) => {
+    const matchesSearch = assessment.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      assessment.classroom_subjects.subjects.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      assessment.classroom_subjects.classrooms.name.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesClassroom = selectedClassroom === "all" || 
+      assessment.classroom_subjects.classrooms.name === selectedClassroom;
+    
+    return matchesSearch && matchesClassroom;
+  });
+
+  // Group assessments by classroom
+  const assessmentsByClassroom = filteredAssessments.reduce((acc, assessment) => {
+    const classroomName = assessment.classroom_subjects.classrooms.name;
+    if (!acc[classroomName]) {
+      acc[classroomName] = [];
+    }
+    acc[classroomName].push(assessment);
+    return acc;
+  }, {} as Record<string, Assessment[]>);
+
+  // Get unique classrooms for filter
+  const uniqueClassrooms = Array.from(
+    new Set(assessments.map(a => a.classroom_subjects.classrooms.name))
+  ).sort();
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("fr-FR");
@@ -139,15 +162,30 @@ export default function Assessments() {
         </p>
       </div>
 
-      <div className="flex justify-between items-center">
-        <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Rechercher une évaluation..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+          <div className="relative w-full sm:max-w-sm">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Input
+              placeholder="Rechercher une évaluation..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
+            <SelectTrigger className="w-full sm:w-[200px]">
+              <SelectValue placeholder="Toutes les classes" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Toutes les classes</SelectItem>
+              {uniqueClassrooms.map((classroom) => (
+                <SelectItem key={classroom} value={classroom}>
+                  {classroom}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <AddAssessmentDialog onAssessmentAdded={fetchAssessments}>
           <Button>
@@ -172,67 +210,84 @@ export default function Assessments() {
           </AddAssessmentDialog>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredAssessments.map((assessment) => (
-            <Card key={assessment.id} className="hover:shadow-md transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between gap-2">
-                  <span className="truncate">{assessment.title}</span>
-                  <div className="flex gap-2 items-center shrink-0">
-                    <Badge variant={getTypeColor(assessment.assessment_types.name)}>
-                      {getTypeLabel(assessment.assessment_types.name)}
-                    </Badge>
-                    <EditAssessmentDialog
-                      assessment={{
-                        id: assessment.id,
-                        title: assessment.title,
-                        description: assessment.description,
-                        assessment_type_id: assessment.assessment_type_id,
-                        classroom_subject_id: assessment.classroom_subject_id,
-                        term_id: assessment.term_id,
-                        assessment_date: assessment.assessment_date,
-                        max_score: assessment.max_score,
-                        coefficient: assessment.coefficient,
-                      }}
-                      onAssessmentUpdated={fetchAssessments}
-                    >
-                      <Button variant="ghost" size="icon">
-                        <Pencil className="h-4 w-4" />
+        <div className="space-y-8">
+          {Object.entries(assessmentsByClassroom).map(([classroomName, classroomAssessments]) => (
+            <div key={classroomName} className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-lg">
+                  <GraduationCap className="h-5 w-5 text-primary" />
+                  <h2 className="text-xl font-semibold">{classroomName}</h2>
+                </div>
+                <Separator className="flex-1" />
+                <Badge variant="secondary" className="px-3 py-1">
+                  {classroomAssessments.length} évaluation{classroomAssessments.length > 1 ? 's' : ''}
+                </Badge>
+              </div>
+              
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {classroomAssessments.map((assessment) => (
+                  <Card key={assessment.id} className="hover:shadow-md transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between gap-2">
+                        <span className="truncate">{assessment.title}</span>
+                        <div className="flex gap-2 items-center shrink-0">
+                          <Badge variant={getTypeColor(assessment.assessment_types.name)}>
+                            {getTypeLabel(assessment.assessment_types.name)}
+                          </Badge>
+                          <EditAssessmentDialog
+                            assessment={{
+                              id: assessment.id,
+                              title: assessment.title,
+                              description: assessment.description,
+                              assessment_type_id: assessment.assessment_type_id,
+                              classroom_subject_id: assessment.classroom_subject_id,
+                              term_id: assessment.term_id,
+                              assessment_date: assessment.assessment_date,
+                              max_score: assessment.max_score,
+                              coefficient: assessment.coefficient,
+                            }}
+                            onAssessmentUpdated={fetchAssessments}
+                          >
+                            <Button variant="ghost" size="icon">
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                          </EditAssessmentDialog>
+                        </div>
+                      </CardTitle>
+                      <CardDescription>
+                        {assessment.classroom_subjects.subjects.name}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        {formatDate(assessment.assessment_date)}
+                      </div>
+                      <div className="text-sm">
+                        <span className="font-medium">Note max:</span> {assessment.max_score} points
+                      </div>
+                      {assessment.description && (
+                        <p className="text-sm text-muted-foreground truncate">
+                          {assessment.description}
+                        </p>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full"
+                        onClick={() => {
+                          setSelectedAssessment(assessment);
+                          setGradesDialogOpen(true);
+                        }}
+                      >
+                        <FileEdit className="h-4 w-4 mr-2" />
+                        Saisir les notes
                       </Button>
-                    </EditAssessmentDialog>
-                  </div>
-                </CardTitle>
-                <CardDescription>
-                  {assessment.classroom_subjects.subjects.name} • {assessment.classroom_subjects.classrooms.name}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  {formatDate(assessment.assessment_date)}
-                </div>
-                <div className="text-sm">
-                  <span className="font-medium">Note max:</span> {assessment.max_score} points
-                </div>
-                {assessment.description && (
-                  <p className="text-sm text-muted-foreground truncate">
-                    {assessment.description}
-                  </p>
-                )}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full"
-                  onClick={() => {
-                    setSelectedAssessment(assessment);
-                    setGradesDialogOpen(true);
-                  }}
-                >
-                  <FileEdit className="h-4 w-4 mr-2" />
-                  Saisir les notes
-                </Button>
-              </CardContent>
-            </Card>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       )}
