@@ -137,6 +137,43 @@ export function AddClassroomDialog({ onClassroomAdded, children }: AddClassroomD
         
         if (yearError) throw yearError;
         academicYear = newYear;
+
+        // Créer automatiquement les 3 trimestres
+        const termsToCreate = [
+          {
+            name: 'Trimestre 1',
+            term_number: 1,
+            academic_year_id: academicYear.id,
+            school_id: userSchoolId,
+            start_date: '2025-09-01',
+            end_date: '2025-12-20',
+            is_current: true,
+          },
+          {
+            name: 'Trimestre 2',
+            term_number: 2,
+            academic_year_id: academicYear.id,
+            school_id: userSchoolId,
+            start_date: '2026-01-05',
+            end_date: '2026-03-31',
+            is_current: false,
+          },
+          {
+            name: 'Trimestre 3',
+            term_number: 3,
+            academic_year_id: academicYear.id,
+            school_id: userSchoolId,
+            start_date: '2026-04-01',
+            end_date: '2026-06-30',
+            is_current: false,
+          },
+        ];
+
+        const { error: termsError } = await supabase
+          .from('terms')
+          .insert(termsToCreate);
+        
+        if (termsError) throw termsError;
       }
 
       // Get or create a default program and grade level
