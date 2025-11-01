@@ -15,6 +15,30 @@ import { TeacherClassesDialog } from "@/components/forms/TeacherClassesDialog";
 import { Pencil, BookOpen, UserPlus } from "lucide-react";
 import { logError } from "@/lib/logger";
 
+// Fonction pour déterminer l'ordre des enseignants (Primaire avant Secondaire)
+const getTeacherLevelOrder = (specialization: string): number => {
+  const spec = specialization?.toLowerCase() || '';
+  // Primaire
+  if (spec.includes('instituteur') || spec.includes('généraliste') || 
+      spec.includes('maternelle') || spec.includes('préscolaire') ||
+      spec.includes('primaire')) {
+    return 1;
+  }
+  // Secondaire
+  if (spec.includes('mathématiques') || spec.includes('français') || 
+      spec.includes('anglais') || spec.includes('histoire') || 
+      spec.includes('géographie') || spec.includes('svt') || 
+      spec.includes('physique') || spec.includes('chimie') ||
+      spec.includes('espagnol') || spec.includes('allemand') ||
+      spec.includes('philosophie') || spec.includes('éducation physique') ||
+      spec.includes('eps') || spec.includes('arts') || spec.includes('musique') ||
+      spec.includes('secondaire')) {
+    return 2;
+  }
+  // Spécialisations inconnues à la fin
+  return 3;
+};
+
 interface Teacher {
   id: string;
   teacher_number: string;
@@ -83,13 +107,26 @@ export default function Teachers() {
     }
   };
 
-  const filteredTeachers = teachers.filter(
-    (teacher) =>
-      teacher.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      teacher.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      teacher.teacher_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (teacher.specialization && teacher.specialization.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredTeachers = teachers
+    .filter(
+      (teacher) =>
+        teacher.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        teacher.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        teacher.teacher_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (teacher.specialization && teacher.specialization.toLowerCase().includes(searchTerm.toLowerCase()))
+    )
+    .sort((a, b) => {
+      // Tri par niveau (Primaire avant Secondaire)
+      const orderA = getTeacherLevelOrder(a.specialization);
+      const orderB = getTeacherLevelOrder(b.specialization);
+      
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      
+      // Ensuite par nom de famille
+      return a.last_name.localeCompare(b.last_name, 'fr');
+    });
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR');
