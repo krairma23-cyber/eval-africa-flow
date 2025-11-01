@@ -14,6 +14,24 @@ import { ViewClassStudentsDialog } from "@/components/forms/ViewClassStudentsDia
 import { ViewClassRankingsDialog } from "@/components/forms/ViewClassRankingsDialog";
 import { logError } from "@/lib/logger";
 
+// Fonction pour obtenir l'ordre du niveau scolaire
+const getGradeLevelOrder = (gradeName: string): number => {
+  const name = gradeName.toLowerCase();
+  if (name.includes('cp')) return 1;
+  if (name.includes('ce1')) return 2;
+  if (name.includes('ce2')) return 3;
+  if (name.includes('cm1')) return 4;
+  if (name.includes('cm2')) return 5;
+  if (name.includes('6') || name.includes('sixième')) return 6;
+  if (name.includes('5') || name.includes('cinquième')) return 7;
+  if (name.includes('4') || name.includes('quatrième')) return 8;
+  if (name.includes('3') || name.includes('troisième')) return 9;
+  if (name.includes('2') || name.includes('seconde')) return 10;
+  if (name.includes('1') || name.includes('première')) return 11;
+  if (name.includes('terminale')) return 12;
+  return 999; // Niveaux inconnus à la fin
+};
+
 // Fonction pour obtenir la couleur selon le niveau
 const getGradeLevelColor = (gradeName: string): string => {
   const name = gradeName.toLowerCase();
@@ -123,10 +141,23 @@ export default function Classrooms() {
     }
   };
 
-  const filteredClassrooms = classrooms.filter((classroom) =>
-    classroom.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    classroom.grade_levels.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredClassrooms = classrooms
+    .filter((classroom) =>
+      classroom.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      classroom.grade_levels.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      // Tri par niveau scolaire d'abord
+      const orderA = getGradeLevelOrder(a.grade_levels.name);
+      const orderB = getGradeLevelOrder(b.grade_levels.name);
+      
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      
+      // Ensuite par nom de classe (ex: 6ème A avant 6ème B)
+      return a.name.localeCompare(b.name, 'fr');
+    });
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("fr-FR");
