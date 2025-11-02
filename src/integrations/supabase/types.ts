@@ -3880,6 +3880,78 @@ export type Database = {
           },
         ]
       }
+      user_plan_features: {
+        Row: {
+          advanced_api_integrations: boolean
+          advanced_reports: boolean
+          attendance_management: boolean
+          basic_grade_management: boolean
+          created_at: string
+          custom_business_modules: boolean
+          dedicated_training: boolean
+          full_customization: boolean
+          id: string
+          max_students: number
+          multi_campus: boolean
+          parent_teacher_communication: boolean
+          plan_id: string
+          predictive_analytics_ai: boolean
+          premium_support_24_7: boolean
+          unlimited_assessments: boolean
+          unlimited_students: boolean
+          unlimited_user_accounts: boolean
+          updated_at: string
+          user_id: string
+          voice_assistant: boolean
+        }
+        Insert: {
+          advanced_api_integrations?: boolean
+          advanced_reports?: boolean
+          attendance_management?: boolean
+          basic_grade_management?: boolean
+          created_at?: string
+          custom_business_modules?: boolean
+          dedicated_training?: boolean
+          full_customization?: boolean
+          id?: string
+          max_students?: number
+          multi_campus?: boolean
+          parent_teacher_communication?: boolean
+          plan_id: string
+          predictive_analytics_ai?: boolean
+          premium_support_24_7?: boolean
+          unlimited_assessments?: boolean
+          unlimited_students?: boolean
+          unlimited_user_accounts?: boolean
+          updated_at?: string
+          user_id: string
+          voice_assistant?: boolean
+        }
+        Update: {
+          advanced_api_integrations?: boolean
+          advanced_reports?: boolean
+          attendance_management?: boolean
+          basic_grade_management?: boolean
+          created_at?: string
+          custom_business_modules?: boolean
+          dedicated_training?: boolean
+          full_customization?: boolean
+          id?: string
+          max_students?: number
+          multi_campus?: boolean
+          parent_teacher_communication?: boolean
+          plan_id?: string
+          predictive_analytics_ai?: boolean
+          premium_support_24_7?: boolean
+          unlimited_assessments?: boolean
+          unlimited_students?: boolean
+          unlimited_user_accounts?: boolean
+          updated_at?: string
+          user_id?: string
+          voice_assistant?: boolean
+        }
+        Relationships: []
+      }
       user_preferences: {
         Row: {
           assessment_reminders: boolean

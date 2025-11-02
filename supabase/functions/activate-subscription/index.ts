@@ -141,11 +141,116 @@ serve(async (req) => {
 
     console.log('Subscription activated successfully:', subscription);
 
+    // Configure plan features based on plan_id
+    let planFeatures;
+    
+    if (plan_id === 'starter' || expectedAmount === 0) {
+      planFeatures = {
+        user_id,
+        plan_id: 'starter',
+        max_students: 30,
+        unlimited_students: false,
+        basic_grade_management: true,
+        unlimited_assessments: false,
+        predictive_analytics_ai: false,
+        voice_assistant: false,
+        advanced_reports: false,
+        attendance_management: false,
+        parent_teacher_communication: false,
+        multi_campus: false,
+        full_customization: false,
+        advanced_api_integrations: false,
+        dedicated_training: false,
+        premium_support_24_7: false,
+        custom_business_modules: false,
+        unlimited_user_accounts: false
+      };
+    } else if (plan_id === 'professional') {
+      planFeatures = {
+        user_id,
+        plan_id: 'professional',
+        max_students: 300,
+        unlimited_students: false,
+        basic_grade_management: true,
+        unlimited_assessments: true,
+        predictive_analytics_ai: true,
+        voice_assistant: true,
+        advanced_reports: true,
+        attendance_management: true,
+        parent_teacher_communication: true,
+        multi_campus: false,
+        full_customization: false,
+        advanced_api_integrations: false,
+        dedicated_training: false,
+        premium_support_24_7: true,
+        custom_business_modules: false,
+        unlimited_user_accounts: false
+      };
+    } else if (plan_id === 'enterprise') {
+      planFeatures = {
+        user_id,
+        plan_id: 'enterprise',
+        max_students: 999999, // Virtually unlimited
+        unlimited_students: true,
+        basic_grade_management: true,
+        unlimited_assessments: true,
+        predictive_analytics_ai: true,
+        voice_assistant: true,
+        advanced_reports: true,
+        attendance_management: true,
+        parent_teacher_communication: true,
+        multi_campus: true,
+        full_customization: true,
+        advanced_api_integrations: true,
+        dedicated_training: true,
+        premium_support_24_7: true,
+        custom_business_modules: true,
+        unlimited_user_accounts: true
+      };
+    } else {
+      // Fallback to starter features
+      planFeatures = {
+        user_id,
+        plan_id: 'starter',
+        max_students: 30,
+        unlimited_students: false,
+        basic_grade_management: true,
+        unlimited_assessments: false,
+        predictive_analytics_ai: false,
+        voice_assistant: false,
+        advanced_reports: false,
+        attendance_management: false,
+        parent_teacher_communication: false,
+        multi_campus: false,
+        full_customization: false,
+        advanced_api_integrations: false,
+        dedicated_training: false,
+        premium_support_24_7: false,
+        custom_business_modules: false,
+        unlimited_user_accounts: false
+      };
+    }
+
+    // Upsert user plan features
+    const { error: featuresError } = await supabaseAdmin
+      .from('user_plan_features')
+      .upsert(planFeatures, {
+        onConflict: 'user_id'
+      });
+
+    if (featuresError) {
+      console.error('Failed to configure plan features:', featuresError);
+      // Don't fail the subscription activation, just log the error
+    } else {
+      console.log('Plan features configured successfully for plan:', plan_id);
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 
         subscription,
-        message: 'Subscription activated successfully' 
+        features: planFeatures,
+        message: 'Subscription activated successfully with all features configured' 
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
