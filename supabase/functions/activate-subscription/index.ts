@@ -78,8 +78,8 @@ serve(async (req) => {
       );
     }
 
-    // CRITICAL: Verify amount matches plan price (Paystack returns amount in kobo)
-    const expectedAmountInKobo = expectedAmount * 100; // Convert XOF to kobo
+    // CRITICAL: Verify amount matches plan price (Paystack returns amount in centimes/kobo)
+    const expectedAmountInKobo = expectedAmount * 100; // Convert XOF to centimes (100 centimes = 1 XOF)
     if (paymentData.data.amount !== expectedAmountInKobo) {
       console.error('Amount mismatch:', { 
         paidAmountKobo: paymentData.data.amount, 
