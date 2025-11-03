@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, GraduationCap, BookOpen, ClipboardCheck, Brain, Zap, TrendingUp } from "lucide-react";
+import { Users, GraduationCap, BookOpen, ClipboardCheck, Brain, Zap, TrendingUp, AlertTriangle } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AIAssistant } from "@/components/ai/AIAssistant";
 import { PredictiveAnalytics } from "@/components/analytics/PredictiveAnalytics";
@@ -9,6 +9,10 @@ import { ContentGenerator } from "@/components/ai/ContentGenerator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
 import { logError } from "@/lib/logger";
+import { usePlanLimits } from "@/hooks/use-plan-limits";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface DashboardStats {
   studentsCount: number;
@@ -20,6 +24,8 @@ interface DashboardStats {
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const { planLimits, loading: planLoading } = usePlanLimits();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchDashboardStats();
@@ -83,6 +89,33 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Plan Limit Warning */}
+      {!planLoading && planLimits && (planLimits.isLimitReached || planLimits.isLimitExceeded) && (
+        <Alert variant="destructive" className="border-destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>
+            {planLimits.isLimitExceeded ? "Limite du plan dépassée !" : "Limite du plan atteinte !"}
+          </AlertTitle>
+          <AlertDescription className="flex items-center justify-between">
+            <div>
+              Vous avez <strong>{planLimits.currentStudents} élèves</strong> mais votre plan{" "}
+              <strong>{planLimits.planName}</strong> permet seulement{" "}
+              <strong>{planLimits.maxStudents} élèves</strong>.
+              {planLimits.isLimitExceeded 
+                ? " Vous ne pouvez plus ajouter d'élèves." 
+                : " Vous avez atteint la limite maximale."}
+            </div>
+            <Button 
+              onClick={() => navigate('/billing')}
+              variant="default"
+              size="sm"
+            >
+              Mettre à niveau
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

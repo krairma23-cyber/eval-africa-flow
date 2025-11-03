@@ -8,8 +8,10 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { logError } from "@/lib/logger";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Upload, X } from "lucide-react";
+import { Upload, X, AlertTriangle } from "lucide-react";
 import { z } from "zod";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useNavigate } from "react-router-dom";
 
 const studentSchema = z.object({
   student_number: z.string().trim().min(1, "Le numéro d'élève est requis").max(50),
@@ -45,6 +47,8 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
   const [userSchoolId, setUserSchoolId] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [canAddStudent, setCanAddStudent] = useState(true);
+  const [planInfo, setPlanInfo] = useState<{ currentStudents: number; maxStudents: number; planName: string } | null>(null);
   const [formData, setFormData] = useState({
     student_number: "",
     first_name: "",
@@ -57,6 +61,7 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
     address: "",
   });
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -72,14 +77,47 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
           if (profile?.school_id) {
             setUserSchoolId(profile.school_id);
             
-            // Générer un matricule automatique
-            const year = new Date().getFullYear().toString().slice(-2);
-            const { count } = await supabase
+            // Check plan limits
+            const { data: features } = await supabase
+              .from('user_plan_features')
+              .select('plan_id, max_students')
+              .eq('user_id', user.id)
+              .single();
+
+            const { count: studentCount } = await supabase
               .from('students')
               .select('*', { count: 'exact', head: true })
               .eq('school_id', profile.school_id);
+
+            const maxStudents = features?.max_students || 30;
+            const currentStudents = studentCount || 0;
+            const planNames: Record<string, string> = {
+              starter: 'Starter',
+              professional: 'Professional',
+              enterprise: 'Enterprise'
+            };
+
+            setPlanInfo({
+              currentStudents,
+              maxStudents,
+              planName: planNames[features?.plan_id || 'starter'] || 'Starter'
+            });
+
+            // Block if limit reached
+            if (currentStudents >= maxStudents) {
+              setCanAddStudent(false);
+              toast({
+                title: "Limite atteinte",
+                description: `Vous avez atteint la limite de ${maxStudents} élèves de votre plan ${planNames[features?.plan_id || 'starter']}. Mettez à niveau pour continuer.`,
+                variant: "destructive",
+              });
+            } else {
+              setCanAddStudent(true);
+            }
             
-            const nextNumber = (count || 0) + 1;
+            // Générer un matricule automatique
+            const year = new Date().getFullYear().toString().slice(-2);
+            const nextNumber = currentStudents + 1;
             const studentNumber = `EL${year}${nextNumber.toString().padStart(4, '0')}`;
             
             setFormData(prev => ({ ...prev, student_number: studentNumber }));
@@ -123,6 +161,16 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if can add student
+    if (!canAddStudent) {
+      toast({
+        title: "Limite du plan atteinte",
+        description: `Vous ne pouvez pas ajouter plus d'élèves. Mettez à niveau votre plan pour continuer.`,
+        variant: "destructive",
+      });
+      return;
+    }
     
     // Validate form data
     try {
@@ -222,6 +270,31 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
         <DialogHeader>
           <DialogTitle>Ajouter un élève</DialogTitle>
         </DialogHeader>
+        
+        {!canAddStudent && planInfo && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Limite du plan atteinte</AlertTitle>
+            <AlertDescription className="space-y-2">
+              <p>
+                Vous avez atteint la limite de <strong>{planInfo.maxStudents} élèves</strong> de votre plan{" "}
+                <strong>{planInfo.planName}</strong> ({planInfo.currentStudents}/{planInfo.maxStudents}).
+              </p>
+              <Button 
+                onClick={() => {
+                  setOpen(false);
+                  navigate('/billing');
+                }}
+                variant="default"
+                size="sm"
+                className="w-full"
+              >
+                Mettre à niveau maintenant
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col items-center gap-4 mb-4">
             <Avatar className="h-24 w-24">
@@ -350,7 +423,7 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Annuler
             </Button>
-            <Button type="submit" disabled={loading || !userSchoolId}>
+            <Button type="submit" disabled={loading || !userSchoolId || !canAddStudent}>
               {loading ? "Ajout..." : "Ajouter"}
             </Button>
           </div>
