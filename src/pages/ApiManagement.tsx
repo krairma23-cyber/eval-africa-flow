@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Key, 
@@ -15,7 +16,9 @@ import {
   Activity,
   Globe,
   Code,
-  BookOpen
+  BookOpen,
+  Power,
+  PowerOff
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -29,7 +32,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Label } from "@/components/ui/label";
+import AddWebhookDialog from "@/components/forms/AddWebhookDialog";
 
 interface ApiKey {
   id: string;
@@ -42,15 +45,44 @@ interface ApiKey {
   full_key?: string; // Only available immediately after creation
 }
 
+interface Webhook {
+  id: string;
+  name: string;
+  url: string;
+  events: string[];
+  is_active: boolean;
+  created_at: string;
+  last_triggered_at: string | null;
+  success_count: number;
+  failure_count: number;
+}
+
+interface ApiStats {
+  total_requests: number;
+  success_rate: number;
+  avg_response_time: number;
+}
+
+interface EndpointStat {
+  endpoint: string;
+  count: number;
+}
+
 export default function ApiManagement() {
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [newKeyName, setNewKeyName] = useState("");
   const [showKeys, setShowKeys] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState(true);
+  const [webhooks, setWebhooks] = useState<Webhook[]>([]);
+  const [apiStats, setApiStats] = useState<ApiStats>({ total_requests: 0, success_rate: 0, avg_response_time: 0 });
+  const [endpointStats, setEndpointStats] = useState<EndpointStat[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchApiKeys();
+    fetchWebhooks();
+    fetchApiStats();
+    fetchEndpointStats();
   }, []);
 
   const fetchApiKeys = async () => {
@@ -221,6 +253,148 @@ export default function ApiManagement() {
     return apiKey.key_prefix + '••••••••••••••••••••••••';
   };
 
+  const fetchWebhooks = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("school_id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!profile?.school_id) return;
+
+      const { data, error } = await supabase
+        .from("webhooks")
+        .select("*")
+        .eq("school_id", profile.school_id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setWebhooks(data || []);
+    } catch (error) {
+      console.error("Error fetching webhooks:", error);
+    }
+  };
+
+  const fetchApiStats = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Get API usage from comprehensive_audit_logs for last 30 days
+      const { data: logs, error } = await supabase
+        .from("comprehensive_audit_logs")
+        .select("success, execution_time_ms")
+        .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      if (logs && logs.length > 0) {
+        const total = logs.length;
+        const successful = logs.filter(l => l.success).length;
+        const avgTime = logs
+          .filter(l => l.execution_time_ms != null)
+          .reduce((sum, l) => sum + (l.execution_time_ms || 0), 0) / logs.filter(l => l.execution_time_ms != null).length;
+
+        setApiStats({
+          total_requests: total,
+          success_rate: (successful / total) * 100,
+          avg_response_time: Math.round(avgTime || 0),
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching API stats:", error);
+    }
+  };
+
+  const fetchEndpointStats = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: logs, error } = await supabase
+        .from("comprehensive_audit_logs")
+        .select("action")
+        .gte("created_at", new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      if (logs) {
+        // Count occurrences of each action
+        const counts = logs.reduce((acc, log) => {
+          acc[log.action] = (acc[log.action] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>);
+
+        // Convert to array and sort
+        const sorted = Object.entries(counts)
+          .map(([endpoint, count]) => ({ endpoint, count }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5);
+
+        setEndpointStats(sorted);
+      }
+    } catch (error) {
+      console.error("Error fetching endpoint stats:", error);
+    }
+  };
+
+  const toggleWebhookStatus = async (webhookId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from("webhooks")
+        .update({ is_active: !currentStatus })
+        .eq("id", webhookId);
+
+      if (error) throw error;
+
+      setWebhooks(webhooks.map(w => 
+        w.id === webhookId ? { ...w, is_active: !currentStatus } : w
+      ));
+
+      toast({
+        title: "Statut modifié",
+        description: `Le webhook a été ${!currentStatus ? "activé" : "désactivé"}`,
+      });
+    } catch (error) {
+      console.error("Error toggling webhook:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de modifier le statut du webhook",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteWebhook = async (webhookId: string) => {
+    try {
+      const { error } = await supabase
+        .from("webhooks")
+        .delete()
+        .eq("id", webhookId);
+
+      if (error) throw error;
+
+      setWebhooks(webhooks.filter(w => w.id !== webhookId));
+      toast({
+        title: "Webhook supprimé",
+        description: "Le webhook a été supprimé avec succès",
+      });
+    } catch (error) {
+      console.error("Error deleting webhook:", error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer le webhook",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -386,15 +560,15 @@ export default function ApiManagement() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span>Requêtes totales</span>
-                    <span className="font-bold text-2xl">1,736</span>
+                    <span className="font-bold text-2xl">{apiStats.total_requests.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Taux de succès</span>
-                    <span className="font-medium text-green-600">99.2%</span>
+                    <span className="font-medium text-green-600">{apiStats.success_rate.toFixed(1)}%</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Temps de réponse moyen</span>
-                    <span className="font-medium">145ms</span>
+                    <span className="font-medium">{apiStats.avg_response_time}ms</span>
                   </div>
                 </div>
               </CardContent>
@@ -404,27 +578,21 @@ export default function ApiManagement() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Globe className="h-5 w-5" />
-                  Endpoints populaires
+                  Actions populaires
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <code className="text-sm">/api/students</code>
-                    <span className="text-sm text-muted-foreground">682 requêtes</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <code className="text-sm">/api/assessments</code>
-                    <span className="text-sm text-muted-foreground">451 requêtes</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <code className="text-sm">/api/reports</code>
-                    <span className="text-sm text-muted-foreground">298 requêtes</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <code className="text-sm">/api/analytics</code>
-                    <span className="text-sm text-muted-foreground">305 requêtes</span>
-                  </div>
+                  {endpointStats.length > 0 ? (
+                    endpointStats.map((stat, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <code className="text-sm">{stat.endpoint}</code>
+                        <span className="text-sm text-muted-foreground">{stat.count} requêtes</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Aucune donnée disponible</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -511,23 +679,89 @@ export default function ApiManagement() {
         <TabsContent value="webhooks" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Webhooks</CardTitle>
-              <CardDescription>
-                Recevez des notifications en temps réel via webhooks
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Webhooks</CardTitle>
+                  <CardDescription>
+                    Recevez des notifications en temps réel via webhooks
+                  </CardDescription>
+                </div>
+                <AddWebhookDialog onSuccess={fetchWebhooks} />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8">
-                <Globe className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="font-semibold mb-2">Webhooks non configurés</h3>
-                <p className="text-muted-foreground mb-4">
-                  Configurez des webhooks pour recevoir des notifications automatiques
-                </p>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Configurer webhook
-                </Button>
-              </div>
+              {webhooks.length === 0 ? (
+                <div className="text-center py-8">
+                  <Globe className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="font-semibold mb-2">Aucun webhook configuré</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Configurez des webhooks pour recevoir des notifications automatiques
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {webhooks.map((webhook) => (
+                    <div key={webhook.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-medium">{webhook.name}</h3>
+                          <Badge variant={webhook.is_active ? "default" : "secondary"}>
+                            {webhook.is_active ? "Actif" : "Inactif"}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">{webhook.url}</p>
+                        <div className="flex gap-2 flex-wrap">
+                          {webhook.events.map((event, idx) => (
+                            <Badge key={idx} variant="outline" className="text-xs">
+                              {event}
+                            </Badge>
+                          ))}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          {webhook.success_count} succès • {webhook.failure_count} échecs
+                          {webhook.last_triggered_at && (
+                            <> • Dernier: {new Date(webhook.last_triggered_at).toLocaleDateString('fr-FR')}</>
+                          )}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleWebhookStatus(webhook.id, webhook.is_active)}
+                        >
+                          {webhook.is_active ? (
+                            <PowerOff className="h-4 w-4" />
+                          ) : (
+                            <Power className="h-4 w-4" />
+                          )}
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm" className="text-destructive">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Supprimer le webhook</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Cette action est irréversible. Le webhook ne recevra plus de notifications.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Annuler</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => deleteWebhook(webhook.id)}>
+                                Supprimer
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
