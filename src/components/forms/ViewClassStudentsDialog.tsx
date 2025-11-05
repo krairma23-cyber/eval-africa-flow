@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Users, UserCheck, UserX } from "lucide-react";
+import { Users, UserCheck, UserX, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { logError } from "@/lib/logger";
+import { EditStudentDialog } from "@/components/forms/EditStudentDialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface Student {
   id: string;
@@ -29,6 +31,8 @@ export function ViewClassStudentsDialog({ classroomId, classroomName, children }
   const [students, setStudents] = useState<Student[]>([]);
   const [classroomColor, setClassroomColor] = useState<string>('#3b82f6');
   const [loading, setLoading] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -84,6 +88,39 @@ export function ViewClassStudentsDialog({ classroomId, classroomName, children }
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteStudent = async () => {
+    if (!studentToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from("students")
+        .delete()
+        .eq("id", studentToDelete.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Succès",
+        description: "L'élève a été supprimé avec succès",
+      });
+
+      fetchStudents();
+    } catch (error) {
+      await logError('Failed to delete student', error, {
+        component: 'ViewClassStudentsDialog',
+        action: 'DELETE_STUDENT'
+      });
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer l'élève",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleteDialogOpen(false);
+      setStudentToDelete(null);
     }
   };
 
@@ -151,6 +188,26 @@ export function ViewClassStudentsDialog({ classroomId, classroomName, children }
                       </div>
                     </div>
                   </div>
+                  <div className="flex gap-2 ml-4">
+                    <EditStudentDialog 
+                      student={student as any}
+                      onStudentUpdated={fetchStudents}
+                    >
+                      <Button variant="ghost" size="icon">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </EditStudentDialog>
+                    <Button 
+                      variant="ghost" 
+                      size="icon"
+                      onClick={() => {
+                        setStudentToDelete(student);
+                        setDeleteDialogOpen(true);
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -166,6 +223,24 @@ export function ViewClassStudentsDialog({ classroomId, classroomName, children }
           </Button>
         </div>
       </DialogContent>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir supprimer l'élève {studentToDelete?.first_name} {studentToDelete?.last_name} ? 
+              Cette action est irréversible.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteStudent} className="bg-destructive hover:bg-destructive/90">
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
