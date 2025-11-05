@@ -122,6 +122,74 @@ All colors MUST be HSL.
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  .theme-blue {
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 20% 98%;
+    --accent: 199 89% 48%;
+    --accent-foreground: 210 20% 98%;
+    --ai-glow: 217 91% 60%;
+    --neural-blue: 217 91% 60%;
+  }
+
+  .theme-blue.dark {
+    --primary: 217 91% 60%;
+    --accent: 199 89% 48%;
+  }
+
+  .theme-green {
+    --primary: 142 76% 36%;
+    --primary-foreground: 210 20% 98%;
+    --accent: 120 60% 50%;
+    --accent-foreground: 210 20% 98%;
+    --ai-glow: 142 76% 36%;
+    --cyber-green: 142 76% 36%;
+  }
+
+  .theme-green.dark {
+    --primary: 142 76% 36%;
+    --accent: 120 60% 50%;
+  }
+
+  .theme-orange {
+    --primary: 33 100% 53%;
+    --primary-foreground: 210 20% 98%;
+    --accent: 45 93% 58%;
+    --accent-foreground: 0 0% 15%;
+    --ai-glow: 33 100% 53%;
+  }
+
+  .theme-orange.dark {
+    --primary: 33 100% 53%;
+    --accent: 45 93% 58%;
+  }
+
+  .theme-purple {
+    --primary: 280 87% 65%;
+    --primary-foreground: 210 20% 98%;
+    --accent: 263 70% 50%;
+    --accent-foreground: 210 20% 98%;
+    --ai-glow: 280 87% 65%;
+    --quantum-purple: 280 100% 70%;
+  }
+
+  .theme-purple.dark {
+    --primary: 280 87% 65%;
+    --accent: 263 70% 50%;
+  }
+
+  .theme-red {
+    --primary: 0 84% 60%;
+    --primary-foreground: 210 20% 98%;
+    --accent: 10 78% 60%;
+    --accent-foreground: 210 20% 98%;
+    --ai-glow: 0 84% 60%;
+  }
+
+  .theme-red.dark {
+    --primary: 0 84% 60%;
+    --accent: 10 78% 60%;
+  }
 }
 
 @layer base {
