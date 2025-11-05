@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
-type ThemeColor = "default" | "blue" | "green" | "orange" | "purple" | "red";
+type ThemeColor = "default" | "blue" | "green" | "orange" | "purple" | "red" | "cyan";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -45,7 +45,7 @@ export function ThemeProvider({
     const root = window.document.documentElement;
 
     root.classList.remove("light", "dark");
-    root.classList.remove("theme-blue", "theme-green", "theme-orange", "theme-purple", "theme-red");
+    root.classList.remove("theme-blue", "theme-green", "theme-orange", "theme-purple", "theme-red", "theme-cyan");
 
     root.classList.add(theme);
     if (themeColor !== "default") {

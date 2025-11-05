@@ -724,6 +724,12 @@ export default function Settings() {
                       Rouge Dynamique
                     </div>
                   </SelectItem>
+                  <SelectItem value="cyan">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'hsl(189, 94%, 43%)' }} />
+                      Cyan Lumineux
+                    </div>
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-sm text-muted-foreground">
