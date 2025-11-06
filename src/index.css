@@ -190,20 +190,6 @@ All colors MUST be HSL.
     --primary: 0 84% 60%;
     --accent: 10 78% 60%;
   }
-
-  .theme-cyan {
-    --primary: 189 94% 43%;
-    --primary-foreground: 210 20% 98%;
-    --accent: 199 89% 48%;
-    --accent-foreground: 210 20% 98%;
-    --ai-glow: 189 94% 43%;
-    --neural-blue: 199 89% 48%;
-  }
-
-  .theme-cyan.dark {
-    --primary: 189 94% 43%;
-    --accent: 199 89% 48%;
-  }
 }
 
 @layer base {
