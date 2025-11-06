@@ -4997,6 +4997,14 @@ export type Database = {
           unique_users: number
         }[]
       }
+      update_user_role: {
+        Args: {
+          justification?: string
+          new_role: Database["public"]["Enums"]["app_role"]
+          target_user_id: string
+        }
+        Returns: Json
+      }
       user_belongs_to_school: {
         Args: { school_uuid: string }
         Returns: boolean

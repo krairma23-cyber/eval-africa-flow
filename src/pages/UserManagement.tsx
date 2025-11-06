@@ -127,35 +127,43 @@ export default function UserManagement() {
 
   const updateUserRole = async (userId: string, newRole: 'admin' | 'teacher' | 'user') => {
     try {
-      // D'abord, supprimer tous les rôles existants de l'utilisateur
-      await supabase
-        .from('user_roles')
-        .delete()
-        .eq('user_id', userId);
-
-      // Ensuite, insérer le nouveau rôle
-      const { error } = await supabase
-        .from('user_roles')
-        .insert([{ user_id: userId, role: newRole as any }]);
+      // Use secure function to update role with audit logging
+      const { data, error } = await supabase
+        .rpc('update_user_role', {
+          target_user_id: userId,
+          new_role: newRole,
+          justification: `Rôle modifié en ${newRole} via l'interface de gestion`
+        });
 
       if (error) throw error;
 
       toast({
         title: "Rôle mis à jour",
-        description: "Le rôle de l'utilisateur a été modifié avec succès",
+        description: "Le rôle a été modifié avec succès et enregistré dans les logs d'audit",
       });
 
       // Recharger les utilisateurs
       await loadUsers();
-    } catch (error) {
+    } catch (error: any) {
       await logError('Failed to update user role', error, {
         component: 'UserManagement',
         action: 'UPDATE_ROLE',
         metadata: { userId, newRole }
       });
+      
+      // Provide specific error messages based on error type
+      let errorMessage = "Impossible de mettre à jour le rôle";
+      if (error.message?.includes('Admin access required')) {
+        errorMessage = "Vous devez être administrateur pour modifier les rôles";
+      } else if (error.message?.includes('Cannot modify your own role')) {
+        errorMessage = "Vous ne pouvez pas modifier votre propre rôle pour des raisons de sécurité";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: "Erreur",
-        description: "Impossible de mettre à jour le rôle",
+        description: errorMessage,
         variant: "destructive",
       });
     }
