@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon, Globe, Database, Zap, CreditCard, Calendar, ClipboardList } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "@/components/theme-provider";
 
 export default function Settings() {
   const [loading, setLoading] = useState(false);
@@ -37,6 +36,7 @@ export default function Settings() {
   const [phone2, setPhone2] = useState("");
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [reportReminders, setReportReminders] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   
   // SaaS settings
   const [timezone, setTimezone] = useState("Europe/Paris");
@@ -45,8 +45,6 @@ export default function Settings() {
   const [dateFormat, setDateFormat] = useState("DD/MM/YYYY");
   const [autoBackup, setAutoBackup] = useState(true);
   const [dataRetention, setDataRetention] = useState("365"); // jours
-  
-  const { theme, setTheme, themeColor, setThemeColor } = useTheme();
 
   useEffect(() => {
     getCurrentUser();
@@ -120,6 +118,7 @@ export default function Settings() {
       if (preferences) {
         setEmailNotifications(preferences.email_notifications ?? true);
         setReportReminders(preferences.report_reminders ?? true);
+        setDarkMode(preferences.dark_mode ?? false);
         setTimezone((preferences as any).timezone ?? "Europe/Paris");
         setLanguage((preferences as any).language ?? "fr");
         setCurrency((preferences as any).currency ?? "EUR");
@@ -242,6 +241,7 @@ export default function Settings() {
           user_id: user.id,
           email_notifications: emailNotifications,
           report_reminders: reportReminders,
+          dark_mode: darkMode,
           timezone,
           language,
           currency,
@@ -676,59 +676,9 @@ export default function Settings() {
                 </p>
               </div>
               <Switch
-                checked={theme === "dark"}
-                onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+                checked={darkMode}
+                onCheckedChange={setDarkMode}
               />
-            </div>
-            <Separator />
-            <div className="grid gap-2">
-              <Label htmlFor="theme-color">Couleur du thème</Label>
-              <Select value={themeColor} onValueChange={(value: any) => setThemeColor(value)}>
-                <SelectTrigger id="theme-color">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full bg-primary" />
-                      Violet (Par défaut)
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="blue">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'hsl(217, 91%, 60%)' }} />
-                      Bleu Professionnel
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="green">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'hsl(142, 76%, 36%)' }} />
-                      Vert Nature
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="orange">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'hsl(33, 100%, 53%)' }} />
-                      Orange Chaleureux
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="purple">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'hsl(280, 87%, 65%)' }} />
-                      Violet Moderne
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="red">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full" style={{ backgroundColor: 'hsl(0, 84%, 60%)' }} />
-                      Rouge Dynamique
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-sm text-muted-foreground">
-                Choisissez la couleur principale de l'interface
-              </p>
             </div>
           </CardContent>
         </Card>
