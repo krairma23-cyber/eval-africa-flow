@@ -144,18 +144,18 @@ export default function About() {
 
   const offices = [
     {
-      country: "Sénégal",
-      flag: "🇸🇳",
-      city: "Dakar",
-      type: "Bureau principal",
-      color: "bg-green-100 text-green-800"
-    },
-    {
       country: "Côte d'Ivoire",
       flag: "🇨🇮",
       city: "Abidjan",
-      type: "Bureau",
+      type: "Bureau principal",
       color: "bg-orange-100 text-orange-800"
+    },
+    {
+      country: "Sénégal",
+      flag: "🇸🇳",
+      city: "Dakar",
+      type: "Bureau",
+      color: "bg-green-100 text-green-800"
     },
     {
       country: "Bénin",

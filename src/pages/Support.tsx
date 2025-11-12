@@ -441,8 +441,8 @@ export default function Support() {
                 </div>
                 <div className="space-y-2">
                   <p><strong>Bureaux:</strong></p>
-                  <p className="text-muted-foreground">🇸🇳 Dakar, Sénégal (bureau principal)</p>
-                  <p className="text-muted-foreground">🇨🇮 Abidjan, Côte d'Ivoire</p>
+                  <p className="text-muted-foreground">🇨🇮 Abidjan, Côte d'Ivoire (bureau principal)</p>
+                  <p className="text-muted-foreground">🇸🇳 Dakar, Sénégal</p>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-green-600">
                   <CheckCircle className="h-4 w-4" />
