@@ -13,8 +13,10 @@ import {
   AlertCircle,
   Download,
   Calendar,
-  TrendingUp
+  TrendingUp,
+  ExternalLink
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { logError } from "@/lib/logger";
 import { PaymentPhoneDialog } from "@/components/forms/PaymentPhoneDialog";
@@ -55,6 +57,7 @@ export default function Billing() {
   const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
   const [pendingPlanId, setPendingPlanId] = useState<string | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchBillingData();
@@ -389,12 +392,21 @@ export default function Billing() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
-          <TabsTrigger value="plans">Plans & Tarifs</TabsTrigger>
-          <TabsTrigger value="usage">Utilisation</TabsTrigger>
-          <TabsTrigger value="invoices">Factures</TabsTrigger>
-        </TabsList>
+        <div className="flex items-center justify-between">
+          <TabsList>
+            <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+            <TabsTrigger value="usage">Utilisation</TabsTrigger>
+            <TabsTrigger value="invoices">Factures</TabsTrigger>
+          </TabsList>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => navigate('/pricing')}
+          >
+            Tarification
+            <ExternalLink className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
 
         <TabsContent value="overview" className="space-y-6">
           {/* Current Plan */}
@@ -513,85 +525,6 @@ export default function Billing() {
           </div>
         </TabsContent>
 
-        <TabsContent value="plans" className="space-y-6">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <span className={!isYearly ? "font-medium" : "text-muted-foreground"}>Mensuel</span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsYearly(!isYearly)}
-              className="relative"
-            >
-              <div className={`absolute inset-0 bg-primary rounded-md transition-transform ${isYearly ? 'translate-x-full' : 'translate-x-0'}`} />
-              <span className="relative z-10 px-3">
-                {isYearly ? 'Annuel' : 'Mensuel'}
-              </span>
-            </Button>
-            <span className={isYearly ? "font-medium" : "text-muted-foreground"}>
-              Annuel <Badge variant="secondary" className="ml-2">-20%</Badge>
-            </span>
-          </div>
-
-          {plans.length === 0 ? (
-            <Card className="p-12">
-              <CardContent className="text-center space-y-4">
-                <div className="mx-auto w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                  <CreditCard className="h-8 w-8 text-muted-foreground" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">Plans en cours de configuration</h3>
-                  <p className="text-muted-foreground">
-                    Les nouveaux plans d'abonnement seront bientôt disponibles.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-6 md:grid-cols-3">
-              {plans.map((plan) => (
-                <Card 
-                  key={plan.id} 
-                  className={`relative ${plan.is_popular ? 'border-2 border-primary' : ''}`}
-                >
-                  {plan.is_popular && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <Badge className="bg-primary text-primary-foreground">
-                        Le plus populaire
-                      </Badge>
-                    </div>
-                  )}
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                    <div className="text-3xl font-bold">
-                      {(isYearly ? plan.price_yearly : plan.price_monthly).toLocaleString('fr-FR')} FCFA
-                      <span className="text-base font-normal text-muted-foreground">
-                        /{isYearly ? 'an' : 'mois'}
-                      </span>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <ul className="space-y-2">
-                      {plan.features.map((feature, index) => (
-                        <li key={index} className="flex items-center gap-2">
-                          <Check className="h-4 w-4 text-primary" />
-                          <span className="text-sm">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      className="w-full"
-                      variant={currentPlan?.id === plan.id ? "outline" : "default"}
-                      onClick={() => handleUpgrade(plan.id)}
-                      disabled={currentPlan?.id === plan.id}
-                    >
-                      {currentPlan?.id === plan.id ? 'Plan actuel' : 'Choisir ce plan'}
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-        </TabsContent>
 
         <TabsContent value="usage" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">

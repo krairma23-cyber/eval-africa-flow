@@ -44,7 +44,7 @@ const menuItems = [
   { title: "Bulletins", url: "/dashboard/reports", icon: FileText },
   { title: "Affectations", url: "/dashboard/assignments", icon: UserCog },
   { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
-  { title: "Tarification", url: "/pricing", icon: CreditCard },
+  { title: "Facturation", url: "/dashboard/billing", icon: CreditCard },
   { title: "API", url: "/dashboard/api", icon: Code },
   { title: "Support", url: "/dashboard/support", icon: HelpCircle },
   { title: "Notifications", url: "/dashboard/notifications", icon: Bell },
