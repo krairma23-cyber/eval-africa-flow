@@ -401,14 +401,18 @@ export default function Support() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <p><strong>Email de support:</strong></p>
-                  <p className="text-muted-foreground">support@ecommerce-simple.com</p>
+                  <p className="text-muted-foreground">support@evalscol.com</p>
+                </div>
+                <div className="space-y-2">
+                  <p><strong>Email commercial:</strong></p>
+                  <p className="text-muted-foreground">contact@evalscol.com</p>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
-                  Réponse sous 24h en moyenne
+                  Réponse sous 24-48h (Standard) / 12h (Professional) / 4h (Enterprise 24/7)
                 </div>
                 <Button asChild>
-                  <a href="mailto:support@ecommerce-simple.com">
+                  <a href="mailto:support@evalscol.com">
                     <Mail className="h-4 w-4 mr-2" />
                     Envoyer un email
                   </a>
@@ -428,27 +432,36 @@ export default function Support() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <p><strong>Téléphone 1:</strong></p>
-                  <p className="text-muted-foreground">+225 0707041903</p>
-                </div>
-                <div className="space-y-2">
-                  <p><strong>Téléphone 2:</strong></p>
-                  <p className="text-muted-foreground">+225 0101821329</p>
+                  <p><strong>Téléphone / WhatsApp:</strong></p>
+                  <p className="text-muted-foreground">+225 07 07 04 19 04</p>
                 </div>
                 <div className="space-y-2">
                   <p><strong>Horaires:</strong></p>
-                  <p className="text-muted-foreground">Lun-Ven: 9h-18h</p>
+                  <p className="text-muted-foreground">Lun-Ven: 8h-18h (GMT/UTC+0)</p>
+                </div>
+                <div className="space-y-2">
+                  <p><strong>Bureaux:</strong></p>
+                  <p className="text-muted-foreground">🇸🇳 Dakar, Sénégal (bureau principal)</p>
+                  <p className="text-muted-foreground">🇨🇮 Abidjan, Côte d'Ivoire</p>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-green-600">
                   <CheckCircle className="h-4 w-4" />
                   Support disponible maintenant
                 </div>
-                <Button asChild>
-                  <a href="tel:+2250707041903">
-                    <Phone className="h-4 w-4 mr-2" />
-                    Appeler maintenant
-                  </a>
-                </Button>
+                <div className="flex gap-2">
+                  <Button asChild className="flex-1">
+                    <a href="tel:+2250707041904">
+                      <Phone className="h-4 w-4 mr-2" />
+                      Appeler
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" className="flex-1">
+                    <a href="https://wa.me/2250707041904" target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      WhatsApp
+                    </a>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>

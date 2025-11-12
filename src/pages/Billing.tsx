@@ -114,38 +114,60 @@ export default function Billing() {
       const searchesUsed = searchesData?.length || 0;
       const apiCallsUsed = apiUsageData?.reduce((sum: number, log: any) => sum + (log.tokens_used || 0), 0) || 0;
 
-      // If no plans from DB, use default plans
+      // If no plans from DB, use default plans based on knowledge base
       const defaultPlans: SubscriptionPlan[] = [
         {
-          id: 'starter',
-          name: 'Starter',
+          id: 'free-trial',
+          name: 'Gratuit (Essai)',
           price_monthly: 0,
           price_yearly: 0,
           features: [
-            'Jusqu\'à 30 élèves',
-            'Gestion basique des notes',
-            'Bulletins simples',
-            'Tableau de bord de base',
-            'Support communautaire'
+            '14 jours d\'essai gratuit',
+            'Jusqu\'à 50 élèves maximum',
+            'Toutes les fonctionnalités de base',
+            'Gestion des notes et bulletins',
+            'Portail parent',
+            'Support communautaire',
+            'Idéal pour tester la plateforme'
           ],
-          searches_limit: 100,
+          searches_limit: 50,
           api_calls_limit: 100,
+          is_popular: false
+        },
+        {
+          id: 'standard',
+          name: 'Standard',
+          price_monthly: 29990,
+          price_yearly: 299900,
+          features: [
+            'Jusqu\'à 300 élèves',
+            'Gestion complète élèves & enseignants',
+            'Évaluations et bulletins automatisés',
+            'Portail parent avec accès temps réel',
+            'Paiements Paystack intégrés',
+            'Analytics de base',
+            'Support email',
+            'Idéal pour écoles primaires et petits collèges'
+          ],
+          searches_limit: 300,
+          api_calls_limit: 3000,
           is_popular: false
         },
         {
           id: 'professional',
           name: 'Professional',
-          price_monthly: 11500,
-          price_yearly: 115000,
+          price_monthly: 59990,
+          price_yearly: 599900,
           features: [
-            'Jusqu\'à 300 élèves',
-            'Évaluations illimitées',
-            'Analytics prédictifs avec IA',
-            'Assistant vocal',
-            'Rapports avancés et bulletins personnalisés',
-            'Gestion des absences',
-            'Communication parents-enseignants',
-            'Support prioritaire'
+            'Jusqu\'à 1000 élèves',
+            'Toutes les fonctionnalités Standard',
+            'AI Assistant (génération contenu pédagogique)',
+            'Détection élèves à risque (IA)',
+            'Analytics avancés avec prédictions',
+            'Webhooks et API REST',
+            'Support prioritaire (12h)',
+            'Personnalisation logo/couleurs',
+            'Idéal pour collèges et lycées moyens'
           ],
           searches_limit: 1000,
           api_calls_limit: 10000,
@@ -153,22 +175,22 @@ export default function Billing() {
         },
         {
           id: 'enterprise',
-          name: 'Entreprise',
-          price_monthly: 28500,
-          price_yearly: 285000,
+          name: 'Enterprise',
+          price_monthly: 149990,
+          price_yearly: 1499900,
           features: [
-            'Plus de 300 élèves (illimité)',
-            'Tout du plan Professional',
-            'Multi-campus et multi-écoles',
-            'Personnalisation complète',
-            'Intégrations API avancées',
-            'Formation dédiée du personnel',
-            'SLA et support premium 24/7',
-            'Modules métier personnalisés',
-            'Comptes multi-utilisateurs illimités'
+            'Élèves illimités',
+            'Toutes les fonctionnalités Professional',
+            'Multi-établissements & multi-campus',
+            'Intégrations personnalisées sur mesure',
+            'Formation sur site incluse',
+            'Support 24/7 avec SLA 99.9%',
+            'Serveur dédié (option)',
+            'Développements sur mesure',
+            'Idéal pour groupes scolaires et réseaux'
           ],
-          searches_limit: 10000,
-          api_calls_limit: 100000,
+          searches_limit: 999999,
+          api_calls_limit: 999999,
           is_popular: false
         }
       ];

@@ -32,6 +32,8 @@ import Terms from "./pages/Terms";
 import AssessmentTypes from "./pages/AssessmentTypes";
 import Onboarding from "./pages/Onboarding";
 import PitchDeck from "./pages/PitchDeck";
+import About from "./pages/About";
+import Pricing from "./pages/Pricing";
 
 import { CookieConsent } from "./components/gdpr/CookieConsent";
 import { TestModeBanner } from "./components/layout/TestModeBanner";
@@ -49,6 +51,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="/pitch-deck" element={<PitchDeck />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

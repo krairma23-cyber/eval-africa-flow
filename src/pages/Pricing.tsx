@@ -1,0 +1,429 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Check, ArrowLeft, Star, Zap, Crown, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+export default function Pricing() {
+  const navigate = useNavigate();
+  const [isYearly, setIsYearly] = useState(false);
+
+  const plans = [
+    {
+      id: 'free-trial',
+      name: 'Gratuit (Essai)',
+      description: 'Testez la plateforme pendant 14 jours',
+      icon: Sparkles,
+      iconColor: 'text-blue-500',
+      price_monthly: 0,
+      price_yearly: 0,
+      badge: '14 jours d\'essai',
+      badgeVariant: 'secondary' as const,
+      features: [
+        '14 jours d\'essai gratuit',
+        'Jusqu\'à 50 élèves maximum',
+        'Toutes les fonctionnalités de base',
+        'Gestion des notes et bulletins',
+        'Portail parent',
+        'Support communautaire',
+        'Idéal pour tester la plateforme'
+      ],
+      ideal: 'Idéal pour : Test de la plateforme, petites écoles pilotes'
+    },
+    {
+      id: 'standard',
+      name: 'Standard',
+      description: 'Pour les écoles primaires et petits collèges',
+      icon: Check,
+      iconColor: 'text-green-500',
+      price_monthly: 29990,
+      price_yearly: 299900,
+      badge: null,
+      badgeVariant: 'outline' as const,
+      features: [
+        'Jusqu\'à 300 élèves',
+        'Gestion complète élèves & enseignants',
+        'Évaluations et bulletins automatisés',
+        'Portail parent avec accès temps réel',
+        'Paiements Paystack intégrés',
+        'Analytics de base',
+        'Support email'
+      ],
+      ideal: 'Idéal pour : Écoles primaires, petits collèges'
+    },
+    {
+      id: 'professional',
+      name: 'Professional',
+      description: 'Pour les collèges et lycées moyens',
+      icon: Star,
+      iconColor: 'text-yellow-500',
+      price_monthly: 59990,
+      price_yearly: 599900,
+      badge: 'Le plus populaire',
+      badgeVariant: 'default' as const,
+      popular: true,
+      features: [
+        'Jusqu\'à 1000 élèves',
+        'Toutes les fonctionnalités Standard',
+        'AI Assistant (génération contenu pédagogique)',
+        'Détection élèves à risque (IA)',
+        'Analytics avancés avec prédictions',
+        'Webhooks et API REST',
+        'Support prioritaire (12h)',
+        'Personnalisation logo/couleurs'
+      ],
+      ideal: 'Idéal pour : Collèges, lycées moyens'
+    },
+    {
+      id: 'enterprise',
+      name: 'Enterprise',
+      description: 'Pour les groupes scolaires et réseaux',
+      icon: Crown,
+      iconColor: 'text-purple-500',
+      price_monthly: 149990,
+      price_yearly: 1499900,
+      badge: 'Sur devis',
+      badgeVariant: 'secondary' as const,
+      features: [
+        'Élèves illimités',
+        'Toutes les fonctionnalités Professional',
+        'Multi-établissements & multi-campus',
+        'Intégrations personnalisées sur mesure',
+        'Formation sur site incluse',
+        'Support 24/7 avec SLA 99.9%',
+        'Serveur dédié (option)',
+        'Développements sur mesure'
+      ],
+      ideal: 'Idéal pour : Groupes scolaires, réseaux d\'écoles'
+    }
+  ];
+
+  const additionalOptions = [
+    {
+      title: 'Formation initiale',
+      price: '50 000 FCFA',
+      description: '1 journée complète sur site pour l\'équipe administrative'
+    },
+    {
+      title: 'Formation continue',
+      price: '25 000 FCFA/session',
+      description: 'Sessions dédiées aux enseignants et à la saisie de notes'
+    },
+    {
+      title: 'Migration données',
+      price: '100 000 - 500 000 FCFA',
+      description: 'Migration de vos données existantes selon volume'
+    },
+    {
+      title: 'Personnalisation avancée',
+      price: 'Sur devis',
+      description: 'Développements sur mesure selon vos besoins spécifiques'
+    },
+    {
+      title: 'Stockage additionnel',
+      price: '5 000 FCFA/10GB/mois',
+      description: 'Espace de stockage supplémentaire pour documents et médias'
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
+      <div className="container mx-auto px-4 py-12 max-w-7xl">
+        {/* Header */}
+        <header className="mb-12">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate("/")}
+            className="mb-6"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Retour à l'accueil
+          </Button>
+          
+          <div className="text-center">
+            <img 
+              src="/logo.png" 
+              alt="EvalScol Logo" 
+              className="h-20 w-auto mx-auto mb-4"
+            />
+            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+              Tarification EvalScol
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+              Des plans adaptés à chaque taille d'établissement en Afrique francophone
+            </p>
+
+            {/* Toggle */}
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <span className={!isYearly ? "font-semibold" : "text-muted-foreground"}>Mensuel</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsYearly(!isYearly)}
+                className="relative h-8 w-14"
+              >
+                <div className={`absolute inset-0.5 bg-primary rounded transition-transform ${isYearly ? 'translate-x-6' : 'translate-x-0'}`} style={{ width: '1.5rem' }} />
+              </Button>
+              <span className={isYearly ? "font-semibold" : "text-muted-foreground"}>
+                Annuel
+                <Badge variant="secondary" className="ml-2">-20%</Badge>
+              </span>
+            </div>
+          </div>
+        </header>
+
+        {/* Plans Grid */}
+        <section className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {plans.map((plan) => {
+            const Icon = plan.icon;
+            const price = isYearly ? plan.price_yearly : plan.price_monthly;
+            
+            return (
+              <Card 
+                key={plan.id} 
+                className={`relative ${plan.popular ? 'border-primary shadow-lg scale-105' : 'border-border'}`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <Badge className="bg-primary text-primary-foreground">
+                      <Star className="h-3 w-3 mr-1" />
+                      Le plus populaire
+                    </Badge>
+                  </div>
+                )}
+                
+                <CardHeader>
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className={`p-2 rounded-lg bg-background`}>
+                      <Icon className={`h-6 w-6 ${plan.iconColor}`} />
+                    </div>
+                    {plan.badge && (
+                      <Badge variant={plan.badgeVariant}>{plan.badge}</Badge>
+                    )}
+                  </div>
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <CardDescription>{plan.description}</CardDescription>
+                  <div className="mt-4">
+                    <div className="text-4xl font-bold">
+                      {price.toLocaleString('fr-FR')} <span className="text-lg font-normal text-muted-foreground">FCFA</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {price === 0 ? 'Gratuit pendant 14 jours' : `par ${isYearly ? 'an' : 'mois'}`}
+                    </div>
+                  </div>
+                </CardHeader>
+                
+                <CardContent>
+                  <ul className="space-y-3 mb-6">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-sm">
+                        <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <div className="p-3 bg-accent/10 rounded-lg mb-4">
+                    <p className="text-xs text-muted-foreground">{plan.ideal}</p>
+                  </div>
+
+                  <Button 
+                    className="w-full" 
+                    variant={plan.popular ? "default" : "outline"}
+                    onClick={() => navigate("/auth")}
+                  >
+                    {price === 0 ? 'Commencer l\'essai' : 'Choisir ce plan'}
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </section>
+
+        {/* Additional Options */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold mb-8 text-center">Options Supplémentaires</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {additionalOptions.map((option, idx) => (
+              <Card key={idx}>
+                <CardHeader>
+                  <CardTitle className="text-lg">{option.title}</CardTitle>
+                  <div className="text-2xl font-bold text-primary">{option.price}</div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">{option.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Features Comparison */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold mb-8 text-center">Toutes les Fonctionnalités</h2>
+          <Card>
+            <CardContent className="pt-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Zap className="h-5 w-5 text-primary" />
+                    Gestion Administrative
+                  </h3>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Gestion des élèves et inscriptions</li>
+                    <li>• Gestion des enseignants</li>
+                    <li>• Organisation des classes</li>
+                    <li>• Emploi du temps</li>
+                    <li>• Calendrier scolaire</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Zap className="h-5 w-5 text-accent" />
+                    Évaluations & Bulletins
+                  </h3>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Système d'évaluation avancé</li>
+                    <li>• Coefficients personnalisables</li>
+                    <li>• Bulletins PDF automatiques</li>
+                    <li>• Classements et statistiques</li>
+                    <li>• Rapports analytiques</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Zap className="h-5 w-5 text-primary" />
+                    Communication & Parents
+                  </h3>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Portail parent complet</li>
+                    <li>• Accès temps réel aux notes</li>
+                    <li>• Notifications automatiques</li>
+                    <li>• Historique complet</li>
+                    <li>• Multi-enfants support</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Zap className="h-5 w-5 text-accent" />
+                    Finances & Paiements
+                  </h3>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Intégration Paystack complète</li>
+                    <li>• Mobile money (Orange, MTN, Moov)</li>
+                    <li>• Suivi des paiements</li>
+                    <li>• Reçus automatiques PDF</li>
+                    <li>• Tableau de bord financier</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Zap className="h-5 w-5 text-primary" />
+                    Intelligence Artificielle
+                  </h3>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Génération de contenu pédagogique</li>
+                    <li>• Détection élèves à risque</li>
+                    <li>• Analyses prédictives</li>
+                    <li>• Recommandations IA</li>
+                    <li>• Assistant vocal (Pro+)</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2">
+                    <Zap className="h-5 w-5 text-accent" />
+                    Sécurité & Support
+                  </h3>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Chiffrement SSL/TLS</li>
+                    <li>• Sauvegardes automatiques</li>
+                    <li>• Conformité RGPD</li>
+                    <li>• Audit logs complets</li>
+                    <li>• Support multilingue</li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* FAQ */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold mb-8 text-center">Questions Fréquentes</h2>
+          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Puis-je changer de plan ?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Oui, vous pouvez passer à un plan supérieur ou inférieur à tout moment. 
+                  Les changements sont effectifs immédiatement.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Que se passe-t-il après l'essai ?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Après 14 jours, vous pouvez choisir un plan payant pour continuer. 
+                  Aucune carte bancaire n'est requise pour l'essai.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Comment fonctionnent les paiements ?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Nous acceptons les paiements via Paystack : mobile money (Orange, MTN, Moov) 
+                  et cartes bancaires (Visa, Mastercard).
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Quel support est inclus ?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Tous les plans incluent le support. Les délais varient : 24-48h (Standard), 
+                  12h (Professional), 4h/24-7 (Enterprise).
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <Card className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border-primary/20">
+          <CardContent className="pt-12 pb-12 text-center">
+            <h2 className="text-3xl font-bold mb-4">Prêt à transformer votre école ?</h2>
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Rejoignez des centaines d'établissements en Afrique qui font confiance à EvalScol 
+              pour la gestion de leur scolarité.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button size="lg" onClick={() => navigate("/auth")}>
+                Commencer l'essai gratuit
+              </Button>
+              <Button size="lg" variant="outline" onClick={() => navigate("/support")}>
+                Contacter les ventes
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground mt-6">
+              Pas de carte bancaire requise • Essai de 14 jours • Support en français
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}

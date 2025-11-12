@@ -22,10 +22,12 @@ const Index = () => {
             />
           </div>
           <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4">
-            EvalScol Africa Flow - Plateforme SaaS de Gestion des Évaluations Scolaires en Afrique
+            EvalScol Africa Flow - Plateforme SaaS Complète de Gestion Scolaire en Afrique
           </h1>
           <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
-            Plateforme éducative en Côte d'Ivoire - Solution numérique pour enseignants et établissements scolaires en Afrique francophone. Logiciel de gestion scolaire en Afrique pour le suivi des élèves, les évaluations et les bulletins.
+            Solution 100% cloud pour établissements en Afrique francophone. De 50 à 1000+ élèves. 
+            Gestion complète des élèves, évaluations automatisées, bulletins PDF, portail parent temps réel, 
+            paiements mobile money intégrés, IA pour détection élèves à risque. Essai gratuit 14 jours.
           </p>
           <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
