@@ -34,6 +34,7 @@ import Onboarding from "./pages/Onboarding";
 import PitchDeck from "./pages/PitchDeck";
 import About from "./pages/About";
 import Pricing from "./pages/Pricing";
+import PaystackDiagnostic from "./pages/PaystackDiagnostic";
 
 import { CookieConsent } from "./components/gdpr/CookieConsent";
 import { TestModeBanner } from "./components/layout/TestModeBanner";
@@ -80,6 +81,7 @@ const App = () => (
           <Route path="support" element={<Support />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="privacy" element={<DataPrivacy />} />
+          <Route path="paystack-diagnostic" element={<PaystackDiagnostic />} />
         </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

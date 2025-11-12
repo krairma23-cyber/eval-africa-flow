@@ -31,11 +31,11 @@ export function usePlanLimits() {
         .from('user_plan_features')
         .select('plan_id, max_students')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (featuresError) {
         console.error('Error fetching plan features:', featuresError);
-        return;
+        // Don't return early - continue with default values
       }
 
       // Get current student count

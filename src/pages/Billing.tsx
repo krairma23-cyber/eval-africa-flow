@@ -500,18 +500,27 @@ export default function Billing() {
             Gérez votre plan d'abonnement et suivez votre utilisation
           </p>
         </div>
-        <Button 
-          variant="outline"
-          onClick={() => {
-            toast({
-              title: "Téléchargement en cours",
-              description: "L'archive de vos factures sera bientôt disponible",
-            });
-          }}
-        >
-          <Download className="h-4 w-4 mr-2" />
-          Télécharger factures
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline"
+            onClick={() => navigate('/dashboard/paystack-diagnostic')}
+          >
+            <AlertCircle className="h-4 w-4 mr-2" />
+            Diagnostic Paystack
+          </Button>
+          <Button 
+            variant="outline"
+            onClick={() => {
+              toast({
+                title: "Téléchargement en cours",
+                description: "L'archive de vos factures sera bientôt disponible",
+              });
+            }}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Télécharger factures
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
