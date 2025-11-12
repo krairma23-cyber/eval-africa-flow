@@ -48,14 +48,15 @@ export function usePlanLimits() {
         return;
       }
 
-      const maxStudents = features?.max_students || 30;
+      const maxStudents = features?.max_students || 50;
       const currentStudents = studentCount || 0;
-      const planId = features?.plan_id || 'starter';
+      const planId = features?.plan_id || 'free-trial';
       
       const planNames: Record<string, string> = {
-        starter: 'Starter',
-        professional: 'Professional',
-        enterprise: 'Enterprise'
+        'free-trial': 'Gratuit (Essai)',
+        'standard': 'Standard',
+        'professional': 'Professional',
+        'enterprise': 'Enterprise'
       };
 
       const isLimitReached = currentStudents >= maxStudents;
@@ -66,7 +67,7 @@ export function usePlanLimits() {
         maxStudents,
         currentStudents,
         planId,
-        planName: planNames[planId] || 'Starter',
+        planName: planNames[planId] || 'Gratuit (Essai)',
         isLimitReached,
         isLimitExceeded,
         remainingStudents

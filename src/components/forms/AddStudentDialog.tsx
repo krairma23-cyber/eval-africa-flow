@@ -89,18 +89,19 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
               .select('*', { count: 'exact', head: true })
               .eq('school_id', profile.school_id);
 
-            const maxStudents = features?.max_students || 30;
+            const maxStudents = features?.max_students || 50;
             const currentStudents = studentCount || 0;
             const planNames: Record<string, string> = {
-              starter: 'Starter',
-              professional: 'Professional',
-              enterprise: 'Enterprise'
+              'free-trial': 'Gratuit (Essai)',
+              'standard': 'Standard',
+              'professional': 'Professional',
+              'enterprise': 'Enterprise'
             };
 
             setPlanInfo({
               currentStudents,
               maxStudents,
-              planName: planNames[features?.plan_id || 'starter'] || 'Starter'
+              planName: planNames[features?.plan_id || 'free-trial'] || 'Gratuit (Essai)'
             });
 
             // Block if limit reached
@@ -108,7 +109,7 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
               setCanAddStudent(false);
               toast({
                 title: "Limite atteinte",
-                description: `Vous avez atteint la limite de ${maxStudents} élèves de votre plan ${planNames[features?.plan_id || 'starter']}. Mettez à niveau pour continuer.`,
+                description: `Vous avez atteint la limite de ${maxStudents} élèves de votre plan ${planNames[features?.plan_id || 'free-trial']}. Mettez à niveau pour continuer.`,
                 variant: "destructive",
               });
             } else {

@@ -144,11 +144,11 @@ serve(async (req) => {
     // Configure plan features based on plan_id
     let planFeatures;
     
-    if (plan_id === 'starter' || expectedAmount === 0) {
+    if (plan_id === 'free-trial' || plan_id === 'starter' || expectedAmount === 0) {
       planFeatures = {
         user_id,
-        plan_id: 'starter',
-        max_students: 30,
+        plan_id: 'free-trial',
+        max_students: 50,
         unlimited_students: false,
         basic_grade_management: true,
         unlimited_assessments: false,
@@ -165,11 +165,32 @@ serve(async (req) => {
         custom_business_modules: false,
         unlimited_user_accounts: false
       };
+    } else if (plan_id === 'standard') {
+      planFeatures = {
+        user_id,
+        plan_id: 'standard',
+        max_students: 300,
+        unlimited_students: false,
+        basic_grade_management: true,
+        unlimited_assessments: true,
+        predictive_analytics_ai: false,
+        voice_assistant: false,
+        advanced_reports: false,
+        attendance_management: true,
+        parent_teacher_communication: true,
+        multi_campus: false,
+        full_customization: false,
+        advanced_api_integrations: false,
+        dedicated_training: false,
+        premium_support_24_7: false,
+        custom_business_modules: false,
+        unlimited_user_accounts: false
+      };
     } else if (plan_id === 'professional') {
       planFeatures = {
         user_id,
         plan_id: 'professional',
-        max_students: 300,
+        max_students: 1000,
         unlimited_students: false,
         basic_grade_management: true,
         unlimited_assessments: true,
@@ -180,7 +201,7 @@ serve(async (req) => {
         parent_teacher_communication: true,
         multi_campus: false,
         full_customization: false,
-        advanced_api_integrations: false,
+        advanced_api_integrations: true,
         dedicated_training: false,
         premium_support_24_7: true,
         custom_business_modules: false,
@@ -208,11 +229,11 @@ serve(async (req) => {
         unlimited_user_accounts: true
       };
     } else {
-      // Fallback to starter features
+      // Fallback to free-trial features
       planFeatures = {
         user_id,
-        plan_id: 'starter',
-        max_students: 30,
+        plan_id: 'free-trial',
+        max_students: 50,
         unlimited_students: false,
         basic_grade_management: true,
         unlimited_assessments: false,
