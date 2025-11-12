@@ -47,17 +47,23 @@ export function DashboardLayout() {
 
   const checkOnboardingStatus = async (userId: string) => {
     try {
-      const { data: profile } = await supabase
+      const { data: profile, error } = await supabase
         .from("profiles")
         .select("onboarding_completed")
         .eq("user_id", userId)
-        .single();
+        .maybeSingle();
 
-      if (profile && !profile.onboarding_completed) {
+      // Si le profil n'existe pas encore, considérer comme nécessitant l'onboarding
+      if (!profile || error) {
+        console.log("Profile not found or error, needs onboarding:", error);
+        setNeedsOnboarding(true);
+      } else if (!profile.onboarding_completed) {
         setNeedsOnboarding(true);
       }
     } catch (error) {
       console.error("Error checking onboarding status:", error);
+      // En cas d'erreur, rediriger vers onboarding par sécurité
+      setNeedsOnboarding(true);
     } finally {
       setLoading(false);
     }
