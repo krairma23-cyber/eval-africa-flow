@@ -15,7 +15,9 @@ import {
   Calendar,
   TrendingUp,
   Star,
-  Sparkles
+  Sparkles,
+  Smartphone,
+  Banknote
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -835,9 +837,34 @@ export default function Billing() {
                       variant={plan.popular ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleUpgrade(plan.id)}
+                      disabled={currentPlan?.id === plan.id}
                     >
-                      {currentPlan?.id === plan.id ? 'Plan Actuel' : (price === 0 ? 'Essayer Gratuitement' : 'Sélectionner ce Plan')}
+                      {currentPlan?.id === plan.id ? 'Plan Actuel' : (price === 0 ? 'Essayer Gratuitement' : 'Payer avec Paystack')}
                     </Button>
+                    
+                    {price > 0 && (
+                      <div className="mt-3 pt-3 border-t border-border">
+                        <p className="text-xs text-muted-foreground mb-2 font-medium">Modes de paiement acceptés :</p>
+                        <div className="flex flex-wrap gap-2">
+                          <Badge variant="outline" className="text-xs">
+                            <Smartphone className="h-3 w-3 mr-1" />
+                            Orange Money
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            <Smartphone className="h-3 w-3 mr-1" />
+                            MTN Money
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            <Smartphone className="h-3 w-3 mr-1" />
+                            Moov Money
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            <Banknote className="h-3 w-3 mr-1" />
+                            Visa/Mastercard
+                          </Badge>
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               );
