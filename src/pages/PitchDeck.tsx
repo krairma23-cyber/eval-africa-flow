@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Home } from "lucide-react";
+import { ChevronLeft, ChevronRight, Home, Download } from "lucide-react";
 import { Link } from "react-router-dom";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
+import { toast } from "sonner";
 import { CoverSlide } from "@/components/pitch/CoverSlide";
 import { ProblemSlide } from "@/components/pitch/ProblemSlide";
 import { SolutionSlide } from "@/components/pitch/SolutionSlide";
@@ -61,16 +64,73 @@ const PitchDeck = () => {
     return () => window.removeEventListener("keydown", handleKeyPress);
   });
 
+  const exportToPDF = async () => {
+    toast.info("Génération du PDF en cours...");
+    
+    try {
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const slideContainer = document.querySelector(".w-full.max-w-7xl") as HTMLElement;
+      
+      if (!slideContainer) {
+        toast.error("Erreur lors de l'export");
+        return;
+      }
+
+      const originalSlide = currentSlide;
+
+      for (let i = 0; i < slides.length; i++) {
+        setCurrentSlide(i);
+        
+        // Wait for slide to render
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        const canvas = await html2canvas(slideContainer, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = 297; // A4 landscape width in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        if (i > 0) {
+          pdf.addPage();
+        }
+
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      }
+
+      // Restore original slide
+      setCurrentSlide(originalSlide);
+
+      pdf.save("EvalScol-PitchDeck-2025.pdf");
+      toast.success("PDF généré avec succès !");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast.error("Erreur lors de la génération du PDF");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex flex-col">
       {/* Header */}
-      <div className="absolute top-4 left-4 z-10">
+      <div className="absolute top-4 left-4 right-4 z-10 flex justify-between">
         <Link to="/">
           <Button variant="ghost" size="sm">
             <Home className="h-4 w-4 mr-2" />
             Accueil
           </Button>
         </Link>
+        <Button variant="default" size="sm" onClick={exportToPDF}>
+          <Download className="h-4 w-4 mr-2" />
+          Exporter en PDF
+        </Button>
       </div>
 
       {/* Main Slide Area */}
