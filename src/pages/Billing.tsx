@@ -401,7 +401,7 @@ export default function Billing() {
           <Button 
             variant="outline" 
             size="sm"
-            onClick={() => navigate('/pricing')}
+            onClick={() => window.open('/pricing', '_blank')}
           >
             Tarification
             <ExternalLink className="ml-2 h-4 w-4" />
