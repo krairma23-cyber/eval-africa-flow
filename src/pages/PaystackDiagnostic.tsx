@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,8 @@ import {
   CreditCard,
   Server,
   Shield,
-  Zap
+  Zap,
+  ArrowLeft
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -24,6 +26,7 @@ interface DiagnosticResult {
 }
 
 export default function PaystackDiagnostic() {
+  const navigate = useNavigate();
   const [results, setResults] = useState<DiagnosticResult[]>([]);
   const [testing, setTesting] = useState(false);
   const [testPaymentUrl, setTestPaymentUrl] = useState<string | null>(null);
@@ -254,11 +257,21 @@ export default function PaystackDiagnostic() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Diagnostic Paystack</h1>
-          <p className="text-muted-foreground">
-            Testez l'intégration complète du système de paiement
-          </p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+            className="shrink-0"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Diagnostic Paystack</h1>
+            <p className="text-muted-foreground">
+              Testez l'intégration complète du système de paiement
+            </p>
+          </div>
         </div>
         <Button 
           onClick={runDiagnostic} 
