@@ -1,18 +1,19 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface PaymentRequest {
-  email: string;
-  amount: number;
-  planId: string;
-  planName: string;
-  phone_number?: string;
-  callback_url?: string;
-}
+const PaymentSchema = z.object({
+  email: z.string().email().max(254),
+  amount: z.number().positive().max(100000000), // 100M FCFA max
+  planId: z.string().uuid(),
+  planName: z.string().min(1).max(100),
+  phone_number: z.string().regex(/^\+?[0-9]{8,15}$/).optional(),
+  callback_url: z.string().url().max(500).optional()
+});
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -27,15 +28,26 @@ serve(async (req) => {
       throw new Error('PAYSTACK_SECRET_KEY not configured');
     }
 
-    const { email, amount, planId, planName, phone_number, callback_url } = await req.json() as PaymentRequest;
-
-    // Validate input
-    if (!email || !amount || !planId) {
-      return new Response(
-        JSON.stringify({ error: 'Missing required fields: email, amount, planId' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    const body = await req.json();
+    
+    // Validate input with Zod
+    let validated;
+    try {
+      validated = PaymentSchema.parse(body);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return new Response(
+          JSON.stringify({ 
+            error: 'Validation failed', 
+            issues: error.issues.map(i => ({ field: i.path.join('.'), message: i.message }))
+          }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      throw error;
     }
+
+    const { email, amount, planId, planName, phone_number, callback_url } = validated;
 
     // Initialize payment with Paystack
     // For XOF (West African CFA franc), Paystack expects amounts in kobo (minor units)
