@@ -8,26 +8,26 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 218 30% 13%;
+    --background: 222 47% 11%;
     --foreground: 210 20% 98%;
 
-    --card: 220 25% 16%;
+    --card: 221 39% 11%;
     --card-foreground: 210 20% 98%;
 
-    --popover: 220 25% 16%;
+    --popover: 221 39% 11%;
     --popover-foreground: 210 20% 98%;
 
-    --primary: 217 91% 60%;
+    --primary: 263 83% 57%;
     --primary-foreground: 210 20% 98%;
 
-    --secondary: 263 83% 57%;
+    --secondary: 215 27.9% 16.9%;
     --secondary-foreground: 210 20% 98%;
 
-    --muted: 217 32% 20%;
-    --muted-foreground: 215 20% 70%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
 
     --accent: 142 76% 36%;
-    --accent-foreground: 0 0% 100%;
+    --accent-foreground: 210 20% 98%;
 
     /* Futuristic colors */
     --ai-glow: 263 83% 57%;
@@ -62,25 +62,25 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217 32% 22%;
-    --input: 217 32% 22%;
-    --ring: 217 91% 60%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 220 28% 11%;
+    --sidebar-background: 0 0% 98%;
 
-    --sidebar-foreground: 240 5% 96%;
+    --sidebar-foreground: 240 5.3% 26.1%;
 
-    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary: 240 5.9% 10%;
 
     --sidebar-primary-foreground: 0 0% 98%;
 
-    --sidebar-accent: 217 32% 18%;
+    --sidebar-accent: 240 4.8% 95.9%;
 
-    --sidebar-accent-foreground: 240 5% 96%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
 
-    --sidebar-border: 217 32% 22%;
+    --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
@@ -95,11 +95,11 @@ All colors MUST be HSL.
     --popover: 240 10% 3.9%;
     --popover-foreground: 210 20% 98%;
 
-    --primary: 217 91% 60%;
+    --primary: 263 83% 57%;
     --primary-foreground: 210 20% 98%;
 
-    --secondary: 263 83% 57%;
-    --secondary-foreground: 210 20% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
