@@ -37,7 +37,6 @@ export default function Settings() {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [reportReminders, setReportReminders] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
-  const [colorTheme, setColorTheme] = useState("default");
   
   // SaaS settings
   const [timezone, setTimezone] = useState("Europe/Paris");
@@ -120,9 +119,6 @@ export default function Settings() {
         setEmailNotifications(preferences.email_notifications ?? true);
         setReportReminders(preferences.report_reminders ?? true);
         setDarkMode(preferences.dark_mode ?? false);
-        // Load color theme from localStorage for now
-        const savedColorTheme = localStorage.getItem('color_theme') || "default";
-        setColorTheme(savedColorTheme);
         setTimezone((preferences as any).timezone ?? "Europe/Paris");
         setLanguage((preferences as any).language ?? "fr");
         setCurrency((preferences as any).currency ?? "EUR");
@@ -683,27 +679,6 @@ export default function Settings() {
                 checked={darkMode}
                 onCheckedChange={setDarkMode}
               />
-            </div>
-            <Separator />
-            <div className="grid gap-2">
-              <Label htmlFor="color-theme">Thème de couleur</Label>
-              <Select value={colorTheme} onValueChange={(value) => {
-                setColorTheme(value);
-                localStorage.setItem('color_theme', value);
-              }}>
-                <SelectTrigger id="color-theme">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default">Bleu par défaut</SelectItem>
-                  <SelectItem value="light">Bleu clair</SelectItem>
-                  <SelectItem value="violet">Violet</SelectItem>
-                  <SelectItem value="green">Vert</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-sm text-muted-foreground">
-                Choisissez le thème de couleur de l'interface
-              </p>
             </div>
           </CardContent>
         </Card>
