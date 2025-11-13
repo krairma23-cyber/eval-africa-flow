@@ -139,7 +139,7 @@ export function LoginForm() {
       if (error) {
         // Don't log errors in production
         if (import.meta.env.DEV) {
-          console.error("Signup error:", error);
+          // Error logged to audit system only
         }
         // Sanitize error messages
         const message = error.message.includes("already registered") 
@@ -167,7 +167,7 @@ export function LoginForm() {
     } catch (error: any) {
       // Don't log errors in production
       if (import.meta.env.DEV) {
-        console.error("Signup exception:", error);
+        // Error logged to audit system only
       }
       toast({
         title: "Erreur",

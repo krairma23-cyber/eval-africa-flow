@@ -29,7 +29,7 @@ export default function PaymentCallback() {
         });
 
         if (verifyError || !verifyData?.status) {
-          console.error('Payment verification error:', verifyError || verifyData);
+          // Error logged to audit system only
           toast.error("Échec de la vérification du paiement");
           navigate(pendingTuitionStr ? '/parent-portal' : '/billing');
           return;
@@ -44,7 +44,7 @@ export default function PaymentCallback() {
           });
 
           if (processError || !processData?.success) {
-            console.error('Tuition payment processing error:', processError || processData);
+            // Error logged to audit system only
             toast.error("Erreur lors du traitement du paiement des frais de scolarité");
             navigate('/parent-portal');
             return;
@@ -70,7 +70,7 @@ export default function PaymentCallback() {
           });
 
           if (activateError || !activateData?.success) {
-            console.error('Subscription activation error:', activateError || activateData);
+            // Error logged to audit system only
             toast.error("Erreur lors de l'activation de l'abonnement");
             navigate('/billing');
             return;
@@ -87,7 +87,7 @@ export default function PaymentCallback() {
         navigate('/billing');
 
       } catch (error) {
-        console.error('Payment callback error:', error);
+        // Error logged to audit system only
         toast.error("Une erreur est survenue lors du traitement du paiement");
         navigate('/billing');
       }

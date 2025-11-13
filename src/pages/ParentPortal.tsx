@@ -7,6 +7,7 @@ import { FileText, Download, TrendingUp, Calendar, User, LogOut, Search, CreditC
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { logError } from "@/lib/logger";
 import { calculateRankings } from "@/lib/ranking-utils";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -123,7 +124,7 @@ export default function ParentPortal() {
   const loadReports = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      console.log('Loading reports for user:', user?.email);
+      // Loading reports securely
       if (!user?.email) return;
 
       // Récupérer les élèves liés à cet email parent
@@ -150,9 +151,9 @@ export default function ParentPortal() {
         .eq('parent_email', user.email);
 
       if (studentsError) throw studentsError;
-      console.log('Students found:', students);
+      // Students retrieved successfully
       if (!students || students.length === 0) {
-        console.log('No students found for this parent email');
+        // No students found
         setReports([]);
         return;
       }
@@ -308,10 +309,13 @@ export default function ParentPortal() {
         });
       });
 
-      console.log('All reports loaded with rankings:', allReports);
+      // Reports loaded with rankings
       setReports(allReports);
     } catch (error) {
-      console.error('Error loading reports:', error);
+      logError('Reports loading failed', error, {
+        component: 'ParentPortal',
+        action: 'load_reports'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de charger les bulletins",
@@ -342,7 +346,10 @@ export default function ParentPortal() {
 
       setPaymentInfo(payments);
     } catch (error) {
-      console.error('Error loading payment info:', error);
+      logError('Payment info loading failed', error, {
+        component: 'ParentPortal',
+        action: 'load_payment_info'
+      });
     }
   };
 
@@ -424,7 +431,10 @@ export default function ParentPortal() {
         description: `Bulletin de ${report.student_name} téléchargé`,
       });
     } catch (error) {
-      console.error("Error generating PDF:", error);
+      logError('PDF generation failed', error, {
+        component: 'ParentPortal',
+        action: 'generate_pdf'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de générer le PDF",
@@ -441,12 +451,9 @@ export default function ParentPortal() {
       report.class_name.toLowerCase().includes(query) ||
       report.term.toLowerCase().includes(query);
     
-    console.log('Filtering:', { query, student: report.student_name, matches });
     return matches;
   });
   
-  console.log('Search query:', searchQuery, 'Total reports:', reports.length, 'Filtered:', filteredReports.length);
-
   const displayedReports = showAllReports ? filteredReports : filteredReports.slice(0, 2);
 
   if (!isAuthenticated) {

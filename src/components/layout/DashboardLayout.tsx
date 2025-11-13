@@ -7,6 +7,7 @@ import { AppSidebar } from "./AppSidebar";
 import { Button } from "@/components/ui/button";
 import { LogOut, User as UserIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { logError } from "@/lib/logger";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function DashboardLayout() {
@@ -27,17 +28,23 @@ export function DashboardLayout() {
         if (!mounted) return;
         
         if (error) {
-          console.error('Error getting session:', error);
+          logError('Session retrieval failed', error, {
+            component: 'DashboardLayout',
+            action: 'get_session'
+          });
           setLoading(false);
           return;
         }
 
-        console.log('Initial session check:', !!session);
+        // Session retrieved
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
       } catch (error) {
-        console.error('Auth initialization error:', error);
+        logError('Auth initialization failed', error, {
+          component: 'DashboardLayout',
+          action: 'init_auth'
+        });
         if (mounted) {
           setLoading(false);
         }
@@ -52,8 +59,7 @@ export function DashboardLayout() {
       async (event, session) => {
         if (!mounted) return;
         
-        console.log('Auth event:', event, 'Session:', !!session);
-        
+        // Auth state changed
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -122,11 +128,8 @@ export function DashboardLayout() {
   }
 
   if (!user || !session) {
-    console.log('No user or session, redirecting to auth');
     return <Navigate to="/auth" replace />;
   }
-
-  console.log('User authenticated, showing dashboard');
 
   return (
     <SidebarProvider>
