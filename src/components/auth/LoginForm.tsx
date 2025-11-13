@@ -81,7 +81,10 @@ export function LoginForm() {
           title: "Connexion réussie",
           description: "Bienvenue dans EvalScol",
         });
-        navigate("/dashboard");
+        // Wait a bit for the auth state to propagate
+        setTimeout(() => {
+          navigate("/dashboard", { replace: true });
+        }, 100);
       }
     } catch (error) {
       toast({
