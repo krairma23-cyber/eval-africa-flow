@@ -13,66 +13,25 @@ export function DashboardLayout() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const [needsOnboarding, setNeedsOnboarding] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
     let mounted = true;
-
-    const checkOnboardingStatus = async (userId: string) => {
-      try {
-        const { data: profile, error } = await supabase
-          .from("profiles")
-          .select("onboarding_completed")
-          .eq("user_id", userId)
-          .maybeSingle();
-
-        if (!mounted) return;
-
-        if (error) {
-          console.error("Error checking onboarding:", error);
-          setLoading(false);
-          return;
-        }
-
-        // If no profile exists, mark as needs onboarding
-        if (!profile) {
-          setNeedsOnboarding(true);
-          setLoading(false);
-          return;
-        }
-
-        // Check if onboarding is completed
-        if (profile.onboarding_completed === false) {
-          setNeedsOnboarding(true);
-        }
-        
-        setLoading(false);
-      } catch (error) {
-        console.error("Error checking onboarding status:", error);
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    };
+    let authChecked = false;
 
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (!mounted) return;
         
+        console.log('Auth state changed:', event, !!session);
         setSession(session);
         setUser(session?.user ?? null);
         
-        if (session?.user) {
-          // Use setTimeout to defer Supabase calls
-          setTimeout(() => {
-            checkOnboardingStatus(session.user.id);
-          }, 0);
-        } else {
+        // Only set loading to false after we've checked auth
+        if (authChecked) {
           setLoading(false);
-          setNeedsOnboarding(false);
         }
       }
     );
@@ -81,12 +40,15 @@ export function DashboardLayout() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!mounted) return;
       
+      console.log('Session checked:', !!session);
       setSession(session);
       setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        checkOnboardingStatus(session.user.id);
-      } else {
+      authChecked = true;
+      setLoading(false);
+    }).catch((error) => {
+      console.error('Error getting session:', error);
+      if (mounted) {
+        authChecked = true;
         setLoading(false);
       }
     });
@@ -144,12 +106,11 @@ export function DashboardLayout() {
   }
 
   if (!user || !session) {
+    console.log('No user or session, redirecting to auth');
     return <Navigate to="/auth" replace />;
   }
 
-  if (needsOnboarding) {
-    return <Navigate to="/onboarding" replace />;
-  }
+  console.log('User authenticated, showing dashboard');
 
   return (
     <SidebarProvider>
