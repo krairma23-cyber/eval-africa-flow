@@ -1,19 +1,20 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface TuitionPaymentRequest {
-  student_id: string;
-  amount: number;
-  parent_email: string;
-  parent_name: string;
-  phone_number?: string;
-  callback_url?: string;
-}
+const TuitionPaymentSchema = z.object({
+  student_id: z.string().uuid(),
+  amount: z.number().positive().max(100000000), // 100M FCFA max
+  parent_email: z.string().email().max(254),
+  parent_name: z.string().min(1).max(100),
+  phone_number: z.string().regex(/^\+?[0-9]{8,15}$/).optional(),
+  callback_url: z.string().url().max(500).optional()
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -31,16 +32,26 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { student_id, amount, parent_email, parent_name, phone_number, callback_url } = 
-      await req.json() as TuitionPaymentRequest;
-
-    // Validate input
-    if (!student_id || !amount || !parent_email || !parent_name) {
-      return new Response(
-        JSON.stringify({ error: 'Missing required fields: student_id, amount, parent_email, parent_name' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    const body = await req.json();
+    
+    // Validate input with Zod
+    let validated;
+    try {
+      validated = TuitionPaymentSchema.parse(body);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return new Response(
+          JSON.stringify({ 
+            error: 'Validation failed', 
+            issues: error.issues.map(i => ({ field: i.path.join('.'), message: i.message }))
+          }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      throw error;
     }
+
+    const { student_id, amount, parent_email, parent_name, phone_number, callback_url } = validated;
 
     // Fetch student information
     const { data: student, error: studentError } = await supabase

@@ -67,49 +67,32 @@ export default function UserManagement() {
 
   const loadUsers = async () => {
     try {
-      // Récupérer tous les profils avec leurs utilisateurs auth
-      const { data: profiles, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, user_id, full_name, first_name, last_name, school_id, created_at');
+      // Use secure RPC function with server-side admin validation
+      const { data, error } = await supabase.rpc('get_users_for_admin');
 
-      if (profilesError) {
-        await logError('Failed to fetch profiles', profilesError, {
+      if (error) {
+        await logError('Failed to fetch users via RPC', error, {
           component: 'UserManagement',
-          action: 'FETCH_PROFILES'
+          action: 'FETCH_USERS_RPC'
+        });
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger les utilisateurs",
+          variant: "destructive",
         });
         return;
       }
 
-      if (profiles) {
-        // Récupérer les rôles pour tous les utilisateurs
-        const userIds = profiles.map(p => p.user_id);
-        const { data: userRoles } = await supabase
-          .from('user_roles')
-          .select('user_id, role')
-          .in('user_id', userIds);
-
-        // Récupérer les emails depuis auth.users (admin uniquement)
-        const { data: authUsers } = await supabase.auth.admin.listUsers();
-
-        // Mapper les profils avec leurs rôles et emails
-        const usersWithRoles = profiles.map((profile: any) => {
-          const role = userRoles?.find(r => r.user_id === profile.user_id)?.role as 'admin' | 'teacher' | 'user' || 'user';
-          const authUser = authUsers?.users?.find((u: any) => u.id === profile.user_id);
-          const displayName = profile.full_name || 
-                             (profile.first_name && profile.last_name ? `${profile.first_name} ${profile.last_name}` : null) ||
-                             (authUser?.email ? authUser.email.split('@')[0] : null) || 
-                             'Utilisateur';
-          
-          return {
-            id: profile.user_id,
-            email: authUser?.email || 'Email non disponible',
-            full_name: displayName,
-            created_at: profile.created_at,
-            role,
-            school_id: profile.school_id
-          };
-        });
-        
+      if (data) {
+        // Map RPC response to UserWithRole interface
+        const usersWithRoles = data.map((user: any) => ({
+          id: user.user_id, // Map user_id to id
+          email: user.email,
+          full_name: user.full_name,
+          created_at: user.created_at,
+          role: user.role as 'admin' | 'teacher' | 'user',
+          school_id: user.school_id
+        }));
         setUsers(usersWithRoles);
       }
     } catch (error) {
