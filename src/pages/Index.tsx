@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Users, BookOpen, ClipboardCheck, Shield, Lock } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
@@ -7,8 +9,34 @@ import { EvaluationFeatures } from "@/components/features/EvaluationFeatures";
 import { ParentReports } from "@/components/features/ParentReports";
 import { PressPartners } from "@/components/features/PressPartners";
 import { AboutEvalScol } from "@/components/features/AboutEvalScol";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if user is already authenticated
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate("/dashboard");
+      } else {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
       <div className="container mx-auto px-4 py-8 lg:py-16">
