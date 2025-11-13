@@ -166,7 +166,11 @@ export default function Reports() {
 
       setStudentGrades(gradesArray);
     } catch (error) {
-      console.error("Error fetching student grades:", error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to fetch student grades', error, {
+        component: 'Reports',
+        action: 'FETCH_GRADES'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de charger les bulletins",
@@ -202,7 +206,7 @@ export default function Reports() {
     return <Badge variant="destructive">Insuffisant</Badge>;
   };
 
-  const exportToPDF = (grade: StudentGrade) => {
+  const exportToPDF = async (grade: StudentGrade) => {
     try {
       const doc = new jsPDF();
       
@@ -274,7 +278,15 @@ export default function Reports() {
         description: `Bulletin de ${grade.student_first_name} ${grade.student_last_name} téléchargé`,
       });
     } catch (error) {
-      console.error("Error generating PDF:", error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to generate PDF bulletin', error, {
+        component: 'Reports',
+        action: 'GENERATE_PDF',
+        metadata: { 
+          studentId: grade.student_id,
+          termId: grade.term_id 
+        }
+      });
       toast({
         title: "Erreur",
         description: "Impossible de générer le PDF",

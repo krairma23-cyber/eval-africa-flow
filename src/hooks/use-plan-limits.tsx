@@ -34,7 +34,6 @@ export function usePlanLimits() {
         .maybeSingle();
 
       if (featuresError) {
-        console.error('Error fetching plan features:', featuresError);
         // Don't return early - continue with default values
       }
 
@@ -44,7 +43,6 @@ export function usePlanLimits() {
         .select('id', { count: 'exact', head: true });
 
       if (countError) {
-        console.error('Error counting students:', countError);
         return;
       }
 
@@ -89,7 +87,7 @@ export function usePlanLimits() {
       }
 
     } catch (error) {
-      console.error('Error checking plan limits:', error);
+      // Silently handle plan limit check errors
     } finally {
       setLoading(false);
     }

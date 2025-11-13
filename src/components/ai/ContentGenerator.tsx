@@ -68,7 +68,11 @@ export const ContentGenerator = () => {
         description: `${selectedType === 'assessment' ? 'Évaluation' : selectedType === 'report' ? 'Rapport' : 'Analyse'} créé(e) par IA`,
       });
     } catch (error) {
-      console.error('Error generating content:', error);
+      const { logError } = await import('@/lib/logger');
+      await logError('AI content generation failed', error, {
+        component: 'ContentGenerator',
+        action: 'GENERATE_CONTENT'
+      });
       toast({
         title: "Erreur de génération",
         description: error.message || "Impossible de générer le contenu. Veuillez réessayer.",

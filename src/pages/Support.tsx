@@ -85,7 +85,11 @@ export default function Support() {
       setTickets(ticketsData || []);
       setFaqs(faqsData || []);
     } catch (error) {
-      console.error('Error fetching support data:', error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to fetch support data', error, {
+        component: 'Support',
+        action: 'FETCH_SUPPORT_DATA'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de charger les données de support",
@@ -149,7 +153,11 @@ export default function Support() {
         description: "Votre demande de support a été soumise avec succès",
       });
     } catch (error) {
-      console.error('Error creating ticket:', error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to create support ticket', error, {
+        component: 'Support',
+        action: 'CREATE_TICKET'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de créer le ticket",

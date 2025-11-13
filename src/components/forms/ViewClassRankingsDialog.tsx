@@ -57,7 +57,11 @@ export function ViewClassRankingsDialog({ classroomId, classroomName, children }
         setSelectedTerm(data[0].id);
       }
     } catch (error) {
-      console.error("Error fetching terms:", error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to fetch terms', error, {
+        component: 'ViewClassRankingsDialog',
+        action: 'FETCH_TERMS'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de charger les périodes",
@@ -181,7 +185,12 @@ export function ViewClassRankingsDialog({ classroomId, classroomName, children }
 
       setRankings(finalRankings);
     } catch (error) {
-      console.error("Error fetching rankings:", error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to fetch class rankings', error, {
+        component: 'ViewClassRankingsDialog',
+        action: 'FETCH_RANKINGS',
+        metadata: { classroomId, termId: selectedTerm }
+      });
       toast({
         title: "Erreur",
         description: "Impossible de charger le classement",

@@ -208,7 +208,10 @@ export default function Billing() {
         .order('price_monthly', { ascending: true });
 
       if (plansError) {
-        console.error('Plans error:', plansError);
+        await logError('Failed to fetch subscription plans', plansError, {
+          component: 'Billing',
+          action: 'FETCH_PLANS'
+        });
       }
 
       const formattedPlans: SubscriptionPlan[] = (plansData || []).map((plan: any) => ({
@@ -420,7 +423,10 @@ export default function Billing() {
         });
 
         if (activateError || !activateData?.success) {
-          console.error('Subscription activation error:', activateError || activateData);
+          await logError('Subscription activation failed', activateError || new Error('Activation data invalid'), {
+            component: 'Billing',
+            action: 'ACTIVATE_SUBSCRIPTION'
+          });
           throw new Error('Failed to activate subscription');
         }
 

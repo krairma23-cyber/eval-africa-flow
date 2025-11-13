@@ -112,7 +112,11 @@ export default function AddWebhookDialog({ onSuccess }: AddWebhookDialogProps) {
       setOpen(false);
       onSuccess();
     } catch (error) {
-      console.error("Error creating webhook:", error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to create webhook', error, {
+        component: 'AddWebhookDialog',
+        action: 'CREATE_WEBHOOK'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de créer le webhook",
