@@ -18,46 +18,62 @@ export function DashboardLayout() {
 
   useEffect(() => {
     let mounted = true;
-    let authChecked = false;
 
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+    const initAuth = async () => {
+      try {
+        // Get current session
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
         if (!mounted) return;
         
-        console.log('Auth state changed:', event, !!session);
+        if (error) {
+          console.error('Error getting session:', error);
+          setLoading(false);
+          return;
+        }
+
+        console.log('Initial session check:', !!session);
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    // Initialize auth
+    initAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (!mounted) return;
+        
+        console.log('Auth event:', event, 'Session:', !!session);
+        
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Only set loading to false after we've checked auth
-        if (authChecked) {
+        // Handle sign out
+        if (event === 'SIGNED_OUT') {
+          navigate('/auth');
+        }
+        
+        // Handle sign in
+        if (event === 'SIGNED_IN' && session) {
           setLoading(false);
         }
       }
     );
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!mounted) return;
-      
-      console.log('Session checked:', !!session);
-      setSession(session);
-      setUser(session?.user ?? null);
-      authChecked = true;
-      setLoading(false);
-    }).catch((error) => {
-      console.error('Error getting session:', error);
-      if (mounted) {
-        authChecked = true;
-        setLoading(false);
-      }
-    });
-
     return () => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate]);
 
   const handleSignOut = async () => {
     try {
