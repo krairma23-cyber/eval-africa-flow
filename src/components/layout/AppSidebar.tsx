@@ -106,7 +106,7 @@ export function AppSidebar() {
         }
       }
     } catch (error) {
-      console.error('Error loading school logo:', error);
+      // Logo load failed - not critical, will use default
     }
   };
 

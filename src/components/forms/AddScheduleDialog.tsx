@@ -118,7 +118,7 @@ export function AddScheduleDialog({ children, onScheduleAdded }: AddScheduleDial
             form.setValue("teacher_id", data.teacher_id);
           }
         } catch (error) {
-          console.error("Error fetching assigned teacher:", error);
+          // Silently handle - not critical for form submission
         }
       };
 

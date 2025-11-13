@@ -147,7 +147,7 @@ export function AssignTeacherDialog({ children, onAssigned, teacherId }: AssignT
         form.setValue("subject_id", "");
       }
     } catch (error) {
-      console.error("Erreur lors du filtrage des matières:", error);
+      // Filter failed - fallback to all subjects
       setFilteredSubjects(subjects);
     }
   };

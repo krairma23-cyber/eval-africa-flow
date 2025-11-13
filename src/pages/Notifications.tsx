@@ -281,7 +281,6 @@ export default function Notifications() {
       // Recharger les notifications
       fetchNotifications();
     } catch (error) {
-      console.error('Error running analysis:', error);
       await logError('Failed to run at-risk analysis', error, {
         component: 'Notifications',
         action: 'RUN_ANALYSIS'

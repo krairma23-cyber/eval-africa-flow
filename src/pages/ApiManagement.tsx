@@ -125,7 +125,11 @@ export default function ApiManagement() {
 
       setApiKeys(data || []);
     } catch (error) {
-      console.error('Error fetching API keys:', error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to fetch API keys', error, {
+        component: 'ApiManagement',
+        action: 'FETCH_API_KEYS'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de charger les clés API",
@@ -191,7 +195,11 @@ export default function ApiManagement() {
         description: "Copiez cette clé maintenant, elle ne sera plus visible",
       });
     } catch (error) {
-      console.error('Error creating API key:', error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to create API key', error, {
+        component: 'ApiManagement',
+        action: 'CREATE_API_KEY'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de créer la clé API",
@@ -215,7 +223,12 @@ export default function ApiManagement() {
         description: "La clé API a été supprimée avec succès",
       });
     } catch (error) {
-      console.error('Error deleting API key:', error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to delete API key', error, {
+        component: 'ApiManagement',
+        action: 'DELETE_API_KEY',
+        metadata: { keyId }
+      });
       toast({
         title: "Erreur",
         description: "Impossible de supprimer la clé API",
@@ -275,7 +288,7 @@ export default function ApiManagement() {
       if (error) throw error;
       setWebhooks(data || []);
     } catch (error) {
-      console.error("Error fetching webhooks:", error);
+      // Webhook fetch failed - handled by empty state
     }
   };
 
@@ -307,7 +320,7 @@ export default function ApiManagement() {
         });
       }
     } catch (error) {
-      console.error("Error fetching API stats:", error);
+      // API stats fetch failed - using default values
     }
   };
 
@@ -340,7 +353,7 @@ export default function ApiManagement() {
         setEndpointStats(sorted);
       }
     } catch (error) {
-      console.error("Error fetching endpoint stats:", error);
+      // Endpoint stats fetch failed - using empty array
     }
   };
 
@@ -362,7 +375,12 @@ export default function ApiManagement() {
         description: `Le webhook a été ${!currentStatus ? "activé" : "désactivé"}`,
       });
     } catch (error) {
-      console.error("Error toggling webhook:", error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to toggle webhook', error, {
+        component: 'ApiManagement',
+        action: 'TOGGLE_WEBHOOK',
+        metadata: { webhookId }
+      });
       toast({
         title: "Erreur",
         description: "Impossible de modifier le statut du webhook",
@@ -386,7 +404,12 @@ export default function ApiManagement() {
         description: "Le webhook a été supprimé avec succès",
       });
     } catch (error) {
-      console.error("Error deleting webhook:", error);
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to delete webhook', error, {
+        component: 'ApiManagement',
+        action: 'DELETE_WEBHOOK',
+        metadata: { webhookId }
+      });
       toast({
         title: "Erreur",
         description: "Impossible de supprimer le webhook",

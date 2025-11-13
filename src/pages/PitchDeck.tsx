@@ -112,7 +112,6 @@ const PitchDeck = () => {
       pdf.save("EvalScol-PitchDeck-2025.pdf");
       toast.success("PDF généré avec succès !");
     } catch (error) {
-      console.error("Error generating PDF:", error);
       toast.error("Erreur lors de la génération du PDF");
     }
   };

@@ -78,7 +78,7 @@ export default function Analytics() {
 
       setData(mockData);
     } catch (error) {
-      console.error('Error fetching analytics:', error);
+      // Analytics fetch failed - handled by loading state
     } finally {
       setLoading(false);
       setRefreshing(false);
