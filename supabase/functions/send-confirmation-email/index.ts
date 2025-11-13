@@ -29,6 +29,20 @@ const handler = async (req: Request): Promise<Response> => {
 
   console.log("📧 Received email request");
 
+  // Verify hook secret for security
+  const hookSecret = req.headers.get('x-webhook-secret');
+  const expectedSecret = Deno.env.get('SUPABASE_AUTH_HOOK_SECRET');
+  
+  if (!expectedSecret) {
+    console.warn("⚠️ SUPABASE_AUTH_HOOK_SECRET not configured - email endpoint is unsecured!");
+  } else if (hookSecret !== expectedSecret) {
+    console.error("❌ Invalid webhook secret");
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized' }),
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
   try {
     const payload: ConfirmationEmailData = await req.json();
     console.log("Email type:", payload.email_data.email_action_type);
