@@ -112,7 +112,7 @@ export default function Settings() {
       // Load user preferences
       const { data: preferences } = await supabase
         .from('user_preferences')
-        .select('email_notifications, report_reminders, dark_mode, color_theme, timezone, language, currency, date_format, auto_backup, data_retention')
+        .select('email_notifications, report_reminders, dark_mode, timezone, language, currency, date_format, auto_backup, data_retention')
         .eq('user_id', user.id)
         .single();
 
@@ -120,7 +120,9 @@ export default function Settings() {
         setEmailNotifications(preferences.email_notifications ?? true);
         setReportReminders(preferences.report_reminders ?? true);
         setDarkMode(preferences.dark_mode ?? false);
-        setColorTheme((preferences as any).color_theme ?? "default");
+        // Load color theme from localStorage for now
+        const savedColorTheme = localStorage.getItem('color_theme') || "default";
+        setColorTheme(savedColorTheme);
         setTimezone((preferences as any).timezone ?? "Europe/Paris");
         setLanguage((preferences as any).language ?? "fr");
         setCurrency((preferences as any).currency ?? "EUR");
@@ -244,7 +246,6 @@ export default function Settings() {
           email_notifications: emailNotifications,
           report_reminders: reportReminders,
           dark_mode: darkMode,
-          color_theme: colorTheme,
           timezone,
           language,
           currency,
@@ -686,7 +687,10 @@ export default function Settings() {
             <Separator />
             <div className="grid gap-2">
               <Label htmlFor="color-theme">Thème de couleur</Label>
-              <Select value={colorTheme} onValueChange={setColorTheme}>
+              <Select value={colorTheme} onValueChange={(value) => {
+                setColorTheme(value);
+                localStorage.setItem('color_theme', value);
+              }}>
                 <SelectTrigger id="color-theme">
                   <SelectValue />
                 </SelectTrigger>
