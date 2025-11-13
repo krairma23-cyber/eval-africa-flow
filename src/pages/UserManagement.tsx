@@ -68,6 +68,7 @@ export default function UserManagement() {
   const loadUsers = async () => {
     try {
       // Use secure RPC function with server-side admin validation
+      // @ts-ignore - RPC function exists but types need regeneration
       const { data, error } = await supabase.rpc('get_users_for_admin');
 
       if (error) {
@@ -83,7 +84,7 @@ export default function UserManagement() {
         return;
       }
 
-      if (data) {
+      if (data && Array.isArray(data)) {
         // Map RPC response to UserWithRole interface
         const usersWithRoles = data.map((user: any) => ({
           id: user.user_id, // Map user_id to id

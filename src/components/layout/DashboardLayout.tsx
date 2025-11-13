@@ -18,23 +18,72 @@ export function DashboardLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let mounted = true;
+
+    const checkOnboardingStatus = async (userId: string) => {
+      try {
+        const { data: profile, error } = await supabase
+          .from("profiles")
+          .select("onboarding_completed")
+          .eq("user_id", userId)
+          .maybeSingle();
+
+        if (!mounted) return;
+
+        if (error) {
+          console.error("Error checking onboarding:", error);
+          setLoading(false);
+          return;
+        }
+
+        // If no profile exists, mark as needs onboarding
+        if (!profile) {
+          setNeedsOnboarding(true);
+          setLoading(false);
+          return;
+        }
+
+        // Check if onboarding is completed
+        if (profile.onboarding_completed === false) {
+          setNeedsOnboarding(true);
+        }
+        
+        setLoading(false);
+      } catch (error) {
+        console.error("Error checking onboarding status:", error);
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        if (!mounted) return;
+        
         setSession(session);
         setUser(session?.user ?? null);
+        
         if (session?.user) {
-          checkOnboardingStatus(session.user.id);
+          // Use setTimeout to defer Supabase calls
+          setTimeout(() => {
+            checkOnboardingStatus(session.user.id);
+          }, 0);
         } else {
           setLoading(false);
+          setNeedsOnboarding(false);
         }
       }
     );
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      
       setSession(session);
       setUser(session?.user ?? null);
+      
       if (session?.user) {
         checkOnboardingStatus(session.user.id);
       } else {
@@ -42,26 +91,11 @@ export function DashboardLayout() {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
-
-  const checkOnboardingStatus = async (userId: string) => {
-    try {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("onboarding_completed")
-        .eq("user_id", userId)
-        .single();
-
-      if (profile && !profile.onboarding_completed) {
-        setNeedsOnboarding(true);
-      }
-    } catch (error) {
-      console.error("Error checking onboarding status:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSignOut = async () => {
     try {
