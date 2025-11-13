@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { logError } from "@/lib/logger";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon, Globe, Database, Zap, CreditCard, Calendar, ClipboardList } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -127,7 +128,10 @@ export default function Settings() {
         setDataRetention((preferences as any).data_retention ?? "365");
       }
     } catch (error) {
-      console.error('Error loading school data:', error);
+      logError('School data loading failed', error, {
+        component: 'Settings',
+        action: 'load_school_data'
+      });
     }
   };
 
@@ -196,7 +200,10 @@ export default function Settings() {
         description: "Le logo de votre établissement a été mis à jour avec succès",
       });
     } catch (error) {
-      console.error('Error uploading logo:', error);
+      logError('Logo upload failed', error, {
+        component: 'Settings',
+        action: 'upload_logo'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de télécharger le logo",
@@ -259,7 +266,10 @@ export default function Settings() {
         description: "Vos paramètres ont été mis à jour avec succès",
       });
     } catch (error) {
-      console.error("Error saving settings:", error);
+      logError('Settings save failed', error, {
+        component: 'Settings',
+        action: 'save_settings'
+      });
       toast({
         title: "Erreur",
         description: "Impossible de sauvegarder les paramètres",

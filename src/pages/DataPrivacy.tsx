@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { supabase } from "@/integrations/supabase/client";
+import { logError } from "@/lib/logger";
 
 const DataPrivacy = () => {
   const { toast } = useToast();
@@ -87,7 +88,10 @@ const DataPrivacy = () => {
         description: "Vos données ont été téléchargées avec succès.",
       });
     } catch (error) {
-      console.error('Error downloading data:', error);
+      logError('Data download failed', error, {
+        component: 'DataPrivacy',
+        action: 'download_user_data'
+      });
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors du téléchargement de vos données.",
@@ -117,7 +121,10 @@ const DataPrivacy = () => {
       // In a real application, this would trigger a backend process
       // to handle account deletion according to RGPD requirements
     } catch (error) {
-      console.error('Error deleting account:', error);
+      logError('Account deletion request failed', error, {
+        component: 'DataPrivacy',
+        action: 'delete_account'
+      });
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de la demande de suppression.",

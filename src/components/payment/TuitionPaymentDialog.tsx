@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { CreditCard, Loader2 } from "lucide-react";
+import { logError } from "@/lib/logger";
 import { Badge } from "@/components/ui/badge";
 
 interface TuitionPaymentDialogProps {
@@ -97,7 +98,11 @@ export function TuitionPaymentDialog({
         window.location.href = data.authorization_url;
       }
     } catch (error) {
-      console.error('Payment error:', error);
+      logError('Payment initialization failed', error, {
+        component: 'TuitionPaymentDialog',
+        action: 'initiate_payment',
+        metadata: { student_id: studentId }
+      });
       toast({
         title: "Erreur",
         description: "Impossible d'initialiser le paiement",
