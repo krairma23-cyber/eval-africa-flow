@@ -59,100 +59,61 @@ export default function Billing() {
   const [isYearly, setIsYearly] = useState(false);
   const [phoneDialogOpen, setPhoneDialogOpen] = useState(false);
   const [pendingPlanId, setPendingPlanId] = useState<string | null>(null);
-  const { toast } = useToast();
+  const { toast} = useToast();
   const navigate = useNavigate();
 
-  const pricingPlans = [
-    {
-      id: 'free-trial',
-      name: 'Gratuit (Essai)',
-      description: 'Testez la plateforme pendant 14 jours',
-      icon: Sparkles,
-      iconColor: 'text-blue-500',
-      price_monthly: 0,
-      price_yearly: 0,
-      badge: '14 jours d\'essai',
-      badgeVariant: 'secondary' as const,
-      popular: false,
-      features: [
-        '14 jours d\'essai gratuit',
-        'Jusqu\'à 50 élèves maximum',
-        'Toutes les fonctionnalités de base',
-        'Gestion des notes et bulletins',
-        'Portail parent',
-        'Support communautaire',
-      ],
-      ideal: 'Idéal pour : Test de la plateforme, petites écoles pilotes'
-    },
-    {
-      id: 'standard',
-      name: 'Standard',
-      description: 'Pour les écoles primaires et petits collèges',
+  // Function to enrich DB plans with display information
+  const enrichPlanWithDisplayInfo = (plan: SubscriptionPlan) => {
+    const displayInfo: Record<string, any> = {
+      'Gratuit (Essai)': {
+        icon: Sparkles,
+        iconColor: 'text-blue-500',
+        badge: '14 jours d\'essai',
+        badgeVariant: 'secondary' as const,
+        description: 'Testez la plateforme pendant 14 jours',
+        ideal: 'Idéal pour : Test de la plateforme, petites écoles pilotes'
+      },
+      'Standard': {
+        icon: Check,
+        iconColor: 'text-green-500',
+        badge: null,
+        badgeVariant: 'outline' as const,
+        description: 'Pour les écoles primaires et petits collèges',
+        ideal: 'Idéal pour : Écoles primaires, petits collèges'
+      },
+      'Professional': {
+        icon: Star,
+        iconColor: 'text-yellow-500',
+        badge: 'Le plus populaire',
+        badgeVariant: 'default' as const,
+        description: 'Pour les collèges et lycées moyens',
+        ideal: 'Idéal pour : Collèges, lycées moyens'
+      },
+      'Enterprise': {
+        icon: Crown,
+        iconColor: 'text-purple-500',
+        badge: 'Sur devis',
+        badgeVariant: 'secondary' as const,
+        description: 'Pour les groupes scolaires et réseaux',
+        ideal: 'Idéal pour : Groupes scolaires, réseaux d\'écoles'
+      }
+    };
+
+    const info = displayInfo[plan.name] || {
       icon: Check,
-      iconColor: 'text-green-500',
-      price_monthly: 29990,
-      price_yearly: 299900,
+      iconColor: 'text-gray-500',
       badge: null,
       badgeVariant: 'outline' as const,
-      popular: false,
-      features: [
-        'Jusqu\'à 300 élèves',
-        'Gestion complète élèves & enseignants',
-        'Évaluations et bulletins automatisés',
-        'Portail parent avec accès temps réel',
-        'Paiements Paystack intégrés',
-        'Analytics de base',
-        'Support email'
-      ],
-      ideal: 'Idéal pour : Écoles primaires, petits collèges'
-    },
-    {
-      id: 'professional',
-      name: 'Professional',
-      description: 'Pour les collèges et lycées moyens',
-      icon: Star,
-      iconColor: 'text-yellow-500',
-      price_monthly: 59990,
-      price_yearly: 599900,
-      badge: 'Le plus populaire',
-      badgeVariant: 'default' as const,
-      popular: true,
-      features: [
-        'Jusqu\'à 1000 élèves',
-        'Toutes les fonctionnalités Standard',
-        'AI Assistant (génération contenu pédagogique)',
-        'Détection élèves à risque (IA)',
-        'Analytics avancés avec prédictions',
-        'Webhooks et API REST',
-        'Support prioritaire (12h)',
-        'Personnalisation logo/couleurs'
-      ],
-      ideal: 'Idéal pour : Collèges, lycées moyens'
-    },
-    {
-      id: 'enterprise',
-      name: 'Enterprise',
-      description: 'Pour les groupes scolaires et réseaux',
-      icon: Crown,
-      iconColor: 'text-purple-500',
-      price_monthly: 149990,
-      price_yearly: 1499900,
-      badge: 'Sur devis',
-      badgeVariant: 'secondary' as const,
-      popular: false,
-      features: [
-        'Élèves illimités',
-        'Toutes les fonctionnalités Professional',
-        'Multi-établissements & multi-campus',
-        'Intégrations personnalisées sur mesure',
-        'Formation sur site incluse',
-        'Support 24/7 avec SLA 99.9%',
-        'Serveur dédié (option)',
-        'Développements sur mesure'
-      ],
-      ideal: 'Idéal pour : Groupes scolaires, réseaux d\'écoles'
-    }
-  ];
+      description: '',
+      ideal: ''
+    };
+
+    return {
+      ...plan,
+      ...info,
+      popular: plan.is_popular
+    };
+  };
 
   const additionalOptions = [
     {
@@ -838,16 +799,17 @@ export default function Billing() {
 
           {/* Plans Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {pricingPlans.map((plan) => {
-              const Icon = plan.icon;
-              const price = isYearly ? plan.price_yearly : plan.price_monthly;
+            {plans.map((plan) => {
+              const enrichedPlan = enrichPlanWithDisplayInfo(plan);
+              const Icon = enrichedPlan.icon;
+              const price = isYearly ? enrichedPlan.price_yearly : enrichedPlan.price_monthly;
               
               return (
                 <Card 
-                  key={plan.id} 
-                  className={`relative ${plan.popular ? 'border-primary shadow-lg' : 'border-border'}`}
+                  key={enrichedPlan.id} 
+                  className={`relative ${enrichedPlan.popular ? 'border-primary shadow-lg' : 'border-border'}`}
                 >
-                  {plan.popular && (
+                  {enrichedPlan.popular && (
                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                       <Badge className="bg-primary text-primary-foreground">
                         <Star className="h-3 w-3 mr-1" />
@@ -859,14 +821,14 @@ export default function Billing() {
                   <CardHeader>
                     <div className="flex items-center gap-3 mb-2">
                       <div className={`p-2 rounded-lg bg-background`}>
-                        <Icon className={`h-6 w-6 ${plan.iconColor}`} />
+                        <Icon className={`h-6 w-6 ${enrichedPlan.iconColor}`} />
                       </div>
-                      {plan.badge && (
-                        <Badge variant={plan.badgeVariant}>{plan.badge}</Badge>
+                      {enrichedPlan.badge && (
+                        <Badge variant={enrichedPlan.badgeVariant}>{enrichedPlan.badge}</Badge>
                       )}
                     </div>
-                    <CardTitle className="text-xl">{plan.name}</CardTitle>
-                    <CardDescription className="text-sm">{plan.description}</CardDescription>
+                    <CardTitle className="text-xl">{enrichedPlan.name}</CardTitle>
+                    <CardDescription className="text-sm">{enrichedPlan.description}</CardDescription>
                     <div className="mt-4">
                       <div className="text-3xl font-bold">
                         {price.toLocaleString('fr-FR')} <span className="text-base font-normal text-muted-foreground">FCFA</span>
@@ -879,7 +841,7 @@ export default function Billing() {
                   
                   <CardContent>
                     <ul className="space-y-2 mb-6">
-                      {plan.features.map((feature, idx) => (
+                      {enrichedPlan.features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-sm">
                           <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                           <span>{feature}</span>
@@ -888,17 +850,17 @@ export default function Billing() {
                     </ul>
                     
                     <div className="p-3 bg-accent/10 rounded-lg mb-4">
-                      <p className="text-xs text-muted-foreground">{plan.ideal}</p>
+                      <p className="text-xs text-muted-foreground">{enrichedPlan.ideal}</p>
                     </div>
 
                     <Button 
                       className="w-full" 
-                      variant={plan.popular ? "default" : "outline"}
+                      variant={enrichedPlan.popular ? "default" : "outline"}
                       size="sm"
-                      onClick={() => handleUpgrade(plan.id)}
-                      disabled={currentPlan?.id === plan.id}
+                      onClick={() => handleUpgrade(enrichedPlan.id)}
+                      disabled={currentPlan?.id === enrichedPlan.id}
                     >
-                      {currentPlan?.id === plan.id ? 'Plan Actuel' : (price === 0 ? 'Essayer Gratuitement' : 'Payer avec Paystack')}
+                      {currentPlan?.id === enrichedPlan.id ? 'Plan Actuel' : (price === 0 ? 'Essayer Gratuitement' : 'Payer avec Paystack')}
                     </Button>
                     
                     {price > 0 && (
