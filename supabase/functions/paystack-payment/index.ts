@@ -11,7 +11,7 @@ const PaymentSchema = z.object({
   amount: z.number().positive().max(100000000), // 100M FCFA max
   planId: z.string().uuid(),
   planName: z.string().min(1).max(100),
-  phone_number: z.string().regex(/^\+?[0-9]{8,15}$/).optional(),
+  phone_number: z.string().regex(/^\+?[0-9]{8,15}$/, "Invalid phone number format").optional(),
   callback_url: z.string().url().max(500).optional()
 });
 
@@ -36,6 +36,7 @@ serve(async (req) => {
       validated = PaymentSchema.parse(body);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.error('Validation error:', error.issues);
         return new Response(
           JSON.stringify({ 
             error: 'Validation failed', 
