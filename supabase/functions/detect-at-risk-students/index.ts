@@ -54,8 +54,7 @@ serve(async (req) => {
         )
       `)
       .gte('assessments.assessment_date', threeMonthsAgo.toISOString())
-      .not('score', 'is', null)
-      .order('assessments.assessment_date', { ascending: true });
+      .not('score', 'is', null);
 
     if (resultsError) {
       console.error('Error fetching assessment results:', resultsError);
