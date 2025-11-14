@@ -2,45 +2,34 @@ import { Card } from "@/components/ui/card";
 import { FileText, TrendingUp, Bell, Shield, Smartphone, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-
 export const ParentReports = () => {
   const navigate = useNavigate();
-  
-  const features = [
-    {
-      icon: FileText,
-      title: "Bulletins Détaillés",
-      description: "Accès complet aux bulletins scolaires avec notes, appréciations et commentaires des enseignants",
-    },
-    {
-      icon: TrendingUp,
-      title: "Suivi de Progrès",
-      description: "Graphiques et statistiques montrant l'évolution des performances de l'élève au fil du temps",
-    },
-    {
-      icon: Bell,
-      title: "Alertes Automatiques",
-      description: "Notifications instantanées pour les nouveaux bulletins, absences ou événements importants",
-    },
-    {
-      icon: Shield,
-      title: "Accès Sécurisé",
-      description: "Connexion sécurisée avec authentification pour protéger les données de votre enfant",
-    },
-    {
-      icon: Smartphone,
-      title: "Multi-Plateforme",
-      description: "Accessible depuis ordinateur, tablette ou smartphone pour consulter les rapports n'importe où",
-    },
-    {
-      icon: Clock,
-      title: "Historique Complet",
-      description: "Archives de tous les bulletins et rapports depuis le début de l'année scolaire",
-    },
-  ];
-
-  return (
-    <section className="py-16 px-4 bg-[hsl(222,47%,11%)]">
+  const features = [{
+    icon: FileText,
+    title: "Bulletins Détaillés",
+    description: "Accès complet aux bulletins scolaires avec notes, appréciations et commentaires des enseignants"
+  }, {
+    icon: TrendingUp,
+    title: "Suivi de Progrès",
+    description: "Graphiques et statistiques montrant l'évolution des performances de l'élève au fil du temps"
+  }, {
+    icon: Bell,
+    title: "Alertes Automatiques",
+    description: "Notifications instantanées pour les nouveaux bulletins, absences ou événements importants"
+  }, {
+    icon: Shield,
+    title: "Accès Sécurisé",
+    description: "Connexion sécurisée avec authentification pour protéger les données de votre enfant"
+  }, {
+    icon: Smartphone,
+    title: "Multi-Plateforme",
+    description: "Accessible depuis ordinateur, tablette ou smartphone pour consulter les rapports n'importe où"
+  }, {
+    icon: Clock,
+    title: "Historique Complet",
+    description: "Archives de tous les bulletins et rapports depuis le début de l'année scolaire"
+  }];
+  return <section className="py-16 px-4 bg-[hsl(222,47%,11%)]">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-12">
           <div className="inline-block mb-4 px-4 py-2 bg-primary/20 rounded-full border border-primary/30">
@@ -56,8 +45,7 @@ export const ParentReports = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {features.map((feature, index) => (
-            <Card key={index} className="p-6 bg-[hsl(221,39%,11%)] border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg hover:shadow-primary/10">
+          {features.map((feature, index) => <Card key={index} className="p-6 bg-[hsl(221,39%,11%)] border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg hover:shadow-primary/10">
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
                   <feature.icon className="h-6 w-6 text-primary" />
@@ -67,8 +55,7 @@ export const ParentReports = () => {
                   <p className="text-foreground/60 text-sm">{feature.description}</p>
                 </div>
               </div>
-            </Card>
-          ))}
+            </Card>)}
         </div>
 
         <Card className="p-8 bg-[hsl(221,39%,11%)] border-primary/20">
@@ -102,25 +89,13 @@ export const ParentReports = () => {
               </ul>
             </div>
             <div className="flex flex-col gap-3 min-w-[200px]">
-              <Button 
-                size="lg" 
-                className="bg-primary hover:bg-primary/90 text-white shadow-lg"
-                onClick={() => navigate("/parent-portal")}
-              >
-                Voir une Démo
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-foreground/30 text-foreground hover:bg-foreground/10"
-                onClick={() => navigate("/parent-guide")}
-              >
+              
+              <Button size="lg" variant="outline" className="border-foreground/30 text-foreground hover:bg-foreground/10" onClick={() => navigate("/parent-guide")}>
                 Guide Parents
               </Button>
             </div>
           </div>
         </Card>
       </div>
-    </section>
-  );
+    </section>;
 };
