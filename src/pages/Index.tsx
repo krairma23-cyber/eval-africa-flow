@@ -1,4 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { GraduationCap, Users, BookOpen, ClipboardCheck, Shield, Lock } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SchoolTestimonials } from "@/components/testimonials/SchoolTestimonials";
@@ -39,8 +40,16 @@ const Index = () => {
               <span>Authentification sécurisée</span>
             </div>
           </div>
-          <div className="mt-6">
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
             <AboutEvalScol />
+            <Button 
+              size="lg" 
+              className="bg-accent hover:bg-accent/90 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all"
+              onClick={() => window.location.href = '/parent-portal'}
+            >
+              <Users className="h-5 w-5 mr-2" />
+              Portail Parent
+            </Button>
           </div>
         </header>
 

@@ -89,8 +89,19 @@ export const ParentReports = () => {
               </ul>
             </div>
             <div className="flex flex-col gap-3 min-w-[200px]">
-              
-              <Button size="lg" variant="outline" className="border-foreground/30 text-foreground hover:bg-foreground/10" onClick={() => navigate("/parent-guide")}>
+              <Button 
+                size="lg" 
+                className="bg-accent hover:bg-accent/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all"
+                onClick={() => navigate("/parent-portal")}
+              >
+                Accéder au Portail Parent
+              </Button>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-foreground/30 text-foreground hover:bg-foreground/10" 
+                onClick={() => navigate("/parent-guide")}
+              >
                 Guide Parents
               </Button>
             </div>
