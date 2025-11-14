@@ -1318,6 +1318,33 @@ export type Database = {
           },
         ]
       }
+      inscription_rate_limits: {
+        Row: {
+          attempt_count: number | null
+          created_at: string | null
+          first_attempt_at: string | null
+          id: string
+          ip_address: unknown
+          last_attempt_at: string | null
+        }
+        Insert: {
+          attempt_count?: number | null
+          created_at?: string | null
+          first_attempt_at?: string | null
+          id?: string
+          ip_address: unknown
+          last_attempt_at?: string | null
+        }
+        Update: {
+          attempt_count?: number | null
+          created_at?: string | null
+          first_attempt_at?: string | null
+          id?: string
+          ip_address?: unknown
+          last_attempt_at?: string | null
+        }
+        Relationships: []
+      }
       inscriptions: {
         Row: {
           besoins: string | null
@@ -4383,6 +4410,10 @@ export type Database = {
             }
             Returns: Json
           }
+      check_inscription_rate_limit: {
+        Args: { p_ip_address: unknown }
+        Returns: boolean
+      }
       check_password_breach: { Args: { p_password: string }; Returns: Json }
       check_payment_rate_limit: {
         Args: {
@@ -4739,6 +4770,17 @@ export type Database = {
           current_plan: string
           searches_limit: number
           searches_used: number
+        }[]
+      }
+      get_users_for_admin: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          full_name: string
+          role: string
+          school_id: string
+          user_id: string
         }[]
       }
       has_role: {
