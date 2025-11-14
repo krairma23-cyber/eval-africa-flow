@@ -144,7 +144,7 @@ export default function ParentGuide() {
               <Button 
                 variant="outline" 
                 className="w-full justify-start"
-                onClick={() => window.open("mailto:support@evalscol.ci?subject=Demande de Guide PDF")}
+                onClick={() => window.open("mailto:support@evalscol.com?subject=Demande de Guide PDF")}
               >
                 <Download className="h-4 w-4 mr-2" />
                 Télécharger le Guide PDF
@@ -222,7 +222,7 @@ export default function ParentGuide() {
               <Button 
                 size="lg" 
                 variant="outline"
-                onClick={() => window.open("mailto:support@evalscol.ci?subject=Question Parent")}
+                onClick={() => window.open("mailto:support@evalscol.com?subject=Question Parent")}
               >
                 Envoyer un Message
               </Button>
