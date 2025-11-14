@@ -60,6 +60,7 @@ serve(async (req) => {
       amount: amountInKobo,
       currency: 'XOF',
       callback_url: callback_url || `${req.headers.get('origin')}/billing?payment=success`,
+      channels: ['card', 'mobile_money'], // Enable cards and mobile money (Orange, MTN, Moov)
       metadata: {
         plan_id: planId,
         plan_name: planName,
