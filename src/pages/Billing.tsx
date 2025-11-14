@@ -388,9 +388,11 @@ export default function Billing() {
 
   const processUpgrade = async (planId: string, phoneNumber: string | null) => {
     try {
+      console.log('🔄 Processing upgrade for plan:', planId);
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user?.email) {
+        console.error('❌ No user email found');
         toast({
           title: "Erreur",
           description: "Vous devez être connecté",
@@ -399,15 +401,22 @@ export default function Billing() {
         return;
       }
 
+      console.log('✅ User found:', user.email);
+
       const selectedPlan = plans.find(p => p.id === planId);
       if (!selectedPlan) {
+        console.error('❌ Plan not found:', planId);
         throw new Error('Plan not found');
       }
 
+      console.log('✅ Selected plan:', selectedPlan.name);
+
       const amount = isYearly ? selectedPlan.price_yearly : selectedPlan.price_monthly;
+      console.log('💰 Payment amount:', amount, 'FCFA');
 
       // Handle free plan (Starter)
       if (amount === 0) {
+        console.log('🆓 Activating free plan');
         toast({
           title: "Activation du plan gratuit",
           description: "Activation en cours...",
@@ -423,6 +432,7 @@ export default function Billing() {
         });
 
         if (activateError || !activateData?.success) {
+          console.error('❌ Subscription activation failed:', activateError);
           await logError('Subscription activation failed', activateError || new Error('Activation data invalid'), {
             component: 'Billing',
             action: 'ACTIVATE_SUBSCRIPTION'
@@ -430,6 +440,7 @@ export default function Billing() {
           throw new Error('Failed to activate subscription');
         }
 
+        console.log('✅ Free plan activated successfully');
         setCurrentPlan(selectedPlan);
         
         toast({
@@ -442,43 +453,76 @@ export default function Billing() {
       }
 
       // Handle paid plans with phone number
+      console.log('💳 Initializing Paystack payment...');
+      console.log('📱 Phone number:', phoneNumber);
+      
       toast({
         title: "Initialisation du paiement",
-        description: "Veuillez patienter...",
+        description: "Connexion à Paystack...",
       });
+
+      const paymentPayload = {
+        email: user.email,
+        amount: amount,
+        planId: selectedPlan.id,
+        planName: selectedPlan.name,
+        phone_number: phoneNumber,
+        callback_url: `${window.location.origin}/payment-callback`
+      };
+
+      console.log('📦 Payment payload:', paymentPayload);
 
       const { data, error } = await supabase.functions.invoke('paystack-payment', {
-        body: {
-          email: user.email,
-          amount: amount,
-          planId: selectedPlan.id,
-          planName: selectedPlan.name,
-          phone_number: phoneNumber,
-          callback_url: `${window.location.origin}/payment-callback`
-        }
+        body: paymentPayload
       });
 
-      if (error) throw error;
+      console.log('📡 Paystack response:', { data, error });
+
+      if (error) {
+        console.error('❌ Paystack error:', error);
+        throw error;
+      }
+
+      if (!data) {
+        console.error('❌ No data returned from Paystack');
+        throw new Error('No data returned from payment gateway');
+      }
 
       if (data.authorization_url) {
-        localStorage.setItem('pending_payment', JSON.stringify({
+        console.log('✅ Authorization URL received:', data.authorization_url);
+        
+        const pendingPayment = {
           reference: data.reference,
           plan_id: selectedPlan.id,
           user_id: user.id,
           billing_period: isYearly ? 'yearly' : 'monthly'
-        }));
+        };
 
+        console.log('💾 Storing pending payment:', pendingPayment);
+        localStorage.setItem('pending_payment', JSON.stringify(pendingPayment));
+
+        console.log('🔄 Redirecting to Paystack...');
         window.location.href = data.authorization_url;
+      } else {
+        console.error('❌ No authorization URL in response');
+        throw new Error('No authorization URL received from payment gateway');
       }
     } catch (error) {
+      console.error('❌ Payment process failed:', error);
       await logError('Failed to upgrade plan', error, {
         component: 'Billing',
         action: 'UPGRADE_PLAN',
         metadata: { planId }
       });
+      
+      const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
+      console.error('💥 Error details:', errorMessage);
+      
       toast({
-        title: "Erreur",
-        description: "Impossible de traiter la mise à niveau",
+        title: "Erreur de paiement",
+        description: errorMessage.includes('authorization') || errorMessage.includes('gateway')
+          ? "Impossible de se connecter à Paystack. Vérifiez votre clé API." 
+          : "Impossible de traiter le paiement. Réessayez plus tard.",
         variant: "destructive",
       });
     }
@@ -999,10 +1043,14 @@ export default function Billing() {
         open={phoneDialogOpen}
         onOpenChange={setPhoneDialogOpen}
         onConfirm={(phone) => {
+          console.log('📱 Phone confirmed:', phone);
           setPhoneDialogOpen(false);
           if (pendingPlanId) {
+            console.log('⏳ Processing payment with phone number...');
             processUpgrade(pendingPlanId, phone);
             setPendingPlanId(null);
+          } else {
+            console.error('❌ No pending plan ID found');
           }
         }}
         planName={plans.find(p => p.id === pendingPlanId)?.name || ""}
