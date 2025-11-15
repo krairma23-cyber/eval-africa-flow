@@ -2,9 +2,109 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FileText, Download, Bell, Shield, Smartphone, HelpCircle, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import jsPDF from "jspdf";
 
 export default function ParentGuide() {
   const navigate = useNavigate();
+
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    // Header
+    doc.setFontSize(22);
+    doc.setTextColor(59, 130, 246);
+    doc.text("Guide du Portail Parent", pageWidth / 2, 20, { align: "center" });
+    
+    doc.setFontSize(16);
+    doc.setTextColor(100, 100, 100);
+    doc.text("EvalScol Africa Flow", pageWidth / 2, 30, { align: "center" });
+    
+    let yPos = 45;
+    
+    // Sections
+    sections.forEach((section, index) => {
+      if (yPos > 250) {
+        doc.addPage();
+        yPos = 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.setTextColor(59, 130, 246);
+      doc.text(`${index + 1}. ${section.title}`, 15, yPos);
+      yPos += 8;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(60, 60, 60);
+      section.steps.forEach((step, stepIndex) => {
+        const lines = doc.splitTextToSize(`  ${stepIndex + 1}. ${step}`, pageWidth - 30);
+        lines.forEach((line: string) => {
+          if (yPos > 280) {
+            doc.addPage();
+            yPos = 20;
+          }
+          doc.text(line, 20, yPos);
+          yPos += 5;
+        });
+      });
+      yPos += 5;
+    });
+    
+    // FAQ Section
+    if (yPos > 240) {
+      doc.addPage();
+      yPos = 20;
+    }
+    
+    doc.setFontSize(16);
+    doc.setTextColor(59, 130, 246);
+    doc.text("Questions Fréquentes (FAQ)", 15, yPos);
+    yPos += 10;
+    
+    faqs.forEach((faq, index) => {
+      if (yPos > 250) {
+        doc.addPage();
+        yPos = 20;
+      }
+      
+      doc.setFontSize(11);
+      doc.setTextColor(0, 0, 0);
+      const questionLines = doc.splitTextToSize(`Q${index + 1}: ${faq.question}`, pageWidth - 30);
+      questionLines.forEach((line: string) => {
+        doc.text(line, 15, yPos);
+        yPos += 5;
+      });
+      
+      doc.setFontSize(10);
+      doc.setTextColor(60, 60, 60);
+      const answerLines = doc.splitTextToSize(`R: ${faq.answer}`, pageWidth - 30);
+      answerLines.forEach((line: string) => {
+        if (yPos > 280) {
+          doc.addPage();
+          yPos = 20;
+        }
+        doc.text(line, 15, yPos);
+        yPos += 5;
+      });
+      yPos += 5;
+    });
+    
+    // Footer
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(150, 150, 150);
+      doc.text(
+        `EvalScol Africa Flow - support@evalscol.com - Page ${i}/${pageCount}`,
+        pageWidth / 2,
+        doc.internal.pageSize.getHeight() - 10,
+        { align: "center" }
+      );
+    }
+    
+    doc.save("Guide_Portail_Parent_EvalScol.pdf");
+  };
 
   const sections = [
     {
@@ -144,7 +244,7 @@ export default function ParentGuide() {
               <Button 
                 variant="outline" 
                 className="w-full justify-start"
-                onClick={() => window.open("mailto:support@evalscol.com?subject=Demande de Guide PDF")}
+                onClick={handleDownloadPDF}
               >
                 <Download className="h-4 w-4 mr-2" />
                 Télécharger le Guide PDF
