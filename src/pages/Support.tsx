@@ -517,15 +517,27 @@ export default function Support() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start text-sm"
+                    onClick={() => window.open('/parent-guide', '_blank')}
+                  >
                     <BookOpen className="h-4 w-4 mr-2 shrink-0" />
                     <span className="truncate">Guide de démarrage</span>
                   </Button>
-                  <Button variant="outline" className="w-full justify-start text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start text-sm"
+                    onClick={() => window.open('https://docs.evalscol.com/manuel', '_blank')}
+                  >
                     <BookOpen className="h-4 w-4 mr-2 shrink-0" />
                     <span className="truncate">Manuel utilisateur</span>
                   </Button>
-                  <Button variant="outline" className="w-full justify-start text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start text-sm"
+                    onClick={() => window.open('https://docs.evalscol.com/api', '_blank')}
+                  >
                     <BookOpen className="h-4 w-4 mr-2 shrink-0" />
                     <span className="truncate">Documentation API</span>
                   </Button>
@@ -545,15 +557,27 @@ export default function Support() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start text-sm"
+                    onClick={() => window.open('https://www.youtube.com/watch?v=evalscol-setup', '_blank')}
+                  >
                     <Video className="h-4 w-4 mr-2 shrink-0" />
                     <span className="truncate">Configuration initiale</span>
                   </Button>
-                  <Button variant="outline" className="w-full justify-start text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start text-sm"
+                    onClick={() => window.open('https://www.youtube.com/watch?v=evalscol-evaluations', '_blank')}
+                  >
                     <Video className="h-4 w-4 mr-2 shrink-0" />
                     <span className="truncate">Créer des évaluations</span>
                   </Button>
-                  <Button variant="outline" className="w-full justify-start text-sm">
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start text-sm"
+                    onClick={() => window.open('https://www.youtube.com/watch?v=evalscol-bulletins', '_blank')}
+                  >
                     <Video className="h-4 w-4 mr-2 shrink-0" />
                     <span className="truncate">Générer des bulletins</span>
                   </Button>
@@ -593,7 +617,11 @@ export default function Support() {
                     Opérationnel
                   </Badge>
                 </div>
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => window.open('https://status.evalscol.com', '_blank')}
+                >
                   Voir l'état complet
                 </Button>
               </CardContent>
