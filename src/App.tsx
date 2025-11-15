@@ -38,7 +38,6 @@ import Pricing from "./pages/Pricing";
 import PaystackDiagnostic from "./pages/PaystackDiagnostic";
 
 import { CookieConsent } from "./components/gdpr/CookieConsent";
-import { TestModeBanner } from "./components/layout/TestModeBanner";
 
 const queryClient = new QueryClient();
 
@@ -48,7 +47,6 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <TestModeBanner />
         <CookieConsent />
         <Routes>
           <Route path="/" element={<Index />} />
