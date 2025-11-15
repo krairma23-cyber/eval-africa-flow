@@ -1,199 +1,258 @@
-import { useState, useEffect } from 'react';
-import { useConversation } from '@11labs/react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Mic, MicOff, Brain, Zap, Sparkles } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Brain, Send, Loader2, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/hooks/use-toast";
-import { logError } from "@/lib/logger";
+import { supabase } from "@/integrations/supabase/client";
+import { ScrollArea } from '@/components/ui/scroll-area';
+
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
 
 export const AIAssistant = () => {
-  const [isListening, setIsListening] = useState(false);
-  const [lastMessage, setLastMessage] = useState('');
-  const [agentReady, setAgentReady] = useState(false);
-  const [showDemo, setShowDemo] = useState(true);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConnected] = useState(true);
   const { toast } = useToast();
 
-  const conversation = useConversation({
-    onConnect: () => {
-      setAgentReady(true);
-      toast({
-        title: "🤖 Assistant IA connecté",
-        description: "Vous pouvez maintenant parler avec votre assistant IA pédagogique",
-      });
-    },
-    onDisconnect: () => {
-      setAgentReady(false);
-      setIsListening(false);
-    },
-    onMessage: (message) => {
-      setLastMessage(message.message || '');
-    },
-    onError: (error) => {
-      logError('AI Assistant connection error', error, {
-        component: 'AIAssistant',
-        action: 'CONNECT'
-      });
-      toast({
-        title: "Erreur Assistant IA",
-        description: "Impossible de se connecter à l'assistant IA. Vérifiez votre configuration.",
-        variant: "destructive",
-      });
-    },
-    clientTools: {
-      createAssessment: (params: { subject: string; type: string; difficulty: string }) => {
-        toast({
-          title: "✨ Évaluation générée",
-          description: `Nouvelle évaluation en ${params.subject} (${params.difficulty})`,
-        });
-        return `Assessment created for ${params.subject}`;
-      },
-      analyzePerformance: (params: { studentId: string }) => {
-        toast({
-          title: "📊 Analyse prédictive",
-          description: "Analyse des performances de l'élève en cours...",
-        });
-        return "Performance analysis completed";
-      },
-      generateReport: (params: { reportType: string; class: string }) => {
-        toast({
-          title: "📋 Rapport généré",
-          description: `Rapport ${params.reportType} créé pour la classe ${params.class}`,
-        });
-        return "Report generated successfully";
-      }
-    }
-  });
+  const sendMessage = async (message: string, action?: string) => {
+    if (!message.trim() && !action) return;
 
-  const startConversation = async () => {
+    const userMessage: Message = {
+      role: 'user',
+      content: message || `Action: ${action}`,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setIsLoading(true);
+
     try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      
-      // For demo purposes, we'll simulate the conversation
-      // In production, you would use: await conversation.startSession({ agentId: 'your-agent-id' });
-      setIsListening(true);
-      setAgentReady(true);
-      setShowDemo(false);
-      
-      toast({
-        title: "🎙️ Mode vocal activé",
-        description: "Parlez à votre assistant IA pour créer des évaluations, analyser les performances, etc.",
+      const { data, error } = await supabase.functions.invoke('ai-assistant-chat', {
+        body: { message, action }
       });
+
+      if (error) throw error;
+
+      if (data.error) {
+        if (data.code === 'RATE_LIMIT') {
+          toast({
+            title: "⏱️ Limite atteinte",
+            description: data.error,
+            variant: "destructive",
+          });
+        } else if (data.code === 'INSUFFICIENT_CREDITS') {
+          toast({
+            title: "💳 Crédits insuffisants",
+            description: data.error,
+            variant: "destructive",
+          });
+        } else {
+          throw new Error(data.error);
+        }
+        return;
+      }
+
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: data.response,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+
+      // Afficher des toasts selon le contenu de la réponse
+      if (action === 'createAssessment') {
+        toast({
+          title: "✨ Assistant prêt",
+          description: "Je vais vous aider à créer une évaluation",
+        });
+      } else if (action === 'analyzePerformance') {
+        toast({
+          title: "📊 Analyse lancée",
+          description: "Préparation de l'analyse des performances",
+        });
+      } else if (action === 'generateReport') {
+        toast({
+          title: "📋 Génération de rapport",
+          description: "Configuration du rapport en cours",
+        });
+      }
+
     } catch (error) {
+      console.error('Error sending message:', error);
       toast({
-        title: "Accès microphone requis",
-        description: "Autorisez l'accès au microphone pour utiliser l'assistant vocal",
+        title: "Erreur",
+        description: "Impossible de communiquer avec l'assistant IA",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const stopConversation = async () => {
-    setIsListening(false);
-    setAgentReady(false);
-    // await conversation.endSession();
-  };
-
-  const demoFeatures = [
-    { icon: Brain, title: "Génération d'évaluations", desc: "Créez des évaluations personnalisées par la voix" },
-    { icon: Zap, title: "Analyse prédictive", desc: "Prédisez les performances des élèves" },
-    { icon: Sparkles, title: "Rapports automatiques", desc: "Générez des bulletins personnalisés" }
+  const quickActions = [
+    { 
+      action: 'createAssessment', 
+      label: "Créer une évaluation",
+      icon: Brain,
+      prompt: "Je veux créer une nouvelle évaluation"
+    },
+    { 
+      action: 'analyzePerformance', 
+      label: "Analyser performances",
+      icon: Sparkles,
+      prompt: "Aide-moi à analyser les performances"
+    },
+    { 
+      action: 'generateReport', 
+      label: "Générer un rapport",
+      icon: Sparkles,
+      prompt: "Je veux générer un rapport"
+    }
   ];
 
   return (
-    <Card className="relative overflow-hidden border-primary/20 bg-gradient-to-br from-card to-card/50">
+    <Card className="relative overflow-hidden border-primary/20 bg-gradient-to-br from-card to-card/50 flex flex-col h-[600px]">
       <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5" />
       
-      <CardHeader className="relative">
+      <CardHeader className="relative pb-3">
         <div className="flex items-center gap-3">
           <motion.div
             animate={{ 
-              scale: isListening ? [1, 1.2, 1] : 1,
-              rotate: isListening ? 360 : 0 
+              scale: [1, 1.1, 1],
             }}
             transition={{ 
-              scale: { duration: 2, repeat: Infinity },
-              rotate: { duration: 4, repeat: Infinity, ease: "linear" }
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
             }}
             className="p-2 rounded-full bg-gradient-to-r from-primary to-accent"
           >
             <Brain className="h-6 w-6 text-primary-foreground" />
           </motion.div>
-          <div>
+          <div className="flex-1">
             <CardTitle className="text-xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Assistant IA EvalScol
             </CardTitle>
-            <div className="flex items-center gap-2">
-              <Badge variant={agentReady ? "default" : "secondary"} className="text-xs">
-                {agentReady ? "🟢 Connecté" : "🔴 Déconnecté"}
+            <div className="flex items-center gap-2 mt-1">
+              <Badge variant={isConnected ? "default" : "secondary"} className="text-xs">
+                {isConnected ? "🟢 Connecté" : "🔴 Déconnecté"}
               </Badge>
               <Badge variant="outline" className="text-xs">
-                IA Générative
+                Powered by Lovable AI
               </Badge>
             </div>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="relative space-y-4">
-        {showDemo && (
-          <div className="grid gap-3">
-            {demoFeatures.map((feature, index) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 border border-border/50"
+      <CardContent className="relative flex-1 flex flex-col gap-3 p-4">
+        {/* Actions rapides */}
+        {messages.length === 0 && (
+          <div className="grid gap-2">
+            <p className="text-sm text-muted-foreground mb-2">Actions rapides :</p>
+            {quickActions.map((action) => (
+              <Button
+                key={action.action}
+                variant="outline"
+                size="sm"
+                onClick={() => sendMessage(action.prompt, action.action)}
+                disabled={isLoading}
+                className="justify-start gap-2"
               >
-                <feature.icon className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-medium text-sm">{feature.title}</p>
-                  <p className="text-xs text-muted-foreground">{feature.desc}</p>
-                </div>
-              </motion.div>
+                <action.icon className="h-4 w-4" />
+                {action.label}
+              </Button>
             ))}
           </div>
         )}
 
-        <AnimatePresence>
-          {lastMessage && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="p-3 rounded-lg bg-primary/10 border border-primary/20"
-            >
-              <p className="text-sm">{lastMessage}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Messages */}
+        <ScrollArea className="flex-1 pr-4">
+          <div className="space-y-4">
+            <AnimatePresence>
+              {messages.map((msg, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[80%] p-3 rounded-lg ${
+                      msg.role === 'user'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted border border-border'
+                    }`}
+                  >
+                    <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                    <p className="text-xs opacity-70 mt-1">
+                      {msg.timestamp.toLocaleTimeString('fr-FR', { 
+                        hour: '2-digit', 
+                        minute: '2-digit' 
+                      })}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            
+            {isLoading && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex justify-start"
+              >
+                <div className="bg-muted border border-border p-3 rounded-lg flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm">L'assistant réfléchit...</span>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </ScrollArea>
 
+        {/* Input */}
         <div className="flex gap-2">
+          <Input
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage(inputMessage);
+              }
+            }}
+            placeholder="Posez votre question..."
+            disabled={isLoading}
+            className="flex-1"
+          />
           <Button
-            onClick={isListening ? stopConversation : startConversation}
-            className={`flex-1 ${isListening 
-              ? 'bg-destructive hover:bg-destructive/90' 
-              : 'bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90'
-            }`}
+            onClick={() => sendMessage(inputMessage)}
+            disabled={isLoading || !inputMessage.trim()}
+            size="icon"
+            className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
           >
-            {isListening ? (
-              <>
-                <MicOff className="h-4 w-4 mr-2" />
-                Arrêter l'écoute
-              </>
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <>
-                <Mic className="h-4 w-4 mr-2" />
-                Activer l'assistant
-              </>
+              <Send className="h-4 w-4" />
             )}
           </Button>
         </div>
 
         <div className="text-xs text-muted-foreground text-center">
-          💡 Dites "Créer une évaluation de mathématiques" ou "Analyser les performances de la classe"
+          💡 Utilisez les actions rapides ou posez vos questions directement
         </div>
       </CardContent>
     </Card>
