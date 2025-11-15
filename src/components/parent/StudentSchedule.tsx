@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { Clock, MapPin } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Clock, Calendar } from "lucide-react";
 
 interface Schedule {
   id: string;
@@ -19,7 +18,7 @@ interface StudentScheduleProps {
   studentName: string;
 }
 
-const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+const DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
 export function StudentSchedule({ classroomId, studentName }: StudentScheduleProps) {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
@@ -68,13 +67,23 @@ export function StudentSchedule({ classroomId, studentName }: StudentSchedulePro
     }
   };
 
-  const getSchedulesByDay = (dayIndex: number) => {
-    return schedules.filter((s) => s.day_of_week === dayIndex);
-  };
-
   const formatTime = (time: string) => {
     if (!time) return "";
     return time.substring(0, 5);
+  };
+
+  // Generate unique time slots
+  const getTimeSlots = () => {
+    const slots = new Set<string>();
+    schedules.forEach(schedule => {
+      slots.add(schedule.start_time);
+    });
+    return Array.from(slots).sort();
+  };
+
+  // Get schedule for a specific day and time
+  const getScheduleForDayAndTime = (day: number, time: string) => {
+    return schedules.find(s => s.day_of_week === day && s.start_time === time);
   };
 
   if (loading) {
@@ -88,70 +97,82 @@ export function StudentSchedule({ classroomId, studentName }: StudentSchedulePro
   if (schedules.length === 0) {
     return (
       <Card className="p-6">
+        <div className="flex items-center gap-2 mb-4">
+          <Calendar className="h-5 w-5 text-primary" />
+          <h3 className="text-lg font-semibold">Emploi du Temps - {studentName}</h3>
+        </div>
         <p className="text-muted-foreground">Aucun emploi du temps disponible pour le moment.</p>
       </Card>
     );
   }
 
+  const timeSlots = getTimeSlots();
+
   return (
-    <Card className="p-6">
-      <div className="flex items-center gap-2 mb-6">
-        <Clock className="h-5 w-5 text-primary" />
-        <h3 className="text-lg font-semibold">Emploi du Temps - {studentName}</h3>
+    <Card className="overflow-hidden">
+      <div className="p-6 pb-4 border-b">
+        <div className="flex items-center gap-2">
+          <Calendar className="h-5 w-5 text-primary" />
+          <h3 className="text-lg font-semibold">Emploi du Temps - {studentName}</h3>
+        </div>
       </div>
-
-      <div className="space-y-6">
-        {DAYS.map((day, dayIndex) => {
-          const daySchedules = getSchedulesByDay(dayIndex + 1);
-          
-          if (daySchedules.length === 0) return null;
-
-          return (
-            <div key={dayIndex}>
-              <h4 className="font-semibold text-primary mb-3">{day}</h4>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Horaire</TableHead>
-                      <TableHead>Matière</TableHead>
-                      <TableHead>Enseignant</TableHead>
-                      <TableHead>Salle</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {daySchedules.map((schedule) => (
-                      <TableRow key={schedule.id}>
-                        <TableCell className="font-medium">
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}
-                          </div>
-                        </TableCell>
-                        <TableCell className="font-semibold">
-                          {schedule.subject_name}
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {schedule.teacher_name}
-                        </TableCell>
-                        <TableCell>
-                          {schedule.room_number ? (
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3" />
-                              {schedule.room_number}
+      <div className="p-0">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-muted/50">
+                <th className="border p-2 text-left font-semibold text-sm w-24 sticky left-0 bg-muted/50 z-10">
+                  Horaire
+                </th>
+                {[1, 2, 3, 4, 5].map((day) => (
+                  <th key={day} className="border p-2 text-center font-semibold text-sm">
+                    {DAYS[day]}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {timeSlots.map((timeSlot) => (
+                <tr key={timeSlot} className="hover:bg-accent/30 transition-colors">
+                  <td className="border p-2 font-medium sticky left-0 bg-background z-10">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-xs">{formatTime(timeSlot)}</span>
+                    </div>
+                  </td>
+                  {[1, 2, 3, 4, 5].map((day) => {
+                    const schedule = getScheduleForDayAndTime(day, timeSlot);
+                    return (
+                      <td key={day} className="border p-2 align-top">
+                        {schedule ? (
+                          <div className="space-y-1">
+                            <div className="font-semibold text-sm text-primary">
+                              {schedule.subject_name}
                             </div>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </div>
-          );
-        })}
+                            <div className="text-xs text-muted-foreground">
+                              {schedule.teacher_name}
+                            </div>
+                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                              <Clock className="h-3 w-3" />
+                              {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}
+                            </div>
+                            {schedule.room_number && (
+                              <div className="text-xs font-medium text-foreground">
+                                Salle {schedule.room_number}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="text-xs text-muted-foreground text-center">-</div>
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </Card>
   );
