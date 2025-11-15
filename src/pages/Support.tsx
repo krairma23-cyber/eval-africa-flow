@@ -30,6 +30,7 @@ import {
 import { Label } from "@/components/ui/label";
 
 import { Database } from "@/integrations/supabase/types";
+import LiveChat from "@/components/support/LiveChat";
 
 type Ticket = Database['public']['Tables']['support_tickets']['Row'];
 type FAQ = Database['public']['Tables']['support_faqs']['Row'];
@@ -39,6 +40,7 @@ export default function Support() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showLiveChat, setShowLiveChat] = useState(false);
   const [newTicket, setNewTicket] = useState({
     subject: "",
     description: "",
@@ -474,27 +476,31 @@ export default function Support() {
             </Card>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Chat en direct</CardTitle>
-              <CardDescription>
-                Discutez directement avec notre équipe support
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8">
-                <MessageCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="font-semibold mb-2">Chat indisponible</h3>
-                <p className="text-muted-foreground mb-4">
-                  Le chat en direct sera bientôt disponible
-                </p>
-                <Button disabled>
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Démarrer un chat
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          {showLiveChat ? (
+            <LiveChat onClose={() => setShowLiveChat(false)} />
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>Chat en direct</CardTitle>
+                <CardDescription>
+                  Discutez directement avec notre équipe support
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <MessageCircle className="h-12 w-12 mx-auto text-primary mb-4" />
+                  <h3 className="font-semibold mb-2">Besoin d'aide immédiate ?</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Chattez en direct avec notre équipe support
+                  </p>
+                  <Button onClick={() => setShowLiveChat(true)}>
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Démarrer un chat
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="resources" className="space-y-6">

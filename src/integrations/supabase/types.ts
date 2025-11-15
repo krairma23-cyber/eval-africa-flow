@@ -3516,6 +3516,85 @@ export type Database = {
         }
         Relationships: []
       }
+      support_chat_messages: {
+        Row: {
+          created_at: string
+          id: string
+          is_admin: boolean
+          message: string
+          read: boolean
+          sender_id: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_admin?: boolean
+          message: string
+          read?: boolean
+          sender_id: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_admin?: boolean
+          message?: string
+          read?: boolean
+          sender_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "support_chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_chat_sessions: {
+        Row: {
+          assigned_to: string | null
+          closed_at: string | null
+          created_at: string
+          id: string
+          school_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          closed_at?: string | null
+          created_at?: string
+          id?: string
+          school_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          closed_at?: string | null
+          created_at?: string
+          id?: string
+          school_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_chat_sessions_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_faqs: {
         Row: {
           answer: string
