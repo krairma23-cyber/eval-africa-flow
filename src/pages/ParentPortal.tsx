@@ -12,6 +12,8 @@ import { calculateRankings } from "@/lib/ranking-utils";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { TuitionPaymentDialog } from "@/components/payment/TuitionPaymentDialog";
+import { StudentSchedule } from "@/components/parent/StudentSchedule";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface SubjectGrade {
   subject_name: string;
@@ -664,10 +666,17 @@ export default function ParentPortal() {
           </div>
         )}
 
-        {/* Reports Section */}
-        <div className="space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <h2 className="text-2xl font-bold">Bulletins Scolaires</h2>
+        {/* Tabs Section - Reports and Schedule */}
+        <Tabs defaultValue="reports" className="space-y-6">
+          <TabsList className="grid w-full md:w-[400px] grid-cols-2">
+            <TabsTrigger value="reports">Bulletins Scolaires</TabsTrigger>
+            <TabsTrigger value="schedule">Emploi du Temps</TabsTrigger>
+          </TabsList>
+
+          {/* Reports Tab */}
+          <TabsContent value="reports" className="space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+              <h2 className="text-2xl font-bold">Bulletins Scolaires</h2>
             <div className="flex gap-2">
               <div className="relative flex-1 md:w-64">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -760,7 +769,25 @@ export default function ParentPortal() {
               </Button>
             </div>
           )}
-        </div>
+          </TabsContent>
+
+          {/* Schedule Tab */}
+          <TabsContent value="schedule" className="space-y-6">
+            {reports.length > 0 && reports[0].classroom_id ? (
+              <StudentSchedule 
+                classroomId={reports[0].classroom_id} 
+                studentName={reports[0].student_name}
+              />
+            ) : (
+              <Card className="p-8 text-center">
+                <Calendar className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground">
+                  Aucun emploi du temps disponible pour le moment
+                </p>
+              </Card>
+            )}
+          </TabsContent>
+        </Tabs>
 
         {/* Help Section */}
         <Card className="mt-8 p-6 bg-accent/5 border-accent/30">
