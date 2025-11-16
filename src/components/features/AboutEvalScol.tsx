@@ -9,10 +9,7 @@ export const AboutEvalScol = () => {
         À propos d'EvalScol
       </Button>
       
-      <Button size="lg" className="gap-2" onClick={() => navigate("/pricing")}>
-        <Sparkles className="h-5 w-5" />
-        Voir les Tarifs
-      </Button>
+      
 
       
     </div>;
