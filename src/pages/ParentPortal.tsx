@@ -362,32 +362,38 @@ export default function ParentPortal() {
     try {
       const doc = new jsPDF();
       
-      // Get school name
-      let schoolName = "EvalScol Africa Flow";
+      // Get school name and logo from database
+      let schoolName = "École";
+      let schoolLogoUrl = null;
       try {
         const { data: schoolData } = await supabase
           .from('schools')
-          .select('name')
+          .select('name, logo_url')
           .single();
         if (schoolData?.name) {
           schoolName = schoolData.name;
         }
+        if (schoolData?.logo_url) {
+          schoolLogoUrl = schoolData.logo_url;
+        }
       } catch (error) {
-        console.error('Error fetching school name:', error);
+        console.error('Error fetching school data:', error);
       }
       
-      // Add logo
-      try {
-        const logoUrl = '/evalscol-logo.png';
-        const img = new Image();
-        img.src = logoUrl;
-        await new Promise((resolve, reject) => {
-          img.onload = resolve;
-          img.onerror = reject;
-        });
-        doc.addImage(img, 'PNG', 160, 8, 30, 30);
-      } catch (error) {
-        console.error('Error loading logo:', error);
+      // Add logo if available
+      if (schoolLogoUrl) {
+        try {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = schoolLogoUrl;
+          await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+          });
+          doc.addImage(img, 'PNG', 160, 8, 30, 30);
+        } catch (error) {
+          console.error('Error loading school logo:', error);
+        }
       }
       
       // School name
