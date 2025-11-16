@@ -362,6 +362,20 @@ export default function ParentPortal() {
     try {
       const doc = new jsPDF();
       
+      // Get school name
+      let schoolName = "EvalScol Africa Flow";
+      try {
+        const { data: schoolData } = await supabase
+          .from('schools')
+          .select('name')
+          .single();
+        if (schoolData?.name) {
+          schoolName = schoolData.name;
+        }
+      } catch (error) {
+        console.error('Error fetching school name:', error);
+      }
+      
       // Add logo
       try {
         const logoUrl = '/evalscol-logo.png';
@@ -376,24 +390,29 @@ export default function ParentPortal() {
         console.error('Error loading logo:', error);
       }
       
+      // School name
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text(schoolName, 105, 12, { align: "center" });
+      
       // Header
       doc.setFontSize(20);
       doc.setFont("helvetica", "bold");
-      doc.text("BULLETIN SCOLAIRE", 105, 20, { align: "center" });
+      doc.text("BULLETIN SCOLAIRE", 105, 23, { align: "center" });
       
       // Student info
       doc.setFontSize(12);
       doc.setFont("helvetica", "normal");
-      doc.text(`Élève: ${report.student_name}`, 20, 35);
-      doc.text(`Classe: ${report.class_name}`, 20, 42);
-      doc.text(`Période: ${report.term}`, 20, 49);
+      doc.text(`Élève: ${report.student_name}`, 20, 38);
+      doc.text(`Classe: ${report.class_name}`, 20, 45);
+      doc.text(`Période: ${report.term}`, 20, 52);
       
       // Overall average
       doc.setFontSize(14);
       doc.setFont("helvetica", "bold");
       const avgColor = report.average >= 10 ? [0, 128, 0] : [255, 0, 0];
       doc.setTextColor(avgColor[0], avgColor[1], avgColor[2]);
-      doc.text(`Moyenne Générale: ${report.average.toFixed(2)}/20`, 20, 60);
+      doc.text(`Moyenne Générale: ${report.average.toFixed(2)}/20`, 20, 63);
       doc.setTextColor(0, 0, 0);
       
       // Appreciation
@@ -405,8 +424,8 @@ export default function ParentPortal() {
       
       doc.setFontSize(12);
       doc.setFont("helvetica", "italic");
-      doc.text(`Appréciation: ${appreciation}`, 20, 68);
-      doc.text(`Rang: ${report.rank}/${report.total_students}`, 20, 75);
+      doc.text(`Appréciation: ${appreciation}`, 20, 71);
+      doc.text(`Rang: ${report.rank}/${report.total_students}`, 20, 78);
       
       // Subject grades table
       if (report.subject_grades && report.subject_grades.length > 0) {
@@ -418,7 +437,7 @@ export default function ParentPortal() {
         ]);
         
         autoTable(doc, {
-          startY: 82,
+          startY: 85,
           head: [["Matière", "Note /20", "Coefficient", "Note pondérée"]],
           body: tableData,
           theme: "grid",
