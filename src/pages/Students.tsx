@@ -33,6 +33,7 @@ interface Student {
   tuition_fee?: number;
   amount_paid?: number;
   payment_status?: string;
+  payment_method?: string;
   payment_due_date?: string;
   payment_notes?: string;
   enrollments: Array<{
@@ -489,6 +490,7 @@ export default function Students() {
                       currentTuitionFee={student.tuition_fee}
                       currentAmountPaid={student.amount_paid}
                       currentPaymentStatus={student.payment_status}
+                      currentPaymentMethod={student.payment_method}
                       currentDueDate={student.payment_due_date}
                       currentNotes={student.payment_notes}
                       onPaymentUpdated={fetchStudents}

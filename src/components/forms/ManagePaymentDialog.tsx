@@ -15,6 +15,7 @@ interface ManagePaymentDialogProps {
   currentTuitionFee?: number;
   currentAmountPaid?: number;
   currentPaymentStatus?: string;
+  currentPaymentMethod?: string;
   currentDueDate?: string;
   currentNotes?: string;
   onPaymentUpdated: () => void;
@@ -27,6 +28,7 @@ export function ManagePaymentDialog({
   currentTuitionFee = 0,
   currentAmountPaid = 0,
   currentPaymentStatus = 'unpaid',
+  currentPaymentMethod,
   currentDueDate,
   currentNotes,
   onPaymentUpdated,
@@ -37,6 +39,7 @@ export function ManagePaymentDialog({
   const [tuitionFee, setTuitionFee] = useState(currentTuitionFee.toString());
   const [amountPaid, setAmountPaid] = useState(currentAmountPaid.toString());
   const [paymentStatus, setPaymentStatus] = useState(currentPaymentStatus);
+  const [paymentMethod, setPaymentMethod] = useState(currentPaymentMethod || '');
   const [dueDate, setDueDate] = useState(currentDueDate || '');
   const [notes, setNotes] = useState(currentNotes || '');
   const { toast } = useToast();
@@ -65,6 +68,7 @@ export function ManagePaymentDialog({
           tuition_fee: tuitionFeeNum,
           amount_paid: amountPaidNum,
           payment_status: finalStatus,
+          payment_method: paymentMethod || null,
           payment_due_date: dueDate || null,
           payment_notes: notes || null,
         })
@@ -164,6 +168,25 @@ export function ManagePaymentDialog({
                   <SelectItem value="unpaid">Non payé</SelectItem>
                   <SelectItem value="partial">Paiement partiel</SelectItem>
                   <SelectItem value="paid">Payé</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="paymentMethod">Moyen de paiement</Label>
+              <Select value={paymentMethod} onValueChange={setPaymentMethod}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionner un moyen de paiement" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mobile_money">Mobile Money</SelectItem>
+                  <SelectItem value="orange_money">Orange Money</SelectItem>
+                  <SelectItem value="mtn_money">MTN Mobile Money</SelectItem>
+                  <SelectItem value="moov_money">Moov Money</SelectItem>
+                  <SelectItem value="bank_card">Carte bancaire</SelectItem>
+                  <SelectItem value="cash">Espèces</SelectItem>
+                  <SelectItem value="bank_transfer">Virement bancaire</SelectItem>
+                  <SelectItem value="other">Autre</SelectItem>
                 </SelectContent>
               </Select>
             </div>

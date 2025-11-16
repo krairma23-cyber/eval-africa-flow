@@ -3323,6 +3323,7 @@ export type Database = {
           parent_name: string | null
           parent_phone: string | null
           payment_due_date: string | null
+          payment_method: string | null
           payment_notes: string | null
           payment_status: string | null
           school_id: string
@@ -3344,6 +3345,7 @@ export type Database = {
           parent_name?: string | null
           parent_phone?: string | null
           payment_due_date?: string | null
+          payment_method?: string | null
           payment_notes?: string | null
           payment_status?: string | null
           school_id: string
@@ -3365,6 +3367,7 @@ export type Database = {
           parent_name?: string | null
           parent_phone?: string | null
           payment_due_date?: string | null
+          payment_method?: string | null
           payment_notes?: string | null
           payment_status?: string | null
           school_id?: string
