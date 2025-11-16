@@ -210,6 +210,20 @@ export default function Reports() {
     try {
       const doc = new jsPDF();
       
+      // Add logo
+      try {
+        const logoUrl = '/evalscol-logo.png';
+        const img = new Image();
+        img.src = logoUrl;
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+        doc.addImage(img, 'PNG', 160, 8, 30, 30);
+      } catch (error) {
+        console.error('Error loading logo:', error);
+      }
+      
       // Header
       doc.setFontSize(20);
       doc.setFont("helvetica", "bold");
