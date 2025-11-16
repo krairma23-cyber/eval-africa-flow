@@ -8,7 +8,7 @@ export const CoverSlide = () => {
           className="h-24 mx-auto"
         />
         <h1 className="text-7xl font-bold tracking-tight">
-          EvalScol Africa Flow
+          EvalScol Africa
         </h1>
         <p className="text-3xl font-light opacity-90">
           La Première Plateforme SaaS de Gestion Scolaire<br />

@@ -18,7 +18,7 @@ export default function ParentGuide() {
     
     doc.setFontSize(16);
     doc.setTextColor(100, 100, 100);
-    doc.text("EvalScol Africa Flow", pageWidth / 2, 30, { align: "center" });
+    doc.text("EvalScol Africa", pageWidth / 2, 30, { align: "center" });
     
     let yPos = 45;
     
@@ -96,7 +96,7 @@ export default function ParentGuide() {
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
       doc.text(
-        `EvalScol Africa Flow - support@evalscol.com - Page ${i}/${pageCount}`,
+        `EvalScol Africa - support@evalscol.com - Page ${i}/${pageCount}`,
         pageWidth / 2,
         doc.internal.pageSize.getHeight() - 10,
         { align: "center" }
