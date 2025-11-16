@@ -244,31 +244,25 @@ export default function Reports() {
       // Add logo if available
       if (schoolLogoUrl) {
         try {
-          // If it's a Supabase storage URL, convert to public URL
-          let logoUrl = schoolLogoUrl;
-          if (schoolLogoUrl.includes('supabase')) {
-            // Extract bucket and path from URL
-            const urlParts = schoolLogoUrl.split('/storage/v1/object/public/');
-            if (urlParts.length > 1) {
-              const [bucket, ...pathParts] = urlParts[1].split('/');
-              const path = pathParts.join('/');
-              const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-              logoUrl = data.publicUrl;
-            }
+          // Get public URL from storage path (logo_url is stored as path, not full URL)
+          const { data: logoData } = supabase.storage
+            .from('school-logos')
+            .getPublicUrl(schoolLogoUrl);
+          
+          if (logoData?.publicUrl) {
+            // Load image and convert to base64
+            const response = await fetch(logoData.publicUrl);
+            const blob = await response.blob();
+            const base64 = await new Promise<string>((resolve) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result as string);
+              reader.readAsDataURL(blob);
+            });
+            
+            // Determine image format
+            const format = blob.type.includes('png') ? 'PNG' : 'JPEG';
+            doc.addImage(base64, format, 160, 8, 30, 30);
           }
-          
-          // Load image and convert to base64
-          const response = await fetch(logoUrl);
-          const blob = await response.blob();
-          const base64 = await new Promise<string>((resolve) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.readAsDataURL(blob);
-          });
-          
-          // Determine image format
-          const format = blob.type.includes('png') ? 'PNG' : 'JPEG';
-          doc.addImage(base64, format, 160, 8, 30, 30);
         } catch (error) {
           console.error('Error loading school logo:', error);
         }
