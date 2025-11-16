@@ -194,7 +194,7 @@ export default function About() {
               className="h-24 w-auto mx-auto mb-6"
             />
             <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-              À Propos d'EvalScol Africa Flow
+              À Propos d'EvalScol Africa
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               La plateforme SaaS complète de gestion scolaire pour l'Afrique francophone
@@ -211,10 +211,10 @@ export default function About() {
                   <CheckCircle2 className="h-8 w-8 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold mb-4">Qu'est-ce qu'EvalScol Africa Flow ?</h2>
+                  <h2 className="text-3xl font-bold mb-4">Qu'est-ce qu'EvalScol Africa ?</h2>
                   <p className="text-lg text-muted-foreground leading-relaxed mb-4">
-                    EvalScol Africa Flow est une <strong>plateforme SaaS (Software as a Service) complète de gestion scolaire</strong> spécialement 
-                    conçue pour les établissements éducatifs en Afrique francophone. Solution 100% cloud, elle transforme radicalement 
+                    EvalScol Africa est une <strong>plateforme SaaS (Software as a Service) complète de gestion scolaire</strong> spécialement 
+                    conçue pour les établissements éducatifs en Afrique francophone. Solution 100% cloud, elle transforme radicalement
                     la gestion administrative, pédagogique et financière des écoles en automatisant l'ensemble des processus éducatifs.
                   </p>
                   <p className="text-lg text-muted-foreground leading-relaxed">

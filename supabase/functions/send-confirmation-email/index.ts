@@ -68,7 +68,7 @@ const handler = async (req: Request): Promise<Response> => {
         <body>
           <div class="container">
             <div class="header">
-              <h1>🎓 EvalScol Africa Flow</h1>
+              <h1>🎓 EvalScol Africa</h1>
             </div>
             <div class="content">
               <h2>Bienvenue sur EvalScol !</h2>
@@ -88,7 +88,7 @@ const handler = async (req: Request): Promise<Response> => {
               </p>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} EvalScol Africa Flow - Plateforme de gestion scolaire</p>
+              <p>© ${new Date().getFullYear()} EvalScol Africa - Plateforme de gestion scolaire</p>
               <p>📞 Support: +225 0707041904 | 📧 support@evalscol.com</p>
             </div>
           </div>

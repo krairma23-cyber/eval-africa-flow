@@ -38,7 +38,7 @@ export const ClosingSlide = () => {
 
         <div className="mt-16 pt-8 border-t border-primary-foreground/30">
           <p className="text-xl font-light opacity-80">
-            EvalScol Africa Flow — Made with ❤️ in Africa, for Africa
+            EvalScol Africa — Made with ❤️ in Africa, for Africa
           </p>
         </div>
 

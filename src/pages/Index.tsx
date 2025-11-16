@@ -23,7 +23,7 @@ const Index = () => {
             />
           </div>
           <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4">
-            EvalScol Africa Flow - Plateforme SaaS Complète de Gestion Scolaire en Afrique
+            EvalScol Africa - Plateforme SaaS Complète de Gestion Scolaire en Afrique
           </h1>
           <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
             Solution 100% cloud pour établissements en Afrique francophone. De 50 à 1000+ élèves. 

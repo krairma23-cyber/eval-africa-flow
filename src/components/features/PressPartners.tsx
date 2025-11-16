@@ -42,7 +42,7 @@ const PressPartners = () => {
           Presse & Partenaires
         </h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          EvalScol Africa Flow est soutenu par des médias éducatifs, institutions et incubateurs tech en Côte d'Ivoire et Afrique francophone
+          EvalScol Africa est soutenu par des médias éducatifs, institutions et incubateurs tech en Côte d'Ivoire et Afrique francophone
         </p>
       </div>
 

@@ -33,7 +33,7 @@ export const SolutionSlide = () => {
       <div className="mb-12">
         <h2 className="text-5xl font-bold text-foreground mb-4">Notre Solution</h2>
         <p className="text-xl text-muted-foreground max-w-3xl">
-          EvalScol Africa Flow : La première plateforme SaaS tout-en-un avec IA pour transformer la gestion scolaire en Afrique
+          EvalScol Africa : La première plateforme SaaS tout-en-un avec IA pour transformer la gestion scolaire en Afrique
         </p>
       </div>
 
