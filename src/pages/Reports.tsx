@@ -210,19 +210,32 @@ export default function Reports() {
     try {
       const doc = new jsPDF();
       
-      // Get school name and logo from database
+      // Get school name and logo from user's school settings
       let schoolName = "École";
       let schoolLogoUrl = null;
       try {
-        const { data: schoolData } = await supabase
-          .from('schools')
-          .select('name, logo_url')
-          .single();
-        if (schoolData?.name) {
-          schoolName = schoolData.name;
-        }
-        if (schoolData?.logo_url) {
-          schoolLogoUrl = schoolData.logo_url;
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('school_id')
+            .eq('user_id', user.id)
+            .single();
+
+          if (profile?.school_id) {
+            const { data: schoolData } = await supabase
+              .from('schools')
+              .select('name, logo_url')
+              .eq('id', profile.school_id)
+              .single();
+            
+            if (schoolData?.name) {
+              schoolName = schoolData.name;
+            }
+            if (schoolData?.logo_url) {
+              schoolLogoUrl = schoolData.logo_url;
+            }
+          }
         }
       } catch (error) {
         console.error('Error fetching school data:', error);
