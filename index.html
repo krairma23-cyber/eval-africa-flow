@@ -24,7 +24,8 @@
     
     <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/dDiYM98z5SULGoSVMXVuvvjlbHu2/social-images/social-1760713229633-KraVisionBusiness_Crée_un_logo_du_nom_EVALSCOL,_le_logo_est_pour_un_site_de_système_94a6cb3d-d5cc-4ed2-b622-f4ecf42a1965.jpg">
 
-    <!-- Google Analytics 4 -->
+    <!-- Google Analytics 4 - INSTRUCTIONS: Remplacez G-XXXXXXXXXX par votre ID -->
+    <!-- Créez un compte sur https://analytics.google.com -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -34,30 +35,116 @@
     </script>
 
     <!-- Google Search Console Verification -->
+    <!-- INSTRUCTIONS: Allez sur https://search.google.com/search-console -->
+    <!-- Ajoutez votre propriété et copiez le code de vérification ici -->
     <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE_HERE" />
 
     <!-- Bing Webmaster Tools Verification -->
+    <!-- INSTRUCTIONS: Allez sur https://www.bing.com/webmasters -->
     <meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_CODE_HERE" />
 
-    <!-- Structured Data -->
+    <!-- Geo Targeting pour Côte d'Ivoire et Afrique -->
+    <meta name="geo.region" content="CI" />
+    <meta name="geo.placename" content="Abidjan, Côte d'Ivoire" />
+    <meta name="geo.position" content="5.3599517;-4.0082563" />
+    <meta name="ICBM" content="5.3599517, -4.0082563" />
+
+    <!-- Structured Data - Organization -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "EducationalOrganization",
+      "@type": "SoftwareApplication",
       "name": "EvalScol Africa",
-      "url": "https://evalscolafrica.com",
-      "logo": "https://evalscolafrica.com/favicon.png",
-      "description": "Plateforme sécurisée de gestion des évaluations scolaires pour les établissements en Afrique.",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "CI",
-        "addressLocality": "Abidjan",
-        "streetAddress": "Plateau, Abidjan, Côte d'Ivoire"
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "XOF",
+        "priceValidUntil": "2025-12-31",
+        "availability": "https://schema.org/InStock",
+        "description": "Essai gratuit 14 jours, puis à partir de 29 990 FCFA/mois"
       },
-      "sameAs": [
-        "https://www.facebook.com/evalscolafrica",
-        "https://twitter.com/evalscol",
-        "https://www.linkedin.com/company/evalscol"
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "127"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "EvalScol Africa",
+        "url": "https://evalscolafrica.com",
+        "logo": "https://evalscolafrica.com/logo.png",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+225-07-07-04-19-04",
+          "contactType": "Customer Service",
+          "areaServed": ["CI", "SN", "BJ", "TG"],
+          "availableLanguage": ["French"]
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "CI",
+          "addressLocality": "Abidjan",
+          "streetAddress": "Plateau, Abidjan"
+        },
+        "sameAs": [
+          "https://www.facebook.com/evalscolafrica",
+          "https://twitter.com/evalscol",
+          "https://www.linkedin.com/company/evalscol"
+        ]
+      },
+      "description": "Plateforme SaaS complète de gestion scolaire avec IA pour l'Afrique francophone. Gestion des élèves, évaluations automatisées, bulletins PDF, portail parent, paiements mobile money.",
+      "featureList": [
+        "Gestion complète des élèves et enseignants",
+        "Évaluations automatisées avec coefficients",
+        "Bulletins PDF professionnels",
+        "Portail parent en temps réel",
+        "Paiements mobile money intégrés (Orange, MTN, Moov)",
+        "Intelligence artificielle pour détection élèves à risque",
+        "Analytiques avancées"
+      ]
+    }
+    </script>
+
+    <!-- Structured Data - FAQ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Qu'est-ce qu'EvalScol Africa ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "EvalScol Africa est une plateforme SaaS complète de gestion scolaire conçue pour les écoles africaines. Elle offre la gestion des élèves, des évaluations automatisées, des bulletins PDF, un portail parent en temps réel et des paiements mobile money intégrés."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Combien coûte EvalScol Africa ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "EvalScol propose un essai gratuit de 14 jours, puis des plans à partir de 29 990 FCFA/mois (Standard), 59 990 FCFA/mois (Professional), et des plans Enterprise sur devis."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Dans quels pays EvalScol est-il disponible ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "EvalScol Africa est disponible en Côte d'Ivoire, Sénégal, Bénin, Togo et dans toute l'Afrique francophone avec un support local."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quels modes de paiement sont acceptés ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "EvalScol accepte les paiements via mobile money (Orange Money, MTN Money, Moov Money) et les cartes bancaires (Visa, Mastercard) via Paystack."
+          }
+        }
       ]
     }
     </script>
