@@ -8,10 +8,11 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { logError } from "@/lib/logger";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Upload, X, AlertTriangle } from "lucide-react";
+import { Upload, X, AlertTriangle, Mail, Loader2 } from "lucide-react";
 import { z } from "zod";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const studentSchema = z.object({
   student_number: z.string().trim().min(1, "Le numéro d'élève est requis").max(50),
@@ -45,10 +46,12 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userSchoolId, setUserSchoolId] = useState<string | null>(null);
+  const [schoolName, setSchoolName] = useState<string>("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [canAddStudent, setCanAddStudent] = useState(true);
   const [planInfo, setPlanInfo] = useState<{ currentStudents: number; maxStudents: number; planName: string } | null>(null);
+  const [sendParentCredentials, setSendParentCredentials] = useState(true);
   const [formData, setFormData] = useState({
     student_number: "",
     first_name: "",
@@ -76,6 +79,17 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
           
           if (profile?.school_id) {
             setUserSchoolId(profile.school_id);
+            
+            // Fetch school name
+            const { data: school } = await supabase
+              .from('schools')
+              .select('name')
+              .eq('id', profile.school_id)
+              .single();
+            
+            if (school?.name) {
+              setSchoolName(school.name);
+            }
             
             // Check plan limits
             const { data: features } = await supabase
@@ -219,18 +233,60 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
         avatarUrl = publicUrl;
       }
 
-      const { error } = await supabase.from('students').insert([{
+      const { data: studentData, error } = await supabase.from('students').insert([{
         ...formData,
         school_id: userSchoolId,
         avatar_url: avatarUrl,
-      }]);
+      }]).select().single();
 
       if (error) throw error;
 
-      toast({
-        title: "Succès",
-        description: "Élève ajouté avec succès",
-      });
+      // Create parent account and send credentials if email provided and option checked
+      if (sendParentCredentials && formData.parent_email && studentData) {
+        try {
+          const { data: session } = await supabase.auth.getSession();
+          const response = await supabase.functions.invoke('create-parent-account', {
+            body: {
+              student_id: studentData.id,
+              parent_name: formData.parent_name,
+              parent_email: formData.parent_email,
+              student_name: `${formData.first_name} ${formData.last_name}`,
+              school_name: schoolName,
+              school_id: userSchoolId,
+            },
+          });
+
+          if (response.error) {
+            console.error('Parent account creation error:', response.error);
+            toast({
+              title: "Attention",
+              description: "Élève ajouté mais impossible de créer le compte parent. Vous pouvez réessayer plus tard.",
+              variant: "default",
+            });
+          } else if (response.data?.email_sent) {
+            toast({
+              title: "Succès",
+              description: `Élève ajouté ! Un email avec les identifiants a été envoyé à ${formData.parent_email}`,
+            });
+          } else if (response.data?.is_new_user === false) {
+            toast({
+              title: "Succès",
+              description: `Élève ajouté et lié au compte parent existant (${formData.parent_email})`,
+            });
+          }
+        } catch (parentError) {
+          console.error('Failed to create parent account:', parentError);
+          toast({
+            title: "Élève ajouté",
+            description: "L'élève a été ajouté mais le compte parent n'a pas pu être créé automatiquement.",
+          });
+        }
+      } else {
+        toast({
+          title: "Succès",
+          description: "Élève ajouté avec succès",
+        });
+      }
       
       setFormData({
         student_number: "",
@@ -245,6 +301,7 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
       });
       setAvatarFile(null);
       setAvatarPreview(null);
+      setSendParentCredentials(true);
       setOpen(false);
       onStudentAdded();
     } catch (error) {
@@ -410,7 +467,24 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
               type="email"
               value={formData.parent_email}
               onChange={(e) => setFormData(prev => ({ ...prev, parent_email: e.target.value }))}
+              placeholder="parent@email.com"
             />
+            {formData.parent_email && (
+              <div className="flex items-center space-x-2 mt-2 p-3 bg-muted/50 rounded-lg border">
+                <Checkbox
+                  id="sendCredentials"
+                  checked={sendParentCredentials}
+                  onCheckedChange={(checked) => setSendParentCredentials(checked as boolean)}
+                />
+                <label
+                  htmlFor="sendCredentials"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-2"
+                >
+                  <Mail className="h-4 w-4 text-primary" />
+                  Créer un compte parent et envoyer les identifiants par email
+                </label>
+              </div>
+            )}
           </div>
           <div>
             <Label htmlFor="address">Adresse</Label>
