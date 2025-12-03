@@ -1,5 +1,8 @@
 project_id = "xckeensgwzwrweloaeoy"
 
+[functions.create-parent-account]
+verify_jwt = true
+
 [functions.paystack-payment]
 verify_jwt = true
 
