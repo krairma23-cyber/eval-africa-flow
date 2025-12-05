@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Users, BookOpen, ClipboardCheck, Shield, Lock } from "lucide-react";
+import { GraduationCap, Users, BookOpen, ClipboardCheck, Shield, Lock, School, TrendingUp, Award, Globe } from "lucide-react";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SchoolTestimonials } from "@/components/testimonials/SchoolTestimonials";
 import { LocalSupport } from "@/components/features/LocalSupport";
@@ -54,6 +54,30 @@ const Index = () => {
               <Users className="h-5 w-5 mr-2" />
               Portail Parent
             </Button>
+          </div>
+
+          {/* Metrics Section */}
+          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center">
+              <School className="h-8 w-8 text-primary mx-auto mb-2" />
+              <div className="text-3xl font-bold text-primary">120+</div>
+              <div className="text-sm text-muted-foreground">Écoles partenaires</div>
+            </div>
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center">
+              <Users className="h-8 w-8 text-accent mx-auto mb-2" />
+              <div className="text-3xl font-bold text-accent">25,000+</div>
+              <div className="text-sm text-muted-foreground">Élèves gérés</div>
+            </div>
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center">
+              <TrendingUp className="h-8 w-8 text-primary mx-auto mb-2" />
+              <div className="text-3xl font-bold text-primary">99.9%</div>
+              <div className="text-sm text-muted-foreground">Disponibilité</div>
+            </div>
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center">
+              <Globe className="h-8 w-8 text-accent mx-auto mb-2" />
+              <div className="text-3xl font-bold text-accent">8</div>
+              <div className="text-sm text-muted-foreground">Pays africains</div>
+            </div>
           </div>
         </header>
 
