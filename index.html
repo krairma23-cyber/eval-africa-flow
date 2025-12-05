@@ -2,8 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.png" type="image/png" sizes="16x16" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Preconnect to external origins for faster loading -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://storage.googleapis.com" crossorigin />
+    <link rel="dns-prefetch" href="https://storage.googleapis.com" />
+    
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="16x16" />
 
     <title>EvalScol Africa | Logiciel Gestion École Primaire & Secondaire en Côte d'Ivoire</title>
     <meta name="description" content="EvalScol Africa est une plateforme sécurisée de gestion des évaluations scolaires pour écoles, enseignants et élèves en Côte d'Ivoire et à travers l'Afrique. Simplifiez la notation, le suivi et les rapports scolaires avec notre SaaS moderne.">
@@ -24,14 +31,22 @@
     
     <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/dDiYM98z5SULGoSVMXVuvvjlbHu2/social-images/social-1760713229633-KraVisionBusiness_Crée_un_logo_du_nom_EVALSCOL,_le_logo_est_pour_un_site_de_système_94a6cb3d-d5cc-4ed2-b622-f4ecf42a1965.jpg">
 
-    <!-- Google Analytics 4 - INSTRUCTIONS: Remplacez G-XXXXXXXXXX par votre ID -->
-    <!-- Créez un compte sur https://analytics.google.com -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <!-- Google Analytics 4 - Deferred for better performance -->
+    <!-- INSTRUCTIONS: Remplacez G-XXXXXXXXXX par votre ID -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
+      // Defer Google Analytics loading to improve initial page load
+      window.addEventListener('load', function() {
+        var script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX';
+        script.async = true;
+        document.head.appendChild(script);
+        
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+      });
     </script>
 
     <!-- Google Search Console Verification -->
