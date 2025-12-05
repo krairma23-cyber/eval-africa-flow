@@ -20,6 +20,10 @@ const Index = () => {
               src="/logo.png" 
               alt="EvalScol Logo" 
               className="h-32 w-auto object-contain"
+              width={322}
+              height={128}
+              loading="eager"
+              fetchPriority="high"
             />
           </div>
           <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4">
