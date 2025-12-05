@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { logError } from "@/lib/logger";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function DashboardLayout() {
+export default function DashboardLayout() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
