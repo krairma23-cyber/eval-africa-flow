@@ -17,7 +17,7 @@ const Classrooms = lazy(() => import("./pages/Classrooms"));
 const Assessments = lazy(() => import("./pages/Assessments"));
 const Reports = lazy(() => import("./pages/Reports"));
 const Settings = lazy(() => import("./pages/Settings"));
-const DashboardLayout = lazy(() => import("./components/layout/DashboardLayout").then(m => ({ default: m.DashboardLayout })));
+const DashboardLayout = lazy(() => import("./components/layout/DashboardLayout"));
 const UserManagement = lazy(() => import("./pages/UserManagement"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Billing = lazy(() => import("./pages/Billing"));
