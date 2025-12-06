@@ -8,23 +8,13 @@ import { EvaluationFeatures } from "@/components/features/EvaluationFeatures";
 import { ParentReports } from "@/components/features/ParentReports";
 import { PressPartners } from "@/components/features/PressPartners";
 import { AboutEvalScol } from "@/components/features/AboutEvalScol";
-
 const Index = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
+  return <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
       <div className="container mx-auto px-4 py-8 lg:py-16">
         {/* Hero Section */}
         <header className="text-center mb-12 lg:mb-16">
           <div className="inline-flex items-center justify-center gap-3 mb-4">
-            <img 
-              src="/logo.png" 
-              alt="EvalScol Logo" 
-              className="h-32 w-auto object-contain"
-              width={322}
-              height={128}
-              loading="eager"
-              fetchPriority="high"
-            />
+            <img src="/logo.png" alt="EvalScol Logo" className="h-32 w-auto object-contain" width={322} height={128} loading="eager" fetchPriority="high" />
           </div>
           <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4">
             EvalScol Africa - Plateforme SaaS Complète de Gestion Scolaire en Afrique
@@ -46,39 +36,14 @@ const Index = () => {
           </div>
           <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
             <AboutEvalScol />
-            <Button 
-              size="lg" 
-              className="bg-accent hover:bg-accent/90 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all"
-              onClick={() => window.location.href = '/parent-portal'}
-            >
+            <Button size="lg" className="bg-accent hover:bg-accent/90 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all" onClick={() => window.location.href = '/parent-portal'}>
               <Users className="h-5 w-5 mr-2" />
               Portail Parent
             </Button>
           </div>
 
           {/* Metrics Section */}
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center">
-              <School className="h-8 w-8 text-primary mx-auto mb-2" />
-              <div className="text-3xl font-bold text-primary">120+</div>
-              <div className="text-sm text-muted-foreground">Écoles partenaires</div>
-            </div>
-            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center">
-              <Users className="h-8 w-8 text-accent mx-auto mb-2" />
-              <div className="text-3xl font-bold text-accent">25,000+</div>
-              <div className="text-sm text-muted-foreground">Élèves gérés</div>
-            </div>
-            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center">
-              <TrendingUp className="h-8 w-8 text-primary mx-auto mb-2" />
-              <div className="text-3xl font-bold text-primary">99.9%</div>
-              <div className="text-sm text-muted-foreground">Disponibilité</div>
-            </div>
-            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center">
-              <Globe className="h-8 w-8 text-accent mx-auto mb-2" />
-              <div className="text-3xl font-bold text-accent">8</div>
-              <div className="text-sm text-muted-foreground">Pays africains</div>
-            </div>
-          </div>
+          
         </header>
 
         {/* Two Column Layout */}
@@ -185,8 +150,6 @@ const Index = () => {
         {/* Local Support Section */}
         <LocalSupport />
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
