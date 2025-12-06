@@ -13,6 +13,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { TuitionPaymentDialog } from "@/components/payment/TuitionPaymentDialog";
 import { StudentSchedule } from "@/components/parent/StudentSchedule";
+import { StudentPerformanceCharts } from "@/components/parent/StudentPerformanceCharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface SubjectGrade {
@@ -729,8 +730,13 @@ export default function ParentPortal() {
           </div>
         )}
 
+        {/* Performance Charts Section */}
+        {reports.length > 0 && (
+          <StudentPerformanceCharts reports={reports} />
+        )}
+
         {/* Tabs Section - Reports and Schedule */}
-        <Tabs defaultValue="reports" className="space-y-6">
+        <Tabs defaultValue="reports" className="space-y-6 mt-8">
           <TabsList className="grid w-full md:w-[400px] grid-cols-2">
             <TabsTrigger value="reports">Bulletins Scolaires</TabsTrigger>
             <TabsTrigger value="schedule">Emploi du Temps</TabsTrigger>
