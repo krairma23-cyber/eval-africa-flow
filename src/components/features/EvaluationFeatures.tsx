@@ -1,15 +1,18 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClipboardCheck, TrendingUp, BarChart3, FileCheck, PieChart, Target } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function EvaluationFeatures() {
+  const { t } = useLanguage();
+  
   return (
     <div className="mt-16 lg:mt-24">
       <div className="text-center mb-12">
         <h2 className="text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-          Évaluations & Suivi des Progrès
+          {t('eval.title')}
         </h2>
         <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          Système complet de gestion des évaluations avec analytics avancés pour suivre la progression de vos élèves
+          {t('eval.subtitle')}
         </p>
       </div>
 
@@ -20,25 +23,25 @@ export function EvaluationFeatures() {
               <div className="p-2 rounded-lg bg-primary/10">
                 <ClipboardCheck className="h-6 w-6 text-primary" />
               </div>
-              <CardTitle className="text-xl">Tests & Quiz</CardTitle>
+              <CardTitle className="text-xl">{t('eval.tests.title')}</CardTitle>
             </div>
             <CardDescription className="text-base">
-              Créez facilement des examens, contrôles et devoirs. Personnalisez les types d'évaluation selon vos besoins pédagogiques.
+              {t('eval.tests.desc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Multiples types d'évaluations
+                {t('eval.tests.types')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Coefficients personnalisables
+                {t('eval.tests.coefficients')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Saisie rapide des notes
+                {t('eval.tests.grades')}
               </li>
             </ul>
           </CardContent>
@@ -50,25 +53,25 @@ export function EvaluationFeatures() {
               <div className="p-2 rounded-lg bg-accent/10">
                 <TrendingUp className="h-6 w-6 text-accent" />
               </div>
-              <CardTitle className="text-xl">Suivi des Progrès</CardTitle>
+              <CardTitle className="text-xl">{t('eval.progress.title')}</CardTitle>
             </div>
             <CardDescription className="text-base">
-              Suivez l'évolution de chaque élève avec des tableaux de bord détaillés et des indicateurs de performance.
+              {t('eval.progress.desc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent" />
-                Progression par trimestre
+                {t('eval.progress.trimester')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent" />
-                Comparaison temporelle
+                {t('eval.progress.comparison')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent" />
-                Alertes automatiques
+                {t('eval.progress.alerts')}
               </li>
             </ul>
           </CardContent>
@@ -80,25 +83,25 @@ export function EvaluationFeatures() {
               <div className="p-2 rounded-lg bg-primary/10">
                 <BarChart3 className="h-6 w-6 text-primary" />
               </div>
-              <CardTitle className="text-xl">Analytics Avancés</CardTitle>
+              <CardTitle className="text-xl">{t('eval.analytics.title')}</CardTitle>
             </div>
             <CardDescription className="text-base">
-              Visualisez les données avec des graphiques interactifs et des rapports détaillés pour une meilleure prise de décision.
+              {t('eval.analytics.desc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Graphiques interactifs
+                {t('eval.analytics.charts')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Statistiques par classe
+                {t('eval.analytics.stats')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Rapports exportables
+                {t('eval.analytics.exports')}
               </li>
             </ul>
           </CardContent>
@@ -110,25 +113,25 @@ export function EvaluationFeatures() {
               <div className="p-2 rounded-lg bg-accent/10">
                 <FileCheck className="h-6 w-6 text-accent" />
               </div>
-              <CardTitle className="text-xl">Bulletins Automatisés</CardTitle>
+              <CardTitle className="text-xl">{t('eval.bulletins.title')}</CardTitle>
             </div>
             <CardDescription className="text-base">
-              Génération automatique des bulletins scolaires avec calculs de moyennes et appréciations personnalisées.
+              {t('eval.bulletins.desc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent" />
-                Calculs automatiques
+                {t('eval.bulletins.calc')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent" />
-                Templates personnalisables
+                {t('eval.bulletins.templates')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent" />
-                Export PDF
+                {t('eval.bulletins.pdf')}
               </li>
             </ul>
           </CardContent>
@@ -140,25 +143,25 @@ export function EvaluationFeatures() {
               <div className="p-2 rounded-lg bg-primary/10">
                 <PieChart className="h-6 w-6 text-primary" />
               </div>
-              <CardTitle className="text-xl">Statistiques Détaillées</CardTitle>
+              <CardTitle className="text-xl">{t('eval.statistics.title')}</CardTitle>
             </div>
             <CardDescription className="text-base">
-              Accédez à des statistiques complètes par matière, classe, élève pour identifier les points forts et axes d'amélioration.
+              {t('eval.statistics.desc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Moyennes par matière
+                {t('eval.statistics.averages')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Taux de réussite
+                {t('eval.statistics.success')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Classements
+                {t('eval.statistics.rankings')}
               </li>
             </ul>
           </CardContent>
@@ -170,25 +173,25 @@ export function EvaluationFeatures() {
               <div className="p-2 rounded-lg bg-accent/10">
                 <Target className="h-6 w-6 text-accent" />
               </div>
-              <CardTitle className="text-xl">Objectifs Pédagogiques</CardTitle>
+              <CardTitle className="text-xl">{t('eval.objectives.title')}</CardTitle>
             </div>
             <CardDescription className="text-base">
-              Définissez et suivez les objectifs d'apprentissage pour chaque classe et matière avec des indicateurs de réussite.
+              {t('eval.objectives.desc')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent" />
-                Suivi des compétences
+                {t('eval.objectives.skills')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent" />
-                Évaluation continue
+                {t('eval.objectives.continuous')}
               </li>
               <li className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-accent" />
-                Bilans périodiques
+                {t('eval.objectives.reports')}
               </li>
             </ul>
           </CardContent>
@@ -200,24 +203,23 @@ export function EvaluationFeatures() {
         <CardContent className="pt-8 pb-8">
           <div className="text-center max-w-2xl mx-auto">
             <h3 className="text-2xl font-bold mb-3">
-              Transformez votre gestion des évaluations
+              {t('eval.cta.title')}
             </h3>
             <p className="text-muted-foreground mb-6">
-              Gagnez du temps avec notre système intelligent d'évaluations et de suivi des progrès. 
-              Des outils puissants pour une pédagogie efficace et des résultats mesurables.
+              {t('eval.cta.desc')}
             </p>
             <div className="flex flex-wrap justify-center gap-4 text-sm">
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-background/50">
                 <ClipboardCheck className="h-4 w-4 text-primary" />
-                <span>Création rapide</span>
+                <span>{t('eval.cta.quick')}</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-background/50">
                 <BarChart3 className="h-4 w-4 text-accent" />
-                <span>Analyses en temps réel</span>
+                <span>{t('eval.cta.realtime')}</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-background/50">
                 <TrendingUp className="h-4 w-4 text-primary" />
-                <span>Suivi personnalisé</span>
+                <span>{t('eval.cta.personal')}</span>
               </div>
             </div>
           </div>

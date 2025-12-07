@@ -1,42 +1,45 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Globe, Clock, MessageCircle, Headphones } from "lucide-react";
-
-const supportFeatures = [
-  {
-    icon: Globe,
-    title: "Multilingue",
-    description: "Interface en français, anglais et langues locales",
-    details: "Wolof, Bambara, Ewe, Yoruba"
-  },
-  {
-    icon: Clock,
-    title: "Fuseau Horaire Local",
-    description: "GMT/UTC adapté à l'Afrique de l'Ouest",
-    details: "Dakar, Abidjan, Cotonou, Lomé"
-  },
-  {
-    icon: MessageCircle,
-    title: "Support en Temps Réel",
-    description: "Équipe locale disponible pendant les heures de bureau",
-    details: "Lun-Ven: 8h-18h (heure locale)"
-  },
-  {
-    icon: Headphones,
-    title: "Accompagnement Culturel",
-    description: "Formation adaptée aux contextes éducatifs africains",
-    details: "Programmes, calendriers, évaluations"
-  }
-];
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const LocalSupport = () => {
+  const { t } = useLanguage();
+  
+  const supportFeatures = [
+    {
+      icon: Globe,
+      title: t('support.multilingual'),
+      description: t('support.multilingual.desc'),
+      details: t('support.multilingual.details')
+    },
+    {
+      icon: Clock,
+      title: t('support.timezone'),
+      description: t('support.timezone.desc'),
+      details: t('support.timezone.details')
+    },
+    {
+      icon: MessageCircle,
+      title: t('support.realtime'),
+      description: t('support.realtime.desc'),
+      details: t('support.realtime.details')
+    },
+    {
+      icon: Headphones,
+      title: t('support.cultural'),
+      description: t('support.cultural.desc'),
+      details: t('support.cultural.details')
+    }
+  ];
+
   return (
     <section className="py-12 lg:py-16 border-t border-border/50">
       <div className="text-center mb-12">
         <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-          Support Local, Expertise Globale
+          {t('support.local.title')}
         </h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Une plateforme conçue pour les écoles africaines, avec un accompagnement en français et dans vos langues locales
+          {t('support.local.subtitle')}
         </p>
       </div>
 
@@ -76,29 +79,29 @@ export const LocalSupport = () => {
             <div className="flex items-center justify-center gap-2 mb-3">
               <Globe className="h-5 w-5 text-accent" />
               <h3 className="text-lg font-semibold text-foreground">
-                Présence Régionale
+                {t('support.regional')}
               </h3>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div>
-                <p className="font-medium text-foreground">Sénégal 🇸🇳</p>
-                <p className="text-xs text-muted-foreground">Bureau Dakar</p>
+                <p className="font-medium text-foreground">{t('countries.sn')} 🇸🇳</p>
+                <p className="text-xs text-muted-foreground">{t('support.regional.office')} Dakar</p>
               </div>
               <div>
-                <p className="font-medium text-foreground">Côte d'Ivoire 🇨🇮</p>
-                <p className="text-xs text-muted-foreground">Bureau Abidjan</p>
+                <p className="font-medium text-foreground">{t('countries.ci')} 🇨🇮</p>
+                <p className="text-xs text-muted-foreground">{t('support.regional.office')} Abidjan</p>
               </div>
               <div>
-                <p className="font-medium text-foreground">Bénin 🇧🇯</p>
-                <p className="text-xs text-muted-foreground">Partenaire Cotonou</p>
+                <p className="font-medium text-foreground">{t('countries.bj')} 🇧🇯</p>
+                <p className="text-xs text-muted-foreground">{t('support.regional.partner')} Cotonou</p>
               </div>
               <div>
-                <p className="font-medium text-foreground">Togo 🇹🇬</p>
-                <p className="text-xs text-muted-foreground">Partenaire Lomé</p>
+                <p className="font-medium text-foreground">{t('countries.tg')} 🇹🇬</p>
+                <p className="text-xs text-muted-foreground">{t('support.regional.partner')} Lomé</p>
               </div>
             </div>
             <p className="text-xs text-muted-foreground mt-4">
-              Support technique disponible en français • Horaires d'ouverture: GMT/UTC+0
+              {t('support.regional.footer')}
             </p>
           </CardContent>
         </Card>
