@@ -20,6 +20,7 @@ import {
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Sidebar,
   SidebarContent,
@@ -32,31 +33,31 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const menuItems = [
-  { title: "Tableau de bord", url: "/dashboard", icon: Home },
-  { title: "Élèves", url: "/dashboard/students", icon: Users },
-  { title: "Enseignants", url: "/dashboard/teachers", icon: GraduationCap },
-  { title: "Classes", url: "/dashboard/classrooms", icon: School },
-  { title: "Matières", url: "/dashboard/subjects", icon: BookOpen },
-  { title: "Emploi du Temps", url: "/dashboard/schedule", icon: Calendar },
-  { title: "Évaluations", url: "/dashboard/assessments", icon: ClipboardCheck },
-  
-  { title: "Bulletins", url: "/dashboard/reports", icon: FileText },
-  { title: "Affectations", url: "/dashboard/assignments", icon: UserCog },
-  { title: "Analytics", url: "/dashboard/analytics", icon: BarChart3 },
-  { title: "Facturation", url: "/dashboard/billing", icon: CreditCard },
-  { title: "API", url: "/dashboard/api", icon: Code },
-  { title: "Support", url: "/dashboard/support", icon: HelpCircle },
-  { title: "Notifications", url: "/dashboard/notifications", icon: Bell },
-  { title: "Utilisateurs", url: "/dashboard/users", icon: Shield },
-  { title: "Paramètres", url: "/dashboard/settings", icon: Settings },
-];
-
 export function AppSidebar() {
   const { isMobile, setOpen, setOpenMobile } = useSidebar();
   const location = useLocation();
   const [schoolLogo, setSchoolLogo] = useState<string | null>(null);
   const [schoolName, setSchoolName] = useState<string>("EvalScol");
+  const { t } = useLanguage();
+
+  const menuItems = [
+    { title: t('sidebar.dashboard'), url: "/dashboard", icon: Home },
+    { title: t('sidebar.students'), url: "/dashboard/students", icon: Users },
+    { title: t('sidebar.teachers'), url: "/dashboard/teachers", icon: GraduationCap },
+    { title: t('sidebar.classrooms'), url: "/dashboard/classrooms", icon: School },
+    { title: t('sidebar.subjects'), url: "/dashboard/subjects", icon: BookOpen },
+    { title: t('sidebar.schedule'), url: "/dashboard/schedule", icon: Calendar },
+    { title: t('sidebar.assessments'), url: "/dashboard/assessments", icon: ClipboardCheck },
+    { title: t('sidebar.reports'), url: "/dashboard/reports", icon: FileText },
+    { title: t('sidebar.assignments'), url: "/dashboard/assignments", icon: UserCog },
+    { title: t('sidebar.analytics'), url: "/dashboard/analytics", icon: BarChart3 },
+    { title: t('sidebar.billing'), url: "/dashboard/billing", icon: CreditCard },
+    { title: t('sidebar.api'), url: "/dashboard/api", icon: Code },
+    { title: t('sidebar.support'), url: "/dashboard/support", icon: HelpCircle },
+    { title: t('sidebar.notifications'), url: "/dashboard/notifications", icon: Bell },
+    { title: t('sidebar.users'), url: "/dashboard/users", icon: Shield },
+    { title: t('sidebar.settings'), url: "/dashboard/settings", icon: Settings },
+  ];
 
   // Close sidebar automatically after navigation on mobile only
   useEffect(() => {
@@ -141,7 +142,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild>
                     <NavLink 
                       to={item.url} 

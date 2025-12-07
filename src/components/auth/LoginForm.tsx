@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Secure validation schemas
 const loginSchema = z.object({
@@ -43,6 +44,7 @@ export function LoginForm() {
   const [activeTab, setActiveTab] = useState("signin");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +55,7 @@ export function LoginForm() {
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast({
-          title: "Erreur de validation",
+          title: t('common.error'),
           description: error.errors[0].message,
           variant: "destructive",
         });
@@ -70,25 +72,23 @@ export function LoginForm() {
       });
 
       if (error) {
-        // Don't expose detailed error messages
         toast({
-          title: "Erreur de connexion",
+          title: t('common.error'),
           description: "Email ou mot de passe incorrect.",
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Connexion réussie",
+          title: t('common.success'),
           description: "Bienvenue dans EvalScol",
         });
-        // Wait a bit for the auth state to propagate
         setTimeout(() => {
           navigate("/dashboard", { replace: true });
         }, 100);
       }
     } catch (error) {
       toast({
-        title: "Erreur",
+        title: t('common.error'),
         description: "Une erreur est survenue lors de la connexion",
         variant: "destructive",
       });
@@ -100,7 +100,6 @@ export function LoginForm() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate all signup fields
     try {
       signupSchema.parse({ 
         email, 
@@ -111,7 +110,7 @@ export function LoginForm() {
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast({
-          title: "Erreur de validation",
+          title: t('common.error'),
           description: error.errors[0].message,
           variant: "destructive",
         });
@@ -137,24 +136,19 @@ export function LoginForm() {
       });
 
       if (error) {
-        // Don't log errors in production
-        if (import.meta.env.DEV) {
-          // Error logged to audit system only
-        }
-        // Sanitize error messages
         const message = error.message.includes("already registered") 
           ? "Cette adresse email est déjà utilisée."
           : "Impossible de créer le compte. Veuillez vérifier vos informations.";
         
         toast({
-          title: "Erreur d'inscription",
+          title: t('common.error'),
           description: message,
           variant: "destructive",
         });
       } else if (data.user) {
         toast({
-          title: "Inscription réussie !",
-          description: "⚠️ IMPORTANT: Vérifiez votre email et cliquez sur le lien de confirmation. Sans cette étape, vous ne pourrez pas vous connecter à la plateforme.",
+          title: t('common.success'),
+          description: "⚠️ IMPORTANT: Vérifiez votre email et cliquez sur le lien de confirmation.",
           duration: 10000,
         });
         setFirstName("");
@@ -165,12 +159,8 @@ export function LoginForm() {
         setActiveTab("signin");
       }
     } catch (error: any) {
-      // Don't log errors in production
-      if (import.meta.env.DEV) {
-        // Error logged to audit system only
-      }
       toast({
-        title: "Erreur",
+        title: t('common.error'),
         description: "Une erreur est survenue lors de l'inscription",
         variant: "destructive",
       });
@@ -193,14 +183,14 @@ export function LoginForm() {
 
       if (error) {
         toast({
-          title: "Erreur",
+          title: t('common.error'),
           description: error.message,
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "Erreur",
+        title: t('common.error'),
         description: "Une erreur est survenue lors de la connexion avec Google",
         variant: "destructive",
       });
@@ -222,20 +212,20 @@ export function LoginForm() {
 
       if (error) {
         toast({
-          title: "Erreur",
+          title: t('common.error'),
           description: error.message,
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Email envoyé",
+          title: t('common.success'),
           description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
         });
         setEmail("");
       }
     } catch (error) {
       toast({
-        title: "Erreur",
+        title: t('common.error'),
         description: "Une erreur est survenue lors de l'envoi de l'email",
         variant: "destructive",
       });
@@ -265,24 +255,24 @@ export function LoginForm() {
             />
           </div>
           <CardDescription>
-            Système de gestion des évaluations scolaires
+            {t('login.title')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="signin" className="text-xs sm:text-sm">Connexion</TabsTrigger>
-              <TabsTrigger value="signup" className="text-xs sm:text-sm">Inscription</TabsTrigger>
+              <TabsTrigger value="signin" className="text-xs sm:text-sm">{t('login.signin')}</TabsTrigger>
+              <TabsTrigger value="signup" className="text-xs sm:text-sm">{t('login.signup')}</TabsTrigger>
               <TabsTrigger value="reset" className="text-xs sm:text-sm whitespace-normal leading-tight py-2">
-                <span className="hidden sm:inline">Mot de passe oublié</span>
-                <span className="sm:hidden">Mot de passe</span>
+                <span className="hidden sm:inline">{t('login.forgot')}</span>
+                <span className="sm:hidden">{t('login.password')}</span>
               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('login.email')}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -292,7 +282,7 @@ export function LoginForm() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password">Mot de passe</Label>
+                  <Label htmlFor="password">{t('login.password')}</Label>
                   <Input
                     id="password"
                     type="password"
@@ -302,7 +292,7 @@ export function LoginForm() {
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Connexion..." : "Se connecter"}
+                  {loading ? t('login.loading.signin') : t('login.submit.signin')}
                 </Button>
 
                 <div className="relative my-4">
@@ -310,7 +300,7 @@ export function LoginForm() {
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">Ou</span>
+                    <span className="bg-background px-2 text-muted-foreground">{t('login.or')}</span>
                   </div>
                 </div>
 
@@ -322,7 +312,7 @@ export function LoginForm() {
                   disabled={loading}
                 >
                   <GoogleIcon />
-                  Se connecter avec Google
+                  {t('login.google')}
                 </Button>
               </form>
             </TabsContent>
@@ -337,7 +327,7 @@ export function LoginForm() {
                   disabled={loading}
                 >
                   <GoogleIcon />
-                  S'inscrire avec Google
+                  {t('login.googleSignup')}
                 </Button>
 
                 <div className="relative my-4">
@@ -345,13 +335,13 @@ export function LoginForm() {
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">Ou avec email</span>
+                    <span className="bg-background px-2 text-muted-foreground">{t('login.orWithEmail')}</span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">Prénom</Label>
+                    <Label htmlFor="firstName">{t('login.firstName')}</Label>
                     <Input
                       id="firstName"
                       value={firstName}
@@ -360,7 +350,7 @@ export function LoginForm() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Nom</Label>
+                    <Label htmlFor="lastName">{t('login.lastName')}</Label>
                     <Input
                       id="lastName"
                       value={lastName}
@@ -370,7 +360,7 @@ export function LoginForm() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signupEmail">Email</Label>
+                  <Label htmlFor="signupEmail">{t('login.email')}</Label>
                   <Input
                     id="signupEmail"
                     type="email"
@@ -380,7 +370,7 @@ export function LoginForm() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signupPassword">Mot de passe (min. 8 caractères)</Label>
+                  <Label htmlFor="signupPassword">{t('login.passwordMin')}</Label>
                   <Input
                     id="signupPassword"
                     type="password"
@@ -400,14 +390,14 @@ export function LoginForm() {
                     htmlFor="privacy" 
                     className="text-sm font-normal leading-tight cursor-pointer"
                   >
-                    J'ai lu et j'accepte la politique de confidentialité d'EvalScol
+                    {t('login.privacy')}
                   </Label>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Note: Après confirmation de votre email, vous aurez accès à la plateforme.
+                  {t('login.afterConfirm')}
                 </p>
                 <Button type="submit" className="w-full" disabled={loading || !acceptPrivacyPolicy}>
-                  {loading ? "Inscription..." : "S'inscrire"}
+                  {loading ? t('login.loading.signup') : t('login.submit.signup')}
                 </Button>
               </form>
             </TabsContent>
@@ -415,7 +405,7 @@ export function LoginForm() {
             <TabsContent value="reset">
               <form onSubmit={handleResetPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="resetEmail">Email</Label>
+                  <Label htmlFor="resetEmail">{t('login.email')}</Label>
                   <Input
                     id="resetEmail"
                     type="email"
@@ -426,10 +416,10 @@ export function LoginForm() {
                   />
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Entrez votre email pour recevoir un lien de réinitialisation de mot de passe.
+                  {t('login.resetInstructions')}
                 </p>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Envoi..." : "Réinitialiser le mot de passe"}
+                  {loading ? t('login.loading.reset') : t('login.submit.reset')}
                 </Button>
               </form>
             </TabsContent>
