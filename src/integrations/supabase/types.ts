@@ -3311,14 +3311,23 @@ export type Database = {
       students: {
         Row: {
           address: string | null
+          allergies: string | null
           amount_paid: number | null
           avatar_url: string | null
+          blood_type: string | null
           created_at: string | null
           date_of_birth: string | null
+          doctor_name: string | null
+          doctor_phone: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
           first_name: string
           gender: string | null
           id: string
           last_name: string
+          medical_conditions: string | null
+          medical_notes: string | null
+          medications: string | null
           parent_email: string | null
           parent_name: string | null
           parent_phone: string | null
@@ -3333,14 +3342,23 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          allergies?: string | null
           amount_paid?: number | null
           avatar_url?: string | null
+          blood_type?: string | null
           created_at?: string | null
           date_of_birth?: string | null
+          doctor_name?: string | null
+          doctor_phone?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
           first_name: string
           gender?: string | null
           id?: string
           last_name: string
+          medical_conditions?: string | null
+          medical_notes?: string | null
+          medications?: string | null
           parent_email?: string | null
           parent_name?: string | null
           parent_phone?: string | null
@@ -3355,14 +3373,23 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          allergies?: string | null
           amount_paid?: number | null
           avatar_url?: string | null
+          blood_type?: string | null
           created_at?: string | null
           date_of_birth?: string | null
+          doctor_name?: string | null
+          doctor_phone?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
           first_name?: string
           gender?: string | null
           id?: string
           last_name?: string
+          medical_conditions?: string | null
+          medical_notes?: string | null
+          medications?: string | null
           parent_email?: string | null
           parent_name?: string | null
           parent_phone?: string | null
