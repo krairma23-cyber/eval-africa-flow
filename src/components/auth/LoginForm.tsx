@@ -8,8 +8,10 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { z } from "zod";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { GraduationCap, User } from "lucide-react";
 
 // Secure validation schemas
 const loginSchema = z.object({
@@ -32,6 +34,7 @@ const signupSchema = loginSchema.extend({
     .trim()
     .min(2, "Le nom doit contenir au moins 2 caractères")
     .max(50, "Nom trop long"),
+  role: z.enum(["user", "teacher"]),
 });
 
 export function LoginForm() {
@@ -39,6 +42,7 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [selectedRole, setSelectedRole] = useState<"user" | "teacher">("user");
   const [acceptPrivacyPolicy, setAcceptPrivacyPolicy] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("signin");
@@ -105,7 +109,8 @@ export function LoginForm() {
         email, 
         password, 
         firstName, 
-        lastName 
+        lastName,
+        role: selectedRole
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -131,6 +136,7 @@ export function LoginForm() {
           data: {
             first_name: firstName.trim(),
             last_name: lastName.trim(),
+            requested_role: selectedRole,
           },
         },
       });
@@ -155,6 +161,7 @@ export function LoginForm() {
         setLastName("");
         setEmail("");
         setPassword("");
+        setSelectedRole("user");
         setAcceptPrivacyPolicy(false);
         setActiveTab("signin");
       }
@@ -337,6 +344,30 @@ export function LoginForm() {
                   <div className="relative flex justify-center text-xs uppercase">
                     <span className="bg-background px-2 text-muted-foreground">{t('login.orWithEmail')}</span>
                   </div>
+                </div>
+
+                <div className="space-y-3">
+                  <Label>Je suis...</Label>
+                  <RadioGroup 
+                    value={selectedRole} 
+                    onValueChange={(value) => setSelectedRole(value as "user" | "teacher")}
+                    className="grid grid-cols-2 gap-3"
+                  >
+                    <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "user" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                      <RadioGroupItem value="user" id="role-user" className="sr-only" />
+                      <label htmlFor="role-user" className="flex items-center gap-2 cursor-pointer w-full">
+                        <User className="h-5 w-5 text-primary" />
+                        <span className="font-medium text-sm">Utilisateur</span>
+                      </label>
+                    </div>
+                    <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "teacher" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                      <RadioGroupItem value="teacher" id="role-teacher" className="sr-only" />
+                      <label htmlFor="role-teacher" className="flex items-center gap-2 cursor-pointer w-full">
+                        <GraduationCap className="h-5 w-5 text-primary" />
+                        <span className="font-medium text-sm">Enseignant</span>
+                      </label>
+                    </div>
+                  </RadioGroup>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
