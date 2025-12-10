@@ -1,10 +1,19 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.4';
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Validation schema for payment reference
+const ProcessPaymentSchema = z.object({
+  reference: z.string()
+    .min(10, "Reference too short")
+    .max(100, "Reference too long")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Invalid reference format")
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -22,18 +31,29 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { reference } = await req.json();
-
-    if (!reference) {
+    // Validate input with Zod
+    let validated;
+    try {
+      const body = await req.json();
+      validated = ProcessPaymentSchema.parse(body);
+    } catch (validationError) {
+      console.error('[process-tuition-payment] Validation error:', validationError);
       return new Response(
-        JSON.stringify({ error: 'Payment reference is required' }),
+        JSON.stringify({ 
+          error: 'Invalid request data',
+          details: validationError instanceof z.ZodError 
+            ? validationError.errors.map(e => e.message).join(', ')
+            : 'Validation failed'
+        }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
+    const { reference } = validated;
+
     // Verify payment with Paystack
     const paystackResponse = await fetch(
-      `https://api.paystack.co/transaction/verify/${reference}`,
+      `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
       {
         method: 'GET',
         headers: {
@@ -45,7 +65,7 @@ serve(async (req) => {
     const paystackData = await paystackResponse.json();
 
     if (!paystackResponse.ok || paystackData.data.status !== 'success') {
-      console.error('Payment verification failed:', paystackData);
+      console.error('[process-tuition-payment] Payment verification failed:', paystackData.message);
       return new Response(
         JSON.stringify({ 
           error: 'Payment verification failed', 
@@ -114,11 +134,11 @@ serve(async (req) => {
       });
 
     if (transactionError) {
-      console.error('Failed to create transaction record:', transactionError);
+      console.error('[process-tuition-payment] Failed to create transaction record:', transactionError.message);
       // Don't fail the whole operation if transaction logging fails
     }
 
-    console.log(`Tuition payment processed for student ${studentId}: ${amount} FCFA`);
+    console.log(`[process-tuition-payment] Tuition payment processed for student ${studentId}: ${amount} FCFA`);
 
     return new Response(
       JSON.stringify({
@@ -137,11 +157,11 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error processing tuition payment:', error);
+    console.error('[process-tuition-payment] Error processing tuition payment:', error.message);
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error', 
-        message: error.message 
+        message: 'An error occurred while processing the payment'
       }),
       { 
         status: 500, 

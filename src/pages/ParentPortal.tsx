@@ -391,7 +391,7 @@ export default function ParentPortal() {
           }
         }
       } catch (error) {
-        console.error('Error fetching school data:', error);
+        // School data fetch failed - using defaults
       }
       
       // Add logo if available
@@ -417,7 +417,7 @@ export default function ParentPortal() {
             doc.addImage(base64, format, 160, 8, 30, 30);
           }
         } catch (error) {
-          console.error('Error loading school logo:', error);
+          // Logo loading failed - proceeding without logo
         }
       }
       
