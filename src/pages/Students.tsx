@@ -12,7 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
 import { EditStudentDialog } from "@/components/forms/EditStudentDialog";
 import { EnrollStudentDialog } from "@/components/forms/EnrollStudentDialog";
-import { Pencil, UserPlus, DollarSign, Check, X } from "lucide-react";
+import { Pencil, UserPlus, DollarSign, Check, X, Mail } from "lucide-react";
+import { SendParentPortalLinkDialog } from "@/components/forms/SendParentPortalLinkDialog";
 import { ManagePaymentDialog } from "@/components/forms/ManagePaymentDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
@@ -604,12 +605,26 @@ export default function Students() {
                       Absent
                     </Button>
                   </div>
-                  <EditStudentDialog student={student} onStudentUpdated={fetchStudents}>
-                    <Button variant="outline" size="sm" className="w-full h-8">
-                      <Pencil className="h-3 w-3 mr-1" />
-                      Modifier
-                    </Button>
-                  </EditStudentDialog>
+                  <div className="flex gap-2">
+                    <EditStudentDialog student={student} onStudentUpdated={fetchStudents}>
+                      <Button variant="outline" size="sm" className="flex-1 h-8">
+                        <Pencil className="h-3 w-3 mr-1" />
+                        Modifier
+                      </Button>
+                    </EditStudentDialog>
+                    {student.parent_email && (
+                      <SendParentPortalLinkDialog
+                        studentName={`${student.first_name} ${student.last_name}`}
+                        parentEmail={student.parent_email}
+                        parentName={student.parent_name}
+                      >
+                        <Button variant="secondary" size="sm" className="flex-1 h-8">
+                          <Mail className="h-3 w-3 mr-1" />
+                          Portail
+                        </Button>
+                      </SendParentPortalLinkDialog>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
