@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { z } from "zod";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { GraduationCap, User } from "lucide-react";
+import { GraduationCap, User, Building2, Users } from "lucide-react";
 
 // Secure validation schemas
 const loginSchema = z.object({
@@ -35,6 +35,8 @@ const signupSchema = loginSchema.extend({
     .min(2, "Le nom doit contenir au moins 2 caractères")
     .max(50, "Nom trop long"),
   role: z.enum(["user", "teacher"]),
+  isCreatingSchool: z.boolean().optional(),
+  schoolName: z.string().max(100, "Nom d'école trop long").optional(),
 });
 
 export function LoginForm() {
@@ -43,6 +45,8 @@ export function LoginForm() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [selectedRole, setSelectedRole] = useState<"user" | "teacher">("user");
+  const [isCreatingSchool, setIsCreatingSchool] = useState(false);
+  const [schoolName, setSchoolName] = useState("");
   const [acceptPrivacyPolicy, setAcceptPrivacyPolicy] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("signin");
@@ -104,13 +108,25 @@ export function LoginForm() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate school name if creating school
+    if (isCreatingSchool && (!schoolName.trim() || schoolName.trim().length < 3)) {
+      toast({
+        title: t('common.error'),
+        description: "Le nom de l'école doit contenir au moins 3 caractères",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     try {
       signupSchema.parse({ 
         email, 
         password, 
         firstName, 
         lastName,
-        role: selectedRole
+        role: selectedRole,
+        isCreatingSchool,
+        schoolName
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -128,16 +144,24 @@ export function LoginForm() {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
+      // Build metadata based on whether creating school or joining
+      const metadata: Record<string, string> = {
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        requested_role: selectedRole,
+      };
+      
+      // If creating a new school, add school info
+      if (isCreatingSchool) {
+        metadata.school_name = schoolName.trim();
+      }
+      
       const { data, error } = await supabase.auth.signUp({
         email: email.trim(),
         password,
         options: {
           emailRedirectTo: redirectUrl,
-          data: {
-            first_name: firstName.trim(),
-            last_name: lastName.trim(),
-            requested_role: selectedRole,
-          },
+          data: metadata,
         },
       });
 
@@ -152,9 +176,13 @@ export function LoginForm() {
           variant: "destructive",
         });
       } else if (data.user) {
+        const successMessage = isCreatingSchool 
+          ? "Compte créé ! Vous serez l'administrateur de votre école. Vérifiez votre email."
+          : "⚠️ IMPORTANT: Vérifiez votre email et cliquez sur le lien de confirmation.";
+        
         toast({
           title: t('common.success'),
-          description: "⚠️ IMPORTANT: Vérifiez votre email et cliquez sur le lien de confirmation.",
+          description: successMessage,
           duration: 10000,
         });
         setFirstName("");
@@ -162,6 +190,8 @@ export function LoginForm() {
         setEmail("");
         setPassword("");
         setSelectedRole("user");
+        setIsCreatingSchool(false);
+        setSchoolName("");
         setAcceptPrivacyPolicy(false);
         setActiveTab("signin");
       }
@@ -347,28 +377,79 @@ export function LoginForm() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label>Je suis...</Label>
+                  <Label>Type d'inscription</Label>
                   <RadioGroup 
-                    value={selectedRole} 
-                    onValueChange={(value) => setSelectedRole(value as "user" | "teacher")}
+                    value={isCreatingSchool ? "create" : "join"} 
+                    onValueChange={(value) => setIsCreatingSchool(value === "create")}
                     className="grid grid-cols-2 gap-3"
                   >
-                    <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "user" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
-                      <RadioGroupItem value="user" id="role-user" className="sr-only" />
-                      <label htmlFor="role-user" className="flex items-center gap-2 cursor-pointer w-full">
-                        <User className="h-5 w-5 text-primary" />
-                        <span className="font-medium text-sm">Utilisateur</span>
+                    <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${!isCreatingSchool ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                      <RadioGroupItem value="join" id="type-join" className="sr-only" />
+                      <label htmlFor="type-join" className="flex items-center gap-2 cursor-pointer w-full">
+                        <Users className="h-5 w-5 text-primary" />
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm">Rejoindre</span>
+                          <span className="text-xs text-muted-foreground">Une école existante</span>
+                        </div>
                       </label>
                     </div>
-                    <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "teacher" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
-                      <RadioGroupItem value="teacher" id="role-teacher" className="sr-only" />
-                      <label htmlFor="role-teacher" className="flex items-center gap-2 cursor-pointer w-full">
-                        <GraduationCap className="h-5 w-5 text-primary" />
-                        <span className="font-medium text-sm">Enseignant</span>
+                    <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${isCreatingSchool ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                      <RadioGroupItem value="create" id="type-create" className="sr-only" />
+                      <label htmlFor="type-create" className="flex items-center gap-2 cursor-pointer w-full">
+                        <Building2 className="h-5 w-5 text-primary" />
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm">Créer</span>
+                          <span className="text-xs text-muted-foreground">Ma propre école</span>
+                        </div>
                       </label>
                     </div>
                   </RadioGroup>
                 </div>
+
+                {isCreatingSchool && (
+                  <div className="space-y-2 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                    <Label htmlFor="schoolName" className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4" />
+                      Nom de votre école *
+                    </Label>
+                    <Input
+                      id="schoolName"
+                      value={schoolName}
+                      onChange={(e) => setSchoolName(e.target.value)}
+                      placeholder="Ex: École Primaire Excellence"
+                      required={isCreatingSchool}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Vous deviendrez automatiquement l'administrateur de cette école.
+                    </p>
+                  </div>
+                )}
+
+                {!isCreatingSchool && (
+                  <div className="space-y-3">
+                    <Label>Je suis...</Label>
+                    <RadioGroup 
+                      value={selectedRole} 
+                      onValueChange={(value) => setSelectedRole(value as "user" | "teacher")}
+                      className="grid grid-cols-2 gap-3"
+                    >
+                      <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "user" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                        <RadioGroupItem value="user" id="role-user" className="sr-only" />
+                        <label htmlFor="role-user" className="flex items-center gap-2 cursor-pointer w-full">
+                          <User className="h-5 w-5 text-primary" />
+                          <span className="font-medium text-sm">Utilisateur</span>
+                        </label>
+                      </div>
+                      <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "teacher" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                        <RadioGroupItem value="teacher" id="role-teacher" className="sr-only" />
+                        <label htmlFor="role-teacher" className="flex items-center gap-2 cursor-pointer w-full">
+                          <GraduationCap className="h-5 w-5 text-primary" />
+                          <span className="font-medium text-sm">Enseignant</span>
+                        </label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-2">
@@ -390,6 +471,7 @@ export function LoginForm() {
                     />
                   </div>
                 </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="signupEmail">{t('login.email')}</Label>
                   <Input
