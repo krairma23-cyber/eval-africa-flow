@@ -297,7 +297,7 @@ const DataPrivacy = () => {
               (rectification, limitation, opposition), contactez notre DPO :
             </p>
             <p className="text-sm font-mono bg-background p-2 rounded">
-              dpo@evalscol.com
+              evalscolafrica@siteteck.com
             </p>
           </div>
         </CardContent>
