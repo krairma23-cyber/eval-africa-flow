@@ -586,7 +586,7 @@ export default function About() {
               <CardContent className="pt-6 text-center">
                 <Phone className="h-10 w-10 mx-auto text-primary mb-3" />
                 <h3 className="font-semibold mb-2">{texts.phone}</h3>
-                <p className="text-muted-foreground mb-2">+225 07 07 04 19 04</p>
+                <p className="text-muted-foreground mb-2">+225 01 01 82 13 29 / 07 07 04 19 03</p>
                 <p className="text-xs text-muted-foreground">{texts.hours}</p>
               </CardContent>
             </Card>
@@ -595,8 +595,7 @@ export default function About() {
               <CardContent className="pt-6 text-center">
                 <Mail className="h-10 w-10 mx-auto text-accent mb-3" />
                 <h3 className="font-semibold mb-2">{texts.email}</h3>
-                <p className="text-muted-foreground mb-1">support@evalscol.com</p>
-                <p className="text-muted-foreground text-sm">contact@evalscol.com</p>
+                <p className="text-muted-foreground mb-1">evalscolafrica@siteteck.com</p>
               </CardContent>
             </Card>
             

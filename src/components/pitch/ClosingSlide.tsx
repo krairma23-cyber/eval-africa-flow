@@ -21,18 +21,18 @@ export const ClosingSlide = () => {
           <div className="flex items-center justify-center gap-8">
             <div>
               <div className="text-sm opacity-75">Email</div>
-              <div className="font-semibold">contact@evalscol.com</div>
+              <div className="font-semibold">evalscolafrica@siteteck.com</div>
             </div>
             <div className="border-l border-primary-foreground/30 h-12"></div>
             <div>
               <div className="text-sm opacity-75">Téléphone</div>
-              <div className="font-semibold">+225 07 07 04 19 04</div>
+              <div className="font-semibold">+225 01 01 82 13 29 / 07 07 04 19 03</div>
             </div>
           </div>
 
           <div>
             <div className="text-sm opacity-75 mb-2">Website</div>
-            <div className="font-semibold text-2xl">www.evalscol.com</div>
+            <div className="font-semibold text-2xl">evalscolafrica.siteteck.com</div>
           </div>
         </div>
 

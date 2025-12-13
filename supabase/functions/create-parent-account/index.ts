@@ -205,7 +205,7 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               <div class="footer">
                 <p>© ${new Date().getFullYear()} EvalScol Africa - Plateforme de gestion scolaire</p>
-                <p>📞 Support: +225 0707041904 | 📧 support@evalscol.com</p>
+                <p>📞 Support: +225 0101821329 / 0707041903 | 📧 evalscolafrica@siteteck.com</p>
                 <p style="font-size: 11px; color: #999;">Cet email a été envoyé automatiquement. Merci de ne pas y répondre directement.</p>
               </div>
             </div>

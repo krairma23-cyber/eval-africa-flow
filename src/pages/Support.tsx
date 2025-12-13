@@ -410,19 +410,15 @@ export default function Support() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <p><strong>Email de support:</strong></p>
-                  <p className="text-muted-foreground">support@evalscol.com</p>
-                </div>
-                <div className="space-y-2">
-                  <p><strong>Email commercial:</strong></p>
-                  <p className="text-muted-foreground">contact@evalscol.com</p>
+                  <p><strong>Email:</strong></p>
+                  <p className="text-muted-foreground">evalscolafrica@siteteck.com</p>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
                   Réponse sous 24-48h (Standard) / 12h (Professional) / 4h (Enterprise 24/7)
                 </div>
                 <Button asChild>
-                  <a href="mailto:support@evalscol.com">
+                  <a href="mailto:evalscolafrica@siteteck.com">
                     <Mail className="h-4 w-4 mr-2" />
                     Envoyer un email
                   </a>
@@ -442,8 +438,8 @@ export default function Support() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <p><strong>Téléphone / WhatsApp:</strong></p>
-                  <p className="text-muted-foreground">+225 07 07 04 19 04</p>
+                  <p><strong>Téléphone:</strong></p>
+                  <p className="text-muted-foreground">+225 01 01 82 13 29 / 07 07 04 19 03</p>
                 </div>
                 <div className="space-y-2">
                   <p><strong>Horaires:</strong></p>
@@ -460,13 +456,13 @@ export default function Support() {
                 </div>
                 <div className="flex gap-2">
                   <Button asChild className="flex-1">
-                    <a href="tel:+2250707041904">
+                    <a href="tel:+2250101821329">
                       <Phone className="h-4 w-4 mr-2" />
                       Appeler
                     </a>
                   </Button>
                   <Button asChild variant="outline" className="flex-1">
-                    <a href="https://wa.me/2250707041904" target="_blank" rel="noopener noreferrer">
+                    <a href="https://chat.whatsapp.com/DMzKKigmion9jTcsWJtDvK" target="_blank" rel="noopener noreferrer">
                       <MessageCircle className="h-4 w-4 mr-2" />
                       WhatsApp
                     </a>
