@@ -18,9 +18,32 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
-    const { payment_reference, plan_id, user_id, billing_period } = await req.json();
+    // SECURITY FIX: Extract user_id from JWT token instead of request body
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error('Missing authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Authorization required' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
-    console.log('Activating subscription:', { user_id, plan_id, payment_reference, billing_period });
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
+
+    if (authError || !user) {
+      console.error('Authentication failed:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Invalid authentication' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Use authenticated user's ID - do NOT trust user_id from request body
+    const user_id = user.id;
+    const { payment_reference, plan_id, billing_period } = await req.json();
+
+    console.log('Activating subscription for authenticated user:', { user_id, plan_id, payment_reference, billing_period });
 
     // Get plan details
     const { data: plan, error: planError } = await supabaseAdmin
@@ -69,33 +92,33 @@ serve(async (req) => {
       const paymentData = await paystackVerification.json();
       console.log('Paystack verification response:', paymentData);
 
-    // CRITICAL: Verify payment was successful
-    if (!paymentData.status || paymentData.data?.status !== 'success') {
-      console.error('Payment not verified:', paymentData);
-      return new Response(
-        JSON.stringify({ error: 'Payment not verified', details: paymentData }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+      // CRITICAL: Verify payment was successful
+      if (!paymentData.status || paymentData.data?.status !== 'success') {
+        console.error('Payment not verified:', paymentData);
+        return new Response(
+          JSON.stringify({ error: 'Payment not verified', details: paymentData }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
 
-    // CRITICAL: Verify amount matches plan price (Paystack returns amount in centimes/kobo)
-    const expectedAmountInKobo = expectedAmount * 100; // Convert XOF to centimes (100 centimes = 1 XOF)
-    if (paymentData.data.amount !== expectedAmountInKobo) {
-      console.error('Amount mismatch:', { 
-        paidAmountKobo: paymentData.data.amount, 
-        expectedAmountKobo: expectedAmountInKobo,
-        paidAmount: paymentData.data.amount / 100,
-        expectedAmount 
-      });
-      return new Response(
-        JSON.stringify({ 
-          error: 'Amount mismatch', 
-          expected: expectedAmount, 
-          received: paymentData.data.amount / 100
-        }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+      // CRITICAL: Verify amount matches plan price (Paystack returns amount in centimes/kobo)
+      const expectedAmountInKobo = expectedAmount * 100; // Convert XOF to centimes (100 centimes = 1 XOF)
+      if (paymentData.data.amount !== expectedAmountInKobo) {
+        console.error('Amount mismatch:', { 
+          paidAmountKobo: paymentData.data.amount, 
+          expectedAmountKobo: expectedAmountInKobo,
+          paidAmount: paymentData.data.amount / 100,
+          expectedAmount 
+        });
+        return new Response(
+          JSON.stringify({ 
+            error: 'Amount mismatch', 
+            expected: expectedAmount, 
+            received: paymentData.data.amount / 100
+          }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
     } else if (expectedAmount > 0 && !payment_reference) {
       console.error('Payment reference required for paid plan');
       return new Response(
