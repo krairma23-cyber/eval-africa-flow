@@ -88,7 +88,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
       {/* Plan Limit Warning */}
       {!planLoading && planLimits && (planLimits.isLimitReached || planLimits.isLimitExceeded) && (
         <Alert variant="destructive" className="border-destructive">
@@ -96,8 +96,8 @@ export default function Dashboard() {
           <AlertTitle>
             {planLimits.isLimitExceeded ? "Limite du plan dépassée !" : "Limite du plan atteinte !"}
           </AlertTitle>
-          <AlertDescription className="flex items-center justify-between">
-            <div>
+          <AlertDescription className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="text-sm">
               Vous avez <strong>{planLimits.currentStudents} élèves</strong> mais votre plan{" "}
               <strong>{planLimits.planName}</strong> permet seulement{" "}
               <strong>{planLimits.maxStudents} élèves</strong>.
@@ -109,6 +109,7 @@ export default function Dashboard() {
               onClick={() => navigate('/billing')}
               variant="default"
               size="sm"
+              className="w-full sm:w-auto flex-shrink-0"
             >
               Mettre à niveau
             </Button>
@@ -122,46 +123,46 @@ export default function Dashboard() {
         className="relative"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg blur-3xl" />
-        <div className="relative p-6 rounded-lg border border-primary/20 bg-card/50 backdrop-blur-sm">
-          <div className="flex items-center gap-4">
-            <div className="p-3 rounded-full bg-gradient-to-r from-primary to-accent">
-              <Brain className="h-6 w-6 text-primary-foreground" />
+        <div className="relative p-4 sm:p-6 rounded-lg border border-primary/20 bg-card/50 backdrop-blur-sm">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="p-2 sm:p-3 rounded-full bg-gradient-to-r from-primary to-accent flex-shrink-0">
+              <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
             </div>
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent truncate">
                 EvalScol IA
               </h1>
-              <p className="text-muted-foreground flex items-center gap-2">
-                <Zap className="h-4 w-4" />
-                Plateforme d'évaluation révolutionnaire alimentée par l'IA
+              <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
+                <Zap className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                <span className="truncate">Plateforme d'évaluation alimentée par l'IA</span>
               </p>
             </div>
           </div>
         </div>
       </motion.div>
 
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 gap-2">
-          <TabsTrigger value="overview" className="flex items-center justify-center gap-2 px-2">
-            <TrendingUp className="h-4 w-4 shrink-0" />
-            <span className="hidden sm:inline">Vue d'ensemble</span>
+      <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
+        <TabsList className="w-full h-auto flex flex-wrap gap-1 p-1">
+          <TabsTrigger value="overview" className="flex-1 min-w-[70px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
+            <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+            <span className="hidden xs:inline sm:inline truncate">Vue d'ensemble</span>
           </TabsTrigger>
-          <TabsTrigger value="ai-assistant" className="flex items-center justify-center gap-2 px-2">
-            <Brain className="h-4 w-4 shrink-0" />
-            <span className="hidden sm:inline">Assistant IA</span>
+          <TabsTrigger value="ai-assistant" className="flex-1 min-w-[70px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
+            <Brain className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+            <span className="hidden xs:inline sm:inline truncate">Assistant IA</span>
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center justify-center gap-2 px-2">
-            <Zap className="h-4 w-4 shrink-0" />
-            <span className="hidden sm:inline">Analytics IA</span>
+          <TabsTrigger value="analytics" className="flex-1 min-w-[70px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
+            <Zap className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+            <span className="hidden xs:inline sm:inline truncate">Analytics IA</span>
           </TabsTrigger>
-          <TabsTrigger value="generator" className="flex items-center justify-center gap-2 px-2">
-            <ClipboardCheck className="h-4 w-4 shrink-0" />
-            <span className="hidden sm:inline">Génération IA</span>
+          <TabsTrigger value="generator" className="flex-1 min-w-[70px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
+            <ClipboardCheck className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
+            <span className="hidden xs:inline sm:inline truncate">Génération IA</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <TabsContent value="overview" className="space-y-4 sm:space-y-6">
+          <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
             {statCards.map((card, index) => (
               <motion.div
                 key={card.title}
@@ -170,19 +171,19 @@ export default function Dashboard() {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card className="border-primary/20 bg-gradient-to-br from-card to-card/50 hover:border-primary/40 transition-all duration-300">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 p-3 sm:p-4 pb-2">
+                    <CardTitle className="text-xs sm:text-sm font-medium truncate">
                       {card.title}
                     </CardTitle>
-                    <div className="p-2 rounded-full bg-gradient-to-r from-primary/20 to-accent/20">
-                      <card.icon className="h-4 w-4 text-primary" />
+                    <div className="p-1.5 sm:p-2 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 flex-shrink-0">
+                      <card.icon className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">
-                      {loading ? <Skeleton className="h-8 w-16" /> : card.value}
+                  <CardContent className="p-3 sm:p-4 pt-0">
+                    <div className="text-xl sm:text-2xl font-bold">
+                      {loading ? <Skeleton className="h-6 sm:h-8 w-12 sm:w-16" /> : card.value}
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
                       {card.description}
                     </p>
                   </CardContent>
@@ -191,68 +192,68 @@ export default function Dashboard() {
             ))}
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <AIAssistant />
             
             <Card className="border-accent/20 bg-gradient-to-br from-card to-card/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-accent" />
-                  IA en Action
+              <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <Brain className="h-4 w-4 sm:h-5 sm:w-5 text-accent flex-shrink-0" />
+                  <span className="truncate">IA en Action</span>
                 </CardTitle>
-                <CardDescription>
-                  Fonctionnalités alimentées par l'intelligence artificielle
+                <CardDescription className="text-xs sm:text-sm">
+                  Fonctionnalités alimentées par l'IA
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                  <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
-                  <span className="text-sm">Analyse prédictive des performances</span>
+              <CardContent className="space-y-2 sm:space-y-3 p-3 sm:p-4 pt-0">
+                <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-muted/50">
+                  <div className="h-2 w-2 rounded-full bg-accent animate-pulse flex-shrink-0" />
+                  <span className="text-xs sm:text-sm truncate">Analyse prédictive des performances</span>
                 </div>
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                  <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                  <span className="text-sm">Génération automatique d'évaluations</span>
+                <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-muted/50">
+                  <div className="h-2 w-2 rounded-full bg-primary animate-pulse flex-shrink-0" />
+                  <span className="text-xs sm:text-sm truncate">Génération automatique d'évaluations</span>
                 </div>
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                  <div className="h-2 w-2 rounded-full bg-cyan-500 animate-pulse" />
-                  <span className="text-sm">Recommandations pédagogiques</span>
+                <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-muted/50">
+                  <div className="h-2 w-2 rounded-full bg-cyan-500 animate-pulse flex-shrink-0" />
+                  <span className="text-xs sm:text-sm truncate">Recommandations pédagogiques</span>
                 </div>
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                  <div className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
-                  <span className="text-sm">Détection précoce des difficultés</span>
+                <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-muted/50">
+                  <div className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse flex-shrink-0" />
+                  <span className="text-xs sm:text-sm truncate">Détection précoce des difficultés</span>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="border-primary/20 bg-gradient-to-br from-card to-card/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-primary" />
-                  Innovations EvalScol
+              <CardHeader className="p-3 sm:p-4 pb-2 sm:pb-3">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                  <span className="truncate">Innovations EvalScol</span>
                 </CardTitle>
-                <CardDescription>
-                  Ce qui nous différencie de la concurrence
+                <CardDescription className="text-xs sm:text-sm">
+                  Ce qui nous différencie
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">🎙️ Assistant vocal IA</div>
-                  <div className="text-xs text-muted-foreground">Créez des évaluations par la voix</div>
+              <CardContent className="space-y-2 sm:space-y-3 p-3 sm:p-4 pt-0">
+                <div className="space-y-1">
+                  <div className="text-xs sm:text-sm font-medium">🎙️ Assistant vocal IA</div>
+                  <div className="text-[10px] sm:text-xs text-muted-foreground">Créez des évaluations par la voix</div>
                 </div>
                 
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">🔮 Analytics prédictifs</div>
-                  <div className="text-xs text-muted-foreground">Anticipez les difficultés des élèves</div>
+                <div className="space-y-1">
+                  <div className="text-xs sm:text-sm font-medium">🔮 Analytics prédictifs</div>
+                  <div className="text-[10px] sm:text-xs text-muted-foreground">Anticipez les difficultés des élèves</div>
                 </div>
                 
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">⚡ Génération automatique</div>
-                  <div className="text-xs text-muted-foreground">Contenu pédagogique instantané</div>
+                <div className="space-y-1">
+                  <div className="text-xs sm:text-sm font-medium">⚡ Génération automatique</div>
+                  <div className="text-[10px] sm:text-xs text-muted-foreground">Contenu pédagogique instantané</div>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">🧠 Apprentissage adaptatif</div>
-                  <div className="text-xs text-muted-foreground">IA qui s'améliore avec l'usage</div>
+                <div className="space-y-1">
+                  <div className="text-xs sm:text-sm font-medium">🧠 Apprentissage adaptatif</div>
+                  <div className="text-[10px] sm:text-xs text-muted-foreground">IA qui s'améliore avec l'usage</div>
                 </div>
               </CardContent>
             </Card>
