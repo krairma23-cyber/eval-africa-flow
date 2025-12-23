@@ -383,24 +383,20 @@ export function LoginForm() {
                     onValueChange={(value) => setIsCreatingSchool(value === "create")}
                     className="grid grid-cols-2 gap-3"
                   >
-                    <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${!isCreatingSchool ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                    <div className={`relative flex flex-col items-center justify-center text-center rounded-lg border-2 p-3 cursor-pointer transition-colors ${!isCreatingSchool ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
                       <RadioGroupItem value="join" id="type-join" className="sr-only" />
-                      <label htmlFor="type-join" className="flex items-center gap-2 cursor-pointer w-full">
+                      <label htmlFor="type-join" className="flex flex-col items-center gap-1 cursor-pointer w-full">
                         <Users className="h-5 w-5 text-primary" />
-                        <div className="flex flex-col">
-                          <span className="font-medium text-sm">Rejoindre</span>
-                          <span className="text-xs text-muted-foreground">Une école existante</span>
-                        </div>
+                        <span className="font-medium text-sm">Rejoindre</span>
+                        <span className="text-xs text-muted-foreground">Une école existante</span>
                       </label>
                     </div>
-                    <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${isCreatingSchool ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                    <div className={`relative flex flex-col items-center justify-center text-center rounded-lg border-2 p-3 cursor-pointer transition-colors ${isCreatingSchool ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
                       <RadioGroupItem value="create" id="type-create" className="sr-only" />
-                      <label htmlFor="type-create" className="flex items-center gap-2 cursor-pointer w-full">
+                      <label htmlFor="type-create" className="flex flex-col items-center gap-1 cursor-pointer w-full">
                         <Building2 className="h-5 w-5 text-primary" />
-                        <div className="flex flex-col">
-                          <span className="font-medium text-sm">Créer</span>
-                          <span className="text-xs text-muted-foreground">Ma propre école</span>
-                        </div>
+                        <span className="font-medium text-sm">Créer</span>
+                        <span className="text-xs text-muted-foreground">Ma propre école</span>
                       </label>
                     </div>
                   </RadioGroup>
@@ -433,16 +429,16 @@ export function LoginForm() {
                       onValueChange={(value) => setSelectedRole(value as "user" | "teacher")}
                       className="grid grid-cols-2 gap-3"
                     >
-                      <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "user" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                      <div className={`relative flex flex-col items-center justify-center text-center rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "user" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
                         <RadioGroupItem value="user" id="role-user" className="sr-only" />
-                        <label htmlFor="role-user" className="flex items-center gap-2 cursor-pointer w-full">
+                        <label htmlFor="role-user" className="flex flex-col items-center gap-1 cursor-pointer w-full">
                           <User className="h-5 w-5 text-primary" />
                           <span className="font-medium text-sm">Utilisateur</span>
                         </label>
                       </div>
-                      <div className={`relative flex items-center space-x-3 rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "teacher" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
+                      <div className={`relative flex flex-col items-center justify-center text-center rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "teacher" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
                         <RadioGroupItem value="teacher" id="role-teacher" className="sr-only" />
-                        <label htmlFor="role-teacher" className="flex items-center gap-2 cursor-pointer w-full">
+                        <label htmlFor="role-teacher" className="flex flex-col items-center gap-1 cursor-pointer w-full">
                           <GraduationCap className="h-5 w-5 text-primary" />
                           <span className="font-medium text-sm">Enseignant</span>
                         </label>
