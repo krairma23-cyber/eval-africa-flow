@@ -155,32 +155,32 @@ export default function Teachers() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-            <GraduationCap className="h-8 w-8" />
-            Enseignants
+    <div className="space-y-4 w-full overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
+            <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />
+            <span className="truncate">Enseignants</span>
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Gestion du personnel enseignant
           </p>
         </div>
         <AddTeacherDialog onTeacherAdded={fetchTeachers}>
-          <Button>
+          <Button className="w-full sm:w-auto flex-shrink-0">
             <Plus className="h-4 w-4 mr-2" />
             Ajouter un enseignant
           </Button>
         </AddTeacherDialog>
       </div>
 
-      <div className="flex items-center space-x-2">
-        <Search className="h-4 w-4 text-muted-foreground" />
+      <div className="flex items-center space-x-2 w-full">
+        <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
         <Input
           placeholder="Rechercher un enseignant..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-sm"
+          className="w-full sm:max-w-sm"
         />
       </div>
 
@@ -205,25 +205,25 @@ export default function Teachers() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredTeachers.map((teacher) => (
-            <Card key={teacher.id} className="hover:shadow-md transition-shadow">
-              <CardHeader className="flex flex-col items-center pb-3 pt-4">
-                <Avatar className="h-16 w-16 mb-3">
+            <Card key={teacher.id} className="hover:shadow-md transition-shadow overflow-hidden">
+              <CardHeader className="flex flex-col items-center pb-3 pt-4 px-3">
+                <Avatar className="h-14 w-14 sm:h-16 sm:w-16 mb-2">
                   <AvatarImage src={teacher.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${teacher.first_name} ${teacher.last_name}`} />
                   <AvatarFallback>{teacher.first_name[0]}{teacher.last_name[0]}</AvatarFallback>
                 </Avatar>
-                <CardTitle className="flex items-center justify-between w-full text-lg">
-                  <span className="truncate">{teacher.first_name} {teacher.last_name}</span>
+                <CardTitle className="flex flex-col sm:flex-row items-center justify-center gap-1 w-full text-base sm:text-lg text-center">
+                  <span className="truncate max-w-full">{teacher.first_name} {teacher.last_name}</span>
                   {teacher.specialization && (
-                    <Badge variant="secondary" className="ml-2 flex-shrink-0 text-xs">{teacher.specialization}</Badge>
+                    <Badge variant="secondary" className="flex-shrink-0 text-xs mt-1 sm:mt-0">{teacher.specialization}</Badge>
                   )}
                 </CardTitle>
-                <CardDescription className="text-xs">
+                <CardDescription className="text-xs text-center">
                   N° enseignant: {teacher.teacher_number}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-1.5 pt-0 pb-4">
+              <CardContent className="space-y-1.5 pt-0 pb-4 px-3">
                 {teacher.email && (
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Mail className="h-3 w-3 flex-shrink-0" />
