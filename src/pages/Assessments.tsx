@@ -154,45 +154,48 @@ export default function Assessments() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Évaluations</h1>
-        <p className="text-muted-foreground">
-          Gérez les évaluations et contrôles de vos classes
-        </p>
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <div className="relative w-full sm:max-w-sm">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder="Rechercher une évaluation..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
-            <SelectTrigger className="w-full sm:w-[200px]">
-              <SelectValue placeholder="Toutes les classes" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Toutes les classes</SelectItem>
-              {uniqueClassrooms.map((classroom) => (
-                <SelectItem key={classroom} value={classroom}>
-                  {classroom}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+    <div className="space-y-4 w-full overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2">
+            <ClipboardCheck className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />
+            <span className="truncate">Évaluations</span>
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            Gérez les évaluations et contrôles de vos classes
+          </p>
         </div>
         <AddAssessmentDialog onAssessmentAdded={fetchAssessments}>
-          <Button>
+          <Button className="w-full sm:w-auto flex-shrink-0">
             <Plus className="h-4 w-4 mr-2" />
             Créer une évaluation
           </Button>
         </AddAssessmentDialog>
+      </div>
+
+      <div className="flex flex-col gap-3 w-full">
+        <div className="relative w-full">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Input
+            placeholder="Rechercher une évaluation..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10 w-full sm:max-w-sm"
+          />
+        </div>
+        <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
+          <SelectTrigger className="w-full sm:w-[200px]">
+            <SelectValue placeholder="Toutes les classes" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Toutes les classes</SelectItem>
+            {uniqueClassrooms.map((classroom) => (
+              <SelectItem key={classroom} value={classroom}>
+                {classroom}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {filteredAssessments.length === 0 ? (
@@ -210,28 +213,28 @@ export default function Assessments() {
           </AddAssessmentDialog>
         </div>
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-6">
           {Object.entries(assessmentsByClassroom).map(([classroomName, classroomAssessments]) => (
-            <div key={classroomName} className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-lg">
-                  <GraduationCap className="h-5 w-5 text-primary" />
-                  <h2 className="text-xl font-semibold">{classroomName}</h2>
+            <div key={classroomName} className="space-y-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-lg min-w-0">
+                  <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                  <h2 className="text-base sm:text-xl font-semibold truncate">{classroomName}</h2>
                 </div>
-                <Separator className="flex-1" />
-                <Badge variant="secondary" className="px-3 py-1">
+                <Separator className="flex-1 hidden sm:block" />
+                <Badge variant="secondary" className="px-2 py-1 text-xs ml-auto flex-shrink-0">
                   {classroomAssessments.length} évaluation{classroomAssessments.length > 1 ? 's' : ''}
                 </Badge>
               </div>
               
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {classroomAssessments.map((assessment) => (
-                  <Card key={assessment.id} className="hover:shadow-md transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between gap-2">
+                  <Card key={assessment.id} className="hover:shadow-md transition-shadow overflow-hidden">
+                    <CardHeader className="p-3 sm:p-4">
+                      <CardTitle className="flex items-center justify-between gap-2 text-base sm:text-lg">
                         <span className="truncate">{assessment.title}</span>
-                        <div className="flex gap-2 items-center shrink-0">
-                          <Badge variant={getTypeColor(assessment.assessment_types.name)}>
+                        <div className="flex gap-1 items-center flex-shrink-0">
+                          <Badge variant={getTypeColor(assessment.assessment_types.name)} className="text-xs">
                             {getTypeLabel(assessment.assessment_types.name)}
                           </Badge>
                           <EditAssessmentDialog
@@ -248,39 +251,39 @@ export default function Assessments() {
                             }}
                             onAssessmentUpdated={fetchAssessments}
                           >
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
                               <Pencil className="h-4 w-4" />
                             </Button>
                           </EditAssessmentDialog>
                         </div>
                       </CardTitle>
-                      <CardDescription>
+                      <CardDescription className="text-sm">
                         {assessment.classroom_subjects.subjects.name}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        <Calendar className="h-4 w-4 mr-2" />
+                    <CardContent className="space-y-2 px-3 sm:px-4 pb-3 sm:pb-4 pt-0">
+                      <div className="flex items-center text-xs sm:text-sm text-muted-foreground">
+                        <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-2 flex-shrink-0" />
                         {formatDate(assessment.assessment_date)}
                       </div>
-                      <div className="text-sm">
+                      <div className="text-xs sm:text-sm">
                         <span className="font-medium">Note max:</span> {assessment.max_score} points
                       </div>
                       {assessment.description && (
-                        <p className="text-sm text-muted-foreground truncate">
+                        <p className="text-xs sm:text-sm text-muted-foreground truncate">
                           {assessment.description}
                         </p>
                       )}
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="w-full"
+                        className="w-full h-8"
                         onClick={() => {
                           setSelectedAssessment(assessment);
                           setGradesDialogOpen(true);
                         }}
                       >
-                        <FileEdit className="h-4 w-4 mr-2" />
+                        <FileEdit className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                         Saisir les notes
                       </Button>
                     </CardContent>
