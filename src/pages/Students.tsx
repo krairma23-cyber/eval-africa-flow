@@ -237,19 +237,19 @@ export default function Students() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-            <Users className="h-8 w-8" />
-            Élèves
+    <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
+            <Users className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />
+            <span className="truncate">Élèves</span>
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground">
             Gestion des élèves de l'établissement
           </p>
         </div>
         <AddStudentDialog onStudentAdded={fetchStudents}>
-          <Button>
+          <Button className="w-full sm:w-auto text-sm">
             <Plus className="h-4 w-4 mr-2" />
             Ajouter un élève
           </Button>
@@ -258,28 +258,28 @@ export default function Students() {
 
       <div className="space-y-4">
         <div className="flex items-center space-x-2">
-          <Search className="h-4 w-4 text-muted-foreground" />
+          <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           <Input
             placeholder="Rechercher un élève..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-sm"
+            className="w-full sm:max-w-sm"
           />
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Filter className="h-4 w-4" />
+        <Card className="overflow-hidden">
+          <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+            <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+              <Filter className="h-4 w-4 flex-shrink-0" />
               Filtres avancés
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <label className="text-sm font-medium mb-2 block">Classe</label>
+          <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div className="min-w-0">
+                <label className="text-xs sm:text-sm font-medium mb-1 sm:mb-2 block">Classe</label>
                 <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm">
                     <SelectValue placeholder="Toutes les classes" />
                   </SelectTrigger>
                   <SelectContent>
@@ -293,10 +293,10 @@ export default function Students() {
                 </Select>
               </div>
 
-              <div>
-                <label className="text-sm font-medium mb-2 block">Niveau</label>
+              <div className="min-w-0">
+                <label className="text-xs sm:text-sm font-medium mb-1 sm:mb-2 block">Niveau</label>
                 <Select value={selectedGradeLevel} onValueChange={setSelectedGradeLevel}>
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm">
                     <SelectValue placeholder="Tous les niveaux" />
                   </SelectTrigger>
                   <SelectContent>
@@ -310,10 +310,10 @@ export default function Students() {
                 </Select>
               </div>
 
-              <div>
-                <label className="text-sm font-medium mb-2 block">Statut de paiement</label>
+              <div className="min-w-0">
+                <label className="text-xs sm:text-sm font-medium mb-1 sm:mb-2 block">Statut paiement</label>
                 <Select value={selectedPaymentStatus} onValueChange={setSelectedPaymentStatus}>
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm">
                     <SelectValue placeholder="Tous les statuts" />
                   </SelectTrigger>
                   <SelectContent>
@@ -325,28 +325,28 @@ export default function Students() {
                 </Select>
               </div>
 
-              <div>
-                <label className="text-sm font-medium mb-2 block">Élèves par page</label>
+              <div className="min-w-0">
+                <label className="text-xs sm:text-sm font-medium mb-1 sm:mb-2 block">Par page</label>
                 <Select value={itemsPerPage.toString()} onValueChange={(v) => setItemsPerPage(Number(v))}>
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="10">10 par page</SelectItem>
-                    <SelectItem value="20">20 par page</SelectItem>
-                    <SelectItem value="50">50 par page</SelectItem>
-                    <SelectItem value="100">100 par page</SelectItem>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="20">20</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="100">100</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
+            <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
               <span>
-                {totalStudents} élève{totalStudents > 1 ? 's' : ''} trouvé{totalStudents > 1 ? 's' : ''}
+                {totalStudents} élève{totalStudents > 1 ? 's' : ''}
               </span>
               <span>
-                Page {currentPage} sur {totalPages}
+                Page {currentPage}/{totalPages}
               </span>
             </div>
           </CardContent>
@@ -377,38 +377,38 @@ export default function Students() {
         <div className="space-y-6">
           {Object.entries(studentsByClassroom).map(([classroomName, classroomData]) => (
             <div key={classroomName}>
-              <div className="flex items-center gap-3 mb-3">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3">
                 <div 
-                  className="w-4 h-4 rounded-full flex-shrink-0" 
+                  className="w-3 h-3 sm:w-4 sm:h-4 rounded-full flex-shrink-0" 
                   style={{ backgroundColor: classroomData.color }}
                 />
-                <h2 className="text-xl font-semibold text-foreground">
+                <h2 className="text-base sm:text-xl font-semibold text-foreground">
                   {classroomName}
                   {classroomData.gradeLevel && ` - ${classroomData.gradeLevel}`}
                 </h2>
-                <Badge variant="outline" className="text-sm">
+                <Badge variant="outline" className="text-xs sm:text-sm">
                   {classroomData.students.length} élève{classroomData.students.length > 1 ? 's' : ''}
                 </Badge>
               </div>
-              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {classroomData.students.map((student) => (
-            <Card key={student.id} className="hover:shadow-md transition-shadow">
-              <CardHeader className="flex flex-col items-center pb-3 pt-4">
-                <Avatar className="h-16 w-16 mb-3">
+            <Card key={student.id} className="hover:shadow-md transition-shadow overflow-hidden">
+              <CardHeader className="flex flex-col items-center pb-2 sm:pb-3 pt-3 sm:pt-4 px-3 sm:px-6">
+                <Avatar className="h-12 w-12 sm:h-16 sm:w-16 mb-2 sm:mb-3">
                   <AvatarImage src={student.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${student.first_name} ${student.last_name}`} />
-                  <AvatarFallback>{student.first_name[0]}{student.last_name[0]}</AvatarFallback>
+                  <AvatarFallback className="text-sm sm:text-base">{student.first_name[0]}{student.last_name[0]}</AvatarFallback>
                 </Avatar>
-                <CardTitle className="flex items-center justify-between w-full text-lg">
+                <CardTitle className="flex items-center justify-between w-full text-base sm:text-lg min-w-0">
                   <span className="truncate">{student.first_name} {student.last_name}</span>
-                  <Badge variant={student.gender === 'M' ? 'default' : 'secondary'} className="ml-2 flex-shrink-0">
+                  <Badge variant={student.gender === 'M' ? 'default' : 'secondary'} className="ml-2 flex-shrink-0 text-xs">
                     {student.gender === 'M' ? 'M' : 'F'}
                   </Badge>
                 </CardTitle>
-                <CardDescription className="text-xs">
-                  N° élève: {student.student_number}
+                <CardDescription className="text-xs truncate w-full text-center">
+                  N° {student.student_number}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-1.5 pt-0 pb-4">
+              <CardContent className="space-y-1.5 pt-0 pb-3 sm:pb-4 px-3 sm:px-6">
                 {student.date_of_birth && (
                   <p className="text-xs text-muted-foreground">
                     <strong>Âge:</strong> {getAge(student.date_of_birth)} ans
