@@ -146,38 +146,38 @@ export default function Schedule() {
   const timeSlots = getTimeSlots();
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-              <Calendar className="h-8 w-8" />
-              Emploi du Temps
+    <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
+      <div className="space-y-3 sm:space-y-4">
+        <div className="flex flex-col gap-3">
+          <div className="min-w-0">
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
+              <Calendar className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />
+              <span className="truncate">Emploi du Temps</span>
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground">
               Gestion des horaires de cours
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <TeacherAttendanceDialog>
-              <Button variant="outline">
-                <UserCheck className="h-4 w-4 mr-2" />
-                Présence enseignants
+              <Button variant="outline" className="w-full sm:w-auto text-xs sm:text-sm">
+                <UserCheck className="h-4 w-4 mr-2 flex-shrink-0" />
+                <span className="truncate">Présence enseignants</span>
               </Button>
             </TeacherAttendanceDialog>
             <AddScheduleDialog onScheduleAdded={fetchSchedules}>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Ajouter un créneau
+              <Button className="w-full sm:w-auto text-xs sm:text-sm">
+                <Plus className="h-4 w-4 mr-2 flex-shrink-0" />
+                <span className="truncate">Ajouter un créneau</span>
               </Button>
             </AddScheduleDialog>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">Filtrer par classe:</label>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <label className="text-xs sm:text-sm font-medium whitespace-nowrap">Filtrer par classe:</label>
           <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
-            <SelectTrigger className="w-[250px]">
+            <SelectTrigger className="w-full sm:w-[250px] text-sm">
               <SelectValue placeholder="Toutes les classes" />
             </SelectTrigger>
             <SelectContent>
