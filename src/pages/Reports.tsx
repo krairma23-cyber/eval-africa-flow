@@ -376,27 +376,27 @@ export default function Reports() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Bulletins et Moyennes</h1>
-        <p className="text-muted-foreground">
-          Consultez les moyennes et bulletins scolaires par élève et par période
+    <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
+      <div className="min-w-0">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Bulletins et Moyennes</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
+          Consultez les moyennes et bulletins scolaires
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Rechercher un élève..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 text-sm"
           />
         </div>
         
         <Select value={selectedTerm} onValueChange={setSelectedTerm}>
-          <SelectTrigger>
+          <SelectTrigger className="text-sm">
             <SelectValue placeholder="Toutes les périodes" />
           </SelectTrigger>
           <SelectContent>
@@ -408,7 +408,7 @@ export default function Reports() {
         </Select>
 
         <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
-          <SelectTrigger>
+          <SelectTrigger className="text-sm">
             <SelectValue placeholder="Toutes les classes" />
           </SelectTrigger>
           <SelectContent>
@@ -434,31 +434,33 @@ export default function Reports() {
         </Card>
       ) : (
         <Tabs defaultValue="cards" className="w-full">
-          <TabsList>
-            <TabsTrigger value="cards">Vue par élève</TabsTrigger>
-            <TabsTrigger value="table">Vue tableau</TabsTrigger>
+          <TabsList className="w-full sm:w-auto grid grid-cols-2 sm:flex">
+            <TabsTrigger value="cards" className="text-xs sm:text-sm">Vue par élève</TabsTrigger>
+            <TabsTrigger value="table" className="text-xs sm:text-sm">Vue tableau</TabsTrigger>
           </TabsList>
 
           <TabsContent value="cards" className="space-y-4 mt-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {filteredGrades.map((grade, idx) => (
-                <Card key={idx} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between text-lg">
-                      <span className="truncate">
+                <Card key={idx} className="hover:shadow-lg transition-shadow overflow-hidden">
+                  <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+                    <CardTitle className="flex items-center justify-between text-base sm:text-lg gap-2">
+                      <span className="truncate min-w-0">
                         {grade.student_first_name} {grade.student_last_name}
                       </span>
-                      {getAverageBadge(grade.overall_average)}
+                      <div className="flex-shrink-0">
+                        {getAverageBadge(grade.overall_average)}
+                      </div>
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-xs sm:text-sm">
                       {grade.classroom_name} • {grade.term_name}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                        <span className="text-sm font-medium">Moyenne générale</span>
-                        <span className={`text-2xl font-bold ${getAverageColor(grade.overall_average)}`}>
+                      <div className="flex items-center justify-between p-2 sm:p-3 bg-muted rounded-lg">
+                        <span className="text-xs sm:text-sm font-medium">Moyenne générale</span>
+                        <span className={`text-lg sm:text-2xl font-bold ${getAverageColor(grade.overall_average)}`}>
                           {grade.overall_average.toFixed(2)}/20
                         </span>
                       </div>
@@ -475,12 +477,12 @@ export default function Reports() {
                       )}
                     </div>
 
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">Moyennes par matière</p>
+                    <div className="space-y-1.5 sm:space-y-2">
+                      <p className="text-xs sm:text-sm font-medium">Moyennes par matière</p>
                       {grade.subject_grades.slice(0, 3).map((subject, subIdx) => (
-                        <div key={subIdx} className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground truncate flex-1">{subject.subject_name}</span>
-                          <span className={`font-medium ${getAverageColor(subject.avg_score)}`}>
+                        <div key={subIdx} className="flex items-center justify-between text-xs sm:text-sm gap-2">
+                          <span className="text-muted-foreground truncate min-w-0 flex-1">{subject.subject_name}</span>
+                          <span className={`font-medium flex-shrink-0 ${getAverageColor(subject.avg_score)}`}>
                             {subject.avg_score.toFixed(1)}/20
                           </span>
                         </div>
@@ -495,11 +497,11 @@ export default function Reports() {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="w-full"
+                      className="w-full h-8 text-xs sm:text-sm"
                       onClick={() => exportToPDF(grade)}
                     >
-                      <Download className="h-4 w-4 mr-2" />
-                      Télécharger le bulletin
+                      <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                      <span className="truncate">Télécharger le bulletin</span>
                     </Button>
                   </CardContent>
                 </Card>
