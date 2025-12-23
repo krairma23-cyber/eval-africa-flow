@@ -151,33 +151,33 @@ export default function Subjects() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
-            <BookOpen className="h-8 w-8" />
-            Matières
+    <div className="space-y-4 w-full overflow-x-hidden">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
+            <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />
+            <span className="truncate">Matières</span>
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Gestion des matières enseignées
           </p>
         </div>
         <AddSubjectDialog onSubjectAdded={fetchSubjects}>
-          <Button>
+          <Button className="w-full sm:w-auto flex-shrink-0">
             <Plus className="h-4 w-4 mr-2" />
             Ajouter une matière
           </Button>
         </AddSubjectDialog>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex items-center space-x-2 flex-1">
-          <Search className="h-4 w-4 text-muted-foreground" />
+      <div className="flex flex-col gap-3 w-full">
+        <div className="flex items-center space-x-2 w-full">
+          <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           <Input
             placeholder="Rechercher une matière..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-sm"
+            className="w-full sm:max-w-sm"
           />
         </div>
         <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
@@ -222,25 +222,25 @@ export default function Subjects() {
             if (b === "Non assignées") return -1;
             return a.localeCompare(b);
           }).map(([classroomName, classroomSubjects]) => (
-            <div key={classroomName} className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <GraduationCap className="h-5 w-5 text-primary" />
-                  <h2 className="text-xl font-semibold">{classroomName}</h2>
+            <div key={classroomName} className="space-y-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-2 min-w-0">
+                  <GraduationCap className="h-5 w-5 text-primary flex-shrink-0" />
+                  <h2 className="text-lg sm:text-xl font-semibold truncate">{classroomName}</h2>
                 </div>
-                <Badge variant="secondary" className="ml-auto">
+                <Badge variant="secondary" className="ml-auto flex-shrink-0">
                   {classroomSubjects.length} {classroomSubjects.length === 1 ? 'matière' : 'matières'}
                 </Badge>
               </div>
               <Separator />
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {classroomSubjects.map((subject) => (
-                  <Card key={subject.id} className="hover:shadow-md transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
-                        <span>{subject.name}</span>
-                        <div className="flex gap-2 items-center">
-                          <Badge variant="outline">{subject.code}</Badge>
+                  <Card key={subject.id} className="hover:shadow-md transition-shadow overflow-hidden">
+                    <CardHeader className="p-3 sm:p-4">
+                      <CardTitle className="flex items-center justify-between gap-2 text-base sm:text-lg">
+                        <span className="truncate">{subject.name}</span>
+                        <div className="flex gap-1 items-center flex-shrink-0">
+                          <Badge variant="outline" className="text-xs">{subject.code}</Badge>
                           <EditSubjectDialog
                             subject={{
                               id: subject.id,
@@ -250,17 +250,17 @@ export default function Subjects() {
                             }}
                             onSubjectUpdated={fetchSubjects}
                           >
-                            <Button variant="ghost" size="icon">
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
                               <Pencil className="h-4 w-4" />
                             </Button>
                           </EditSubjectDialog>
                         </div>
                       </CardTitle>
-                      <CardDescription>
+                      <CardDescription className="text-sm">
                         {subject.description || "Aucune description"}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-2">
+                    <CardContent className="space-y-2 px-3 sm:px-4 pb-3 sm:pb-4 pt-0">
                       <p className="text-xs text-muted-foreground">
                         Créée le {formatDate(subject.created_at)}
                       </p>
