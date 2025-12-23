@@ -468,20 +468,20 @@ export default function Students() {
                   </div>
                 )}
                 
-                <div className="pt-2 flex flex-col gap-2">
-                  <div className="flex gap-2">
+                <div className="pt-2 flex flex-col gap-1.5 sm:gap-2">
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                     {!student.enrollments || student.enrollments.length === 0 ? (
                       <EnrollStudentDialog studentId={student.id} onEnrollmentAdded={fetchStudents}>
-                        <Button variant="default" size="sm" className="flex-1 h-8">
-                          <UserPlus className="h-3 w-3 mr-1" />
-                          Inscrire
+                        <Button variant="default" size="sm" className="w-full h-7 sm:h-8 text-xs px-2">
+                          <UserPlus className="h-3 w-3 mr-1 flex-shrink-0" />
+                          <span className="truncate">Inscrire</span>
                         </Button>
                       </EnrollStudentDialog>
                     ) : (
                       <EnrollStudentDialog studentId={student.id} onEnrollmentAdded={fetchStudents}>
-                        <Button variant="outline" size="sm" className="flex-1 h-8">
-                          <UserPlus className="h-3 w-3 mr-1" />
-                          Changer
+                        <Button variant="outline" size="sm" className="w-full h-7 sm:h-8 text-xs px-2">
+                          <UserPlus className="h-3 w-3 mr-1 flex-shrink-0" />
+                          <span className="truncate">Changer</span>
                         </Button>
                       </EnrollStudentDialog>
                     )}
@@ -496,17 +496,17 @@ export default function Students() {
                       currentNotes={student.payment_notes}
                       onPaymentUpdated={fetchStudents}
                     >
-                      <Button variant="outline" size="sm" className="flex-1 h-8">
-                        <DollarSign className="h-3 w-3 mr-1" />
-                        Paiement
+                      <Button variant="outline" size="sm" className="w-full h-7 sm:h-8 text-xs px-2">
+                        <DollarSign className="h-3 w-3 mr-1 flex-shrink-0" />
+                        <span className="truncate">Paiement</span>
                       </Button>
                     </ManagePaymentDialog>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                     <Button 
                       variant="default" 
                       size="sm" 
-                      className="flex-1 h-8"
+                      className="w-full h-7 sm:h-8 text-xs px-2"
                       onClick={async () => {
                         try {
                           const { data: userData } = await supabase.auth.getUser();
@@ -550,13 +550,13 @@ export default function Students() {
                         }
                       }}
                     >
-                      <Check className="h-3 w-3 mr-1" />
-                      Présent
+                      <Check className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">Présent</span>
                     </Button>
                     <Button 
                       variant="destructive" 
                       size="sm" 
-                      className="flex-1 h-8"
+                      className="w-full h-7 sm:h-8 text-xs px-2"
                       onClick={async () => {
                         try {
                           const { data: userData } = await supabase.auth.getUser();
@@ -601,28 +601,30 @@ export default function Students() {
                         }
                       }}
                     >
-                      <X className="h-3 w-3 mr-1" />
-                      Absent
+                      <X className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">Absent</span>
                     </Button>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                     <EditStudentDialog student={student} onStudentUpdated={fetchStudents}>
-                      <Button variant="outline" size="sm" className="flex-1 h-8">
-                        <Pencil className="h-3 w-3 mr-1" />
-                        Modifier
+                      <Button variant="outline" size="sm" className="w-full h-7 sm:h-8 text-xs px-2">
+                        <Pencil className="h-3 w-3 mr-1 flex-shrink-0" />
+                        <span className="truncate">Modifier</span>
                       </Button>
                     </EditStudentDialog>
-                    {student.parent_email && (
+                    {student.parent_email ? (
                       <SendParentPortalLinkDialog
                         studentName={`${student.first_name} ${student.last_name}`}
                         parentEmail={student.parent_email}
                         parentName={student.parent_name}
                       >
-                        <Button variant="secondary" size="sm" className="flex-1 h-8">
-                          <Mail className="h-3 w-3 mr-1" />
-                          Portail
+                        <Button variant="secondary" size="sm" className="w-full h-7 sm:h-8 text-xs px-2">
+                          <Mail className="h-3 w-3 mr-1 flex-shrink-0" />
+                          <span className="truncate">Portail</span>
                         </Button>
                       </SendParentPortalLinkDialog>
+                    ) : (
+                      <div></div>
                     )}
                   </div>
                 </div>
