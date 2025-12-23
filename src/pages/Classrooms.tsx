@@ -184,16 +184,16 @@ export default function Classrooms() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Classes</h1>
-        <p className="text-muted-foreground">
+    <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
+      <div className="min-w-0">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Classes</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Gérez les classes de votre établissement
         </p>
       </div>
 
-      <div className="flex justify-between items-center">
-        <div className="relative max-w-sm">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <div className="relative w-full sm:max-w-sm">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Rechercher une classe..."
@@ -203,7 +203,7 @@ export default function Classrooms() {
           />
         </div>
         <AddClassroomDialog onClassroomAdded={fetchClassrooms}>
-          <Button>
+          <Button className="w-full sm:w-auto text-sm">
             <Plus className="h-4 w-4 mr-2" />
             Ajouter une classe
           </Button>
@@ -225,7 +225,7 @@ export default function Classrooms() {
           </AddClassroomDialog>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {filteredClassrooms.map((classroom) => {
             const classroomColor = classroom.color || getGradeLevelColor(classroom.grade_levels.name);
             const isHighlighted = highlightedId === classroom.id;
@@ -238,16 +238,16 @@ export default function Classrooms() {
               }`}
               style={{ borderLeftColor: classroomColor }}
             >
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">
+              <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+                <CardTitle className="flex items-center justify-between text-base sm:text-lg">
+                  <span className="flex items-center gap-2 min-w-0">
                     <span 
-                      className="w-3 h-3 rounded-full" 
+                      className="w-3 h-3 rounded-full flex-shrink-0" 
                       style={{ backgroundColor: classroomColor }}
                     />
-                    {classroom.name}
+                    <span className="truncate">{classroom.name}</span>
                   </span>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1 flex-shrink-0">
                     <EditClassroomDialog
                       classroom={{
                         id: classroom.id,
@@ -260,15 +260,16 @@ export default function Classrooms() {
                       }}
                       onClassroomUpdated={fetchClassrooms}
                     >
-                      <Button variant="ghost" size="icon">
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
                         <Pencil className="h-4 w-4" />
                       </Button>
                     </EditClassroomDialog>
                   </div>
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs sm:text-sm">
                   <Badge 
                     variant="outline" 
+                    className="text-xs"
                     style={{ 
                       borderColor: classroomColor,
                       color: classroomColor 
@@ -276,26 +277,26 @@ export default function Classrooms() {
                   >
                     {classroom.grade_levels.name}
                   </Badge>
-                  <span className="mx-2">•</span>
-                  {classroom.academic_years.name}
+                  <span className="mx-1 sm:mx-2">•</span>
+                  <span className="text-xs">{classroom.academic_years.name}</span>
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
+              <CardContent className="space-y-2 p-3 sm:p-6 pt-0 sm:pt-0">
+                <div className="flex items-center justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">Élèves inscrits:</span>
-                  <Badge variant="outline">{classroom.enrollments?.length || 0} / {classroom.capacity}</Badge>
+                  <Badge variant="outline" className="text-xs">{classroom.enrollments?.length || 0} / {classroom.capacity}</Badge>
                 </div>
-                <div className="grid grid-cols-2 gap-2 mt-2">
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-2 mt-2">
                   <ViewClassStudentsDialog classroomId={classroom.id} classroomName={classroom.name}>
-                    <Button variant="outline" size="sm" className="w-full">
-                      <Users className="h-4 w-4 mr-2" />
-                      Élèves
+                    <Button variant="outline" size="sm" className="w-full h-8 text-xs px-2">
+                      <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
+                      <span className="truncate">Élèves</span>
                     </Button>
                   </ViewClassStudentsDialog>
                   <ViewClassRankingsDialog classroomId={classroom.id} classroomName={classroom.name}>
-                    <Button variant="outline" size="sm" className="w-full">
-                      <TrendingUp className="h-4 w-4 mr-2" />
-                      Classement
+                    <Button variant="outline" size="sm" className="w-full h-8 text-xs px-2">
+                      <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
+                      <span className="truncate">Classement</span>
                     </Button>
                   </ViewClassRankingsDialog>
                 </div>
