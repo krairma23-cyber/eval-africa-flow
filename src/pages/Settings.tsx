@@ -281,32 +281,32 @@ export default function Settings() {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Paramètres</h1>
-        <p className="text-muted-foreground">
+    <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
+      <div className="min-w-0">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight truncate">Paramètres</h1>
+        <p className="text-muted-foreground text-sm sm:text-base">
           Configurez les paramètres de votre établissement
         </p>
       </div>
 
-      <div className="grid gap-6">
+      <div className="grid gap-4 sm:gap-6">
         {/* École */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <School className="h-5 w-5" />
-              Informations de l'établissement
+        <Card className="overflow-hidden">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <School className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+              <span className="truncate">Informations de l'établissement</span>
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               Gérez les informations générales de votre école
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 p-4 sm:p-6 pt-0 sm:pt-0">
             <div className="grid gap-2">
-              <Label htmlFor="school-logo">Logo de l'établissement</Label>
-              <div className="flex items-center gap-4">
+              <Label htmlFor="school-logo" className="text-sm">Logo de l'établissement</Label>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 {logoUrl ? (
-                  <div className="relative w-32 h-32 border-2 border-border rounded-lg overflow-hidden bg-muted">
+                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 border-2 border-border rounded-lg overflow-hidden bg-muted flex-shrink-0">
                     <img 
                       src={logoUrl}
                       alt="Logo de l'établissement"
@@ -316,11 +316,11 @@ export default function Settings() {
                     />
                   </div>
                 ) : (
-                  <div className="w-32 h-32 border-2 border-dashed border-border rounded-lg flex items-center justify-center bg-muted">
-                    <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                  <div className="w-24 h-24 sm:w-32 sm:h-32 border-2 border-dashed border-border rounded-lg flex items-center justify-center bg-muted flex-shrink-0">
+                    <ImageIcon className="h-8 w-8 sm:h-12 sm:w-12 text-muted-foreground" />
                   </div>
                 )}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 w-full sm:w-auto">
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -334,11 +334,14 @@ export default function Settings() {
                     variant="outline"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploading || !schoolId}
+                    className="w-full sm:w-auto text-xs sm:text-sm"
                   >
-                    <Upload className="h-4 w-4 mr-2" />
-                    {uploading
-                      ? "Téléchargement..."
-                      : (!schoolId ? "Chargement du profil..." : "Télécharger un logo")}
+                    <Upload className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <span className="truncate">
+                      {uploading
+                        ? "Téléchargement..."
+                        : (!schoolId ? "Chargement..." : "Télécharger un logo")}
+                    </span>
                   </Button>
                   <p className="text-xs text-muted-foreground">
                     {!schoolId ? "Veuillez patienter, chargement du profil..." : "JPG, PNG ou WebP. Max 2MB."}
@@ -507,61 +510,63 @@ export default function Settings() {
         </Card>
 
         {/* Notifications */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5" />
+        <Card className="overflow-hidden">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <Bell className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
               Notifications
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               Configurez vos préférences de notification
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Notifications par email</Label>
-                <p className="text-sm text-muted-foreground">
+          <CardContent className="space-y-4 p-4 sm:p-6 pt-0 sm:pt-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="space-y-0.5 min-w-0">
+                <Label className="text-sm">Notifications par email</Label>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Recevoir des notifications importantes par email
                 </p>
               </div>
               <Switch
                 checked={emailNotifications}
                 onCheckedChange={setEmailNotifications}
+                className="flex-shrink-0"
               />
             </div>
             <Separator />
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Rappels de bulletins</Label>
-                <p className="text-sm text-muted-foreground">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="space-y-0.5 min-w-0">
+                <Label className="text-sm">Rappels de bulletins</Label>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Rappels automatiques pour la génération des bulletins
                 </p>
               </div>
               <Switch
                 checked={reportReminders}
                 onCheckedChange={setReportReminders}
+                className="flex-shrink-0"
               />
             </div>
           </CardContent>
         </Card>
 
         {/* Paramètres SaaS */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Globe className="h-5 w-5" />
+        <Card className="overflow-hidden">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <Globe className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
               Paramètres du SaaS
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               Configuration régionale et système
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 p-4 sm:p-6 pt-0 sm:pt-0">
             <div className="grid gap-2">
-              <Label htmlFor="timezone">Fuseau horaire</Label>
+              <Label htmlFor="timezone" className="text-sm">Fuseau horaire</Label>
               <Select value={timezone} onValueChange={setTimezone}>
-                <SelectTrigger id="timezone">
+                <SelectTrigger id="timezone" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -576,9 +581,9 @@ export default function Settings() {
             </div>
             <Separator />
             <div className="grid gap-2">
-              <Label htmlFor="language">Langue</Label>
+              <Label htmlFor="language" className="text-sm">Langue</Label>
               <Select value={language} onValueChange={setLanguage}>
-                <SelectTrigger id="language">
+                <SelectTrigger id="language" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -591,9 +596,9 @@ export default function Settings() {
             </div>
             <Separator />
             <div className="grid gap-2">
-              <Label htmlFor="currency">Devise</Label>
+              <Label htmlFor="currency" className="text-sm">Devise</Label>
               <Select value={currency} onValueChange={setCurrency}>
-                <SelectTrigger id="currency">
+                <SelectTrigger id="currency" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -607,9 +612,9 @@ export default function Settings() {
             </div>
             <Separator />
             <div className="grid gap-2">
-              <Label htmlFor="date-format">Format de date</Label>
+              <Label htmlFor="date-format" className="text-sm">Format de date</Label>
               <Select value={dateFormat} onValueChange={setDateFormat}>
-                <SelectTrigger id="date-format">
+                <SelectTrigger id="date-format" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -623,34 +628,35 @@ export default function Settings() {
         </Card>
 
         {/* Sauvegarde et données */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5" />
+        <Card className="overflow-hidden">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <Database className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
               Sauvegarde et données
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               Gestion des données et archivage
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Sauvegarde automatique</Label>
-                <p className="text-sm text-muted-foreground">
+          <CardContent className="space-y-4 p-4 sm:p-6 pt-0 sm:pt-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="space-y-0.5 min-w-0">
+                <Label className="text-sm">Sauvegarde automatique</Label>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Sauvegarde quotidienne de toutes les données
                 </p>
               </div>
               <Switch
                 checked={autoBackup}
                 onCheckedChange={setAutoBackup}
+                className="flex-shrink-0"
               />
             </div>
             <Separator />
             <div className="grid gap-2">
-              <Label htmlFor="data-retention">Rétention des données (jours)</Label>
+              <Label htmlFor="data-retention" className="text-sm">Rétention des données (jours)</Label>
               <Select value={dataRetention} onValueChange={setDataRetention}>
-                <SelectTrigger id="data-retention">
+                <SelectTrigger id="data-retention" className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -667,62 +673,63 @@ export default function Settings() {
         </Card>
 
         {/* Apparence */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Palette className="h-5 w-5" />
+        <Card className="overflow-hidden">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <Palette className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
               Apparence
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               Personnalisez l'apparence de l'application
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label>Mode sombre</Label>
-                <p className="text-sm text-muted-foreground">
+          <CardContent className="space-y-4 p-4 sm:p-6 pt-0 sm:pt-0">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="space-y-0.5 min-w-0">
+                <Label className="text-sm">Mode sombre</Label>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Activer le thème sombre de l'interface
                 </p>
               </div>
               <Switch
                 checked={darkMode}
                 onCheckedChange={setDarkMode}
+                className="flex-shrink-0"
               />
             </div>
           </CardContent>
         </Card>
 
         {/* Profil utilisateur */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
+        <Card className="overflow-hidden">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <Shield className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
               Profil utilisateur
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-xs sm:text-sm">
               Informations de votre compte
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 p-4 sm:p-6 pt-0 sm:pt-0">
             <div className="grid gap-2">
-              <Label>Email</Label>
-              <Input value={user?.email || ""} disabled />
+              <Label className="text-sm">Email</Label>
+              <Input value={user?.email || ""} disabled className="text-sm" />
             </div>
             <div className="grid gap-2">
-              <Label>Rôle</Label>
-              <Input value="Administrateur" disabled />
+              <Label className="text-sm">Rôle</Label>
+              <Input value="Administrateur" disabled className="text-sm" />
             </div>
             <div className="grid gap-2">
-              <Label>Dernière connexion</Label>
-              <Input value={new Date().toLocaleDateString("fr-FR")} disabled />
+              <Label className="text-sm">Dernière connexion</Label>
+              <Input value={new Date().toLocaleDateString("fr-FR")} disabled className="text-sm" />
             </div>
           </CardContent>
         </Card>
 
         {/* Bouton de sauvegarde */}
-        <div className="flex justify-end">
-          <Button onClick={handleSaveSettings} disabled={loading}>
+        <div className="flex justify-end pb-4">
+          <Button onClick={handleSaveSettings} disabled={loading} className="w-full sm:w-auto">
             {loading ? (
               "Sauvegarde..."
             ) : (
