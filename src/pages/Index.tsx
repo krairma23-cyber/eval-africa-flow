@@ -10,11 +10,17 @@ import { PressPartners } from "@/components/features/PressPartners";
 import { AboutEvalScol } from "@/components/features/AboutEvalScol";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Snowfall } from "@/components/christmas/Snowfall";
+import { ChristmasBanner } from "@/components/christmas/ChristmasBanner";
 
 const Index = () => {
   const { t } = useLanguage();
   
-  return <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
+  return (
+    <>
+      <Snowfall />
+      <ChristmasBanner />
+      <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
       <div className="container mx-auto px-4 py-8 lg:py-16">
         {/* Language Switcher */}
         <div className="flex justify-end mb-4">
@@ -153,6 +159,8 @@ const Index = () => {
         {/* Local Support Section */}
         <LocalSupport />
       </div>
-    </div>;
+    </div>
+    </>
+  );
 };
 export default Index;
