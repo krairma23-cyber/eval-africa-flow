@@ -1,25 +1,25 @@
-import { Gift, Sparkles, TreePine } from "lucide-react";
+import christmasImage from "@/assets/christmas-evalscol.png";
 
 export const ChristmasBanner = () => {
   return (
-    <div className="bg-gradient-to-r from-red-600 via-green-600 to-red-600 text-white py-3 px-4 text-center relative overflow-hidden">
+    <div className="bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 py-6 px-4 text-center relative overflow-hidden">
       <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1 left-[10%] text-2xl">🎄</div>
-        <div className="absolute top-1 left-[30%] text-xl">⭐</div>
-        <div className="absolute top-1 left-[50%] text-2xl">🎁</div>
-        <div className="absolute top-1 left-[70%] text-xl">✨</div>
-        <div className="absolute top-1 left-[90%] text-2xl">🎄</div>
+        <div className="absolute top-2 left-[10%] text-2xl">🎄</div>
+        <div className="absolute top-2 left-[30%] text-xl">⭐</div>
+        <div className="absolute top-2 left-[50%] text-2xl">🎁</div>
+        <div className="absolute top-2 left-[70%] text-xl">✨</div>
+        <div className="absolute top-2 left-[90%] text-2xl">🎄</div>
       </div>
-      <div className="flex items-center justify-center gap-3 relative z-10">
-        <TreePine className="h-5 w-5 text-green-200 animate-pulse" />
-        <span className="font-bold text-lg">
-          🎅 Joyeux Noël et Bonnes Fêtes de fin d'année ! 🎄
-        </span>
-        <Gift className="h-5 w-5 text-yellow-200 animate-bounce" />
+      <div className="relative z-10 max-w-md mx-auto">
+        <img 
+          src={christmasImage} 
+          alt="EvalScol Africa vous souhaite un Joyeux Noël" 
+          className="w-full max-w-sm mx-auto rounded-2xl shadow-xl mb-4"
+        />
+        <p className="text-sm text-muted-foreground mt-2">
+          Toute l'équipe EvalScol Africa vous souhaite d'excellentes fêtes de fin d'année ! ✨
+        </p>
       </div>
-      <p className="text-sm text-white/90 mt-1 relative z-10">
-        Toute l'équipe EvalScol Africa vous souhaite d'excellentes fêtes ✨
-      </p>
     </div>
   );
 };
