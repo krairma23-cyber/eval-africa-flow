@@ -106,7 +106,7 @@ export default function Dashboard() {
                 : " Vous avez atteint la limite maximale."}
             </div>
             <Button 
-              onClick={() => navigate('/billing')}
+              onClick={() => navigate('/dashboard/billing')}
               variant="default"
               size="sm"
               className="w-full sm:w-auto flex-shrink-0"

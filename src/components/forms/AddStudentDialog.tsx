@@ -360,7 +360,7 @@ export function AddStudentDialog({ onStudentAdded, children }: AddStudentDialogP
               <Button 
                 onClick={() => {
                   setOpen(false);
-                  navigate('/billing');
+                  navigate('/dashboard/billing');
                 }}
                 variant="default"
                 size="sm"
