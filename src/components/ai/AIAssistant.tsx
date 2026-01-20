@@ -155,10 +155,10 @@ export const AIAssistant = () => {
         </div>
       </CardHeader>
 
-      <CardContent className="relative flex-1 flex flex-col gap-3 p-4">
-        {/* Actions rapides */}
+      <CardContent className="relative flex-1 flex flex-col p-4 min-h-0 overflow-hidden">
+        {/* Actions rapides - affiché seulement quand il n'y a pas de messages */}
         {messages.length === 0 && (
-          <div className="grid gap-2">
+          <div className="grid gap-2 mb-3">
             <p className="text-sm text-muted-foreground mb-2">Actions rapides :</p>
             {quickActions.map((action) => (
               <Button
@@ -176,9 +176,9 @@ export const AIAssistant = () => {
           </div>
         )}
 
-        {/* Messages */}
-        <ScrollArea className="flex-1 pr-4">
-          <div className="space-y-4">
+        {/* Zone des messages avec scroll */}
+        <ScrollArea className="flex-1 min-h-0 pr-4 mb-3">
+          <div className="space-y-4 pb-2">
             <AnimatePresence>
               {messages.map((msg, index) => (
                 <motion.div
@@ -222,37 +222,38 @@ export const AIAssistant = () => {
           </div>
         </ScrollArea>
 
-        {/* Input */}
-        <div className="flex gap-2">
-          <Input
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage(inputMessage);
-              }
-            }}
-            placeholder="Posez votre question..."
-            disabled={isLoading}
-            className="flex-1"
-          />
-          <Button
-            onClick={() => sendMessage(inputMessage)}
-            disabled={isLoading || !inputMessage.trim()}
-            size="icon"
-            className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
-
-        <div className="text-xs text-muted-foreground text-center">
-          💡 Utilisez les actions rapides ou posez vos questions directement
+        {/* Zone de saisie fixe en bas */}
+        <div className="flex-shrink-0 space-y-2 pt-2 border-t border-border/50">
+          <div className="flex gap-2">
+            <Input
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  sendMessage(inputMessage);
+                }
+              }}
+              placeholder="Posez votre question..."
+              disabled={isLoading}
+              className="flex-1"
+            />
+            <Button
+              onClick={() => sendMessage(inputMessage)}
+              disabled={isLoading || !inputMessage.trim()}
+              size="icon"
+              className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+            >
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+          <div className="text-xs text-muted-foreground text-center">
+            💡 Utilisez les actions rapides ou posez vos questions directement
+          </div>
         </div>
       </CardContent>
     </Card>
