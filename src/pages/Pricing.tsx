@@ -17,7 +17,6 @@ export default function Pricing() {
       icon: Sparkles,
       iconColor: 'text-blue-500',
       price_monthly: 0,
-      price_yearly: 0,
       badge: '14 jours d\'essai',
       badgeVariant: 'secondary' as const,
       features: [
@@ -38,7 +37,6 @@ export default function Pricing() {
       icon: Check,
       iconColor: 'text-green-500',
       price_monthly: 29990,
-      price_yearly: 299900,
       badge: null,
       badgeVariant: 'outline' as const,
       features: [
@@ -59,7 +57,6 @@ export default function Pricing() {
       icon: Star,
       iconColor: 'text-yellow-500',
       price_monthly: 59990,
-      price_yearly: 599900,
       badge: 'Le plus populaire',
       badgeVariant: 'default' as const,
       popular: true,
@@ -82,7 +79,6 @@ export default function Pricing() {
       icon: Crown,
       iconColor: 'text-purple-500',
       price_monthly: 149990,
-      price_yearly: 1499900,
       badge: 'Sur devis',
       badgeVariant: 'secondary' as const,
       features: [
@@ -98,6 +94,20 @@ export default function Pricing() {
       ideal: 'Idéal pour : Groupes scolaires, réseaux d\'écoles'
     }
   ];
+
+  // Calcul automatique du prix annuel avec 20% de réduction
+  const getPrice = (plan: typeof plans[0]) => {
+    if (plan.price_monthly === 0) return 0;
+    if (isYearly) {
+      return Math.round(plan.price_monthly * 12 * 0.8); // 12 mois - 20%
+    }
+    return plan.price_monthly;
+  };
+
+  const getMonthlyEquivalent = (plan: typeof plans[0]) => {
+    if (plan.price_monthly === 0) return 0;
+    return Math.round(plan.price_monthly * 0.8); // Prix mensuel équivalent avec réduction
+  };
 
   const additionalOptions = [
     {
@@ -177,7 +187,8 @@ export default function Pricing() {
         <section className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {plans.map((plan) => {
             const Icon = plan.icon;
-            const price = isYearly ? plan.price_yearly : plan.price_monthly;
+            const price = getPrice(plan);
+            const monthlyEquivalent = getMonthlyEquivalent(plan);
             
             return (
               <Card 
@@ -211,6 +222,11 @@ export default function Pricing() {
                     <div className="text-sm text-muted-foreground">
                       {price === 0 ? 'Gratuit pendant 14 jours' : `par ${isYearly ? 'an' : 'mois'}`}
                     </div>
+                    {isYearly && plan.price_monthly > 0 && (
+                      <div className="mt-1 text-xs text-primary">
+                        soit {monthlyEquivalent.toLocaleString('fr-FR')} FCFA/mois (économie de 20%)
+                      </div>
+                    )}
                   </div>
                 </CardHeader>
                 
