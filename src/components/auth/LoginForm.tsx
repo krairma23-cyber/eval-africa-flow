@@ -82,13 +82,13 @@ export function LoginForm() {
       if (error) {
         toast({
           title: t('common.error'),
-          description: "Email ou mot de passe incorrect.",
+          description: t('login.emailOrPasswordIncorrect'),
           variant: "destructive",
         });
       } else {
         toast({
           title: t('common.success'),
-          description: "Bienvenue dans EvalScol",
+          description: t('login.welcomeEvalscol'),
         });
         setTimeout(() => {
           navigate("/dashboard", { replace: true });
@@ -97,7 +97,7 @@ export function LoginForm() {
     } catch (error) {
       toast({
         title: t('common.error'),
-        description: "Une erreur est survenue lors de la connexion",
+        description: t('login.errorOccurred'),
         variant: "destructive",
       });
     } finally {
@@ -112,7 +112,7 @@ export function LoginForm() {
     if (isCreatingSchool && (!schoolName.trim() || schoolName.trim().length < 3)) {
       toast({
         title: t('common.error'),
-        description: "Le nom de l'école doit contenir au moins 3 caractères",
+        description: t('login.schoolNameMin'),
         variant: "destructive",
       });
       return;
@@ -167,8 +167,8 @@ export function LoginForm() {
 
       if (error) {
         const message = error.message.includes("already registered") 
-          ? "Cette adresse email est déjà utilisée."
-          : "Impossible de créer le compte. Veuillez vérifier vos informations.";
+          ? t('login.emailAlreadyUsed')
+          : t('login.cannotCreateAccount');
         
         toast({
           title: t('common.error'),
@@ -177,8 +177,8 @@ export function LoginForm() {
         });
       } else if (data.user) {
         const successMessage = isCreatingSchool 
-          ? "Compte créé ! Vous serez l'administrateur de votre école. Vérifiez votre email."
-          : "⚠️ IMPORTANT: Vérifiez votre email et cliquez sur le lien de confirmation.";
+          ? t('login.accountCreatedAdmin')
+          : t('login.checkEmailConfirmation');
         
         toast({
           title: t('common.success'),
@@ -198,7 +198,7 @@ export function LoginForm() {
     } catch (error: any) {
       toast({
         title: t('common.error'),
-        description: "Une erreur est survenue lors de l'inscription",
+        description: t('login.errorOccurred'),
         variant: "destructive",
       });
     } finally {
@@ -228,7 +228,7 @@ export function LoginForm() {
     } catch (error) {
       toast({
         title: t('common.error'),
-        description: "Une erreur est survenue lors de la connexion avec Google",
+        description: t('login.errorOccurred'),
         variant: "destructive",
       });
     } finally {
@@ -256,14 +256,14 @@ export function LoginForm() {
       } else {
         toast({
           title: t('common.success'),
-          description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
+          description: t('login.checkMailReset'),
         });
         setEmail("");
       }
     } catch (error) {
       toast({
         title: t('common.error'),
-        description: "Une erreur est survenue lors de l'envoi de l'email",
+        description: t('login.errorOccurred'),
         variant: "destructive",
       });
     } finally {
@@ -377,7 +377,7 @@ export function LoginForm() {
                 </div>
 
                 <div className="space-y-3">
-                  <Label>Type d'inscription</Label>
+                  <Label>{t('login.registrationType')}</Label>
                   <RadioGroup 
                     value={isCreatingSchool ? "create" : "join"} 
                     onValueChange={(value) => setIsCreatingSchool(value === "create")}
@@ -387,16 +387,16 @@ export function LoginForm() {
                       <RadioGroupItem value="join" id="type-join" className="sr-only" />
                       <label htmlFor="type-join" className="flex flex-col items-center gap-1 cursor-pointer w-full">
                         <Users className="h-5 w-5 text-primary" />
-                        <span className="font-medium text-sm">Rejoindre</span>
-                        <span className="text-xs text-muted-foreground">Une école existante</span>
+                        <span className="font-medium text-sm">{t('login.join')}</span>
+                        <span className="text-xs text-muted-foreground">{t('login.joinDesc')}</span>
                       </label>
                     </div>
                     <div className={`relative flex flex-col items-center justify-center text-center rounded-lg border-2 p-3 cursor-pointer transition-colors ${isCreatingSchool ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
                       <RadioGroupItem value="create" id="type-create" className="sr-only" />
                       <label htmlFor="type-create" className="flex flex-col items-center gap-1 cursor-pointer w-full">
                         <Building2 className="h-5 w-5 text-primary" />
-                        <span className="font-medium text-sm">Créer</span>
-                        <span className="text-xs text-muted-foreground">Ma propre école</span>
+                        <span className="font-medium text-sm">{t('login.create')}</span>
+                        <span className="text-xs text-muted-foreground">{t('login.createDesc')}</span>
                       </label>
                     </div>
                   </RadioGroup>
@@ -406,24 +406,24 @@ export function LoginForm() {
                   <div className="space-y-2 p-3 rounded-lg bg-primary/5 border border-primary/20">
                     <Label htmlFor="schoolName" className="flex items-center gap-2">
                       <Building2 className="h-4 w-4" />
-                      Nom de votre école *
+                      {t('login.schoolName')} *
                     </Label>
                     <Input
                       id="schoolName"
                       value={schoolName}
                       onChange={(e) => setSchoolName(e.target.value)}
-                      placeholder="Ex: École Primaire Excellence"
+                      placeholder={t('login.schoolNamePlaceholder')}
                       required={isCreatingSchool}
                     />
                     <p className="text-xs text-muted-foreground">
-                      Vous deviendrez automatiquement l'administrateur de cette école.
+                      {t('login.becomeAdmin')}
                     </p>
                   </div>
                 )}
 
                 {!isCreatingSchool && (
                   <div className="space-y-3">
-                    <Label>Je suis...</Label>
+                    <Label>{t('login.iAm')}</Label>
                     <RadioGroup 
                       value={selectedRole} 
                       onValueChange={(value) => setSelectedRole(value as "user" | "teacher")}
@@ -433,14 +433,14 @@ export function LoginForm() {
                         <RadioGroupItem value="user" id="role-user" className="sr-only" />
                         <label htmlFor="role-user" className="flex flex-col items-center gap-1 cursor-pointer w-full">
                           <User className="h-5 w-5 text-primary" />
-                          <span className="font-medium text-sm">Utilisateur</span>
+                          <span className="font-medium text-sm">{t('login.user')}</span>
                         </label>
                       </div>
                       <div className={`relative flex flex-col items-center justify-center text-center rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "teacher" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
                         <RadioGroupItem value="teacher" id="role-teacher" className="sr-only" />
                         <label htmlFor="role-teacher" className="flex flex-col items-center gap-1 cursor-pointer w-full">
                           <GraduationCap className="h-5 w-5 text-primary" />
-                          <span className="font-medium text-sm">Enseignant</span>
+                          <span className="font-medium text-sm">{t('login.teacher')}</span>
                         </label>
                       </div>
                     </RadioGroup>

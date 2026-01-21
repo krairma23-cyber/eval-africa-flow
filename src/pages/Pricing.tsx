@@ -4,10 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Check, ArrowLeft, Star, Zap, Crown, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 
 export default function Pricing() {
   const navigate = useNavigate();
   const [isYearly, setIsYearly] = useState(false);
+  const { t } = useLanguage();
 
   const plans = [
     {
@@ -142,14 +145,16 @@ export default function Pricing() {
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         {/* Header */}
         <header className="mb-12">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate("/")}
-            className="mb-6"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Retour à l'accueil
-          </Button>
+          <div className="flex justify-between items-center mb-6">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate("/")}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {t('pricing.back')}
+            </Button>
+            <LanguageSwitcher />
+          </div>
           
           <div className="text-center">
             <img 
@@ -158,15 +163,15 @@ export default function Pricing() {
               className="h-20 w-auto mx-auto mb-4"
             />
             <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-              Tarification EvalScol
+              {t('pricing.title')}
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-              Des plans adaptés à chaque taille d'établissement en Afrique francophone
+              {t('pricing.subtitle')}
             </p>
 
             {/* Toggle */}
             <div className="flex items-center justify-center gap-4 mb-4">
-              <span className={!isYearly ? "font-semibold" : "text-muted-foreground"}>Mensuel</span>
+              <span className={!isYearly ? "font-semibold" : "text-muted-foreground"}>{t('pricing.monthly')}</span>
               <Button
                 variant="outline"
                 size="sm"
@@ -176,7 +181,7 @@ export default function Pricing() {
                 <div className={`absolute inset-0.5 bg-primary rounded transition-transform ${isYearly ? 'translate-x-6' : 'translate-x-0'}`} style={{ width: '1.5rem' }} />
               </Button>
               <span className={isYearly ? "font-semibold" : "text-muted-foreground"}>
-                Annuel
+                {t('pricing.yearly')}
                 <Badge variant="secondary" className="ml-2">-20%</Badge>
               </span>
             </div>
@@ -199,7 +204,7 @@ export default function Pricing() {
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <Badge className="bg-primary text-primary-foreground">
                       <Star className="h-3 w-3 mr-1" />
-                      Le plus populaire
+                      {t('pricing.popular')}
                     </Badge>
                   </div>
                 )}
@@ -220,11 +225,11 @@ export default function Pricing() {
                       {price.toLocaleString('fr-FR')} <span className="text-lg font-normal text-muted-foreground">FCFA</span>
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {price === 0 ? 'Gratuit pendant 14 jours' : `par ${isYearly ? 'an' : 'mois'}`}
+                      {price === 0 ? t('pricing.freeFor14Days') : `${t('pricing.perMonth').replace('mois', isYearly ? t('pricing.perYear').replace('par ', '') : t('pricing.perMonth').replace('par ', ''))}`}
                     </div>
                     {isYearly && plan.price_monthly > 0 && (
                       <div className="mt-1 text-xs text-primary">
-                        soit {monthlyEquivalent.toLocaleString('fr-FR')} FCFA/mois (économie de 20%)
+                        {t('pricing.equivalent')} {monthlyEquivalent.toLocaleString('fr-FR')} FCFA/{t('pricing.monthly').toLowerCase()} ({t('pricing.savings')})
                       </div>
                     )}
                   </div>
@@ -249,7 +254,7 @@ export default function Pricing() {
                     variant={plan.popular ? "default" : "outline"}
                     onClick={() => navigate("/auth")}
                   >
-                    {price === 0 ? 'Commencer l\'essai' : 'Choisir ce plan'}
+                    {price === 0 ? t('pricing.cta.trial') : t('pricing.cta.choose')}
                   </Button>
                 </CardContent>
               </Card>
@@ -259,7 +264,7 @@ export default function Pricing() {
 
         {/* Additional Options */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold mb-8 text-center">Options Supplémentaires</h2>
+          <h2 className="text-3xl font-bold mb-8 text-center">{t('pricing.additionalOptions')}</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {additionalOptions.map((option, idx) => (
               <Card key={idx}>
@@ -277,7 +282,7 @@ export default function Pricing() {
 
         {/* Features Comparison */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold mb-8 text-center">Toutes les Fonctionnalités</h2>
+          <h2 className="text-3xl font-bold mb-8 text-center">{t('pricing.allFeatures')}</h2>
           <Card>
             <CardContent className="pt-6">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -366,52 +371,48 @@ export default function Pricing() {
 
         {/* FAQ */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold mb-8 text-center">Questions Fréquentes</h2>
+          <h2 className="text-3xl font-bold mb-8 text-center">{t('pricing.faq')}</h2>
           <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Puis-je changer de plan ?</CardTitle>
+                <CardTitle className="text-lg">{t('pricing.faq.changePlan')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Oui, vous pouvez passer à un plan supérieur ou inférieur à tout moment. 
-                  Les changements sont effectifs immédiatement.
+                  {t('pricing.faq.changePlanAnswer')}
                 </p>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Que se passe-t-il après l'essai ?</CardTitle>
+                <CardTitle className="text-lg">{t('pricing.faq.afterTrial')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Après 14 jours, vous pouvez choisir un plan payant pour continuer. 
-                  Aucune carte bancaire n'est requise pour l'essai.
+                  {t('pricing.faq.afterTrialAnswer')}
                 </p>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Comment fonctionnent les paiements ?</CardTitle>
+                <CardTitle className="text-lg">{t('pricing.faq.howPayments')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Nous acceptons les paiements via Paystack : mobile money (Orange, MTN, Moov) 
-                  et cartes bancaires (Visa, Mastercard).
+                  {t('pricing.faq.howPaymentsAnswer')}
                 </p>
               </CardContent>
             </Card>
             
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Quel support est inclus ?</CardTitle>
+                <CardTitle className="text-lg">{t('pricing.faq.whatSupport')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Tous les plans incluent le support. Les délais varient : 24-48h (Standard), 
-                  12h (Professional), 4h/24-7 (Enterprise).
+                  {t('pricing.faq.whatSupportAnswer')}
                 </p>
               </CardContent>
             </Card>
@@ -421,21 +422,20 @@ export default function Pricing() {
         {/* CTA Section */}
         <Card className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border-primary/20">
           <CardContent className="pt-12 pb-12 text-center">
-            <h2 className="text-3xl font-bold mb-4">Prêt à transformer votre école ?</h2>
+            <h2 className="text-3xl font-bold mb-4">{t('pricing.ready')}</h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Rejoignez des centaines d'établissements en Afrique qui font confiance à EvalScol 
-              pour la gestion de leur scolarité.
+              {t('pricing.readyDesc')}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button size="lg" onClick={() => navigate("/auth")}>
-                Commencer l'essai gratuit
+                {t('pricing.startTrial')}
               </Button>
               <Button size="lg" variant="outline" onClick={() => navigate("/support")}>
-                Contacter les ventes
+                {t('pricing.contactSales')}
               </Button>
             </div>
             <p className="text-sm text-muted-foreground mt-6">
-              Pas de carte bancaire requise • Essai de 14 jours • Support en français
+              {t('pricing.noCard')}
             </p>
           </CardContent>
         </Card>
