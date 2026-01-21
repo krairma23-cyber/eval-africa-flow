@@ -118,6 +118,124 @@ const translations: Record<Language, Record<string, string>> = {
     'sidebar.users': 'Utilisateurs',
     'sidebar.settings': 'Paramètres',
     
+    // Pages - Students
+    'students.title': 'Élèves',
+    'students.subtitle': 'Gestion des élèves de l\'établissement',
+    'students.add': 'Ajouter un élève',
+    'students.search': 'Rechercher un élève...',
+    'students.noResults': 'Aucun élève trouvé',
+    'students.noResultsDesc': 'Aucun élève ne correspond à votre recherche',
+    'students.startDesc': 'Commencez par créer votre premier élève',
+    'students.enrolled': 'inscrits',
+    'students.parent': 'Parent',
+    'students.age': 'ans',
+    'students.enroll': 'Inscrire',
+    'students.payment': 'Paiement',
+    'students.present': 'Présent',
+    'students.absent': 'Absent',
+    'students.edit': 'Modifier',
+    'students.sendPortal': 'Envoyer lien portail',
+    'students.filters': 'Filtres',
+    'students.allClassrooms': 'Toutes les classes',
+    'students.allLevels': 'Tous les niveaux',
+    'students.allPayments': 'Tous les statuts',
+    'students.perPage': 'Par page',
+    
+    // Pages - Classrooms
+    'classrooms.title': 'Classes',
+    'classrooms.subtitle': 'Gérez les classes de votre établissement',
+    'classrooms.add': 'Ajouter une classe',
+    'classrooms.search': 'Rechercher une classe...',
+    'classrooms.noResults': 'Aucune classe trouvée',
+    'classrooms.noResultsSearch': 'Aucune classe ne correspond à votre recherche',
+    'classrooms.startDesc': 'Commencez par créer votre première classe',
+    'classrooms.create': 'Créer une classe',
+    'classrooms.students': 'élèves',
+    'classrooms.viewStudents': 'Voir les élèves',
+    'classrooms.viewRankings': 'Voir le classement',
+    'classrooms.capacity': 'Capacité',
+    
+    // Pages - Subjects
+    'subjects.title': 'Matières',
+    'subjects.subtitle': 'Gestion des matières enseignées',
+    'subjects.add': 'Ajouter une matière',
+    'subjects.noResults': 'Aucune matière trouvée',
+    'subjects.startDesc': 'Commencez par créer votre première matière',
+    
+    // Pages - Assessments
+    'assessments.title': 'Évaluations',
+    'assessments.subtitle': 'Gérez les évaluations et contrôles de vos classes',
+    'assessments.create': 'Créer une évaluation',
+    'assessments.noResults': 'Aucune évaluation trouvée',
+    'assessments.startDesc': 'Commencez par créer votre première évaluation',
+    
+    // Pages - Reports
+    'reports.title': 'Bulletins et Moyennes',
+    'reports.subtitle': 'Consultez les moyennes et bulletins scolaires',
+    'reports.searchStudent': 'Rechercher un élève...',
+    'reports.allPeriods': 'Toutes les périodes',
+    'reports.allClasses': 'Toutes les classes',
+    'reports.noResults': 'Aucun bulletin trouvé',
+    'reports.noResultsFilter': 'Aucun bulletin ne correspond à vos filtres',
+    'reports.needGrades': 'Les notes doivent d\'abord être saisies dans les évaluations',
+    'reports.studentView': 'Vue par élève',
+    'reports.tableView': 'Vue tableau',
+    'reports.overallAverage': 'Moyenne générale',
+    'reports.ranking': 'Classement',
+    'reports.subjectAverages': 'Moyennes par matière',
+    'reports.otherSubjects': 'autre(s) matière(s)',
+    'reports.downloadPdf': 'Télécharger PDF',
+    
+    // Pages - Teachers
+    'teachers.title': 'Enseignants',
+    'teachers.subtitle': 'Gestion du personnel enseignant',
+    'teachers.add': 'Ajouter un enseignant',
+    'teachers.search': 'Rechercher un enseignant...',
+    'teachers.noResults': 'Aucun enseignant trouvé',
+    'teachers.startDesc': 'Commencez par créer votre premier enseignant',
+    
+    // Pages - Settings
+    'settings.title': 'Paramètres',
+    'settings.userProfile': 'Profil utilisateur',
+    'settings.accountInfo': 'Informations de votre compte',
+    'settings.email': 'Email',
+    'settings.role': 'Rôle',
+    'settings.administrator': 'Administrateur',
+    'settings.lastLogin': 'Dernière connexion',
+    
+    // Pages - Support
+    'support.phoneSupport': 'Support téléphonique',
+    'support.phoneDesc': 'Appelez-nous pour une assistance rapide',
+    'support.phoneLabel': 'Téléphone',
+    
+    // Common UI
+    'common.logout': 'Déconnexion',
+    'common.logoutSuccess': 'Vous avez été déconnecté avec succès',
+    'common.logoutError': 'Erreur lors de la déconnexion',
+    'common.noData': 'Aucune donnée disponible',
+    'common.loadError': 'Impossible de charger les données',
+    
+    // AI Content Generator
+    'ai.evaluations': 'Évaluations',
+    'ai.reports': 'Rapports',
+    'ai.analyses': 'Analyses',
+    
+    // Onboarding
+    'onboarding.welcome': 'Bienvenue sur EvalScol !',
+    'onboarding.features.ai': 'Assistant IA intégré',
+    'onboarding.features.analytics': 'Analytics prédictifs',
+    'onboarding.features.voice': 'Commandes vocales',
+    'onboarding.features.parent': 'Portail parent',
+    'onboarding.features.reports': 'Rapports automatiques',
+    'onboarding.features.security': 'Sécurité maximale',
+    'onboarding.cta': 'Commencer à utiliser EvalScol',
+    'onboarding.loading': 'Chargement...',
+    'onboarding.configNote': 'Toutes les configurations sont disponibles dans les paramètres du tableau de bord',
+    
+    // Parent Portal
+    'parentPortal.title': 'Portail Parent',
+    'parentPortal.subtitle': 'Suivi scolaire de votre enfant',
+    
     // Evaluation Features
     'eval.title': 'Évaluations & Suivi des Progrès',
     'eval.subtitle': 'Système complet de gestion des évaluations avec analytics avancés pour suivre la progression de vos élèves',
@@ -431,6 +549,124 @@ const translations: Record<Language, Record<string, string>> = {
     'sidebar.notifications': 'Notifications',
     'sidebar.users': 'Users',
     'sidebar.settings': 'Settings',
+    
+    // Pages - Students
+    'students.title': 'Students',
+    'students.subtitle': 'Manage institution students',
+    'students.add': 'Add a student',
+    'students.search': 'Search for a student...',
+    'students.noResults': 'No students found',
+    'students.noResultsDesc': 'No students match your search',
+    'students.startDesc': 'Start by creating your first student',
+    'students.enrolled': 'enrolled',
+    'students.parent': 'Parent',
+    'students.age': 'years old',
+    'students.enroll': 'Enroll',
+    'students.payment': 'Payment',
+    'students.present': 'Present',
+    'students.absent': 'Absent',
+    'students.edit': 'Edit',
+    'students.sendPortal': 'Send portal link',
+    'students.filters': 'Filters',
+    'students.allClassrooms': 'All classrooms',
+    'students.allLevels': 'All levels',
+    'students.allPayments': 'All statuses',
+    'students.perPage': 'Per page',
+    
+    // Pages - Classrooms
+    'classrooms.title': 'Classrooms',
+    'classrooms.subtitle': 'Manage your institution classrooms',
+    'classrooms.add': 'Add a classroom',
+    'classrooms.search': 'Search for a classroom...',
+    'classrooms.noResults': 'No classrooms found',
+    'classrooms.noResultsSearch': 'No classrooms match your search',
+    'classrooms.startDesc': 'Start by creating your first classroom',
+    'classrooms.create': 'Create a classroom',
+    'classrooms.students': 'students',
+    'classrooms.viewStudents': 'View students',
+    'classrooms.viewRankings': 'View rankings',
+    'classrooms.capacity': 'Capacity',
+    
+    // Pages - Subjects
+    'subjects.title': 'Subjects',
+    'subjects.subtitle': 'Manage subjects taught',
+    'subjects.add': 'Add a subject',
+    'subjects.noResults': 'No subjects found',
+    'subjects.startDesc': 'Start by creating your first subject',
+    
+    // Pages - Assessments
+    'assessments.title': 'Assessments',
+    'assessments.subtitle': 'Manage assessments and tests for your classes',
+    'assessments.create': 'Create an assessment',
+    'assessments.noResults': 'No assessments found',
+    'assessments.startDesc': 'Start by creating your first assessment',
+    
+    // Pages - Reports
+    'reports.title': 'Report Cards & Averages',
+    'reports.subtitle': 'View averages and school report cards',
+    'reports.searchStudent': 'Search for a student...',
+    'reports.allPeriods': 'All periods',
+    'reports.allClasses': 'All classes',
+    'reports.noResults': 'No report cards found',
+    'reports.noResultsFilter': 'No report cards match your filters',
+    'reports.needGrades': 'Grades must first be entered in assessments',
+    'reports.studentView': 'Student view',
+    'reports.tableView': 'Table view',
+    'reports.overallAverage': 'Overall average',
+    'reports.ranking': 'Ranking',
+    'reports.subjectAverages': 'Subject averages',
+    'reports.otherSubjects': 'other subject(s)',
+    'reports.downloadPdf': 'Download PDF',
+    
+    // Pages - Teachers
+    'teachers.title': 'Teachers',
+    'teachers.subtitle': 'Teaching staff management',
+    'teachers.add': 'Add a teacher',
+    'teachers.search': 'Search for a teacher...',
+    'teachers.noResults': 'No teachers found',
+    'teachers.startDesc': 'Start by creating your first teacher',
+    
+    // Pages - Settings
+    'settings.title': 'Settings',
+    'settings.userProfile': 'User profile',
+    'settings.accountInfo': 'Your account information',
+    'settings.email': 'Email',
+    'settings.role': 'Role',
+    'settings.administrator': 'Administrator',
+    'settings.lastLogin': 'Last login',
+    
+    // Pages - Support
+    'support.phoneSupport': 'Phone support',
+    'support.phoneDesc': 'Call us for quick assistance',
+    'support.phoneLabel': 'Phone',
+    
+    // Common UI
+    'common.logout': 'Logout',
+    'common.logoutSuccess': 'You have been successfully logged out',
+    'common.logoutError': 'Error during logout',
+    'common.noData': 'No data available',
+    'common.loadError': 'Unable to load data',
+    
+    // AI Content Generator
+    'ai.evaluations': 'Assessments',
+    'ai.reports': 'Reports',
+    'ai.analyses': 'Analyses',
+    
+    // Onboarding
+    'onboarding.welcome': 'Welcome to EvalScol!',
+    'onboarding.features.ai': 'Integrated AI assistant',
+    'onboarding.features.analytics': 'Predictive analytics',
+    'onboarding.features.voice': 'Voice commands',
+    'onboarding.features.parent': 'Parent portal',
+    'onboarding.features.reports': 'Automatic reports',
+    'onboarding.features.security': 'Maximum security',
+    'onboarding.cta': 'Start using EvalScol',
+    'onboarding.loading': 'Loading...',
+    'onboarding.configNote': 'All configurations are available in the dashboard settings',
+    
+    // Parent Portal
+    'parentPortal.title': 'Parent Portal',
+    'parentPortal.subtitle': 'Your child\'s school tracking',
     
     // Evaluation Features
     'eval.title': 'Assessments & Progress Tracking',

@@ -17,6 +17,7 @@ import { SendParentPortalLinkDialog } from "@/components/forms/SendParentPortalL
 import { ManagePaymentDialog } from "@/components/forms/ManagePaymentDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Student {
   id: string;
@@ -59,6 +60,7 @@ export default function Students() {
   const [selectedGradeLevel, setSelectedGradeLevel] = useState<string>("all");
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState<string>("all");
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchStudents();
@@ -242,16 +244,16 @@ export default function Students() {
         <div className="min-w-0">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
             <Users className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />
-            <span className="truncate">Élèves</span>
+            <span className="truncate">{t('students.title')}</span>
           </h1>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Gestion des élèves de l'établissement
+            {t('students.subtitle')}
           </p>
         </div>
         <AddStudentDialog onStudentAdded={fetchStudents}>
           <Button className="w-full sm:w-auto text-sm">
             <Plus className="h-4 w-4 mr-2" />
-            Ajouter un élève
+            {t('students.add')}
           </Button>
         </AddStudentDialog>
       </div>
@@ -260,7 +262,7 @@ export default function Students() {
         <div className="flex items-center space-x-2">
           <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           <Input
-            placeholder="Rechercher un élève..."
+            placeholder={t('students.search')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full sm:max-w-sm"
@@ -271,7 +273,7 @@ export default function Students() {
           <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
             <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
               <Filter className="h-4 w-4 flex-shrink-0" />
-              Filtres avancés
+              {t('students.filters')}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
