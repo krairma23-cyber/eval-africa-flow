@@ -13,6 +13,7 @@ import { EditClassroomDialog } from "@/components/forms/EditClassroomDialog";
 import { ViewClassStudentsDialog } from "@/components/forms/ViewClassStudentsDialog";
 import { ViewClassRankingsDialog } from "@/components/forms/ViewClassRankingsDialog";
 import { logError } from "@/lib/logger";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 // Fonction pour obtenir l'ordre du niveau scolaire
 const getGradeLevelOrder = (gradeName: string): number => {
@@ -84,6 +85,7 @@ export default function Classrooms() {
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
   const classroomRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchClassrooms();
@@ -186,9 +188,9 @@ export default function Classrooms() {
   return (
     <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
       <div className="min-w-0">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Classes</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('classrooms.title')}</h1>
         <p className="text-sm sm:text-base text-muted-foreground">
-          Gérez les classes de votre établissement
+          {t('classrooms.subtitle')}
         </p>
       </div>
 
@@ -196,7 +198,7 @@ export default function Classrooms() {
         <div className="relative w-full sm:max-w-sm">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Rechercher une classe..."
+            placeholder={t('classrooms.search')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -205,7 +207,7 @@ export default function Classrooms() {
         <AddClassroomDialog onClassroomAdded={fetchClassrooms}>
           <Button className="w-full sm:w-auto text-sm">
             <Plus className="h-4 w-4 mr-2" />
-            Ajouter une classe
+            {t('classrooms.add')}
           </Button>
         </AddClassroomDialog>
       </div>
@@ -213,14 +215,14 @@ export default function Classrooms() {
       {filteredClassrooms.length === 0 ? (
         <div className="text-center py-12">
           <School className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Aucune classe trouvée</h3>
+          <h3 className="text-lg font-semibold mb-2">{t('classrooms.noResults')}</h3>
           <p className="text-muted-foreground mb-4">
-            {searchTerm ? "Aucune classe ne correspond à votre recherche" : "Commencez par créer votre première classe"}
+            {searchTerm ? t('classrooms.noResultsSearch') : t('classrooms.startDesc')}
           </p>
           <AddClassroomDialog onClassroomAdded={fetchClassrooms}>
             <Button>
               <Plus className="h-4 w-4 mr-2" />
-              Créer une classe
+              {t('classrooms.create')}
             </Button>
           </AddClassroomDialog>
         </div>
