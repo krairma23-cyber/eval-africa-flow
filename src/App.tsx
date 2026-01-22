@@ -40,6 +40,7 @@ const About = lazy(() => import("./pages/About"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const PaystackDiagnostic = lazy(() => import("./pages/PaystackDiagnostic"));
 const TuitionPaymentDiagnostic = lazy(() => import("./pages/TuitionPaymentDiagnostic"));
+const PlatformAdmin = lazy(() => import("./pages/PlatformAdmin"));
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const App = () => (
               <Route path="privacy" element={<DataPrivacy />} />
               <Route path="paystack-diagnostic" element={<PaystackDiagnostic />} />
               <Route path="tuition-diagnostic" element={<TuitionPaymentDiagnostic />} />
+              <Route path="platform-admin" element={<PlatformAdmin />} />
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
