@@ -14,8 +14,7 @@ import {
   HelpCircle,
   Bell,
   UserCog,
-  Calendar,
-  Gauge
+  Calendar
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -56,7 +55,6 @@ export function AppSidebar() {
     { title: t('sidebar.support'), url: "/dashboard/support", icon: HelpCircle },
     { title: t('sidebar.notifications'), url: "/dashboard/notifications", icon: Bell },
     { title: t('sidebar.users'), url: "/dashboard/users", icon: Shield },
-    { title: "Admin Plateforme", url: "/dashboard/platform-admin", icon: Gauge },
     { title: t('sidebar.settings'), url: "/dashboard/settings", icon: Settings },
   ];
 
