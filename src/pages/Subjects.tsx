@@ -13,6 +13,29 @@ import { AddSubjectDialog } from "@/components/forms/AddSubjectDialog";
 import { EditSubjectDialog } from "@/components/forms/EditSubjectDialog";
 import { logError } from "@/lib/logger";
 
+// Subject colors for visual differentiation
+const subjectColors = [
+  { bg: "bg-violet-500/20", border: "border-violet-500/50", text: "text-violet-400", icon: "bg-violet-500" },
+  { bg: "bg-blue-500/20", border: "border-blue-500/50", text: "text-blue-400", icon: "bg-blue-500" },
+  { bg: "bg-emerald-500/20", border: "border-emerald-500/50", text: "text-emerald-400", icon: "bg-emerald-500" },
+  { bg: "bg-amber-500/20", border: "border-amber-500/50", text: "text-amber-400", icon: "bg-amber-500" },
+  { bg: "bg-rose-500/20", border: "border-rose-500/50", text: "text-rose-400", icon: "bg-rose-500" },
+  { bg: "bg-cyan-500/20", border: "border-cyan-500/50", text: "text-cyan-400", icon: "bg-cyan-500" },
+  { bg: "bg-orange-500/20", border: "border-orange-500/50", text: "text-orange-400", icon: "bg-orange-500" },
+  { bg: "bg-pink-500/20", border: "border-pink-500/50", text: "text-pink-400", icon: "bg-pink-500" },
+  { bg: "bg-indigo-500/20", border: "border-indigo-500/50", text: "text-indigo-400", icon: "bg-indigo-500" },
+  { bg: "bg-teal-500/20", border: "border-teal-500/50", text: "text-teal-400", icon: "bg-teal-500" },
+];
+
+const getSubjectColor = (subjectId: string) => {
+  // Generate consistent color based on subject ID hash
+  let hash = 0;
+  for (let i = 0; i < subjectId.length; i++) {
+    hash = subjectId.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return subjectColors[Math.abs(hash) % subjectColors.length];
+};
+
 interface Subject {
   id: string;
   name: string;
@@ -234,39 +257,51 @@ export default function Subjects() {
               </div>
               <Separator />
               <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                {classroomSubjects.map((subject) => (
-                  <Card key={subject.id} className="hover:shadow-md transition-shadow overflow-hidden">
-                    <CardHeader className="p-3 sm:p-4">
-                      <CardTitle className="flex items-center justify-between gap-2 text-base sm:text-lg">
-                        <span className="truncate">{subject.name}</span>
-                        <div className="flex gap-1 items-center flex-shrink-0">
-                          <Badge variant="outline" className="text-xs">{subject.code}</Badge>
-                          <EditSubjectDialog
-                            subject={{
-                              id: subject.id,
-                              name: subject.name,
-                              code: subject.code,
-                              description: subject.description,
-                            }}
-                            onSubjectUpdated={fetchSubjects}
-                          >
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                          </EditSubjectDialog>
-                        </div>
-                      </CardTitle>
-                      <CardDescription className="text-sm">
-                        {subject.description || "Aucune description"}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-2 px-3 sm:px-4 pb-3 sm:pb-4 pt-0">
-                      <p className="text-xs text-muted-foreground">
-                        Créée le {formatDate(subject.created_at)}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
+                {classroomSubjects.map((subject) => {
+                  const color = getSubjectColor(subject.id);
+                  return (
+                    <Card 
+                      key={subject.id} 
+                      className={`hover:shadow-lg transition-all overflow-hidden border-l-4 ${color.border} ${color.bg}`}
+                    >
+                      <CardHeader className="p-3 sm:p-4">
+                        <CardTitle className="flex items-center justify-between gap-2 text-base sm:text-lg">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className={`w-3 h-3 rounded-full ${color.icon} flex-shrink-0`} />
+                            <span className="truncate">{subject.name}</span>
+                          </div>
+                          <div className="flex gap-1 items-center flex-shrink-0">
+                            <Badge variant="outline" className={`text-xs ${color.text} border-current`}>
+                              {subject.code}
+                            </Badge>
+                            <EditSubjectDialog
+                              subject={{
+                                id: subject.id,
+                                name: subject.name,
+                                code: subject.code,
+                                description: subject.description,
+                              }}
+                              onSubjectUpdated={fetchSubjects}
+                            >
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <Pencil className="h-4 w-4" />
+                              </Button>
+                            </EditSubjectDialog>
+                          </div>
+                        </CardTitle>
+                        <CardDescription className="text-sm">
+                          {subject.description || "Aucune description"}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-2 px-3 sm:px-4 pb-3 sm:pb-4 pt-0">
+                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          Créée le {formatDate(subject.created_at)}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             </div>
           ))}
