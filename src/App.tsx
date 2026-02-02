@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import { CookieConsent } from "./components/gdpr/CookieConsent";
+import DashboardLayout from "./components/layout/DashboardLayout";
 
 // Lazy load all pages except Index for better initial load performance
 const Auth = lazy(() => import("./pages/Auth"));
@@ -17,7 +18,6 @@ const Classrooms = lazy(() => import("./pages/Classrooms"));
 const Assessments = lazy(() => import("./pages/Assessments"));
 const Reports = lazy(() => import("./pages/Reports"));
 const Settings = lazy(() => import("./pages/Settings"));
-const DashboardLayout = lazy(() => import("./components/layout/DashboardLayout"));
 const UserManagement = lazy(() => import("./pages/UserManagement"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Billing = lazy(() => import("./pages/Billing"));
