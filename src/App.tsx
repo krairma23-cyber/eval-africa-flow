@@ -7,39 +7,42 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import { CookieConsent } from "./components/gdpr/CookieConsent";
 import DashboardLayout from "./components/layout/DashboardLayout";
+import { lazyWithRetry } from "@/lib/lazyWithRetry";
+import { ChunkLoadErrorBoundary } from "@/components/system/ChunkLoadErrorBoundary";
 
-// Lazy load all pages except Index for better initial load performance
-const Auth = lazy(() => import("./pages/Auth"));
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const Students = lazy(() => import("./pages/Students"));
-const Teachers = lazy(() => import("./pages/Teachers"));
-const Subjects = lazy(() => import("./pages/Subjects"));
-const Classrooms = lazy(() => import("./pages/Classrooms"));
-const Assessments = lazy(() => import("./pages/Assessments"));
-const Reports = lazy(() => import("./pages/Reports"));
-const Settings = lazy(() => import("./pages/Settings"));
-const UserManagement = lazy(() => import("./pages/UserManagement"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const Billing = lazy(() => import("./pages/Billing"));
-const ApiManagement = lazy(() => import("./pages/ApiManagement"));
-const Analytics = lazy(() => import("./pages/Analytics"));
-const Support = lazy(() => import("./pages/Support"));
-const Notifications = lazy(() => import("./pages/Notifications"));
-const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
-const DataPrivacy = lazy(() => import("./pages/DataPrivacy"));
-const Assignments = lazy(() => import("./pages/Assignments"));
-const Schedule = lazy(() => import("./pages/Schedule"));
-const PaymentCallback = lazy(() => import("./pages/PaymentCallback"));
-const ParentPortal = lazy(() => import("./pages/ParentPortal"));
-const ParentGuide = lazy(() => import("./pages/ParentGuide"));
-const Terms = lazy(() => import("./pages/Terms"));
-const AssessmentTypes = lazy(() => import("./pages/AssessmentTypes"));
-const Onboarding = lazy(() => import("./pages/Onboarding"));
-const PitchDeck = lazy(() => import("./pages/PitchDeck"));
-const About = lazy(() => import("./pages/About"));
-const Pricing = lazy(() => import("./pages/Pricing"));
-const PaystackDiagnostic = lazy(() => import("./pages/PaystackDiagnostic"));
-const TuitionPaymentDiagnostic = lazy(() => import("./pages/TuitionPaymentDiagnostic"));
+// Lazy load all pages except Index for better initial load performance.
+// Wrapped with retry logic to avoid blank screens when a chunk/module fails to load (cache mismatch).
+const Auth = lazyWithRetry(() => import("./pages/Auth"), "page:Auth");
+const Dashboard = lazyWithRetry(() => import("./pages/Dashboard"), "page:Dashboard");
+const Students = lazyWithRetry(() => import("./pages/Students"), "page:Students");
+const Teachers = lazyWithRetry(() => import("./pages/Teachers"), "page:Teachers");
+const Subjects = lazyWithRetry(() => import("./pages/Subjects"), "page:Subjects");
+const Classrooms = lazyWithRetry(() => import("./pages/Classrooms"), "page:Classrooms");
+const Assessments = lazyWithRetry(() => import("./pages/Assessments"), "page:Assessments");
+const Reports = lazyWithRetry(() => import("./pages/Reports"), "page:Reports");
+const Settings = lazyWithRetry(() => import("./pages/Settings"), "page:Settings");
+const UserManagement = lazyWithRetry(() => import("./pages/UserManagement"), "page:UserManagement");
+const NotFound = lazyWithRetry(() => import("./pages/NotFound"), "page:NotFound");
+const Billing = lazyWithRetry(() => import("./pages/Billing"), "page:Billing");
+const ApiManagement = lazyWithRetry(() => import("./pages/ApiManagement"), "page:ApiManagement");
+const Analytics = lazyWithRetry(() => import("./pages/Analytics"), "page:Analytics");
+const Support = lazyWithRetry(() => import("./pages/Support"), "page:Support");
+const Notifications = lazyWithRetry(() => import("./pages/Notifications"), "page:Notifications");
+const PrivacyPolicy = lazyWithRetry(() => import("./pages/PrivacyPolicy"), "page:PrivacyPolicy");
+const DataPrivacy = lazyWithRetry(() => import("./pages/DataPrivacy"), "page:DataPrivacy");
+const Assignments = lazyWithRetry(() => import("./pages/Assignments"), "page:Assignments");
+const Schedule = lazyWithRetry(() => import("./pages/Schedule"), "page:Schedule");
+const PaymentCallback = lazyWithRetry(() => import("./pages/PaymentCallback"), "page:PaymentCallback");
+const ParentPortal = lazyWithRetry(() => import("./pages/ParentPortal"), "page:ParentPortal");
+const ParentGuide = lazyWithRetry(() => import("./pages/ParentGuide"), "page:ParentGuide");
+const Terms = lazyWithRetry(() => import("./pages/Terms"), "page:Terms");
+const AssessmentTypes = lazyWithRetry(() => import("./pages/AssessmentTypes"), "page:AssessmentTypes");
+const Onboarding = lazyWithRetry(() => import("./pages/Onboarding"), "page:Onboarding");
+const PitchDeck = lazyWithRetry(() => import("./pages/PitchDeck"), "page:PitchDeck");
+const About = lazyWithRetry(() => import("./pages/About"), "page:About");
+const Pricing = lazyWithRetry(() => import("./pages/Pricing"), "page:Pricing");
+const PaystackDiagnostic = lazyWithRetry(() => import("./pages/PaystackDiagnostic"), "page:PaystackDiagnostic");
+const TuitionPaymentDiagnostic = lazyWithRetry(() => import("./pages/TuitionPaymentDiagnostic"), "page:TuitionPaymentDiagnostic");
 
 
 const queryClient = new QueryClient();
@@ -58,46 +61,48 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <CookieConsent />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/pitch-deck" element={<PitchDeck />} />
-            <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/payment-callback" element={<PaymentCallback />} />
-            <Route path="/parent-portal" element={<ParentPortal />} />
-            <Route path="/parent-guide" element={<ParentGuide />} />
-            
-            <Route path="/dashboard" element={<DashboardLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="users" element={<UserManagement />} />
-              <Route path="students" element={<Students />} />
-              <Route path="teachers" element={<Teachers />} />
-              <Route path="subjects" element={<Subjects />} />
-              <Route path="classrooms" element={<Classrooms />} />
-              <Route path="assessments" element={<Assessments />} />
-              <Route path="terms" element={<Terms />} />
-              <Route path="assessment-types" element={<AssessmentTypes />} />
-              <Route path="reports" element={<Reports />} />
-              <Route path="assignments" element={<Assignments />} />
-              <Route path="schedule" element={<Schedule />} />
-              <Route path="settings" element={<Settings />} />
-              <Route path="billing" element={<Billing />} />
-              <Route path="api" element={<ApiManagement />} />
-              <Route path="analytics" element={<Analytics />} />
-              <Route path="support" element={<Support />} />
-              <Route path="notifications" element={<Notifications />} />
-              <Route path="privacy" element={<DataPrivacy />} />
-              <Route path="paystack-diagnostic" element={<PaystackDiagnostic />} />
-              <Route path="tuition-diagnostic" element={<TuitionPaymentDiagnostic />} />
-            </Route>
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <ChunkLoadErrorBoundary>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/pitch-deck" element={<PitchDeck />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/payment-callback" element={<PaymentCallback />} />
+              <Route path="/parent-portal" element={<ParentPortal />} />
+              <Route path="/parent-guide" element={<ParentGuide />} />
+
+              <Route path="/dashboard" element={<DashboardLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="users" element={<UserManagement />} />
+                <Route path="students" element={<Students />} />
+                <Route path="teachers" element={<Teachers />} />
+                <Route path="subjects" element={<Subjects />} />
+                <Route path="classrooms" element={<Classrooms />} />
+                <Route path="assessments" element={<Assessments />} />
+                <Route path="terms" element={<Terms />} />
+                <Route path="assessment-types" element={<AssessmentTypes />} />
+                <Route path="reports" element={<Reports />} />
+                <Route path="assignments" element={<Assignments />} />
+                <Route path="schedule" element={<Schedule />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="billing" element={<Billing />} />
+                <Route path="api" element={<ApiManagement />} />
+                <Route path="analytics" element={<Analytics />} />
+                <Route path="support" element={<Support />} />
+                <Route path="notifications" element={<Notifications />} />
+                <Route path="privacy" element={<DataPrivacy />} />
+                <Route path="paystack-diagnostic" element={<PaystackDiagnostic />} />
+                <Route path="tuition-diagnostic" element={<TuitionPaymentDiagnostic />} />
+              </Route>
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </ChunkLoadErrorBoundary>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
