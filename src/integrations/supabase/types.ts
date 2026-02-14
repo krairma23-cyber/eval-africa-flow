@@ -676,6 +676,189 @@ export type Database = {
           },
         ]
       }
+      command_center_expenses: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string | null
+          currency: string
+          expense_date: string
+          id: string
+          label: string
+          notes: string | null
+          recurring: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount?: number
+          category: string
+          created_at?: string | null
+          currency?: string
+          expense_date?: string
+          id?: string
+          label: string
+          notes?: string | null
+          recurring?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string | null
+          currency?: string
+          expense_date?: string
+          id?: string
+          label?: string
+          notes?: string | null
+          recurring?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      command_center_metrics: {
+        Row: {
+          avg_onboarding_minutes: number | null
+          avg_response_time_ms: number | null
+          churn_rate: number | null
+          created_at: string | null
+          id: string
+          metric_date: string
+          open_bugs: number | null
+          paystack_dependency_pct: number | null
+          retention_30d: number | null
+          retention_90d: number | null
+          storage_used_gb: number | null
+          supabase_dependency_pct: number | null
+          support_tickets: number | null
+          tech_debt_score: number | null
+          top3_school_revenue_pct: number | null
+          uptime_percent: number | null
+        }
+        Insert: {
+          avg_onboarding_minutes?: number | null
+          avg_response_time_ms?: number | null
+          churn_rate?: number | null
+          created_at?: string | null
+          id?: string
+          metric_date?: string
+          open_bugs?: number | null
+          paystack_dependency_pct?: number | null
+          retention_30d?: number | null
+          retention_90d?: number | null
+          storage_used_gb?: number | null
+          supabase_dependency_pct?: number | null
+          support_tickets?: number | null
+          tech_debt_score?: number | null
+          top3_school_revenue_pct?: number | null
+          uptime_percent?: number | null
+        }
+        Update: {
+          avg_onboarding_minutes?: number | null
+          avg_response_time_ms?: number | null
+          churn_rate?: number | null
+          created_at?: string | null
+          id?: string
+          metric_date?: string
+          open_bugs?: number | null
+          paystack_dependency_pct?: number | null
+          retention_30d?: number | null
+          retention_90d?: number | null
+          storage_used_gb?: number | null
+          supabase_dependency_pct?: number | null
+          support_tickets?: number | null
+          tech_debt_score?: number | null
+          top3_school_revenue_pct?: number | null
+          uptime_percent?: number | null
+        }
+        Relationships: []
+      }
+      command_center_page_usage: {
+        Row: {
+          avg_time_seconds: number | null
+          bounce_rate: number | null
+          created_at: string | null
+          id: string
+          page_name: string
+          period_end: string
+          period_start: string
+          visit_count: number | null
+        }
+        Insert: {
+          avg_time_seconds?: number | null
+          bounce_rate?: number | null
+          created_at?: string | null
+          id?: string
+          page_name: string
+          period_end: string
+          period_start: string
+          visit_count?: number | null
+        }
+        Update: {
+          avg_time_seconds?: number | null
+          bounce_rate?: number | null
+          created_at?: string | null
+          id?: string
+          page_name?: string
+          period_end?: string
+          period_start?: string
+          visit_count?: number | null
+        }
+        Relationships: []
+      }
+      command_center_revenue: {
+        Row: {
+          churned_subscriptions: number | null
+          created_at: string | null
+          free_trials: number | null
+          id: string
+          month: string
+          mrr: number | null
+          new_subscriptions: number | null
+          paid_subscriptions: number | null
+          total_parents: number | null
+          total_schools: number | null
+          total_students: number | null
+          total_teachers: number | null
+          updated_at: string | null
+          upgrades: number | null
+          visitors: number | null
+        }
+        Insert: {
+          churned_subscriptions?: number | null
+          created_at?: string | null
+          free_trials?: number | null
+          id?: string
+          month: string
+          mrr?: number | null
+          new_subscriptions?: number | null
+          paid_subscriptions?: number | null
+          total_parents?: number | null
+          total_schools?: number | null
+          total_students?: number | null
+          total_teachers?: number | null
+          updated_at?: string | null
+          upgrades?: number | null
+          visitors?: number | null
+        }
+        Update: {
+          churned_subscriptions?: number | null
+          created_at?: string | null
+          free_trials?: number | null
+          id?: string
+          month?: string
+          mrr?: number | null
+          new_subscriptions?: number | null
+          paid_subscriptions?: number | null
+          total_parents?: number | null
+          total_schools?: number | null
+          total_students?: number | null
+          total_teachers?: number | null
+          updated_at?: string | null
+          upgrades?: number | null
+          visitors?: number | null
+        }
+        Relationships: []
+      }
       comprehensive_audit_logs: {
         Row: {
           action: string
@@ -5002,6 +5185,7 @@ export type Database = {
         Args: { p_school_id: string; p_user_id?: string }
         Returns: boolean
       }
+      is_super_admin: { Args: { _user_id: string }; Returns: boolean }
       is_teacher: { Args: { p_user_id?: string }; Returns: boolean }
       is_user_admin: { Args: { check_user_id?: string }; Returns: boolean }
       log_comprehensive_audit: {

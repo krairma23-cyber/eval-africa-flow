@@ -44,6 +44,16 @@ const Pricing = lazyWithRetry(() => import("./pages/Pricing"), "page:Pricing");
 const PaystackDiagnostic = lazyWithRetry(() => import("./pages/PaystackDiagnostic"), "page:PaystackDiagnostic");
 const TuitionPaymentDiagnostic = lazyWithRetry(() => import("./pages/TuitionPaymentDiagnostic"), "page:TuitionPaymentDiagnostic");
 
+// Command Center pages
+const CommandCenterLayout = lazyWithRetry(() => import("./pages/command-center/CommandCenterLayout"), "page:CommandCenterLayout");
+const CCOverview = lazyWithRetry(() => import("./pages/command-center/CCOverview"), "page:CCOverview");
+const CCFinancial = lazyWithRetry(() => import("./pages/command-center/CCFinancial"), "page:CCFinancial");
+const CCProductUsage = lazyWithRetry(() => import("./pages/command-center/CCProductUsage"), "page:CCProductUsage");
+const CCHiddenCosts = lazyWithRetry(() => import("./pages/command-center/CCHiddenCosts"), "page:CCHiddenCosts");
+const CCRisks = lazyWithRetry(() => import("./pages/command-center/CCRisks"), "page:CCRisks");
+const CCGrowth = lazyWithRetry(() => import("./pages/command-center/CCGrowth"), "page:CCGrowth");
+const CCHealthScore = lazyWithRetry(() => import("./pages/command-center/CCHealthScore"), "page:CCHealthScore");
+
 
 const queryClient = new QueryClient();
 
@@ -98,6 +108,17 @@ const App = () => (
                 <Route path="paystack-diagnostic" element={<PaystackDiagnostic />} />
                 <Route path="tuition-diagnostic" element={<TuitionPaymentDiagnostic />} />
               </Route>
+              {/* Command Center - Super Admin only */}
+              <Route path="/command-center" element={<CommandCenterLayout />}>
+                <Route index element={<CCOverview />} />
+                <Route path="financial" element={<CCFinancial />} />
+                <Route path="usage" element={<CCProductUsage />} />
+                <Route path="hidden-costs" element={<CCHiddenCosts />} />
+                <Route path="risks" element={<CCRisks />} />
+                <Route path="growth" element={<CCGrowth />} />
+                <Route path="health" element={<CCHealthScore />} />
+              </Route>
+
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
