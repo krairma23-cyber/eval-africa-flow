@@ -530,7 +530,7 @@ export default function ParentPortal() {
             <img 
               src="/logo.png" 
               alt="EvalScol Logo" 
-              className="h-20 w-auto mx-auto mb-4"
+              className="h-28 w-auto mx-auto mb-4"
             />
             <h1 className="text-3xl font-bold mb-2">Portail Parent</h1>
             <p className="text-muted-foreground">
@@ -598,7 +598,7 @@ export default function ParentPortal() {
             <img 
               src="/logo.png" 
               alt="EvalScol Logo" 
-              className="h-16 w-auto"
+              className="h-20 w-auto"
             />
             <div>
               <h1 className="text-2xl font-bold">Portail Parent</h1>

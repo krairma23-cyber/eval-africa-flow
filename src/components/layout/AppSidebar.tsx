@@ -129,7 +129,7 @@ export function AppSidebar() {
                 onError={(e) => {
                   e.currentTarget.src = "/logo.png";
                 }}
-                className="w-20 h-20 object-contain rounded flex-shrink-0"
+                className="w-24 h-24 object-contain rounded flex-shrink-0"
               />
               <div className="flex-1 min-w-0">
                 <SidebarGroupLabel className="text-lg font-semibold text-primary break-words whitespace-normal leading-tight">

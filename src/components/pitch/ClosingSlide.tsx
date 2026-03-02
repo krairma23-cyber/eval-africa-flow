@@ -5,7 +5,7 @@ export const ClosingSlide = () => {
         <img
           src="/evalscol-logo.png"
           alt="EvalScol Logo"
-          className="h-20 mx-auto mb-8"
+          className="h-28 mx-auto mb-8"
         />
         
         <h2 className="text-6xl font-bold">
