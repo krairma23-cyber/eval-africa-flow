@@ -36,22 +36,13 @@
     <meta name="twitter:description" content="Plateforme SaaS de gestion scolaire avec IA pour écoles en Côte d'Ivoire et Afrique. Notes, bulletins PDF, portail parent, paiements mobile money." />
     <meta name="twitter:image" content="https://evalscolafrica.siteteck.com/logo.png" />
 
-    <!-- Google Analytics 4 - Deferred for better performance -->
-    <!-- INSTRUCTIONS: Remplacez G-XXXXXXXXXX par votre ID GA4 -->
-    <script>
-      window.addEventListener('load', function() {
-        var script = document.createElement('script');
-        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX';
-        script.async = true;
-        document.head.appendChild(script);
-        
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', 'G-XXXXXXXXXX');
-      });
-    </script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TB5QSVH5');</script>
+    <!-- End Google Tag Manager -->
 
     <!-- Google Search Console Verification -->
     <!-- INSTRUCTIONS: Remplacez YOUR_VERIFICATION_CODE_HERE par votre code -->
@@ -167,6 +158,10 @@
   </head>
 
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TB5QSVH5"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
