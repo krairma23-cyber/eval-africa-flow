@@ -404,7 +404,7 @@ export default function About() {
             <img 
               src="/logo.png" 
               alt="EvalScol Logo" 
-              className="h-24 w-auto mx-auto mb-6"
+              className="h-32 w-auto mx-auto mb-6"
             />
             <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
               {texts.title}

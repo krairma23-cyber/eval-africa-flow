@@ -5,7 +5,7 @@ export const CoverSlide = () => {
         <img
           src="/evalscol-logo.png"
           alt="EvalScol Logo"
-          className="h-24 mx-auto"
+          className="h-32 mx-auto"
         />
         <h1 className="text-7xl font-bold tracking-tight">
           EvalScol Africa

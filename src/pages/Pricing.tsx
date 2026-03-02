@@ -160,7 +160,7 @@ export default function Pricing() {
             <img 
               src="/logo.png" 
               alt="EvalScol Logo" 
-              className="h-20 w-auto mx-auto mb-4"
+              className="h-28 w-auto mx-auto mb-4"
             />
             <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
               {t('pricing.title')}

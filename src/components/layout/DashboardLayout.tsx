@@ -143,7 +143,7 @@ export default function DashboardLayout() {
               <img 
                 src="/evalscol-logo.png" 
                 alt="EvalScol Logo" 
-                className="h-8 w-8 object-contain"
+                className="h-10 w-10 object-contain"
               />
               <h1 className="font-semibold text-lg">EvalScol</h1>
             </div>
