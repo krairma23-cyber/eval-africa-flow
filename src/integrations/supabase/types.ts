@@ -3199,6 +3199,7 @@ export type Database = {
           email: string | null
           geographical_location: string | null
           id: string
+          join_code: string | null
           logo_url: string | null
           municipality: string | null
           name: string
@@ -3218,6 +3219,7 @@ export type Database = {
           email?: string | null
           geographical_location?: string | null
           id?: string
+          join_code?: string | null
           logo_url?: string | null
           municipality?: string | null
           name: string
@@ -3237,6 +3239,7 @@ export type Database = {
           email?: string | null
           geographical_location?: string | null
           id?: string
+          join_code?: string | null
           logo_url?: string | null
           municipality?: string | null
           name?: string
@@ -5188,6 +5191,7 @@ export type Database = {
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
       is_teacher: { Args: { p_user_id?: string }; Returns: boolean }
       is_user_admin: { Args: { check_user_id?: string }; Returns: boolean }
+      join_school_by_code: { Args: { p_join_code: string }; Returns: Json }
       log_comprehensive_audit: {
         Args: {
           p_action: string
