@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { logError } from "@/lib/logger";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon, Globe, Database, Zap, CreditCard, Calendar, ClipboardList } from "lucide-react";
+import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon, Globe, Database, Zap, CreditCard, Calendar, ClipboardList, Copy, KeyRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Settings() {
@@ -45,7 +45,8 @@ export default function Settings() {
   const [currency, setCurrency] = useState("EUR");
   const [dateFormat, setDateFormat] = useState("DD/MM/YYYY");
   const [autoBackup, setAutoBackup] = useState(true);
-  const [dataRetention, setDataRetention] = useState("365"); // jours
+  const [dataRetention, setDataRetention] = useState("365");
+  const [schoolJoinCode, setSchoolJoinCode] = useState("");
 
   useEffect(() => {
     getCurrentUser();
@@ -75,7 +76,7 @@ export default function Settings() {
         // Get school data including logo, address, and academic year
         const { data: school } = await supabase
           .from('schools')
-          .select('name, logo_url, address, academic_year, city, phone, municipality, neighborhood, geographical_location, email, postal_code, phone_2')
+          .select('name, logo_url, address, academic_year, city, phone, municipality, neighborhood, geographical_location, email, postal_code, phone_2, join_code')
           .eq('id', profile.school_id)
           .single();
 
@@ -91,6 +92,7 @@ export default function Settings() {
           setEmail((school as any).email || "");
           setPostalCode((school as any).postal_code || "");
           setPhone2((school as any).phone_2 || "");
+          setSchoolJoinCode((school as any).join_code || "");
           
           if (school.logo_url) {
             const raw = school.logo_url.trim();
@@ -412,6 +414,40 @@ export default function Settings() {
                 onChange={(e) => setSchoolName(e.target.value)}
               />
             </div>
+
+            {/* Join Code */}
+            {schoolJoinCode && (
+              <div className="grid gap-2 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                <Label className="flex items-center gap-2">
+                  <KeyRound className="h-4 w-4" />
+                  Code d'invitation de l'école
+                </Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={schoolJoinCode}
+                    readOnly
+                    className="font-mono tracking-widest text-lg font-bold uppercase bg-background"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => {
+                      navigator.clipboard.writeText(schoolJoinCode);
+                      toast({
+                        title: "Copié !",
+                        description: "Le code d'invitation a été copié dans le presse-papier.",
+                      });
+                    }}
+                  >
+                    <Copy className="h-4 w-4" />
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Partagez ce code avec les enseignants et le personnel pour qu'ils puissent rejoindre votre école lors de leur inscription.
+                </p>
+              </div>
+            )}
             <div className="grid gap-2">
               <Label htmlFor="school-address">Adresse</Label>
               <Textarea
