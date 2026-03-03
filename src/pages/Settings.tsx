@@ -38,7 +38,7 @@ export default function Settings() {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [reportReminders, setReportReminders] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
-  
+
   // SaaS settings
   const [timezone, setTimezone] = useState("Europe/Paris");
   const [language, setLanguage] = useState("fr");
@@ -64,21 +64,21 @@ export default function Settings() {
       if (!user) return;
 
       // Get user's school from profile
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('school_id')
-        .eq('user_id', user.id)
-        .single();
+      const { data: profile } = await supabase.
+      from('profiles').
+      select('school_id').
+      eq('user_id', user.id).
+      single();
 
       if (profile?.school_id) {
         setSchoolId(profile.school_id);
 
         // Get school data including logo, address, and academic year
-        const { data: school } = await supabase
-          .from('schools')
-          .select('name, logo_url, address, academic_year, city, phone, municipality, neighborhood, geographical_location, email, postal_code, phone_2, join_code')
-          .eq('id', profile.school_id)
-          .single();
+        const { data: school } = await supabase.
+        from('schools').
+        select('name, logo_url, address, academic_year, city, phone, municipality, neighborhood, geographical_location, email, postal_code, phone_2, join_code').
+        eq('id', profile.school_id).
+        single();
 
         if (school) {
           setSchoolName(school.name || "École Primaire Example");
@@ -93,18 +93,18 @@ export default function Settings() {
           setPostalCode((school as any).postal_code || "");
           setPhone2((school as any).phone_2 || "");
           setSchoolJoinCode((school as any).join_code || "");
-          
+
           if (school.logo_url) {
             const raw = school.logo_url.trim();
             if (/^https?:\/\//.test(raw)) {
               setLogoUrl(raw);
             } else {
-              const key = raw
-                .replace(/^\/+/, '')
-                .replace(/^school-logos\/+/, '');
-              const { data } = supabase.storage
-                .from('school-logos')
-                .getPublicUrl(key);
+              const key = raw.
+              replace(/^\/+/, '').
+              replace(/^school-logos\/+/, '');
+              const { data } = supabase.storage.
+              from('school-logos').
+              getPublicUrl(key);
               setLogoUrl(data.publicUrl || null);
             }
           }
@@ -112,11 +112,11 @@ export default function Settings() {
       }
 
       // Load user preferences
-      const { data: preferences } = await supabase
-        .from('user_preferences')
-        .select('email_notifications, report_reminders, dark_mode, timezone, language, currency, date_format, auto_backup, data_retention')
-        .eq('user_id', user.id)
-        .single();
+      const { data: preferences } = await supabase.
+      from('user_preferences').
+      select('email_notifications, report_reminders, dark_mode, timezone, language, currency, date_format, auto_backup, data_retention').
+      eq('user_id', user.id).
+      single();
 
       if (preferences) {
         setEmailNotifications(preferences.email_notifications ?? true);
@@ -146,7 +146,7 @@ export default function Settings() {
         toast({
           title: "Profil en cours de chargement",
           description: "Veuillez réessayer dans quelques secondes.",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
@@ -157,7 +157,7 @@ export default function Settings() {
         toast({
           title: "Type de fichier invalide",
           description: "Seuls les formats JPG, PNG et WebP sont acceptés",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
@@ -167,7 +167,7 @@ export default function Settings() {
         toast({
           title: "Fichier trop volumineux",
           description: "La taille maximale est de 2MB",
-          variant: "destructive",
+          variant: "destructive"
         });
         return;
       }
@@ -176,30 +176,30 @@ export default function Settings() {
       const filePath = `${schoolId}/logo.${fileExt}`;
 
       // Upload to storage
-      const { error: uploadError } = await supabase.storage
-        .from('school-logos')
-        .upload(filePath, file, { upsert: true });
+      const { error: uploadError } = await supabase.storage.
+      from('school-logos').
+      upload(filePath, file, { upsert: true });
 
       if (uploadError) throw uploadError;
 
       // Update school record
-      const { error: updateError } = await supabase
-        .from('schools')
-        .update({ logo_url: filePath })
-        .eq('id', schoolId);
+      const { error: updateError } = await supabase.
+      from('schools').
+      update({ logo_url: filePath }).
+      eq('id', schoolId);
 
       if (updateError) throw updateError;
 
       // Get public URL
-      const { data } = supabase.storage
-        .from('school-logos')
-        .getPublicUrl(filePath);
+      const { data } = supabase.storage.
+      from('school-logos').
+      getPublicUrl(filePath);
 
       setLogoUrl(data.publicUrl);
 
       toast({
         title: "Logo mis à jour",
-        description: "Le logo de votre établissement a été mis à jour avec succès",
+        description: "Le logo de votre établissement a été mis à jour avec succès"
       });
     } catch (error) {
       logError('Logo upload failed', error, {
@@ -209,7 +209,7 @@ export default function Settings() {
       toast({
         title: "Erreur",
         description: "Impossible de télécharger le logo",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setUploading(false);
@@ -224,48 +224,48 @@ export default function Settings() {
       }
 
       // Save school information
-      const { error: schoolError } = await supabase
-        .from('schools')
-        .update({
-          name: schoolName,
-          address: schoolAddress,
-          academic_year: academicYear,
-          city: city,
-          phone: phone,
-          municipality: municipality,
-          neighborhood: neighborhood,
-          geographical_location: geographicalLocation,
-          email: email,
-          postal_code: postalCode,
-          phone_2: phone2,
-        })
-        .eq('id', schoolId);
+      const { error: schoolError } = await supabase.
+      from('schools').
+      update({
+        name: schoolName,
+        address: schoolAddress,
+        academic_year: academicYear,
+        city: city,
+        phone: phone,
+        municipality: municipality,
+        neighborhood: neighborhood,
+        geographical_location: geographicalLocation,
+        email: email,
+        postal_code: postalCode,
+        phone_2: phone2
+      }).
+      eq('id', schoolId);
 
       if (schoolError) throw schoolError;
 
       // Save user preferences
-      const { error: prefsError } = await supabase
-        .from('user_preferences')
-        .upsert({
-          user_id: user.id,
-          email_notifications: emailNotifications,
-          report_reminders: reportReminders,
-          dark_mode: darkMode,
-          timezone,
-          language,
-          currency,
-          date_format: dateFormat,
-          auto_backup: autoBackup,
-          data_retention: dataRetention,
-        }, {
-          onConflict: 'user_id'
-        });
+      const { error: prefsError } = await supabase.
+      from('user_preferences').
+      upsert({
+        user_id: user.id,
+        email_notifications: emailNotifications,
+        report_reminders: reportReminders,
+        dark_mode: darkMode,
+        timezone,
+        language,
+        currency,
+        date_format: dateFormat,
+        auto_backup: autoBackup,
+        data_retention: dataRetention
+      }, {
+        onConflict: 'user_id'
+      });
 
       if (prefsError) throw prefsError;
 
       toast({
         title: "Paramètres sauvegardés",
-        description: "Vos paramètres ont été mis à jour avec succès",
+        description: "Vos paramètres ont été mis à jour avec succès"
       });
     } catch (error) {
       logError('Settings save failed', error, {
@@ -275,7 +275,7 @@ export default function Settings() {
       toast({
         title: "Erreur",
         description: "Impossible de sauvegarder les paramètres",
-        variant: "destructive",
+        variant: "destructive"
       });
     } finally {
       setLoading(false);
@@ -307,21 +307,21 @@ export default function Settings() {
             <div className="grid gap-2">
               <Label htmlFor="school-logo" className="text-sm">Logo de l'établissement</Label>
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                {logoUrl ? (
-                  <div className="relative w-24 h-24 sm:w-32 sm:h-32 border-2 border-border rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                    <img 
-                      src={logoUrl}
-                      alt="Logo de l'établissement"
-                      loading="lazy"
-                      onError={() => setLogoUrl(null)}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-24 h-24 sm:w-32 sm:h-32 border-2 border-dashed border-border rounded-lg flex items-center justify-center bg-muted flex-shrink-0">
+                {logoUrl ?
+                <div className="relative w-24 h-24 sm:w-32 sm:h-32 border-2 border-border rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                    <img
+                    src={logoUrl}
+                    alt="Logo de l'établissement"
+                    loading="lazy"
+                    onError={() => setLogoUrl(null)}
+                    className="w-full h-full object-contain" />
+                  
+                  </div> :
+
+                <div className="w-24 h-24 sm:w-32 sm:h-32 border-2 border-dashed border-border rounded-lg flex items-center justify-center bg-muted flex-shrink-0">
                     <ImageIcon className="h-8 w-8 sm:h-12 sm:w-12 text-muted-foreground" />
                   </div>
-                )}
+                }
                 <div className="flex flex-col gap-2 w-full sm:w-auto">
                   <input
                     ref={fileInputRef}
@@ -329,20 +329,20 @@ export default function Settings() {
                     accept="image/jpeg,image/jpg,image/png,image/webp"
                     onChange={handleLogoUpload}
                     disabled={!schoolId || uploading}
-                    className="hidden"
-                  />
+                    className="hidden" />
+                  
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploading || !schoolId}
-                    className="w-full sm:w-auto text-xs sm:text-sm"
-                  >
+                    className="w-full sm:w-auto text-xs sm:text-sm">
+                    
                     <Upload className="h-4 w-4 mr-2 flex-shrink-0" />
                     <span className="truncate">
-                      {uploading
-                        ? "Téléchargement..."
-                        : (!schoolId ? "Chargement..." : "Télécharger un logo")}
+                      {uploading ?
+                      "Téléchargement..." :
+                      !schoolId ? "Chargement..." : "Télécharger un logo"}
                     </span>
                   </Button>
                   <p className="text-xs text-muted-foreground">
@@ -360,14 +360,14 @@ export default function Settings() {
                 type="button"
                 variant="outline"
                 onClick={() => navigate('/dashboard/billing')}
-                className="w-full justify-start"
-              >
+                className="w-full justify-start">
+                
                 <CreditCard className="h-4 w-4 mr-2" />
                 Voir toutes les transactions et abonnements
               </Button>
-              <p className="text-xs text-muted-foreground">
-                Gérez les abonnements, consultez l'historique des paiements et les factures
-              </p>
+              
+
+              
             </div>
             
             <Separator />
@@ -380,8 +380,8 @@ export default function Settings() {
                   type="button"
                   variant="outline"
                   onClick={() => navigate('/dashboard/assessment-types')}
-                  className="w-full justify-start"
-                >
+                  className="w-full justify-start">
+                  
                   <ClipboardList className="h-4 w-4 mr-2" />
                   Types d'évaluation
                 </Button>
@@ -394,8 +394,8 @@ export default function Settings() {
                   type="button"
                   variant="outline"
                   onClick={() => navigate('/dashboard/terms')}
-                  className="w-full justify-start"
-                >
+                  className="w-full justify-start">
+                  
                   <Calendar className="h-4 w-4 mr-2" />
                   Trimestres / Périodes
                 </Button>
@@ -411,35 +411,35 @@ export default function Settings() {
               <Input
                 id="school-name"
                 value={schoolName}
-                onChange={(e) => setSchoolName(e.target.value)}
-              />
+                onChange={(e) => setSchoolName(e.target.value)} />
+              
             </div>
 
             {/* Join Code */}
-            {schoolJoinCode && (
-              <div className="grid gap-2 p-3 rounded-lg bg-primary/5 border border-primary/20">
+            {schoolJoinCode &&
+            <div className="grid gap-2 p-3 rounded-lg bg-primary/5 border border-primary/20">
                 <Label className="flex items-center gap-2">
                   <KeyRound className="h-4 w-4" />
                   Code d'invitation de l'école
                 </Label>
                 <div className="flex items-center gap-2">
                   <Input
-                    value={schoolJoinCode}
-                    readOnly
-                    className="font-mono tracking-widest text-lg font-bold uppercase bg-background"
-                  />
+                  value={schoolJoinCode}
+                  readOnly
+                  className="font-mono tracking-widest text-lg font-bold uppercase bg-background" />
+                
                   <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => {
-                      navigator.clipboard.writeText(schoolJoinCode);
-                      toast({
-                        title: "Copié !",
-                        description: "Le code d'invitation a été copié dans le presse-papier.",
-                      });
-                    }}
-                  >
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    navigator.clipboard.writeText(schoolJoinCode);
+                    toast({
+                      title: "Copié !",
+                      description: "Le code d'invitation a été copié dans le presse-papier."
+                    });
+                  }}>
+                  
                     <Copy className="h-4 w-4" />
                   </Button>
                 </div>
@@ -447,23 +447,23 @@ export default function Settings() {
                   Partagez ce code avec les enseignants et le personnel pour qu'ils puissent rejoindre votre école lors de leur inscription.
                 </p>
               </div>
-            )}
+            }
             <div className="grid gap-2">
               <Label htmlFor="school-address">Adresse</Label>
               <Textarea
                 id="school-address"
                 value={schoolAddress}
                 onChange={(e) => setSchoolAddress(e.target.value)}
-                rows={3}
-              />
+                rows={3} />
+              
             </div>
             <div className="grid gap-2">
               <Label htmlFor="academic-year">Année scolaire</Label>
               <Input
                 id="academic-year"
                 value={academicYear}
-                onChange={(e) => setAcademicYear(e.target.value)}
-              />
+                onChange={(e) => setAcademicYear(e.target.value)} />
+              
             </div>
             <Separator />
             <div className="grid gap-2">
@@ -472,8 +472,8 @@ export default function Settings() {
                 id="city"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                placeholder="Exemple: Paris"
-              />
+                placeholder="Exemple: Paris" />
+              
             </div>
             <div className="grid gap-2">
               <Label htmlFor="phone">Téléphone</Label>
@@ -482,8 +482,8 @@ export default function Settings() {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="Exemple: +33 1 23 45 67 89"
-              />
+                placeholder="Exemple: +33 1 23 45 67 89" />
+              
             </div>
             <div className="grid gap-2">
               <Label htmlFor="phone2">Téléphone 2</Label>
@@ -492,8 +492,8 @@ export default function Settings() {
                 type="tel"
                 value={phone2}
                 onChange={(e) => setPhone2(e.target.value)}
-                placeholder="Exemple: +33 1 98 76 54 32"
-              />
+                placeholder="Exemple: +33 1 98 76 54 32" />
+              
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -502,8 +502,8 @@ export default function Settings() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Exemple: contact@ecole.fr"
-              />
+                placeholder="Exemple: contact@ecole.fr" />
+              
             </div>
             <div className="grid gap-2">
               <Label htmlFor="postal-code">Code postal</Label>
@@ -511,8 +511,8 @@ export default function Settings() {
                 id="postal-code"
                 value={postalCode}
                 onChange={(e) => setPostalCode(e.target.value)}
-                placeholder="Exemple: 75015"
-              />
+                placeholder="Exemple: 75015" />
+              
             </div>
             <div className="grid gap-2">
               <Label htmlFor="municipality">Commune</Label>
@@ -520,8 +520,8 @@ export default function Settings() {
                 id="municipality"
                 value={municipality}
                 onChange={(e) => setMunicipality(e.target.value)}
-                placeholder="Exemple: 15e arrondissement"
-              />
+                placeholder="Exemple: 15e arrondissement" />
+              
             </div>
             <div className="grid gap-2">
               <Label htmlFor="neighborhood">Quartier</Label>
@@ -529,8 +529,8 @@ export default function Settings() {
                 id="neighborhood"
                 value={neighborhood}
                 onChange={(e) => setNeighborhood(e.target.value)}
-                placeholder="Exemple: Grenelle"
-              />
+                placeholder="Exemple: Grenelle" />
+              
             </div>
             <div className="grid gap-2">
               <Label htmlFor="geographical-location">Situation géographique</Label>
@@ -539,8 +539,8 @@ export default function Settings() {
                 value={geographicalLocation}
                 onChange={(e) => setGeographicalLocation(e.target.value)}
                 placeholder="Description de la situation géographique de l'établissement"
-                rows={2}
-              />
+                rows={2} />
+              
             </div>
           </CardContent>
         </Card>
@@ -567,8 +567,8 @@ export default function Settings() {
               <Switch
                 checked={emailNotifications}
                 onCheckedChange={setEmailNotifications}
-                className="flex-shrink-0"
-              />
+                className="flex-shrink-0" />
+              
             </div>
             <Separator />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -581,8 +581,8 @@ export default function Settings() {
               <Switch
                 checked={reportReminders}
                 onCheckedChange={setReportReminders}
-                className="flex-shrink-0"
-              />
+                className="flex-shrink-0" />
+              
             </div>
           </CardContent>
         </Card>
@@ -685,8 +685,8 @@ export default function Settings() {
               <Switch
                 checked={autoBackup}
                 onCheckedChange={setAutoBackup}
-                className="flex-shrink-0"
-              />
+                className="flex-shrink-0" />
+              
             </div>
             <Separator />
             <div className="grid gap-2">
@@ -730,8 +730,8 @@ export default function Settings() {
               <Switch
                 checked={darkMode}
                 onCheckedChange={setDarkMode}
-                className="flex-shrink-0"
-              />
+                className="flex-shrink-0" />
+              
             </div>
           </CardContent>
         </Card>
@@ -766,17 +766,17 @@ export default function Settings() {
         {/* Bouton de sauvegarde */}
         <div className="flex justify-end pb-4">
           <Button onClick={handleSaveSettings} disabled={loading} className="w-full sm:w-auto">
-            {loading ? (
-              "Sauvegarde..."
-            ) : (
-              <>
+            {loading ?
+            "Sauvegarde..." :
+
+            <>
                 <Save className="h-4 w-4 mr-2" />
                 Sauvegarder les paramètres
               </>
-            )}
+            }
           </Button>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
