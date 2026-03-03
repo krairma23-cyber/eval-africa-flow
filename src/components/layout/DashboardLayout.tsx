@@ -20,9 +20,31 @@ export default function DashboardLayout() {
   useEffect(() => {
     let mounted = true;
 
+    // IMPORTANT: Set up auth listener BEFORE calling getSession
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (!mounted) return;
+        
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (event === 'SIGNED_OUT') {
+          navigate('/auth');
+        }
+        
+        if (event === 'SIGNED_IN' && session) {
+          setLoading(false);
+        }
+
+        if (event === 'TOKEN_REFRESHED') {
+          // Session refreshed successfully
+        }
+      }
+    );
+
+    // Then get the initial session
     const initAuth = async () => {
       try {
-        // Get current session
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (!mounted) return;
@@ -32,48 +54,23 @@ export default function DashboardLayout() {
             component: 'DashboardLayout',
             action: 'get_session'
           });
-          setLoading(false);
-          return;
         }
 
-        // Session retrieved
         setSession(session);
         setUser(session?.user ?? null);
-        setLoading(false);
       } catch (error) {
         logError('Auth initialization failed', error, {
           component: 'DashboardLayout',
           action: 'init_auth'
         });
+      } finally {
         if (mounted) {
           setLoading(false);
         }
       }
     };
 
-    // Initialize auth
     initAuth();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (!mounted) return;
-        
-        // Auth state changed
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        // Handle sign out
-        if (event === 'SIGNED_OUT') {
-          navigate('/auth');
-        }
-        
-        // Handle sign in
-        if (event === 'SIGNED_IN' && session) {
-          setLoading(false);
-        }
-      }
-    );
 
     return () => {
       mounted = false;
