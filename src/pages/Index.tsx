@@ -10,6 +10,7 @@ import { ParentReports } from "@/components/features/ParentReports";
 import { PressPartners } from "@/components/features/PressPartners";
 import { AboutEvalScol } from "@/components/features/AboutEvalScol";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
@@ -20,7 +21,8 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
       <div className="container mx-auto px-4 py-8 lg:py-16">
         {/* Language Switcher */}
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end mb-4 gap-2">
+          <ThemeToggle />
           <LanguageSwitcher />
         </div>
         
