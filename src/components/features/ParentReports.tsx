@@ -29,7 +29,7 @@ export const ParentReports = () => {
     title: "Historique Complet",
     description: "Archives de tous les bulletins et rapports depuis le début de l'année scolaire"
   }];
-  return <section className="py-16 px-4 bg-[hsl(222,47%,11%)]">
+  return <section className="py-16 px-4 bg-secondary">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-12">
           <div className="inline-block mb-4 px-4 py-2 bg-primary/20 rounded-full border border-primary/30">
@@ -45,7 +45,7 @@ export const ParentReports = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {features.map((feature, index) => <Card key={index} className="p-6 bg-[hsl(221,39%,11%)] border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg hover:shadow-primary/10">
+          {features.map((feature, index) => <Card key={index} className="p-6 bg-card border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg hover:shadow-primary/10">
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
                   <feature.icon className="h-6 w-6 text-primary" />
@@ -58,7 +58,7 @@ export const ParentReports = () => {
             </Card>)}
         </div>
 
-        <Card className="p-8 bg-[hsl(221,39%,11%)] border-primary/20">
+        <Card className="p-8 bg-card border-primary/20">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex-1">
               <h3 className="text-2xl font-bold mb-3 text-foreground">
