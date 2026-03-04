@@ -109,9 +109,6 @@ serve(async (req) => {
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const keyHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-    // Insert into database with expires_at (1 year from now)
-    const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
-    
     const { data: newKey, error: insertError } = await supabaseAdmin
       .from('api_keys')
       .insert({
@@ -122,7 +119,6 @@ serve(async (req) => {
         key_hash: keyHash,
         is_active: true,
         usage_count: 0,
-        expires_at: expiresAt,
       })
       .select()
       .single();
@@ -155,7 +151,6 @@ serve(async (req) => {
         key_id: newKey.id,
         name: newKey.name,
         key_prefix: keyPrefix,
-        expires_at: expiresAt,
         message: 'Save this key securely. It will not be shown again.'
       }),
       { 
