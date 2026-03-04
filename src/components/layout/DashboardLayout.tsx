@@ -6,6 +6,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { Button } from "@/components/ui/button";
 import { LogOut, User as UserIcon } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useToast } from "@/hooks/use-toast";
 import { logError } from "@/lib/logger";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -146,6 +147,7 @@ export default function DashboardLayout() {
             </div>
             
             <div className="flex items-center gap-2">
+              <ThemeToggle />
               <div className="flex items-center gap-2 text-sm">
                 <UserIcon className="h-4 w-4" />
                 <span>{user.email}</span>
