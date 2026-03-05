@@ -131,14 +131,14 @@ export default function LiveChat({ onClose }: LiveChatProps) {
 
       setSession(data);
       
-      // Send welcome message
+      // Send welcome message from support bot
       await supabase
         .from('support_chat_messages')
         .insert({
           session_id: data.id,
-          sender_id: userId,
-          message: "Bonjour, j'ai besoin d'aide",
-          is_admin: false
+          sender_id: 'system',
+          message: "Bienvenue sur le support EvalScol Africa ! 👋\nComment pouvons-nous vous aider aujourd'hui ?",
+          is_admin: true
         });
 
     } catch (error) {
