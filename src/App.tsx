@@ -41,6 +41,7 @@ const Onboarding = lazyWithRetry(() => import("./pages/Onboarding"), "page:Onboa
 const PitchDeck = lazyWithRetry(() => import("./pages/PitchDeck"), "page:PitchDeck");
 const About = lazyWithRetry(() => import("./pages/About"), "page:About");
 const Pricing = lazyWithRetry(() => import("./pages/Pricing"), "page:Pricing");
+const UserGuide = lazyWithRetry(() => import("./pages/UserGuide"), "page:UserGuide");
 const PaystackDiagnostic = lazyWithRetry(() => import("./pages/PaystackDiagnostic"), "page:PaystackDiagnostic");
 const TuitionPaymentDiagnostic = lazyWithRetry(() => import("./pages/TuitionPaymentDiagnostic"), "page:TuitionPaymentDiagnostic");
 
@@ -84,6 +85,7 @@ const App = () => (
               <Route path="/payment-callback" element={<PaymentCallback />} />
               <Route path="/parent-portal" element={<ParentPortal />} />
               <Route path="/parent-guide" element={<ParentGuide />} />
+              <Route path="/guide" element={<UserGuide />} />
 
               <Route path="/dashboard" element={<DashboardLayout />}>
                 <Route index element={<Dashboard />} />
