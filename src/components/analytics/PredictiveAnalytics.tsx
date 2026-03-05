@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle, Brain, Target } from 'lucide-react';
+import { TrendingUp, TrendingDown, AlertTriangle, Brain, Target, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PredictionData {
   studentName: string;
@@ -17,7 +19,7 @@ interface PredictionData {
   confidence: number;
 }
 
-const mockPredictions: PredictionData[] = [
+const defaultPredictions: PredictionData[] = [
   { studentName: "Marie Dubois", currentScore: 85, predictedScore: 92, risk: 'low', improvement: 7, subject: "Mathématiques", confidence: 94 },
   { studentName: "Pierre Martin", currentScore: 72, predictedScore: 68, risk: 'medium', improvement: -4, subject: "Physique", confidence: 87 },
   { studentName: "Sophie Chen", currentScore: 65, predictedScore: 58, risk: 'high', improvement: -7, subject: "Chimie", confidence: 91 },
@@ -34,31 +36,61 @@ const performanceData = [
 ];
 
 export const PredictiveAnalytics = () => {
-  const [selectedTimeframe, setSelectedTimeframe] = useState<'week' | 'month' | 'semester'>('month');
   const [aiProcessing, setAiProcessing] = useState(false);
+  const [predictions, setPredictions] = useState<PredictionData[]>(defaultPredictions);
+  const [aiInsight, setAiInsight] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  const runPredictiveAnalysis = () => {
+  const runPredictiveAnalysis = async () => {
     setAiProcessing(true);
-    setTimeout(() => {
-      setAiProcessing(false);
-    }, 3000);
-  };
+    setAiInsight(null);
 
-  const getRiskColor = (risk: string) => {
-    switch (risk) {
-      case 'low': return 'text-accent';
-      case 'medium': return 'text-yellow-500';
-      case 'high': return 'text-destructive';
-      default: return 'text-muted-foreground';
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-assistant-chat', {
+        body: {
+          message: `Analyse les données de performance suivantes et donne des recommandations concrètes pour chaque élève :
+${predictions.map(p => `- ${p.studentName} (${p.subject}): score actuel ${p.currentScore}%, prédit ${p.predictedScore}%, risque ${p.risk}`).join('\n')}
+
+Fournis :
+1. Un résumé global de la situation
+2. Les élèves prioritaires à surveiller
+3. Des actions concrètes recommandées pour chaque élève à risque
+4. Des prédictions pour le prochain trimestre`,
+          action: 'analyzePerformance'
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.error) {
+        if (data.code === 'RATE_LIMIT') {
+          toast({ title: "⏱️ Limite atteinte", description: data.error, variant: "destructive" });
+          return;
+        }
+        if (data.code === 'INSUFFICIENT_CREDITS') {
+          toast({ title: "💳 Crédits insuffisants", description: data.error, variant: "destructive" });
+          return;
+        }
+        throw new Error(data.error);
+      }
+
+      setAiInsight(data.response);
+      toast({ title: "🔮 Analyse IA terminée", description: "Les prédictions et recommandations sont prêtes" });
+
+    } catch (error) {
+      console.error('Predictive analysis error:', error);
+      toast({ title: "Erreur d'analyse", description: "Impossible de lancer l'analyse prédictive IA", variant: "destructive" });
+    } finally {
+      setAiProcessing(false);
     }
   };
 
   const getRiskBadgeVariant = (risk: string) => {
     switch (risk) {
-      case 'low': return 'default';
-      case 'medium': return 'secondary';
-      case 'high': return 'destructive';
-      default: return 'outline';
+      case 'low': return 'default' as const;
+      case 'medium': return 'secondary' as const;
+      case 'high': return 'destructive' as const;
+      default: return 'outline' as const;
     }
   };
 
@@ -69,7 +101,7 @@ export const PredictiveAnalytics = () => {
           <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Analytics Prédictifs IA
           </h2>
-          <p className="text-muted-foreground">Prédictions basées sur l'apprentissage automatique</p>
+          <p className="text-muted-foreground">Prédictions basées sur l'intelligence artificielle</p>
         </div>
         <Button 
           onClick={runPredictiveAnalysis}
@@ -78,8 +110,8 @@ export const PredictiveAnalytics = () => {
         >
           {aiProcessing ? (
             <>
-              <Brain className="h-4 w-4 mr-2 animate-spin" />
-              Analyse en cours...
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Analyse IA en cours...
             </>
           ) : (
             <>
@@ -89,6 +121,25 @@ export const PredictiveAnalytics = () => {
           )}
         </Button>
       </div>
+
+      {/* AI Insight Panel */}
+      {aiInsight && (
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+          <Card className="border-accent/30 bg-gradient-to-br from-accent/5 to-primary/5">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Brain className="h-5 w-5 text-accent" />
+                Rapport d'Analyse IA
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="prose prose-sm max-w-none text-sm text-foreground whitespace-pre-wrap">
+                {aiInsight}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Performance Prediction Chart */}
@@ -114,21 +165,8 @@ export const PredictiveAnalytics = () => {
                       borderRadius: '8px'
                     }}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="actual" 
-                    stroke="hsl(var(--primary))" 
-                    strokeWidth={3}
-                    name="Réel"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="predicted" 
-                    stroke="hsl(var(--accent))" 
-                    strokeWidth={3}
-                    strokeDasharray="5 5"
-                    name="Prédit"
-                  />
+                  <Line type="monotone" dataKey="actual" stroke="hsl(var(--primary))" strokeWidth={3} name="Réel" />
+                  <Line type="monotone" dataKey="predicted" stroke="hsl(var(--accent))" strokeWidth={3} strokeDasharray="5 5" name="Prédit" />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -152,7 +190,6 @@ export const PredictiveAnalytics = () => {
               </div>
               <Progress value={94.2} className="h-2" />
             </div>
-            
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Fiabilité prédictive</span>
@@ -160,7 +197,6 @@ export const PredictiveAnalytics = () => {
               </div>
               <Progress value={89.7} className="h-2" />
             </div>
-
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Modèle d'apprentissage</span>
@@ -168,14 +204,9 @@ export const PredictiveAnalytics = () => {
               </div>
               <Progress value={91.5} className="h-2" />
             </div>
-
             <div className="pt-4 space-y-2">
-              <Badge variant="outline" className="text-xs">
-                🤖 Neural Network v2.1
-              </Badge>
-              <Badge variant="outline" className="text-xs">
-                📊 +12,847 données d'entraînement
-              </Badge>
+              <Badge variant="outline" className="text-xs">🤖 Powered by Lovable AI</Badge>
+              <Badge variant="outline" className="text-xs">📊 Gemini Flash</Badge>
             </div>
           </CardContent>
         </Card>
@@ -192,7 +223,7 @@ export const PredictiveAnalytics = () => {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
-            {mockPredictions.map((prediction, index) => (
+            {predictions.map((prediction, index) => (
               <motion.div
                 key={prediction.studentName}
                 initial={{ opacity: 0, y: 20 }}
@@ -208,11 +239,8 @@ export const PredictiveAnalytics = () => {
                        prediction.risk === 'medium' ? '⚠️ Risque moyen' : 
                        '🚨 Risque élevé'}
                     </Badge>
-                    <Badge variant="outline" className="text-xs">
-                      {prediction.subject}
-                    </Badge>
+                    <Badge variant="outline" className="text-xs">{prediction.subject}</Badge>
                   </div>
-                  
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <span>Actuel: {prediction.currentScore}%</span>
                     <span>Prédit: {prediction.predictedScore}%</span>
@@ -222,7 +250,6 @@ export const PredictiveAnalytics = () => {
                     </span>
                   </div>
                 </div>
-
                 <div className="text-right">
                   <div className="text-sm text-muted-foreground mb-1">Confiance</div>
                   <div className="font-medium text-lg">{prediction.confidence}%</div>
