@@ -55,6 +55,7 @@ export function AppSidebar() {
     { title: t('sidebar.support'), url: "/dashboard/support", icon: HelpCircle },
     { title: t('sidebar.notifications'), url: "/dashboard/notifications", icon: Bell },
     { title: t('sidebar.users'), url: "/dashboard/users", icon: Shield },
+    { title: "Traction", url: "/dashboard/traction", icon: TrendingUp },
     { title: t('sidebar.settings'), url: "/dashboard/settings", icon: Settings },
   ];
 
