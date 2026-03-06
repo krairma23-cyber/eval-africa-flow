@@ -44,6 +44,7 @@ const Pricing = lazyWithRetry(() => import("./pages/Pricing"), "page:Pricing");
 const UserGuide = lazyWithRetry(() => import("./pages/UserGuide"), "page:UserGuide");
 const PaystackDiagnostic = lazyWithRetry(() => import("./pages/PaystackDiagnostic"), "page:PaystackDiagnostic");
 const TuitionPaymentDiagnostic = lazyWithRetry(() => import("./pages/TuitionPaymentDiagnostic"), "page:TuitionPaymentDiagnostic");
+const Traction = lazyWithRetry(() => import("./pages/Traction"), "page:Traction");
 
 // Command Center pages
 const CommandCenterLayout = lazyWithRetry(() => import("./pages/command-center/CommandCenterLayout"), "page:CommandCenterLayout");
@@ -109,6 +110,7 @@ const App = () => (
                 <Route path="privacy" element={<DataPrivacy />} />
                 <Route path="paystack-diagnostic" element={<PaystackDiagnostic />} />
                 <Route path="tuition-diagnostic" element={<TuitionPaymentDiagnostic />} />
+                <Route path="traction" element={<Traction />} />
               </Route>
               {/* Command Center - Super Admin only */}
               <Route path="/command-center" element={<CommandCenterLayout />}>
