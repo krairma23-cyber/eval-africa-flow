@@ -15,3 +15,18 @@ export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABL
     autoRefreshToken: true,
   }
 });
+
+// Clean up corrupted auth sessions to prevent 422 errors
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'TOKEN_REFRESHED' && !session) {
+    // Token refresh failed - clear corrupted session
+    supabase.auth.signOut({ scope: 'local' });
+  }
+});
+
+// Handle initial session recovery errors
+supabase.auth.getSession().then(({ error }) => {
+  if (error?.message?.includes('Refresh Token') || error?.code === 'refresh_token_not_found') {
+    supabase.auth.signOut({ scope: 'local' });
+  }
+});
