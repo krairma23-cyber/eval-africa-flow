@@ -39,7 +39,10 @@ export default function Traction() {
   const [totalEnrollments, setTotalEnrollments] = useState(0);
   const [paidSubscribers, setPaidSubscribers] = useState(0);
   const [mrr, setMrr] = useState(0);
+  const [arr, setArr] = useState(0);
   const [conversionRate, setConversionRate] = useState(0);
+  const [cac, setCac] = useState(0);
+  const [ltv, setLtv] = useState(0);
 
   // Charts
   const [roleBreakdown, setRoleBreakdown] = useState<{ role: string; count: number }[]>([]);
