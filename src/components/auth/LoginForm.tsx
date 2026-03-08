@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { z } from "zod";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { GraduationCap, User, Building2, Users, KeyRound } from "lucide-react";
+import { GraduationCap, User, Building2, Users, KeyRound, Eye, EyeOff } from "lucide-react";
 
 // Secure validation schemas
 const loginSchema = z.object({
