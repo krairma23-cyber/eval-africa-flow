@@ -15,11 +15,28 @@ const Avatar = React.forwardRef<
 ));
 Avatar.displayName = AvatarPrimitive.Root.displayName;
 
+const normalizeAvatarSrc = (src?: string) => {
+  if (!src) return undefined;
+
+  const cleaned = src
+    .trim()
+    .replace(/^['"]+|['"]+$/g, "")
+    .replace(/%22/g, "");
+
+  if (!cleaned || cleaned === "null" || cleaned === "undefined") return undefined;
+  return cleaned;
+};
+
 const AvatarImage = React.forwardRef<
   React.ElementRef<typeof AvatarPrimitive.Image>,
   React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Image ref={ref} className={cn("aspect-square h-full w-full", className)} {...props} />
+>(({ className, src, ...props }, ref) => (
+  <AvatarPrimitive.Image
+    ref={ref}
+    src={normalizeAvatarSrc(typeof src === "string" ? src : undefined)}
+    className={cn("aspect-square h-full w-full", className)}
+    {...props}
+  />
 ));
 AvatarImage.displayName = AvatarPrimitive.Image.displayName;
 
