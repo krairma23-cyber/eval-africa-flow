@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Users, UserCheck, School, GraduationCap, CreditCard,
-  TrendingUp, DollarSign, Percent
+  TrendingUp, DollarSign, Percent, UserPlus, Target
 } from "lucide-react";
 
 interface TractionKPIsProps {
