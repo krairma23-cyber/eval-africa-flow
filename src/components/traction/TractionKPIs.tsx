@@ -20,7 +20,7 @@ interface TractionKPIsProps {
 
 export function TractionKPIs({
   totalUsers, totalSchools, totalStudents, totalTeachers,
-  totalEnrollments, paidSubscribers, mrr, conversionRate
+  totalEnrollments, paidSubscribers, mrr, arr, conversionRate, cac, ltv
 }: TractionKPIsProps) {
   const kpis = [
     { label: "Utilisateurs", value: totalUsers.toLocaleString("fr-FR"), icon: Users, color: "text-blue-500" },
@@ -30,7 +30,10 @@ export function TractionKPIs({
     { label: "Inscriptions", value: totalEnrollments.toLocaleString("fr-FR"), icon: TrendingUp, color: "text-teal-500" },
     { label: "Abonnés payants", value: paidSubscribers.toLocaleString("fr-FR"), icon: CreditCard, color: "text-green-500" },
     { label: "MRR", value: `${mrr.toLocaleString("fr-FR")} FCFA`, icon: DollarSign, color: "text-yellow-500" },
+    { label: "ARR", value: `${arr.toLocaleString("fr-FR")} FCFA`, icon: DollarSign, color: "text-orange-500" },
     { label: "Taux conversion", value: `${conversionRate.toFixed(1)}%`, icon: Percent, color: "text-rose-500" },
+    { label: "CAC", value: `${cac.toLocaleString("fr-FR")} FCFA`, icon: UserPlus, color: "text-cyan-500" },
+    { label: "LTV", value: `${ltv.toLocaleString("fr-FR")} FCFA`, icon: Target, color: "text-indigo-500" },
   ];
 
   return (
