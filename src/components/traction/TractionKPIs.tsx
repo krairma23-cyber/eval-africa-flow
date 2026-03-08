@@ -12,7 +12,10 @@ interface TractionKPIsProps {
   totalEnrollments: number;
   paidSubscribers: number;
   mrr: number;
+  arr: number;
   conversionRate: number;
+  cac: number;
+  ltv: number;
 }
 
 export function TractionKPIs({
