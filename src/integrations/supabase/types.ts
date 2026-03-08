@@ -5495,7 +5495,7 @@ export type Database = {
     }
     Enums: {
       alert_type: "price_drop" | "trend_spike" | "new_winner" | "competition"
-      app_role: "admin" | "moderator" | "user" | "teacher"
+      app_role: "admin" | "moderator" | "user" | "teacher" | "super_admin"
       org_role: "owner" | "admin" | "member"
       pme_category:
         | "agriculture"
@@ -5640,7 +5640,7 @@ export const Constants = {
   public: {
     Enums: {
       alert_type: ["price_drop", "trend_spike", "new_winner", "competition"],
-      app_role: ["admin", "moderator", "user", "teacher"],
+      app_role: ["admin", "moderator", "user", "teacher", "super_admin"],
       org_role: ["owner", "admin", "member"],
       pme_category: [
         "agriculture",
