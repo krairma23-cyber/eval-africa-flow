@@ -49,6 +49,7 @@ export function LoginForm() {
   const [schoolName, setSchoolName] = useState("");
   const [joinCode, setJoinCode] = useState("");
   const [acceptPrivacyPolicy, setAcceptPrivacyPolicy] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("signin");
   const navigate = useNavigate();
