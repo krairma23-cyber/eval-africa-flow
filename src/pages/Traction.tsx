@@ -145,10 +145,18 @@ export default function Traction() {
       );
       setPaidSubscribers(paidCount);
       setMrr(totalMrr);
+      setArr(totalMrr * 12);
 
       // Conversion rate
       const totalSubs = activeSubs.length;
       setConversionRate(totalSubs > 0 && usersCount > 0 ? (paidCount / usersCount) * 100 : 0);
+
+      // CAC & LTV estimates
+      const marketingCost = 25000; // estimation mensuelle marketing
+      setCac(paidCount > 0 ? Math.round(marketingCost / paidCount) : 0);
+      const avgMonthsRetention = 18;
+      const avgRevenuePerUser = paidCount > 0 ? totalMrr / paidCount : 0;
+      setLtv(Math.round(avgRevenuePerUser * avgMonthsRetention));
 
       // User growth (last 6 months)
       const profiles = profilesRes.data || [];
