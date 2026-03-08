@@ -39,7 +39,10 @@ export default function Traction() {
   const [totalEnrollments, setTotalEnrollments] = useState(0);
   const [paidSubscribers, setPaidSubscribers] = useState(0);
   const [mrr, setMrr] = useState(0);
+  const [arr, setArr] = useState(0);
   const [conversionRate, setConversionRate] = useState(0);
+  const [cac, setCac] = useState(0);
+  const [ltv, setLtv] = useState(0);
 
   // Charts
   const [roleBreakdown, setRoleBreakdown] = useState<{ role: string; count: number }[]>([]);
@@ -142,10 +145,18 @@ export default function Traction() {
       );
       setPaidSubscribers(paidCount);
       setMrr(totalMrr);
+      setArr(totalMrr * 12);
 
       // Conversion rate
       const totalSubs = activeSubs.length;
       setConversionRate(totalSubs > 0 && usersCount > 0 ? (paidCount / usersCount) * 100 : 0);
+
+      // CAC & LTV estimates
+      const marketingCost = 25000; // estimation mensuelle marketing
+      setCac(paidCount > 0 ? Math.round(marketingCost / paidCount) : 0);
+      const avgMonthsRetention = 18;
+      const avgRevenuePerUser = paidCount > 0 ? totalMrr / paidCount : 0;
+      setLtv(Math.round(avgRevenuePerUser * avgMonthsRetention));
 
       // User growth (last 6 months)
       const profiles = profilesRes.data || [];
@@ -249,7 +260,10 @@ export default function Traction() {
         totalEnrollments={totalEnrollments}
         paidSubscribers={paidSubscribers}
         mrr={mrr}
+        arr={arr}
         conversionRate={conversionRate}
+        cac={cac}
+        ltv={ltv}
       />
 
       <TractionCharts
