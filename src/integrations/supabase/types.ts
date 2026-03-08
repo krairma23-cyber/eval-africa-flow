@@ -2294,6 +2294,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "pme_reviews_pme_id_fkey"
+            columns: ["pme_id"]
+            isOneToOne: false
+            referencedRelation: "pmes_public_view"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "pme_reviews_reservation_id_fkey"
             columns: ["reservation_id"]
             isOneToOne: false
@@ -2864,6 +2871,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "refund_requests_pme_id_fkey"
+            columns: ["pme_id"]
+            isOneToOne: false
+            referencedRelation: "pmes_public_view"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "refund_requests_reservation_id_fkey"
             columns: ["reservation_id"]
             isOneToOne: false
@@ -3106,6 +3120,13 @@ export type Database = {
             columns: ["pme_id"]
             isOneToOne: false
             referencedRelation: "pmes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservations_pme_id_fkey"
+            columns: ["pme_id"]
+            isOneToOne: false
+            referencedRelation: "pmes_public_view"
             referencedColumns: ["id"]
           },
           {
@@ -4595,6 +4616,13 @@ export type Database = {
             referencedRelation: "pmes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "verification_documents_pme_id_fkey"
+            columns: ["pme_id"]
+            isOneToOne: false
+            referencedRelation: "pmes_public_view"
+            referencedColumns: ["id"]
+          },
         ]
       }
       webhook_logs: {
@@ -4691,6 +4719,81 @@ export type Database = {
       }
     }
     Views: {
+      pmes_public_view: {
+        Row: {
+          address: string | null
+          availability_status: string | null
+          average_rating: number | null
+          business_name: string | null
+          city: string | null
+          commune: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          description: string | null
+          id: string | null
+          is_active: boolean | null
+          is_verified: boolean | null
+          latitude: number | null
+          longitude: number | null
+          phone: string | null
+          profile_image_url: string | null
+          response_time_minutes: number | null
+          review_count: number | null
+          total_jobs_completed: number | null
+          updated_at: string | null
+          user_id: string | null
+          whatsapp_phone: string | null
+        }
+        Insert: {
+          address?: string | null
+          availability_status?: string | null
+          average_rating?: number | null
+          business_name?: string | null
+          city?: string | null
+          commune?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          phone?: string | null
+          profile_image_url?: string | null
+          response_time_minutes?: number | null
+          review_count?: number | null
+          total_jobs_completed?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          whatsapp_phone?: string | null
+        }
+        Update: {
+          address?: string | null
+          availability_status?: string | null
+          average_rating?: number | null
+          business_name?: string | null
+          city?: string | null
+          commune?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          phone?: string | null
+          profile_image_url?: string | null
+          response_time_minutes?: number | null
+          review_count?: number | null
+          total_jobs_completed?: number | null
+          updated_at?: string | null
+          user_id?: string | null
+          whatsapp_phone?: string | null
+        }
+        Relationships: []
+      }
       students_teacher_view: {
         Row: {
           allergies: string | null
@@ -5254,6 +5357,20 @@ export type Database = {
         Args: { p_event_id: string; p_event_type: string }
         Returns: boolean
       }
+      record_payment_transaction: {
+        Args: {
+          p_amount: number
+          p_metadata?: Json
+          p_parent_email: string
+          p_parent_name: string
+          p_payment_date: string
+          p_payment_method: string
+          p_reference: string
+          p_status: string
+          p_student_id: string
+        }
+        Returns: string
+      }
       remind_enable_password_protection: { Args: never; Returns: string }
       run_security_audit: {
         Args: never
@@ -5495,7 +5612,7 @@ export type Database = {
     }
     Enums: {
       alert_type: "price_drop" | "trend_spike" | "new_winner" | "competition"
-      app_role: "admin" | "moderator" | "user" | "teacher"
+      app_role: "admin" | "moderator" | "user" | "teacher" | "super_admin"
       org_role: "owner" | "admin" | "member"
       pme_category:
         | "agriculture"
@@ -5640,7 +5757,7 @@ export const Constants = {
   public: {
     Enums: {
       alert_type: ["price_drop", "trend_spike", "new_winner", "competition"],
-      app_role: ["admin", "moderator", "user", "teacher"],
+      app_role: ["admin", "moderator", "user", "teacher", "super_admin"],
       org_role: ["owner", "admin", "member"],
       pme_category: [
         "agriculture",
