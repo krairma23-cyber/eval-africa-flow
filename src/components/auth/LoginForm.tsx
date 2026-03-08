@@ -110,6 +110,16 @@ export function LoginForm() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate password confirmation
+    if (password !== confirmPassword) {
+      toast({
+        title: t('common.error'),
+        description: "Les mots de passe ne correspondent pas",
+        variant: "destructive",
+      });
+      return;
+    }
     
     // Validate school name if creating school
     if (isCreatingSchool && (!schoolName.trim() || schoolName.trim().length < 3)) {
