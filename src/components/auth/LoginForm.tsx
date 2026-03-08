@@ -561,6 +561,31 @@ export function LoginForm() {
                     </button>
                   </div>
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirmer le mot de passe</Label>
+                  <div className="relative">
+                    <Input
+                      id="confirmPassword"
+                      type={showPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      minLength={8}
+                      className={cn("pr-10", confirmPassword && password !== confirmPassword && "border-destructive")}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  {confirmPassword && password !== confirmPassword && (
+                    <p className="text-xs text-destructive">Les mots de passe ne correspondent pas</p>
+                  )}
+                </div>
                 <div className="flex items-start space-x-2">
                   <Checkbox 
                     id="privacy" 
