@@ -118,19 +118,18 @@ serve(async (req) => {
       throw new Error(`Failed to update student payment: ${updateError.message}`);
     }
 
-    // Create payment transaction record
+    // Create payment transaction record via secure function
     const { error: transactionError } = await supabase
-      .from('payment_transactions')
-      .insert({
-        student_id: studentId,
-        amount: amount,
-        payment_reference: reference,
-        payment_method: 'mobile_money',
-        payment_date: paymentData.paid_at,
-        parent_email: paymentData.customer.email,
-        parent_name: metadata.parent_name,
-        status: 'completed',
-        metadata: metadata
+      .rpc('record_payment_transaction', {
+        p_student_id: studentId,
+        p_amount: amount,
+        p_reference: reference,
+        p_payment_method: 'mobile_money',
+        p_payment_date: paymentData.paid_at,
+        p_parent_email: paymentData.customer.email,
+        p_parent_name: metadata.parent_name || 'Unknown',
+        p_status: 'completed',
+        p_metadata: metadata
       });
 
     if (transactionError) {
