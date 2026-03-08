@@ -260,7 +260,10 @@ export default function Traction() {
         totalEnrollments={totalEnrollments}
         paidSubscribers={paidSubscribers}
         mrr={mrr}
+        arr={arr}
         conversionRate={conversionRate}
+        cac={cac}
+        ltv={ltv}
       />
 
       <TractionCharts
