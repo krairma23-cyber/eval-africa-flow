@@ -137,7 +137,7 @@ serve(async (req) => {
       // Don't fail the whole operation if transaction logging fails
     }
 
-    console.log(`[process-tuition-payment] Tuition payment processed for student ${studentId}: ${amount} FCFA`);
+    console.log('[process-tuition-payment] Tuition payment processed');
 
     return new Response(
       JSON.stringify({

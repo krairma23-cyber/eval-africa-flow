@@ -81,7 +81,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (existingUser) {
       parentUserId = existingUser.id;
-      console.log("Parent account already exists:", parentUserId);
+      console.log("[create-parent-account] Existing parent account linked");
     } else {
       // Generate temporary password
       tempPassword = generatePassword();
@@ -107,7 +107,7 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       parentUserId = newUser.user.id;
-      console.log("Created parent user:", parentUserId);
+      console.log("[create-parent-account] Parent user created");
 
       // Create parent profile
       const { error: profileError } = await supabaseAdmin
@@ -224,7 +224,7 @@ const handler = async (req: Request): Promise<Response> => {
         if (emailError) {
           console.error("Error sending email:", emailError);
         } else {
-          console.log("Welcome email sent to:", parent_email);
+          console.log("[create-parent-account] Welcome email sent");
         }
       } catch (emailErr) {
         console.error("Failed to send email:", emailErr);

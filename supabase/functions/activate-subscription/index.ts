@@ -43,7 +43,7 @@ serve(async (req) => {
     const user_id = user.id;
     const { payment_reference, plan_id, billing_period } = await req.json();
 
-    console.log('Activating subscription for authenticated user:', { user_id, plan_id, payment_reference, billing_period });
+    console.log('[activate-subscription] Activation started');
 
     // Get plan details
     const { data: plan, error: planError } = await supabaseAdmin
@@ -65,15 +65,13 @@ serve(async (req) => {
       ? (plan.price_yearly || plan.price_monthly * 12) 
       : plan.price_monthly;
 
-    console.log('Expected amount:', expectedAmount, 'XOF');
+    
 
     // If it's a paid plan, verify payment with Paystack
     if (expectedAmount > 0 && payment_reference) {
-      console.log('Verifying payment with Paystack:', payment_reference);
-      
       const paystackSecretKey = Deno.env.get('PAYSTACK_SECRET_KEY');
       if (!paystackSecretKey) {
-        console.error('PAYSTACK_SECRET_KEY not configured');
+        console.error('[activate-subscription] PAYSTACK_SECRET_KEY not configured');
         return new Response(
           JSON.stringify({ error: 'Payment system not configured' }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -81,7 +79,7 @@ serve(async (req) => {
       }
 
       const paystackVerification = await fetch(
-        `https://api.paystack.co/transaction/verify/${payment_reference}`,
+        `https://api.paystack.co/transaction/verify/${encodeURIComponent(payment_reference)}`,
         {
           headers: {
             'Authorization': `Bearer ${paystackSecretKey}`
@@ -90,7 +88,6 @@ serve(async (req) => {
       );
 
       const paymentData = await paystackVerification.json();
-      console.log('Paystack verification response:', paymentData);
 
       // CRITICAL: Verify payment was successful
       if (!paymentData.status || paymentData.data?.status !== 'success') {
@@ -162,7 +159,7 @@ serve(async (req) => {
       );
     }
 
-    console.log('Subscription activated successfully:', subscription);
+    console.log('[activate-subscription] Subscription activated');
 
     // Configure plan features based on plan_id
     let planFeatures;
@@ -286,7 +283,7 @@ serve(async (req) => {
       console.error('Failed to configure plan features:', featuresError);
       // Don't fail the subscription activation, just log the error
     } else {
-      console.log('Plan features configured successfully for plan:', plan_id);
+      console.log('[activate-subscription] Plan features configured');
     }
 
     return new Response(
