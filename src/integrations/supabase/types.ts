@@ -4988,6 +4988,15 @@ export type Database = {
         Args: { p_data: string; p_key_name?: string }
         Returns: string
       }
+      find_school_by_join_code: {
+        Args: { _code: string }
+        Returns: {
+          city: string
+          country: string
+          id: string
+          name: string
+        }[]
+      }
       generate_invoice_number: { Args: never; Returns: string }
       get_admin_stats: {
         Args: never
