@@ -14,57 +14,67 @@ interface NewsItem {
   date: string;
 }
 
-// Actualités éducatives Afrique francophone — éditorialisées
+// Actualités éducatives Afrique francophone — éditorialisées (2026)
 const NEWS: NewsItem[] = [
   {
     id: "1",
-    category: "Réforme",
-    title: "Nouveau calendrier scolaire 2025-2026 en Côte d'Ivoire",
+    category: "Examens",
+    title: "BEPC et BAC 2026 : calendrier officiel des épreuves publié",
     summary:
-      "Le Ministère de l'Éducation Nationale annonce les dates officielles de la rentrée et des congés.",
-    source: "MENA Côte d'Ivoire",
-    url: "https://www.education.gouv.ci",
-    date: "2025-09-15",
+      "La DECO communique les dates des examens de fin d'année et les centres d'écrit pour la session 2026.",
+    source: "DECO Côte d'Ivoire",
+    url: "https://www.deco.education.ci",
+    date: "2026-04-22",
   },
   {
     id: "2",
-    category: "Examens",
-    title: "BEPC et BAC : nouvelles modalités d'évaluation",
+    category: "Réforme",
+    title: "Préparation de la rentrée 2026-2027 : nouvelles directives MENA",
     summary:
-      "Les coefficients et la structure des épreuves évoluent pour mieux refléter les compétences acquises.",
-    source: "DECO",
-    url: "https://www.deco.education.ci",
-    date: "2025-10-02",
+      "Le Ministère de l'Éducation Nationale détaille les ajustements pédagogiques et le calendrier prévisionnel.",
+    source: "MENA Côte d'Ivoire",
+    url: "https://www.education.gouv.ci",
+    date: "2026-05-05",
   },
   {
     id: "3",
     category: "Bourses",
-    title: "Bourses d'excellence pour élèves méritants",
+    title: "Campagne 2026 des bourses AUF ouverte aux lycéens d'Afrique de l'Ouest",
     summary:
-      "Plusieurs programmes de bourses sont ouverts aux meilleurs élèves du secondaire en Afrique de l'Ouest.",
+      "L'Agence Universitaire de la Francophonie lance ses appels à candidatures pour les élèves méritants.",
     source: "AUF",
     url: "https://www.auf.org",
-    date: "2025-10-20",
+    date: "2026-04-10",
   },
   {
     id: "4",
     category: "Numérique",
-    title: "L'IA au service de la pédagogie : guide pour enseignants",
+    title: "IA générative en classe : nouvelles recommandations UNESCO 2026",
     summary:
-      "Comment utiliser les outils d'IA pour personnaliser l'apprentissage et détecter les élèves en difficulté.",
+      "Cadre actualisé pour intégrer l'IA dans les pratiques pédagogiques tout en protégeant les élèves.",
     source: "UNESCO",
     url: "https://www.unesco.org/fr/digital-education",
-    date: "2025-11-05",
+    date: "2026-03-18",
   },
   {
     id: "5",
     category: "Formation",
-    title: "Formation continue des enseignants : nouveaux modules en ligne",
+    title: "IFADEM 2026 : nouveaux parcours certifiants pour enseignants",
     summary:
-      "Des parcours certifiants gratuits pour renforcer les pratiques pédagogiques.",
+      "Modules gratuits sur la différenciation pédagogique, l'évaluation par compétences et le numérique éducatif.",
     source: "IFADEM",
     url: "https://www.ifadem.org",
-    date: "2025-11-10",
+    date: "2026-05-02",
+  },
+  {
+    id: "6",
+    category: "Innovation",
+    title: "EdTech Africa 2026 : sommet panafricain de l'éducation numérique",
+    summary:
+      "Acteurs publics et privés se réunissent à Abidjan pour accélérer la transformation digitale des écoles.",
+    source: "EdTech Africa",
+    url: "https://www.edtechafrica.com",
+    date: "2026-04-28",
   },
 ];
 
