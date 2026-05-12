@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, ArrowLeft, Star, Crown, Sparkles, Users, Zap, Shield, TrendingUp } from "lucide-react";
+import { Check, ArrowLeft, Star, Crown, Sparkles, Users, Zap, Shield, TrendingUp, GraduationCap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
@@ -74,6 +74,29 @@ export default function Pricing() {
       ],
       ideal: "Idéal pour : collèges & lycées modernes",
       cta: "Passer au Pro IA",
+    },
+    {
+      id: "secondaire",
+      name: "Secondaire Premium IA",
+      description: "Pensé pour collèges & lycées avec besoins avancés",
+      icon: GraduationCap,
+      iconColor: "text-indigo-500",
+      price: 120000,
+      priceLabel: "120 000 FCFA / an",
+      badge: "Spécial Secondaire · 3 000 FCFA/parent",
+      badgeVariant: "default" as const,
+      features: [
+        "Élèves illimités · multi-niveaux (6e → Tle)",
+        "Coefficients & moyennes pondérées (BEPC / BAC)",
+        "AI Assistant : sujets, corrigés, exercices auto",
+        "Détection IA des élèves à risque + remédiation",
+        "Analytics prédictifs de réussite aux examens",
+        "Bulletins officiels personnalisés au logo",
+        "Portail parent premium : 3 000 FCFA / parent / an",
+        "API REST, Webhooks & Support prioritaire 12h",
+      ],
+      ideal: "Idéal pour : collèges, lycées & complexes scolaires",
+      cta: "Choisir Secondaire IA",
     },
     {
       id: "groupe",
@@ -183,7 +206,7 @@ export default function Pricing() {
         </Card>
 
         {/* Plans */}
-        <section className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <section className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-16">
           {plans.map((plan) => {
             const Icon = plan.icon;
             return (
