@@ -15,7 +15,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { EducationNewsBanner } from "@/components/news/EducationNewsBanner";
+
 
 interface DashboardStats {
   studentsCount: number;
@@ -93,8 +93,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
-      <EducationNewsBanner />
-
       {/* Plan Limit Warning */}
       {!planLoading && planLimits && (planLimits.isLimitReached || planLimits.isLimitExceeded) && (
         <Alert variant="destructive" className="border-destructive">

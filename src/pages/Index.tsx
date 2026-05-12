@@ -12,6 +12,7 @@ import { AboutEvalScol } from "@/components/features/AboutEvalScol";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { EducationNewsBanner } from "@/components/news/EducationNewsBanner";
 
 const Index = () => {
   const { t } = useLanguage();
@@ -24,6 +25,11 @@ const Index = () => {
         <div className="flex justify-end mb-4 gap-2">
           <ThemeToggle />
           <LanguageSwitcher />
+        </div>
+
+        {/* Education news banner */}
+        <div className="max-w-5xl mx-auto mb-8">
+          <EducationNewsBanner />
         </div>
         
         {/* Hero Section */}
