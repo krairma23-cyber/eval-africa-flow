@@ -87,7 +87,7 @@ export function EnrollStudentDialog({ children, onEnrolled, onEnrollmentAdded, s
   const fetchData = async () => {
     try {
       const [studentsRes, classroomsRes, yearsRes] = await Promise.all([
-        supabase.from("students").select("id, first_name, last_name, student_number").order("last_name"),
+        supabase.from("students_safe").select("id, first_name, last_name, student_number").order("last_name"),
         supabase.from("classrooms").select("id, name").order("name"),
         supabase.from("academic_years").select("id, name, is_current").order("start_date", { ascending: false }),
       ]);
