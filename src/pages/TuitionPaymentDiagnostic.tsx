@@ -67,7 +67,7 @@ export default function TuitionPaymentDiagnostic() {
       });
 
       const { data: students, error: studentsError } = await supabase
-        .from('students')
+        .from('students_safe')
         .select('id, first_name, last_name, tuition_fee, amount_paid, payment_status')
         .limit(1);
 
