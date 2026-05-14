@@ -87,7 +87,6 @@ const DataPrivacy = () => {
   const handleDeleteAccount = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
         toast({
           title: "Erreur",
@@ -97,14 +96,13 @@ const DataPrivacy = () => {
         return;
       }
 
+      const { error } = await supabase.rpc('request_account_deletion', { _reason: null });
+      if (error) throw error;
+
       toast({
         title: "Demande enregistrée",
-        description: "Votre demande de suppression de compte a été enregistrée. Notre équipe la traitera dans les 30 jours conformément au RGPD.",
+        description: "Votre compte sera supprimé dans 30 jours conformément au RGPD (art. 17). Vous pouvez annuler cette demande à tout moment.",
       });
-      
-      // In a real application, this would trigger a backend process
-      // to handle account deletion according to RGPD requirements
-    } catch (error) {
       logError('Account deletion request failed', error, {
         component: 'DataPrivacy',
         action: 'delete_account'
