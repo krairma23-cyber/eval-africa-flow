@@ -46,7 +46,6 @@ const DataPrivacy = () => {
   const handleDownloadData = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
         toast({
           title: "Erreur",
@@ -56,27 +55,12 @@ const DataPrivacy = () => {
         return;
       }
 
-      // Get user data
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+      // Export RGPD complet via RPC sécurisée (art. 20 - portabilité)
+      const { data, error } = await supabase.rpc('export_user_data');
+      if (error) throw error;
 
-      const userData = {
-        user: {
-          id: user.id,
-          email: user.email,
-          created_at: user.created_at,
-        },
-        profile,
-        exportDate: new Date().toISOString(),
-      };
-
-      // Create and download JSON file
-      const dataStr = JSON.stringify(userData, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(dataBlob);
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.download = `mes-donnees-evalscol-${new Date().toISOString().split('T')[0]}.json`;
@@ -85,7 +69,7 @@ const DataPrivacy = () => {
 
       toast({
         title: "Téléchargement réussi",
-        description: "Vos données ont été téléchargées avec succès.",
+        description: "Vos données ont été exportées au format JSON.",
       });
     } catch (error) {
       logError('Data download failed', error, {
