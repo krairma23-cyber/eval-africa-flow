@@ -64,10 +64,38 @@ const handler = async (req: Request): Promise<Response> => {
     const { student_id, parent_name, parent_email, student_name, school_name, school_id } = body;
 
     // Validate required fields
-    if (!student_id || !parent_email || !student_name) {
+    if (!student_id || !parent_email || !student_name || !school_id) {
       return new Response(
-        JSON.stringify({ error: "Données manquantes: student_id, parent_email, et student_name sont requis" }),
+        JSON.stringify({ error: "Données manquantes: student_id, parent_email, student_name et school_id sont requis" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Authorization: caller must be an admin AND belong to the target school
+    const { data: isAdmin } = await supabaseAdmin.rpc('has_role', {
+      _user_id: caller.id, _role: 'admin'
+    });
+    if (!isAdmin) {
+      return new Response(
+        JSON.stringify({ error: "Forbidden: admin only" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    const { data: callerProfile } = await supabaseAdmin
+      .from('profiles').select('school_id').eq('user_id', caller.id).maybeSingle();
+    if (!callerProfile || callerProfile.school_id !== school_id) {
+      return new Response(
+        JSON.stringify({ error: "Forbidden: school mismatch" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    // Verify the student really belongs to that school
+    const { data: studentRow } = await supabaseAdmin
+      .from('students').select('school_id').eq('id', student_id).maybeSingle();
+    if (!studentRow || studentRow.school_id !== school_id) {
+      return new Response(
+        JSON.stringify({ error: "Student does not belong to this school" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 

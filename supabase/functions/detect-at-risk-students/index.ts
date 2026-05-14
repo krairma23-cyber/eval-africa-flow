@@ -26,6 +26,39 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
+    // Require authenticated admin caller
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const { data: { user: caller }, error: authErr } = await supabase.auth.getUser(
+      authHeader.replace('Bearer ', '')
+    );
+    if (authErr || !caller) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const { data: isAdmin } = await supabase.rpc('has_role', {
+      _user_id: caller.id, _role: 'admin'
+    });
+    if (!isAdmin) {
+      return new Response(JSON.stringify({ error: 'Forbidden: admin only' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    // Caller's school — used to scope detection and notifications
+    const { data: callerProfile } = await supabase
+      .from('profiles').select('school_id').eq('user_id', caller.id).maybeSingle();
+    const callerSchoolId = callerProfile?.school_id;
+    if (!callerSchoolId) {
+      return new Response(JSON.stringify({ error: 'Caller has no school' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     console.log('Starting at-risk student detection...');
 
     // Récupérer les résultats récents (3 derniers mois)
@@ -53,6 +86,7 @@ serve(async (req) => {
           )
         )
       `)
+      .eq('students.school_id', callerSchoolId)
       .gte('assessments.assessment_date', threeMonthsAgo.toISOString())
       .not('score', 'is', null);
 
@@ -142,20 +176,25 @@ serve(async (req) => {
           reasons: riskReasons
         });
 
-        // Récupérer les enseignants et admins de l'école
-        const { data: teachers, error: teachersError } = await supabase
+        // Récupérer les enseignants et admins de l'ÉCOLE DE L'ÉLÈVE uniquement
+        const { data: teachers } = await supabase
           .from('teachers')
           .select('user_id')
-          .eq('school_id', (await supabase
-            .from('students')
-            .select('school_id')
-            .eq('id', studentId)
-            .single()).data?.school_id);
+          .eq('school_id', callerSchoolId);
 
-        const { data: admins, error: adminsError } = await supabase
-          .from('user_roles')
+        // Admins of the same school: join via profiles
+        const { data: schoolAdminProfiles } = await supabase
+          .from('profiles')
           .select('user_id')
-          .eq('role', 'admin');
+          .eq('school_id', callerSchoolId);
+        const schoolUserIds = (schoolAdminProfiles || []).map(p => p.user_id);
+        const { data: admins } = schoolUserIds.length
+          ? await supabase
+              .from('user_roles')
+              .select('user_id')
+              .eq('role', 'admin')
+              .in('user_id', schoolUserIds)
+          : { data: [] as { user_id: string }[] };
 
         // Créer des notifications
         const recipientIds = new Set([

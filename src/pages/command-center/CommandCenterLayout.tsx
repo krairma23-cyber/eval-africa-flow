@@ -39,12 +39,13 @@ export default function CommandCenterLayout() {
   const checkAccess = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { navigate("/auth"); return; }
-    const { data } = await supabase
-      .from("profiles")
-      .select("user_type")
+    const { data: roleData } = await supabase
+      .from("user_roles")
+      .select("role")
       .eq("user_id", user.id)
-      .single();
-    if (data?.user_type === "super_admin") {
+      .eq("role", "super_admin")
+      .maybeSingle();
+    if (roleData) {
       setAuthorized(true);
     } else {
       setAuthorized(false);

@@ -31,6 +31,22 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Require authenticated user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const { data: { user: caller }, error: authErr } = await supabase.auth.getUser(
+      authHeader.replace('Bearer ', '')
+    );
+    if (authErr || !caller) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     // Validate input with Zod
     let validated;
     try {
@@ -50,6 +66,19 @@ serve(async (req) => {
     }
 
     const { reference } = validated;
+
+    // Idempotency: refuse to re-apply a reference that has already been processed
+    const { data: existingTx } = await supabase
+      .from('payment_transactions')
+      .select('id')
+      .eq('payment_reference', reference)
+      .maybeSingle();
+    if (existingTx) {
+      return new Response(
+        JSON.stringify({ error: 'Payment reference already processed' }),
+        { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     // Verify payment with Paystack
     const paystackResponse = await fetch(
