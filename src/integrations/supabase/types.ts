@@ -55,6 +55,39 @@ export type Database = {
           },
         ]
       }
+      account_deletion_requests: {
+        Row: {
+          id: string
+          processed_at: string | null
+          processed_by: string | null
+          reason: string | null
+          requested_at: string
+          scheduled_for: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reason?: string | null
+          requested_at?: string
+          scheduled_for?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reason?: string | null
+          requested_at?: string
+          scheduled_for?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_searches: {
         Row: {
           created_at: string | null
@@ -290,6 +323,20 @@ export type Database = {
             columns: ["student_id"]
             isOneToOne: false
             referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_results_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students_medical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_results_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students_safe"
             referencedColumns: ["id"]
           },
           {
@@ -1255,6 +1302,20 @@ export type Database = {
             foreignKeyName: "enrollments_student_id_fkey"
             columns: ["student_id"]
             isOneToOne: false
+            referencedRelation: "students_medical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollments_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
             referencedRelation: "students_teacher_view"
             referencedColumns: ["id"]
           },
@@ -2103,6 +2164,20 @@ export type Database = {
             columns: ["student_id"]
             isOneToOne: false
             referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students_medical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students_safe"
             referencedColumns: ["id"]
           },
           {
@@ -2984,6 +3059,20 @@ export type Database = {
             foreignKeyName: "report_cards_student_id_fkey"
             columns: ["student_id"]
             isOneToOne: false
+            referencedRelation: "students_medical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "report_cards_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "report_cards_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
             referencedRelation: "students_teacher_view"
             referencedColumns: ["id"]
           },
@@ -3539,6 +3628,20 @@ export type Database = {
             columns: ["student_id"]
             isOneToOne: false
             referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_attendance_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students_medical"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_attendance_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students_safe"
             referencedColumns: ["id"]
           },
           {
@@ -4794,6 +4897,142 @@ export type Database = {
         }
         Relationships: []
       }
+      students_medical: {
+        Row: {
+          allergies: string | null
+          blood_type: string | null
+          doctor_name: string | null
+          doctor_phone: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          first_name: string | null
+          id: string | null
+          last_name: string | null
+          medical_conditions: string | null
+          medical_notes: string | null
+          medications: string | null
+          parent_email: string | null
+          parent_phone: string | null
+          school_id: string | null
+          student_number: string | null
+        }
+        Insert: {
+          allergies?: string | null
+          blood_type?: string | null
+          doctor_name?: string | null
+          doctor_phone?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          first_name?: string | null
+          id?: string | null
+          last_name?: string | null
+          medical_conditions?: string | null
+          medical_notes?: string | null
+          medications?: string | null
+          parent_email?: string | null
+          parent_phone?: string | null
+          school_id?: string | null
+          student_number?: string | null
+        }
+        Update: {
+          allergies?: string | null
+          blood_type?: string | null
+          doctor_name?: string | null
+          doctor_phone?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          first_name?: string | null
+          id?: string | null
+          last_name?: string | null
+          medical_conditions?: string | null
+          medical_notes?: string | null
+          medications?: string | null
+          parent_email?: string | null
+          parent_phone?: string | null
+          school_id?: string | null
+          student_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students_safe: {
+        Row: {
+          address: string | null
+          amount_paid: number | null
+          avatar_url: string | null
+          created_at: string | null
+          date_of_birth: string | null
+          first_name: string | null
+          gender: string | null
+          id: string | null
+          last_name: string | null
+          parent_name: string | null
+          payment_due_date: string | null
+          payment_method: string | null
+          payment_notes: string | null
+          payment_status: string | null
+          school_id: string | null
+          student_number: string | null
+          tuition_fee: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          address?: string | null
+          amount_paid?: number | null
+          avatar_url?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          first_name?: string | null
+          gender?: string | null
+          id?: string | null
+          last_name?: string | null
+          parent_name?: string | null
+          payment_due_date?: string | null
+          payment_method?: string | null
+          payment_notes?: string | null
+          payment_status?: string | null
+          school_id?: string | null
+          student_number?: string | null
+          tuition_fee?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          address?: string | null
+          amount_paid?: number | null
+          avatar_url?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          first_name?: string | null
+          gender?: string | null
+          id?: string | null
+          last_name?: string | null
+          parent_name?: string | null
+          payment_due_date?: string | null
+          payment_method?: string | null
+          payment_notes?: string | null
+          payment_status?: string | null
+          school_id?: string | null
+          student_number?: string | null
+          tuition_fee?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "students_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       students_teacher_view: {
         Row: {
           allergies: string | null
@@ -5319,6 +5558,10 @@ export type Database = {
           p_user_id: string
         }
         Returns: string
+      }
+      log_medical_access: {
+        Args: { _fields?: string[]; _student_id: string }
+        Returns: undefined
       }
       log_payment_security_event: {
         Args: {
