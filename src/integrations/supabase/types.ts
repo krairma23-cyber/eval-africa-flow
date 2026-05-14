@@ -5227,6 +5227,7 @@ export type Database = {
         Args: { p_data: string; p_key_name?: string }
         Returns: string
       }
+      export_user_data: { Args: never; Returns: Json }
       find_school_by_join_code: {
         Args: { _code: string }
         Returns: {
@@ -5560,7 +5561,7 @@ export type Database = {
         Returns: string
       }
       log_medical_access: {
-        Args: { _fields?: string[]; _student_id: string }
+        Args: { _justification?: string; _student_id: string }
         Returns: undefined
       }
       log_payment_security_event: {
@@ -5624,6 +5625,7 @@ export type Database = {
         Returns: string
       }
       remind_enable_password_protection: { Args: never; Returns: string }
+      request_account_deletion: { Args: { _reason?: string }; Returns: string }
       run_security_audit: {
         Args: never
         Returns: {

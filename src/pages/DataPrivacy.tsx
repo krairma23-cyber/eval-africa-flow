@@ -46,7 +46,6 @@ const DataPrivacy = () => {
   const handleDownloadData = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
         toast({
           title: "Erreur",
@@ -56,27 +55,12 @@ const DataPrivacy = () => {
         return;
       }
 
-      // Get user data
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+      // Export RGPD complet via RPC sécurisée (art. 20 - portabilité)
+      const { data, error } = await supabase.rpc('export_user_data');
+      if (error) throw error;
 
-      const userData = {
-        user: {
-          id: user.id,
-          email: user.email,
-          created_at: user.created_at,
-        },
-        profile,
-        exportDate: new Date().toISOString(),
-      };
-
-      // Create and download JSON file
-      const dataStr = JSON.stringify(userData, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(dataBlob);
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.download = `mes-donnees-evalscol-${new Date().toISOString().split('T')[0]}.json`;
@@ -85,7 +69,7 @@ const DataPrivacy = () => {
 
       toast({
         title: "Téléchargement réussi",
-        description: "Vos données ont été téléchargées avec succès.",
+        description: "Vos données ont été exportées au format JSON.",
       });
     } catch (error) {
       logError('Data download failed', error, {
@@ -103,7 +87,6 @@ const DataPrivacy = () => {
   const handleDeleteAccount = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
         toast({
           title: "Erreur",
@@ -113,13 +96,13 @@ const DataPrivacy = () => {
         return;
       }
 
+      const { error } = await supabase.rpc('request_account_deletion', { _reason: null });
+      if (error) throw error;
+
       toast({
         title: "Demande enregistrée",
-        description: "Votre demande de suppression de compte a été enregistrée. Notre équipe la traitera dans les 30 jours conformément au RGPD.",
+        description: "Votre compte sera supprimé dans 30 jours conformément au RGPD (art. 17). Vous pouvez annuler cette demande à tout moment.",
       });
-      
-      // In a real application, this would trigger a backend process
-      // to handle account deletion according to RGPD requirements
     } catch (error) {
       logError('Account deletion request failed', error, {
         component: 'DataPrivacy',
