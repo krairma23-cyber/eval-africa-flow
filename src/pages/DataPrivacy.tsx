@@ -103,6 +103,7 @@ const DataPrivacy = () => {
         title: "Demande enregistrée",
         description: "Votre compte sera supprimé dans 30 jours conformément au RGPD (art. 17). Vous pouvez annuler cette demande à tout moment.",
       });
+    } catch (error) {
       logError('Account deletion request failed', error, {
         component: 'DataPrivacy',
         action: 'delete_account'
