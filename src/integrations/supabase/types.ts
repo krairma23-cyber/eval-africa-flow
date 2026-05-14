@@ -5392,6 +5392,7 @@ export type Database = {
         }[]
       }
       safe_to_mark_public: { Args: { p_table: unknown }; Returns: boolean }
+      same_school_admin: { Args: { _target_user_id: string }; Returns: boolean }
       secure_admin_access_customer_data: {
         Args: {
           p_access_reason: string
