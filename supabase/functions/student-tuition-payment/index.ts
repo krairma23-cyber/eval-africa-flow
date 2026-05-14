@@ -32,6 +32,22 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+    // Require authenticated user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const { data: { user: caller }, error: authErr } = await supabase.auth.getUser(
+      authHeader.replace('Bearer ', '')
+    );
+    if (authErr || !caller) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     const body = await req.json();
     
     // Validate input with Zod
@@ -56,7 +72,7 @@ serve(async (req) => {
     // Fetch student information
     const { data: student, error: studentError } = await supabase
       .from('students')
-      .select('id, first_name, last_name, tuition_fee, amount_paid, classroom_id')
+      .select('id, first_name, last_name, tuition_fee, amount_paid, classroom_id, school_id, parent_email')
       .eq('id', student_id)
       .single();
 
@@ -65,6 +81,27 @@ serve(async (req) => {
         JSON.stringify({ error: 'Student not found' }),
         { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
+    }
+
+    // Verify caller is admin of the student's school OR the parent of this student
+    const { data: isAdmin } = await supabase.rpc('has_role', {
+      _user_id: caller.id, _role: 'admin'
+    });
+    const callerEmail = (caller.email || '').toLowerCase();
+    const studentParentEmail = (student.parent_email || '').toLowerCase();
+    let allowed = false;
+    if (isAdmin) {
+      const { data: callerProfile } = await supabase
+        .from('profiles').select('school_id').eq('user_id', caller.id).maybeSingle();
+      allowed = callerProfile?.school_id === student.school_id;
+    }
+    if (!allowed && callerEmail && callerEmail === studentParentEmail) {
+      allowed = true;
+    }
+    if (!allowed) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     }
 
     // Initialize payment with Paystack

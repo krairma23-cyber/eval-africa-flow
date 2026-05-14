@@ -65,7 +65,28 @@ serve(async (req) => {
       ? (plan.price_yearly || plan.price_monthly * 12) 
       : plan.price_monthly;
 
-    
+    // Idempotency: refuse to re-apply a payment_reference that has already
+    // been used to activate any subscription (for paid plans only).
+    if (expectedAmount > 0 && payment_reference) {
+      const { data: existingSub } = await supabaseAdmin
+        .from('user_subscriptions')
+        .select('id, user_id')
+        .eq('payment_reference', payment_reference)
+        .maybeSingle();
+      if (existingSub && existingSub.user_id !== user_id) {
+        console.error('[activate-subscription] Reference already used by another user');
+        return new Response(
+          JSON.stringify({ error: 'Payment reference already used' }),
+          { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      if (existingSub && existingSub.user_id === user_id) {
+        return new Response(
+          JSON.stringify({ success: true, message: 'Subscription already activated for this reference' }),
+          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
 
     // If it's a paid plan, verify payment with Paystack
     if (expectedAmount > 0 && payment_reference) {
