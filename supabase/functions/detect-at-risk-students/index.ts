@@ -86,6 +86,7 @@ serve(async (req) => {
           )
         )
       `)
+      .eq('students.school_id', callerSchoolId)
       .gte('assessments.assessment_date', threeMonthsAgo.toISOString())
       .not('score', 'is', null);
 
@@ -175,20 +176,25 @@ serve(async (req) => {
           reasons: riskReasons
         });
 
-        // Récupérer les enseignants et admins de l'école
-        const { data: teachers, error: teachersError } = await supabase
+        // Récupérer les enseignants et admins de l'ÉCOLE DE L'ÉLÈVE uniquement
+        const { data: teachers } = await supabase
           .from('teachers')
           .select('user_id')
-          .eq('school_id', (await supabase
-            .from('students')
-            .select('school_id')
-            .eq('id', studentId)
-            .single()).data?.school_id);
+          .eq('school_id', callerSchoolId);
 
-        const { data: admins, error: adminsError } = await supabase
-          .from('user_roles')
+        // Admins of the same school: join via profiles
+        const { data: schoolAdminProfiles } = await supabase
+          .from('profiles')
           .select('user_id')
-          .eq('role', 'admin');
+          .eq('school_id', callerSchoolId);
+        const schoolUserIds = (schoolAdminProfiles || []).map(p => p.user_id);
+        const { data: admins } = schoolUserIds.length
+          ? await supabase
+              .from('user_roles')
+              .select('user_id')
+              .eq('role', 'admin')
+              .in('user_id', schoolUserIds)
+          : { data: [] as { user_id: string }[] };
 
         // Créer des notifications
         const recipientIds = new Set([
