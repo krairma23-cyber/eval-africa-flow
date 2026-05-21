@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Newspaper, ChevronLeft, ChevronRight, ExternalLink, X } from "lucide-react";
+import { Newspaper, ChevronLeft, ChevronRight, ExternalLink, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 
 interface NewsItem {
   id: string;
@@ -14,75 +15,29 @@ interface NewsItem {
   date: string;
 }
 
-// Actualités éducatives Afrique francophone — éditorialisées (2026)
-const NEWS: NewsItem[] = [
+// Fallback affiché tant que le flux Google News n'a pas répondu.
+const FALLBACK_NEWS: NewsItem[] = [
   {
-    id: "1",
-    category: "Examens",
-    title: "BEPC et BAC 2026 : calendrier officiel des épreuves publié",
+    id: "fb-1",
+    category: "Éducation",
+    title: "Actualités éducatives Afrique francophone",
     summary:
-      "La DECO communique les dates des examens de fin d'année et les centres d'écrit pour la session 2026.",
-    source: "DECO Côte d'Ivoire",
-    url: "https://www.deco.education.ci",
-    date: "2026-04-22",
-  },
-  {
-    id: "2",
-    category: "Réforme",
-    title: "Préparation de la rentrée 2026-2027 : nouvelles directives MENA",
-    summary:
-      "Le Ministère de l'Éducation Nationale détaille les ajustements pédagogiques et le calendrier prévisionnel.",
-    source: "MENA Côte d'Ivoire",
-    url: "https://www.education.gouv.ci",
-    date: "2026-05-05",
-  },
-  {
-    id: "3",
-    category: "Bourses",
-    title: "Campagne 2026 des bourses AUF ouverte aux lycéens d'Afrique de l'Ouest",
-    summary:
-      "L'Agence Universitaire de la Francophonie lance ses appels à candidatures pour les élèves méritants.",
-    source: "AUF",
-    url: "https://www.auf.org",
-    date: "2026-04-10",
-  },
-  {
-    id: "4",
-    category: "Numérique",
-    title: "IA générative en classe : nouvelles recommandations UNESCO 2026",
-    summary:
-      "Cadre actualisé pour intégrer l'IA dans les pratiques pédagogiques tout en protégeant les élèves.",
-    source: "UNESCO",
-    url: "https://www.unesco.org/fr/digital-education",
-    date: "2026-03-18",
-  },
-  {
-    id: "5",
-    category: "Formation",
-    title: "IFADEM 2026 : nouveaux parcours certifiants pour enseignants",
-    summary:
-      "Modules gratuits sur la différenciation pédagogique, l'évaluation par compétences et le numérique éducatif.",
-    source: "IFADEM",
-    url: "https://www.ifadem.org",
-    date: "2026-05-02",
-  },
-  {
-    id: "6",
-    category: "Innovation",
-    title: "EdTech Africa 2026 : sommet panafricain de l'éducation numérique",
-    summary:
-      "Acteurs publics et privés se réunissent à Abidjan pour accélérer la transformation digitale des écoles.",
-    source: "EdTech Africa",
-    url: "https://www.edtechafrica.com",
-    date: "2026-04-28",
+      "Chargement du flux d'actualités en temps réel depuis Google News…",
+    source: "EvalScol",
+    url: "https://news.google.com/search?q=%C3%A9ducation+Afrique+francophone&hl=fr",
+    date: new Date().toISOString(),
   },
 ];
 
 const STORAGE_KEY = "evalscol_news_banner_dismissed_v1";
+const CACHE_KEY = "evalscol_news_cache_v1";
+const CACHE_TTL_MS = 30 * 60 * 1000; // 30 min
 
 export function EducationNewsBanner() {
   const [index, setIndex] = useState(0);
   const [dismissed, setDismissed] = useState(false);
+  const [news, setNews] = useState<NewsItem[]>(FALLBACK_NEWS);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const stored = sessionStorage.getItem(STORAGE_KEY);
@@ -90,16 +45,59 @@ export function EducationNewsBanner() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+
+    // Cache local pour réactivité immédiate
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (raw) {
+        const cached = JSON.parse(raw) as { ts: number; items: NewsItem[] };
+        if (cached.items?.length) {
+          setNews(cached.items);
+          setLoading(false);
+          if (Date.now() - cached.ts < CACHE_TTL_MS) return; // frais
+        }
+      }
+    } catch { /* ignore */ }
+
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("education-news");
+        if (cancelled) return;
+        if (error) throw error;
+        const items: NewsItem[] = data?.items ?? [];
+        if (items.length) {
+          setNews(items);
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), items }));
+        }
+      } catch (e) {
+        console.warn("[EducationNewsBanner] flux indisponible", e);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, []);
+
+  const NEWS = news.length > 0 ? news : FALLBACK_NEWS;
+
+  useEffect(() => {
+    setIndex(0);
+  }, [news]);
+
+  useEffect(() => {
     if (dismissed) return;
     const timer = setInterval(() => {
       setIndex((i) => (i + 1) % NEWS.length);
     }, 7000);
     return () => clearInterval(timer);
-  }, [dismissed]);
+  }, [dismissed, NEWS.length]);
 
   if (dismissed) return null;
 
-  const current = NEWS[index];
+  const current = NEWS[index % NEWS.length];
+  if (!current) return null;
 
   const handleDismiss = () => {
     sessionStorage.setItem(STORAGE_KEY, "1");

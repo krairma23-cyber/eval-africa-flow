@@ -32,3 +32,6 @@ verify_jwt = true
 
 [functions.process-tuition-payment]
 verify_jwt = true
+
+[functions.education-news]
+verify_jwt = false
