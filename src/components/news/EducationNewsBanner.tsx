@@ -80,7 +80,11 @@ export function EducationNewsBanner() {
     return () => { cancelled = true; };
   }, []);
 
-  const NEWS = news;
+  const NEWS = news.length > 0 ? news : FALLBACK_NEWS;
+
+  useEffect(() => {
+    setIndex(0);
+  }, [news]);
 
   useEffect(() => {
     if (dismissed) return;
@@ -88,11 +92,12 @@ export function EducationNewsBanner() {
       setIndex((i) => (i + 1) % NEWS.length);
     }, 7000);
     return () => clearInterval(timer);
-  }, [dismissed]);
+  }, [dismissed, NEWS.length]);
 
   if (dismissed) return null;
 
-  const current = NEWS[index];
+  const current = NEWS[index % NEWS.length];
+  if (!current) return null;
 
   const handleDismiss = () => {
     sessionStorage.setItem(STORAGE_KEY, "1");
