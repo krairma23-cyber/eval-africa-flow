@@ -414,9 +414,6 @@ export default function Billing() {
       }
 
       // Handle paid plans with phone number
-      console.log('💳 Initializing Paystack payment...');
-      console.log('📱 Phone number:', phoneNumber);
-      
       toast({
         title: "Initialisation du paiement",
         description: "Connexion à Paystack...",
@@ -431,27 +428,19 @@ export default function Billing() {
         callback_url: `${window.location.origin}/payment-callback`
       };
 
-      console.log('📦 Payment payload:', paymentPayload);
-
       const { data, error } = await supabase.functions.invoke('paystack-payment', {
         body: paymentPayload
       });
 
-      console.log('📡 Paystack response:', { data, error });
-
       if (error) {
-        console.error('❌ Paystack error:', error);
         throw error;
       }
 
       if (!data) {
-        console.error('❌ No data returned from Paystack');
         throw new Error('No data returned from payment gateway');
       }
 
       if (data.authorization_url) {
-        console.log('✅ Authorization URL received:', data.authorization_url);
-        
         const pendingPayment = {
           reference: data.reference,
           plan_id: selectedPlan.id,
@@ -459,13 +448,9 @@ export default function Billing() {
           billing_period: isYearly ? 'yearly' : 'monthly'
         };
 
-        console.log('💾 Storing pending payment:', pendingPayment);
         localStorage.setItem('pending_payment', JSON.stringify(pendingPayment));
-
-        console.log('🔄 Redirecting to Paystack...');
         window.location.href = data.authorization_url;
       } else {
-        console.error('❌ No authorization URL in response');
         throw new Error('No authorization URL received from payment gateway');
       }
     } catch (error) {
