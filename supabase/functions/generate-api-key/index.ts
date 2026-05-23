@@ -40,6 +40,17 @@ serve(async (req) => {
       );
     }
 
+    // Require admin role (matches RLS on api_keys)
+    const { data: isAdmin } = await supabaseAdmin.rpc('has_role', {
+      _user_id: user.id, _role: 'admin'
+    });
+    if (!isAdmin) {
+      return new Response(
+        JSON.stringify({ error: 'Forbidden: admin role required' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Get user's school_id from profiles
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')

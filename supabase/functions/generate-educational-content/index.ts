@@ -1,5 +1,18 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+
+const ContentSchema = z.object({
+  type: z.enum(['assessment', 'report', 'analysis']),
+  subject: z.string().min(1).max(100),
+  level: z.string().min(1).max(50),
+  topic: z.string().min(1).max(200),
+  difficulty: z.string().min(1).max(50).optional().default('medium'),
+  questionsCount: z.number().int().min(1).max(50).optional().default(10),
+  duration: z.number().int().min(1).max(300).optional().default(60),
+});
+
+const sanitize = (s: string) => s.replace(/[`<>]/g, '').slice(0, 500);
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -32,8 +45,20 @@ serve(async (req) => {
       });
     }
 
-    const { type, subject, level, topic, difficulty, questionsCount, duration } = await req.json();
-    
+    const body = await req.json();
+    const parsed = ContentSchema.safeParse(body);
+    if (!parsed.success) {
+      return new Response(
+        JSON.stringify({ error: 'Validation failed', issues: parsed.error.flatten().fieldErrors }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    const subject = sanitize(parsed.data.subject);
+    const level = sanitize(parsed.data.level);
+    const topic = sanitize(parsed.data.topic);
+    const difficulty = sanitize(parsed.data.difficulty);
+    const { type, questionsCount, duration } = parsed.data;
+
     console.log('Generating content:', { type, subject, level, topic, difficulty });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -111,6 +136,7 @@ Inclus:
           { role: 'user', content: userPrompt }
         ],
         temperature: 0.7,
+        max_tokens: 2000,
       }),
     });
 

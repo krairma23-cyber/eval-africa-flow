@@ -76,9 +76,12 @@ export default function Settings() {
         // Get school data including logo, address, and academic year
         const { data: school } = await supabase.
         from('schools').
-        select('name, logo_url, address, academic_year, city, phone, municipality, neighborhood, geographical_location, email, postal_code, phone_2, join_code').
+        select('name, logo_url, address, academic_year, city, phone, municipality, neighborhood, geographical_location, email, postal_code, phone_2').
         eq('id', profile.school_id).
         single();
+
+        // join_code is admin-only and fetched via secure RPC
+        const { data: joinCodeData } = await supabase.rpc('get_school_join_code' as any, { p_school_id: profile.school_id });
 
         if (school) {
           setSchoolName(school.name || "École Primaire Example");
@@ -92,7 +95,7 @@ export default function Settings() {
           setEmail((school as any).email || "");
           setPostalCode((school as any).postal_code || "");
           setPhone2((school as any).phone_2 || "");
-          setSchoolJoinCode((school as any).join_code || "");
+          setSchoolJoinCode((joinCodeData as string) || "");
 
           if (school.logo_url) {
             const raw = school.logo_url.trim();
