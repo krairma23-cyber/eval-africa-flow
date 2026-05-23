@@ -191,7 +191,7 @@ Inclus:
   } catch (error) {
     console.error('Error in generate-educational-content:', error);
     return new Response(
-      JSON.stringify({ error: error.message || 'Erreur lors de la génération du contenu' }),
+      JSON.stringify({ error: 'Erreur lors de la génération du contenu' }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -112,12 +112,32 @@ serve(async (req) => {
     // Fetch current student payment info
     const { data: student, error: fetchError } = await supabase
       .from('students')
-      .select('tuition_fee, amount_paid, payment_status')
+      .select('tuition_fee, amount_paid, payment_status, school_id, parent_email')
       .eq('id', studentId)
       .single();
 
     if (fetchError || !student) {
       throw new Error('Student not found');
+    }
+
+    // Authorization: caller must be school admin of student's school OR the parent on record
+    const { data: callerProfile } = await supabase
+      .from('profiles').select('school_id').eq('user_id', caller.id).maybeSingle();
+    const { data: isAdminData } = await supabase.rpc('has_role', {
+      _user_id: caller.id, _role: 'admin'
+    });
+    const callerEmail = (caller.email || '').toLowerCase();
+    const studentParentEmail = (student.parent_email || '').toLowerCase();
+    const isAuthorized =
+      (isAdminData === true && callerProfile?.school_id === student.school_id) ||
+      (!!callerEmail && !!studentParentEmail && callerEmail === studentParentEmail);
+
+    if (!isAuthorized) {
+      console.error('[process-tuition-payment] Unauthorized caller for student', { caller: caller.id, studentId });
+      return new Response(
+        JSON.stringify({ error: 'Forbidden: not authorized for this student' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Calculate new amount paid

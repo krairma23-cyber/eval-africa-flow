@@ -147,8 +147,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.error("❌ Error sending email:", error);
     return new Response(
       JSON.stringify({ 
-        error: error.message || "Failed to send email",
-        details: error.toString()
+        error: "Failed to send email"
       }),
       {
         status: 500,
