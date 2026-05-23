@@ -45,8 +45,20 @@ serve(async (req) => {
       });
     }
 
-    const { type, subject, level, topic, difficulty, questionsCount, duration } = await req.json();
-    
+    const body = await req.json();
+    const parsed = ContentSchema.safeParse(body);
+    if (!parsed.success) {
+      return new Response(
+        JSON.stringify({ error: 'Validation failed', issues: parsed.error.flatten().fieldErrors }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    const subject = sanitize(parsed.data.subject);
+    const level = sanitize(parsed.data.level);
+    const topic = sanitize(parsed.data.topic);
+    const difficulty = sanitize(parsed.data.difficulty);
+    const { type, questionsCount, duration } = parsed.data;
+
     console.log('Generating content:', { type, subject, level, topic, difficulty });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
