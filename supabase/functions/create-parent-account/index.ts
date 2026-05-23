@@ -127,7 +127,7 @@ const handler = async (req: Request): Promise<Response> => {
       if (createError) {
         console.error("Error creating parent user:", createError);
         return new Response(
-          JSON.stringify({ error: `Impossible de créer le compte parent: ${createError.message}` }),
+          JSON.stringify({ error: "Impossible de créer le compte parent" }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
@@ -273,7 +273,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: any) {
     console.error("Error in create-parent-account:", error);
     return new Response(
-      JSON.stringify({ error: error.message || "Erreur interne du serveur" }),
+      JSON.stringify({ error: "Erreur interne du serveur" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

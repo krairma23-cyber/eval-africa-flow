@@ -124,7 +124,7 @@ Tu réponds de manière concise, claire et professionnelle. Tu t'adaptes au nive
     console.error('Error in ai-assistant-chat:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Erreur lors de la communication avec l\'assistant IA',
+        error: 'Erreur lors de la communication avec l\'assistant IA',
         code: 'INTERNAL_ERROR'
       }),
       {
