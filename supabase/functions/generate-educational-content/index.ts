@@ -136,6 +136,7 @@ Inclus:
           { role: 'user', content: userPrompt }
         ],
         temperature: 0.7,
+        max_tokens: 2000,
       }),
     });
 
