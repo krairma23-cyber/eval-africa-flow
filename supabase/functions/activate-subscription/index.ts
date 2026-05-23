@@ -114,7 +114,10 @@ serve(async (req) => {
       if (!paymentData.status || paymentData.data?.status !== 'success') {
         console.error('Payment not verified:', paymentData);
         return new Response(
-          JSON.stringify({ error: 'Payment not verified', details: paymentData }),
+          JSON.stringify({
+            error: 'Payment not verified',
+            message: paymentData?.data?.gateway_response || 'Verification failed'
+          }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
@@ -122,18 +125,14 @@ serve(async (req) => {
       // CRITICAL: Verify amount matches plan price (Paystack returns amount in centimes/kobo)
       const expectedAmountInKobo = expectedAmount * 100; // Convert XOF to centimes (100 centimes = 1 XOF)
       if (paymentData.data.amount !== expectedAmountInKobo) {
-        console.error('Amount mismatch:', { 
-          paidAmountKobo: paymentData.data.amount, 
+        console.error('Amount mismatch:', {
+          paidAmountKobo: paymentData.data.amount,
           expectedAmountKobo: expectedAmountInKobo,
           paidAmount: paymentData.data.amount / 100,
-          expectedAmount 
+          expectedAmount
         });
         return new Response(
-          JSON.stringify({ 
-            error: 'Amount mismatch', 
-            expected: expectedAmount, 
-            received: paymentData.data.amount / 100
-          }),
+          JSON.stringify({ error: 'Amount mismatch' }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
