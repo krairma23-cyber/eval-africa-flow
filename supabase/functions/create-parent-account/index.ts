@@ -20,11 +20,9 @@ interface CreateParentRequest {
 
 function generatePassword(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
-  let password = "";
-  for (let i = 0; i < 10; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return password;
+  const array = new Uint32Array(10);
+  crypto.getRandomValues(array);
+  return Array.from(array, (v) => chars[v % chars.length]).join("");
 }
 
 const handler = async (req: Request): Promise<Response> => {
