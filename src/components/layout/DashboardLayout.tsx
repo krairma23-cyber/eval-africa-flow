@@ -134,36 +134,36 @@ export default function DashboardLayout() {
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         
-        <div className="flex-1 flex flex-col">
-          <header className="h-14 border-b bg-background flex items-center justify-between px-4">
-            <div className="flex items-center gap-2">
+        <div className="flex-1 flex flex-col min-w-0">
+          <header className="h-14 border-b bg-background flex items-center justify-between px-2 sm:px-4 gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <SidebarTrigger />
               <img 
                 src="/evalscol-logo.png" 
                 alt="EvalScol Logo" 
-                className="h-10 w-10 object-contain"
+                className="h-8 w-8 sm:h-10 sm:w-10 object-contain flex-shrink-0"
               />
-              <h1 className="font-semibold text-lg">EvalScol</h1>
+              <h1 className="font-semibold text-base sm:text-lg truncate">EvalScol</h1>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0">
               <ThemeToggle />
-              <div className="flex items-center gap-2 text-sm">
-                <UserIcon className="h-4 w-4" />
-                <span>{user.email}</span>
+              <div className="hidden md:flex items-center gap-2 text-sm min-w-0">
+                <UserIcon className="h-4 w-4 flex-shrink-0" />
+                <span className="truncate max-w-[180px]">{user.email}</span>
               </div>
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={handleSignOut}
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground flex-shrink-0"
               >
                 <LogOut className="h-4 w-4" />
               </Button>
             </div>
           </header>
           
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-x-hidden">
             <Outlet />
           </main>
         </div>
