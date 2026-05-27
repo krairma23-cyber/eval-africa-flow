@@ -12,6 +12,8 @@ import { Separator } from "@/components/ui/separator";
 import { AddSubjectDialog } from "@/components/forms/AddSubjectDialog";
 import { EditSubjectDialog } from "@/components/forms/EditSubjectDialog";
 import { logError } from "@/lib/logger";
+import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
+import subjectsDecor from "@/assets/decor-subjects.jpg";
 
 // Subject colors for visual differentiation
 const subjectColors = [
@@ -175,23 +177,22 @@ export default function Subjects() {
 
   return (
     <div className="space-y-4 w-full overflow-x-hidden">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <div className="min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
-            <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />
-            <span className="truncate">Matières</span>
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Gestion des matières enseignées
-          </p>
-        </div>
-        <AddSubjectDialog onSubjectAdded={fetchSubjects}>
-          <Button className="w-full sm:w-auto flex-shrink-0">
-            <Plus className="h-4 w-4 mr-2" />
-            Ajouter une matière
-          </Button>
-        </AddSubjectDialog>
-      </div>
+      <PageHeroBanner
+        image={subjectsDecor}
+        alt="Illustration pile de livres par matière"
+        icon={<BookOpen className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />}
+        title="Matières"
+        subtitle="Gestion des matières enseignées"
+        action={
+          <AddSubjectDialog onSubjectAdded={fetchSubjects}>
+            <Button className="w-full sm:w-auto flex-shrink-0">
+              <Plus className="h-4 w-4 mr-2" />
+              Ajouter une matière
+            </Button>
+          </AddSubjectDialog>
+        }
+      />
+
 
       <div className="flex flex-col gap-3 w-full">
         <div className="flex items-center space-x-2 w-full">
