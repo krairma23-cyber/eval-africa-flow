@@ -429,17 +429,22 @@ export default function Students() {
                     <strong>Téléphone:</strong> {student.parent_phone}
                   </p>
                 )}
-                {student.enrollments && student.enrollments.length > 0 && (
-                  <div className="pt-1 flex items-center gap-2">
-                    <div 
-                      className="w-3 h-3 rounded-full flex-shrink-0" 
-                      style={{ backgroundColor: student.enrollments[0].classrooms.color }}
-                    />
-                    <Badge variant="secondary" className="text-xs">
-                      {student.enrollments[0].classrooms.name} - {student.enrollments[0].classrooms.grade_levels.name}
-                    </Badge>
-                  </div>
-                )}
+                {(() => {
+                  const enr = getEnrollment(student);
+                  const c = enr?.classrooms;
+                  if (!c) return null;
+                  return (
+                    <div className="pt-1 flex items-center gap-2">
+                      <div
+                        className="w-3 h-3 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: c.color ?? "#888" }}
+                      />
+                      <Badge variant="secondary" className="text-xs">
+                        {c.name}{c.grade_levels?.name ? ` - ${c.grade_levels.name}` : ""}
+                      </Badge>
+                    </div>
+                  );
+                })()}
                 <p className="text-xs text-muted-foreground pt-1">
                   Inscrit le {formatDate(student.created_at)}
                 </p>
