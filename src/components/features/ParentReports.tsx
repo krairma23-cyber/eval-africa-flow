@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { FileText, TrendingUp, Bell, Shield, Smartphone, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import parentsImg from "@/assets/feature-parents.jpg";
 export const ParentReports = () => {
   const navigate = useNavigate();
   const features = [{
@@ -58,8 +59,20 @@ export const ParentReports = () => {
             </Card>)}
         </div>
 
-        <Card className="p-8 bg-card border-primary/20">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <Card className="overflow-hidden bg-card border-primary/20">
+          <div className="grid md:grid-cols-2 gap-0">
+            <div className="relative h-64 md:h-auto min-h-[280px]">
+              <img
+                src={parentsImg}
+                alt="Parent et enfant consultant le portail parent"
+                width={1280}
+                height={896}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 via-transparent to-accent/20" />
+            </div>
+            <div className="p-8 flex flex-col justify-center">
             <div className="flex-1">
               <h3 className="text-2xl font-bold mb-3 text-foreground">
                 Interface Parent Intuitive
@@ -104,6 +117,7 @@ export const ParentReports = () => {
               >
                 Guide Parents
               </Button>
+            </div>
             </div>
           </div>
         </Card>
