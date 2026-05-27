@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { FileText, TrendingUp, Bell, Shield, Smartphone, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import parentsImg from "@/assets/feature-parents.jpg";
 export const ParentReports = () => {
   const navigate = useNavigate();
   const features = [{
