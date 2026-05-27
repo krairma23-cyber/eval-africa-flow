@@ -1,20 +1,33 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClipboardCheck, TrendingUp, BarChart3, FileCheck, PieChart, Target } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import evaluationsImg from "@/assets/feature-evaluations.jpg";
 
 export function EvaluationFeatures() {
   const { t } = useLanguage();
   
   return (
     <div className="mt-16 lg:mt-24">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-          {t('eval.title')}
-        </h2>
-        <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-          {t('eval.subtitle')}
-        </p>
+      <div className="relative max-w-7xl mx-auto mb-12 rounded-3xl overflow-hidden shadow-2xl">
+        <img
+          src={evaluationsImg}
+          alt="Évaluations et suivi pédagogique"
+          width={1280}
+          height={896}
+          loading="lazy"
+          className="w-full h-56 sm:h-72 lg:h-80 object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
+        <div className="absolute inset-0 flex flex-col items-center justify-end text-center p-6 lg:p-10">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            {t('eval.title')}
+          </h2>
+          <p className="text-base lg:text-lg text-muted-foreground max-w-3xl">
+            {t('eval.subtitle')}
+          </p>
+        </div>
       </div>
+
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
         <Card className="border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg">
