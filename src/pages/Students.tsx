@@ -113,56 +113,56 @@ export default function Students() {
     }
   };
 
+  // Helper: get first valid enrollment (with non-null classroom)
+  const getEnrollment = (s: Student) =>
+    s.enrollments?.find((e) => e?.classrooms) ?? null;
+
   // Get unique classrooms and grade levels for filters
   const uniqueClassrooms = Array.from(
     new Set(
       students
-        .filter(s => s.enrollments && s.enrollments.length > 0)
-        .map(s => s.enrollments[0].classrooms.name)
+        .map((s) => getEnrollment(s)?.classrooms?.name)
+        .filter((n): n is string => !!n)
     )
   ).sort();
 
   const uniqueGradeLevels = Array.from(
     new Set(
       students
-        .filter(s => s.enrollments && s.enrollments.length > 0)
-        .map(s => s.enrollments[0].classrooms.grade_levels.name)
+        .map((s) => getEnrollment(s)?.classrooms?.grade_levels?.name)
+        .filter((n): n is string => !!n)
     )
   ).sort();
 
   const filteredStudents = students
     .filter((student) => {
-      // Search filter
-      const matchesSearch = 
+      const enr = getEnrollment(student);
+      const classroom = enr?.classrooms;
+
+      const matchesSearch =
         student.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         student.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         student.student_number.toLowerCase().includes(searchTerm.toLowerCase());
-      
-      // Classroom filter
-      const matchesClassroom = selectedClassroom === "all" || 
-        (student.enrollments && student.enrollments.length > 0 && 
-         student.enrollments[0].classrooms.name === selectedClassroom);
-      
-      // Grade level filter
-      const matchesGradeLevel = selectedGradeLevel === "all" ||
-        (student.enrollments && student.enrollments.length > 0 &&
-         student.enrollments[0].classrooms.grade_levels.name === selectedGradeLevel);
-      
-      // Payment status filter
-      const matchesPaymentStatus = selectedPaymentStatus === "all" ||
+
+      const matchesClassroom =
+        selectedClassroom === "all" || classroom?.name === selectedClassroom;
+
+      const matchesGradeLevel =
+        selectedGradeLevel === "all" ||
+        classroom?.grade_levels?.name === selectedGradeLevel;
+
+      const matchesPaymentStatus =
+        selectedPaymentStatus === "all" ||
         student.payment_status === selectedPaymentStatus;
-      
+
       return matchesSearch && matchesClassroom && matchesGradeLevel && matchesPaymentStatus;
     })
     .sort((a, b) => {
-      // Students without enrollment go last
-      if (!a.enrollments || a.enrollments.length === 0) return 1;
-      if (!b.enrollments || b.enrollments.length === 0) return -1;
-      
-      // Sort by classroom name
-      const classA = a.enrollments[0].classrooms.name;
-      const classB = b.enrollments[0].classrooms.name;
-      return classA.localeCompare(classB);
+      const ea = getEnrollment(a);
+      const eb = getEnrollment(b);
+      if (!ea) return 1;
+      if (!eb) return -1;
+      return (ea.classrooms?.name ?? "").localeCompare(eb.classrooms?.name ?? "");
     });
 
   // Pagination calculations
@@ -179,12 +179,14 @@ export default function Students() {
 
   // Group students by classroom
   const studentsByClassroom = paginatedStudents.reduce((acc, student) => {
-    if (student.enrollments && student.enrollments.length > 0) {
-      const classroomName = student.enrollments[0].classrooms.name;
+    const enr = getEnrollment(student);
+    const classroom = enr?.classrooms;
+    if (classroom?.name) {
+      const classroomName = classroom.name;
       if (!acc[classroomName]) {
         acc[classroomName] = {
-          color: student.enrollments[0].classrooms.color,
-          gradeLevel: student.enrollments[0].classrooms.grade_levels.name,
+          color: classroom.color ?? "#888",
+          gradeLevel: classroom.grade_levels?.name ?? "",
           students: []
         };
       }
@@ -192,7 +194,7 @@ export default function Students() {
     } else {
       if (!acc['Sans classe']) {
         acc['Sans classe'] = {
-          color: '#gray',
+          color: '#888',
           gradeLevel: '',
           students: []
         };
@@ -427,17 +429,22 @@ export default function Students() {
                     <strong>Téléphone:</strong> {student.parent_phone}
                   </p>
                 )}
-                {student.enrollments && student.enrollments.length > 0 && (
-                  <div className="pt-1 flex items-center gap-2">
-                    <div 
-                      className="w-3 h-3 rounded-full flex-shrink-0" 
-                      style={{ backgroundColor: student.enrollments[0].classrooms.color }}
-                    />
-                    <Badge variant="secondary" className="text-xs">
-                      {student.enrollments[0].classrooms.name} - {student.enrollments[0].classrooms.grade_levels.name}
-                    </Badge>
-                  </div>
-                )}
+                {(() => {
+                  const enr = getEnrollment(student);
+                  const c = enr?.classrooms;
+                  if (!c) return null;
+                  return (
+                    <div className="pt-1 flex items-center gap-2">
+                      <div
+                        className="w-3 h-3 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: c.color ?? "#888" }}
+                      />
+                      <Badge variant="secondary" className="text-xs">
+                        {c.name}{c.grade_levels?.name ? ` - ${c.grade_levels.name}` : ""}
+                      </Badge>
+                    </div>
+                  );
+                })()}
                 <p className="text-xs text-muted-foreground pt-1">
                   Inscrit le {formatDate(student.created_at)}
                 </p>
