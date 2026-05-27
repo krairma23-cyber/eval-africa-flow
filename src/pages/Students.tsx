@@ -18,6 +18,8 @@ import { ManagePaymentDialog } from "@/components/forms/ManagePaymentDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
+import studentsDecor from "@/assets/decor-students.jpg";
 
 interface Student {
   id: string;
@@ -240,23 +242,22 @@ export default function Students() {
 
   return (
     <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <div className="min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
-            <Users className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />
-            <span className="truncate">{t('students.title')}</span>
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            {t('students.subtitle')}
-          </p>
-        </div>
-        <AddStudentDialog onStudentAdded={fetchStudents}>
-          <Button className="w-full sm:w-auto text-sm">
-            <Plus className="h-4 w-4 mr-2" />
-            {t('students.add')}
-          </Button>
-        </AddStudentDialog>
-      </div>
+      <PageHeroBanner
+        image={studentsDecor}
+        alt="Illustration élèves et livres"
+        icon={<Users className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />}
+        title={t('students.title')}
+        subtitle={t('students.subtitle')}
+        action={
+          <AddStudentDialog onStudentAdded={fetchStudents}>
+            <Button className="w-full sm:w-auto text-sm">
+              <Plus className="h-4 w-4 mr-2" />
+              {t('students.add')}
+            </Button>
+          </AddStudentDialog>
+        }
+      />
+
 
       <div className="space-y-4">
         <div className="flex items-center space-x-2">

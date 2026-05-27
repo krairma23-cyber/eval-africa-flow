@@ -13,6 +13,8 @@ import { EnterGradesDialog } from "@/components/forms/EnterGradesDialog";
 import { logError } from "@/lib/logger";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
+import assessmentsDecor from "@/assets/decor-assessments.jpg";
 
 interface Assessment {
   id: string;
@@ -155,23 +157,22 @@ export default function Assessments() {
 
   return (
     <div className="space-y-4 w-full overflow-x-hidden">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <div className="min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-2">
-            <ClipboardCheck className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />
-            <span className="truncate">Évaluations</span>
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Gérez les évaluations et contrôles de vos classes
-          </p>
-        </div>
-        <AddAssessmentDialog onAssessmentAdded={fetchAssessments}>
-          <Button className="w-full sm:w-auto flex-shrink-0">
-            <Plus className="h-4 w-4 mr-2" />
-            Créer une évaluation
-          </Button>
-        </AddAssessmentDialog>
-      </div>
+      <PageHeroBanner
+        image={assessmentsDecor}
+        alt="Illustration crayon coloré et évaluations"
+        icon={<ClipboardCheck className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />}
+        title="Évaluations"
+        subtitle="Gérez les évaluations et contrôles de vos classes"
+        action={
+          <AddAssessmentDialog onAssessmentAdded={fetchAssessments}>
+            <Button className="w-full sm:w-auto flex-shrink-0">
+              <Plus className="h-4 w-4 mr-2" />
+              Créer une évaluation
+            </Button>
+          </AddAssessmentDialog>
+        }
+      />
+
 
       <div className="flex flex-col gap-3 w-full">
         <div className="relative w-full">
