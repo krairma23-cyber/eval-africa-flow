@@ -118,6 +118,7 @@ export const ParentReports = () => {
                 Guide Parents
               </Button>
             </div>
+            </div>
           </div>
         </Card>
       </div>
