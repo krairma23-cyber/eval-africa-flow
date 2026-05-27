@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Globe, Clock, MessageCircle, Headphones } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import schoolImg from "@/assets/feature-school.jpg";
 
 export const LocalSupport = () => {
   const { t } = useLanguage();
