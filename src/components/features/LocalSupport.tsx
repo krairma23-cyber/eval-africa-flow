@@ -35,14 +35,26 @@ export const LocalSupport = () => {
 
   return (
     <section className="py-12 lg:py-16 border-t border-border/50">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-          {t('support.local.title')}
-        </h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          {t('support.local.subtitle')}
-        </p>
+      <div className="relative max-w-7xl mx-auto mb-12 rounded-3xl overflow-hidden shadow-xl">
+        <img
+          src={schoolImg}
+          alt="Établissement scolaire africain"
+          width={1280}
+          height={896}
+          loading="lazy"
+          className="w-full h-48 sm:h-64 lg:h-72 object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/10" />
+        <div className="absolute inset-0 flex flex-col items-center justify-end text-center p-6 lg:p-10">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-3 text-foreground">
+            {t('support.local.title')}
+          </h2>
+          <p className="text-base lg:text-lg text-muted-foreground max-w-2xl">
+            {t('support.local.subtitle')}
+          </p>
+        </div>
       </div>
+
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
         {supportFeatures.map((feature, index) => {
