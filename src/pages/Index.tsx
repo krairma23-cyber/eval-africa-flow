@@ -21,9 +21,9 @@ const Index = () => {
   
   return (
     <div
-      className="min-h-screen relative bg-gradient-to-br from-background via-primary/5 to-accent/10"
+      className="min-h-screen relative bg-background"
       style={{
-        backgroundImage: `linear-gradient(to bottom, hsl(var(--background) / 0.55), hsl(var(--background) / 0.7)), url(${heroBg})`,
+        backgroundImage: `linear-gradient(to bottom, hsl(var(--background) / 0.35), hsl(var(--background) / 0.55)), url(${heroBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
