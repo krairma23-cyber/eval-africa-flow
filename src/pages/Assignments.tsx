@@ -187,10 +187,10 @@ const Assignments = () => {
                     {teacherAssignments.map((assignment) => (
                       <TableRow key={assignment.id}>
                         <TableCell>
-                          {assignment.teacher.first_name} {assignment.teacher.last_name}
+                          {assignment.teacher ? `${assignment.teacher.first_name} ${assignment.teacher.last_name}` : "—"}
                         </TableCell>
-                        <TableCell>{assignment.classroom.name}</TableCell>
-                        <TableCell>{assignment.subject.name}</TableCell>
+                        <TableCell>{assignment.classroom?.name ?? "—"}</TableCell>
+                        <TableCell>{assignment.subject?.name ?? "—"}</TableCell>
                         <TableCell>{assignment.coefficient}</TableCell>
                         <TableCell className="text-right">
                           <Button
