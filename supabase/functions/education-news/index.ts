@@ -85,7 +85,7 @@ Deno.serve(async (req) => {
     });
   } catch (e) {
     console.error('education-news error', e);
-    return new Response(JSON.stringify({ items: [], error: String(e) }), {
+    return new Response(JSON.stringify({ items: [] }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

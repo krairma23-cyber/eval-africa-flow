@@ -174,7 +174,7 @@ serve(async (req) => {
     if (subscriptionError) {
       console.error('Subscription activation error:', subscriptionError);
       return new Response(
-        JSON.stringify({ error: 'Failed to activate subscription', details: subscriptionError }),
+        JSON.stringify({ error: 'Failed to activate subscription' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }

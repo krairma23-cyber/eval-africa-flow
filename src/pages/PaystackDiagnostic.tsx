@@ -55,6 +55,24 @@ export default function PaystackDiagnostic() {
         setTesting(false);
         return;
       }
+
+      // Admin-only guard: prevent non-admin users from triggering real payments
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+      if (!roleData) {
+        addResult({
+          step: '1. Authentification',
+          status: 'error',
+          message: 'Accès refusé : seuls les administrateurs peuvent lancer ce diagnostic.',
+        });
+        toast.error('Accès administrateur requis');
+        setTesting(false);
+        return;
+      }
       
       addResult({ 
         step: '1. Authentification', 
