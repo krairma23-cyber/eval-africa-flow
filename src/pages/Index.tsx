@@ -13,14 +13,24 @@ import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { EducationNewsBanner } from "@/components/news/EducationNewsBanner";
+import heroBg from "@/assets/hero-classroom-bg.jpg";
 
 const Index = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
-      <div className="container mx-auto px-4 py-8 lg:py-16">
+    <div
+      className="min-h-screen relative bg-gradient-to-br from-background via-primary/5 to-accent/10"
+      style={{
+        backgroundImage: `linear-gradient(to bottom, hsl(var(--background) / 0.92), hsl(var(--background) / 0.96)), url(${heroBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
+      <div className="container mx-auto px-4 py-8 lg:py-16 relative">
         {/* Language Switcher */}
         <div className="flex justify-end mb-4 gap-2">
           <ThemeToggle />
