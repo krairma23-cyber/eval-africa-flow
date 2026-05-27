@@ -15,6 +15,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import dashboardDecor from "@/assets/decor-dashboard.jpg";
 
 
 interface DashboardStats {
@@ -127,12 +128,18 @@ export default function Dashboard() {
         className="relative"
       >
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg blur-3xl" />
-        <div className="relative p-4 sm:p-6 rounded-lg border border-primary/20 bg-card/50 backdrop-blur-sm">
-          <div className="flex items-center gap-3 sm:gap-4">
+        <div className="relative overflow-hidden p-4 sm:p-6 rounded-lg border border-primary/20 bg-card/50 backdrop-blur-sm">
+          <div
+            className="absolute inset-y-0 right-0 w-1/2 sm:w-1/3 bg-no-repeat bg-right bg-contain opacity-80 pointer-events-none"
+            style={{ backgroundImage: `url(${dashboardDecor})` }}
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-card via-card/85 to-transparent sm:via-card/60" />
+          <div className="relative flex items-center gap-3 sm:gap-4">
             <div className="p-2 sm:p-3 rounded-full bg-gradient-to-r from-primary to-accent flex-shrink-0">
               <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 max-w-[60%]">
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent truncate">
                 {t('dashboard.title')}
               </h1>
@@ -143,6 +150,7 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+
       </motion.div>
 
       <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
