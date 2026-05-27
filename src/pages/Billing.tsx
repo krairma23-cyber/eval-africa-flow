@@ -349,11 +349,11 @@ export default function Billing() {
 
   const processUpgrade = async (planId: string, phoneNumber: string | null) => {
     try {
-      console.log('🔄 Processing upgrade for plan:', planId);
+      if (import.meta.env.DEV) console.log('🔄 Processing upgrade for plan:', planId);
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user?.email) {
-        console.error('❌ No user email found');
+        if (import.meta.env.DEV) console.error('❌ No user email found');
         toast({
           title: "Erreur",
           description: "Vous devez être connecté",
@@ -362,22 +362,22 @@ export default function Billing() {
         return;
       }
 
-      console.log('✅ User found:', user.email);
+      if (import.meta.env.DEV) console.log('✅ User found:', user.email);
 
       const selectedPlan = plans.find(p => p.id === planId);
       if (!selectedPlan) {
-        console.error('❌ Plan not found:', planId);
+        if (import.meta.env.DEV) console.error('❌ Plan not found:', planId);
         throw new Error('Plan not found');
       }
 
-      console.log('✅ Selected plan:', selectedPlan.name);
+      if (import.meta.env.DEV) console.log('✅ Selected plan:', selectedPlan.name);
 
       const amount = isYearly ? selectedPlan.price_yearly : selectedPlan.price_monthly;
-      console.log('💰 Payment amount:', amount, 'FCFA');
+      if (import.meta.env.DEV) console.log('💰 Payment amount:', amount, 'FCFA');
 
       // Handle free plan (Starter)
       if (amount === 0) {
-        console.log('🆓 Activating free plan');
+        if (import.meta.env.DEV) console.log('🆓 Activating free plan');
         toast({
           title: "Activation du plan gratuit",
           description: "Activation en cours...",
@@ -393,7 +393,7 @@ export default function Billing() {
         });
 
         if (activateError || !activateData?.success) {
-          console.error('❌ Subscription activation failed:', activateError);
+          if (import.meta.env.DEV) console.error('❌ Subscription activation failed:', activateError);
           await logError('Subscription activation failed', activateError || new Error('Activation data invalid'), {
             component: 'Billing',
             action: 'ACTIVATE_SUBSCRIPTION'
@@ -401,7 +401,7 @@ export default function Billing() {
           throw new Error('Failed to activate subscription');
         }
 
-        console.log('✅ Free plan activated successfully');
+        if (import.meta.env.DEV) console.log('✅ Free plan activated successfully');
         setCurrentPlan(selectedPlan);
         
         toast({
@@ -454,7 +454,7 @@ export default function Billing() {
         throw new Error('No authorization URL received from payment gateway');
       }
     } catch (error) {
-      console.error('❌ Payment process failed:', error);
+      if (import.meta.env.DEV) console.error('❌ Payment process failed:', error);
       await logError('Failed to upgrade plan', error, {
         component: 'Billing',
         action: 'UPGRADE_PLAN',
@@ -462,7 +462,7 @@ export default function Billing() {
       });
       
       const errorMessage = error instanceof Error ? error.message : 'Erreur inconnue';
-      console.error('💥 Error details:', errorMessage);
+      if (import.meta.env.DEV) console.error('💥 Error details:', errorMessage);
       
       toast({
         title: "Erreur de paiement",
@@ -990,14 +990,14 @@ export default function Billing() {
         open={phoneDialogOpen}
         onOpenChange={setPhoneDialogOpen}
         onConfirm={(phone) => {
-          console.log('📱 Phone confirmed:', phone);
+          if (import.meta.env.DEV) console.log('📱 Phone confirmed:', phone);
           setPhoneDialogOpen(false);
           if (pendingPlanId) {
-            console.log('⏳ Processing payment with phone number...');
+            if (import.meta.env.DEV) console.log('⏳ Processing payment with phone number...');
             processUpgrade(pendingPlanId, phone);
             setPendingPlanId(null);
           } else {
-            console.error('❌ No pending plan ID found');
+            if (import.meta.env.DEV) console.error('❌ No pending plan ID found');
           }
         }}
         planName={plans.find(p => p.id === pendingPlanId)?.name || ""}
