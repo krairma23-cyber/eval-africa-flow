@@ -17,17 +17,17 @@ interface PageHeroBannerProps {
 export function PageHeroBanner({ image, alt, title, subtitle, icon, action }: PageHeroBannerProps) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 via-accent/5 to-background shadow-sm">
-      {/* Decorative image - hidden on small screens to avoid overlapping the action button */}
+      {/* Decorative image - only shown on very wide screens, tucked to the far right corner so it never overlaps the action button */}
       <div
-        className="absolute inset-y-0 right-0 w-1/3 bg-no-repeat bg-right bg-contain opacity-90 pointer-events-none hidden lg:block"
+        className="absolute inset-y-0 right-0 w-1/4 bg-no-repeat bg-right bg-contain opacity-80 pointer-events-none hidden xl:block"
         style={{ backgroundImage: `url(${image})` }}
         aria-hidden="true"
       />
       {/* Fade overlay for readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/60 lg:to-transparent lg:via-background/70" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/80 xl:to-transparent xl:via-background/80" />
 
-      <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-6">
-        <div className="min-w-0 flex-1 lg:max-w-[60%]">
+      <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-6 xl:pr-[28%]">
+        <div className="min-w-0 flex-1">
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
             {icon}
             <span className="truncate">{title}</span>
