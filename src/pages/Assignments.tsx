@@ -187,10 +187,10 @@ const Assignments = () => {
                     {teacherAssignments.map((assignment) => (
                       <TableRow key={assignment.id}>
                         <TableCell>
-                          {assignment.teacher.first_name} {assignment.teacher.last_name}
+                          {assignment.teacher ? `${assignment.teacher.first_name} ${assignment.teacher.last_name}` : "—"}
                         </TableCell>
-                        <TableCell>{assignment.classroom.name}</TableCell>
-                        <TableCell>{assignment.subject.name}</TableCell>
+                        <TableCell>{assignment.classroom?.name ?? "—"}</TableCell>
+                        <TableCell>{assignment.subject?.name ?? "—"}</TableCell>
                         <TableCell>{assignment.coefficient}</TableCell>
                         <TableCell className="text-right">
                           <Button
@@ -252,11 +252,11 @@ const Assignments = () => {
                     {studentEnrollments.map((enrollment) => (
                       <TableRow key={enrollment.id}>
                         <TableCell>
-                          {enrollment.student.first_name} {enrollment.student.last_name}
+                          {enrollment.student ? `${enrollment.student.first_name} ${enrollment.student.last_name}` : "—"}
                         </TableCell>
-                        <TableCell>{enrollment.student.student_number}</TableCell>
-                        <TableCell>{enrollment.classroom.name}</TableCell>
-                        <TableCell>{enrollment.academic_year.name}</TableCell>
+                        <TableCell>{enrollment.student?.student_number ?? "—"}</TableCell>
+                        <TableCell>{enrollment.classroom?.name ?? "—"}</TableCell>
+                        <TableCell>{enrollment.academic_year?.name ?? "—"}</TableCell>
                         <TableCell>{formatDate(enrollment.enrollment_date)}</TableCell>
                         <TableCell>
                           <Badge variant={enrollment.status === "active" ? "default" : "secondary"}>
