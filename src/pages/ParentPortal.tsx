@@ -585,6 +585,11 @@ export default function ParentPortal() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
+      <Seo
+        title="Portail Parent | EvalScol Africa"
+        description="Accédez aux notes, bulletins, emploi du temps et paiements de scolarité de vos enfants depuis le portail parent EvalScol Africa."
+        path="/parent-portal"
+      />
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="flex items-center justify-between mb-8">
