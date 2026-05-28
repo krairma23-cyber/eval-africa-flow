@@ -189,6 +189,11 @@ export default function ParentGuide() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
+      <Seo
+        title="Guide Parent | EvalScol Africa"
+        description="Apprenez à utiliser le portail parent EvalScol Africa : consulter les notes, télécharger les bulletins et payer la scolarité."
+        path="/parent-guide"
+      />
       <div className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Header */}
         <header className="mb-12">
