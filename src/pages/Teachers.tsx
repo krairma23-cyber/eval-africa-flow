@@ -14,6 +14,8 @@ import { AssignTeacherDialog } from "@/components/forms/AssignTeacherDialog";
 import { TeacherClassesDialog } from "@/components/forms/TeacherClassesDialog";
 import { Pencil, BookOpen, UserPlus } from "lucide-react";
 import { logError } from "@/lib/logger";
+import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
+import heroTeachers from "@/assets/hero-teachers.jpg";
 
 // Fonction pour déterminer l'ordre des enseignants (Primaire avant Secondaire)
 const getTeacherLevelOrder = (specialization: string): number => {
@@ -156,23 +158,21 @@ export default function Teachers() {
 
   return (
     <div className="space-y-4 w-full overflow-x-hidden">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
-        <div className="min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
-            <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />
-            <span className="truncate">Enseignants</span>
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            Gestion du personnel enseignant
-          </p>
-        </div>
-        <AddTeacherDialog onTeacherAdded={fetchTeachers}>
-          <Button className="w-full sm:w-auto flex-shrink-0">
-            <Plus className="h-4 w-4 mr-2" />
-            Ajouter un enseignant
-          </Button>
-        </AddTeacherDialog>
-      </div>
+      <PageHeroBanner
+        image={heroTeachers}
+        alt="Équipe d'enseignants"
+        icon={<GraduationCap className="h-7 w-7 text-primary" />}
+        title="Enseignants"
+        subtitle="Gestion du personnel enseignant"
+        action={
+          <AddTeacherDialog onTeacherAdded={fetchTeachers}>
+            <Button className="w-full sm:w-auto flex-shrink-0">
+              <Plus className="h-4 w-4 mr-2" />
+              Ajouter un enseignant
+            </Button>
+          </AddTeacherDialog>
+        }
+      />
 
       <div className="flex items-center space-x-2 w-full">
         <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />

@@ -15,6 +15,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
+import heroSchedule from "@/assets/hero-schedule.jpg";
 
 interface Schedule {
   id: string;
@@ -148,31 +150,29 @@ export default function Schedule() {
   return (
     <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
       <div className="space-y-3 sm:space-y-4">
-        <div className="flex flex-col gap-3">
-          <div className="min-w-0">
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground flex items-center gap-2">
-              <Calendar className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />
-              <span className="truncate">Emploi du Temps</span>
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground">
-              Gestion des horaires de cours
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <TeacherAttendanceDialog>
-              <Button variant="outline" className="w-full sm:w-auto text-xs sm:text-sm">
-                <UserCheck className="h-4 w-4 mr-2 flex-shrink-0" />
-                <span className="truncate">Présence enseignants</span>
-              </Button>
-            </TeacherAttendanceDialog>
-            <AddScheduleDialog onScheduleAdded={fetchSchedules}>
-              <Button className="w-full sm:w-auto text-xs sm:text-sm">
-                <Plus className="h-4 w-4 mr-2 flex-shrink-0" />
-                <span className="truncate">Ajouter un créneau</span>
-              </Button>
-            </AddScheduleDialog>
-          </div>
-        </div>
+        <PageHeroBanner
+          image={heroSchedule}
+          alt="Emploi du temps"
+          icon={<Calendar className="h-7 w-7 text-primary" />}
+          title="Emploi du Temps"
+          subtitle="Gestion des horaires de cours"
+          action={
+            <div className="flex flex-col sm:flex-row gap-2">
+              <TeacherAttendanceDialog>
+                <Button variant="outline" className="w-full sm:w-auto text-xs sm:text-sm">
+                  <UserCheck className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <span className="truncate">Présence enseignants</span>
+                </Button>
+              </TeacherAttendanceDialog>
+              <AddScheduleDialog onScheduleAdded={fetchSchedules}>
+                <Button className="w-full sm:w-auto text-xs sm:text-sm">
+                  <Plus className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <span className="truncate">Ajouter un créneau</span>
+                </Button>
+              </AddScheduleDialog>
+            </div>
+          }
+        />
 
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <label className="text-xs sm:text-sm font-medium whitespace-nowrap">Filtrer par classe:</label>

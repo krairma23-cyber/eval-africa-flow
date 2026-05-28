@@ -14,6 +14,8 @@ import { ViewClassStudentsDialog } from "@/components/forms/ViewClassStudentsDia
 import { ViewClassRankingsDialog } from "@/components/forms/ViewClassRankingsDialog";
 import { logError } from "@/lib/logger";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
+import heroClassroom from "@/assets/hero-classroom.jpg";
 
 // Fonction pour obtenir l'ordre du niveau scolaire
 const getGradeLevelOrder = (gradeName: string): number => {
@@ -187,12 +189,13 @@ export default function Classrooms() {
 
   return (
     <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
-      <div className="min-w-0">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{t('classrooms.title')}</h1>
-        <p className="text-sm sm:text-base text-muted-foreground">
-          {t('classrooms.subtitle')}
-        </p>
-      </div>
+      <PageHeroBanner
+        image={heroClassroom}
+        alt="Salle de classe"
+        icon={<School className="h-7 w-7 text-primary" />}
+        title={t('classrooms.title')}
+        subtitle={t('classrooms.subtitle')}
+      />
 
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <div className="relative w-full sm:max-w-sm">
