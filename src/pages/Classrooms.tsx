@@ -14,6 +14,8 @@ import { ViewClassStudentsDialog } from "@/components/forms/ViewClassStudentsDia
 import { ViewClassRankingsDialog } from "@/components/forms/ViewClassRankingsDialog";
 import { logError } from "@/lib/logger";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
+import heroClassroom from "@/assets/hero-classroom.jpg";
 
 // Fonction pour obtenir l'ordre du niveau scolaire
 const getGradeLevelOrder = (gradeName: string): number => {

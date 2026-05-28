@@ -23,6 +23,8 @@ import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { logError } from "@/lib/logger";
 import { PaymentPhoneDialog } from "@/components/forms/PaymentPhoneDialog";
+import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
+import heroBilling from "@/assets/hero-billing.jpg";
 
 interface SubscriptionPlan {
   id: string;
@@ -489,35 +491,36 @@ export default function Billing() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Facturation & Abonnements</h1>
-          <p className="text-muted-foreground">
-            Gérez votre plan d'abonnement et suivez votre utilisation
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button 
-            variant="outline"
-            onClick={() => navigate('/dashboard/paystack-diagnostic')}
-          >
-            <AlertCircle className="h-4 w-4 mr-2" />
-            Diagnostic Paystack
-          </Button>
-          <Button 
-            variant="outline"
-            onClick={() => {
-              toast({
-                title: "Téléchargement en cours",
-                description: "L'archive de vos factures sera bientôt disponible",
-              });
-            }}
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Télécharger factures
-          </Button>
-        </div>
-      </div>
+      <PageHeroBanner
+        image={heroBilling}
+        alt="Facturation"
+        icon={<CreditCard className="h-7 w-7 text-primary" />}
+        title="Facturation & Abonnements"
+        subtitle="Gérez votre plan d'abonnement et suivez votre utilisation"
+        action={
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/dashboard/paystack-diagnostic')}
+            >
+              <AlertCircle className="h-4 w-4 mr-2" />
+              Diagnostic Paystack
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                toast({
+                  title: "Téléchargement en cours",
+                  description: "L'archive de vos factures sera bientôt disponible",
+                });
+              }}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Télécharger factures
+            </Button>
+          </div>
+        }
+      />
 
       <Tabs defaultValue="overview" className="space-y-6">
         <TabsList>
