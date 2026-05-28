@@ -182,6 +182,7 @@ const Index = () => {
         <LocalSupport />
       </div>
     </div>
+    </>
   );
 };
 export default Index;
