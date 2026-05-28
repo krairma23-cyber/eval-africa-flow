@@ -162,6 +162,13 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
+      <Seo
+        title="Tarifs EvalScol Africa | Plans gestion scolaire"
+        description="Découvrez les tarifs EvalScol Africa : essai gratuit, plan Essentiel à 29 990 FCFA et Pro IA à 59 990 FCFA. Sans engagement."
+        path="/pricing"
+        jsonLd={productJsonLd}
+      />
+
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         <header className="mb-12">
           <div className="flex justify-between items-center mb-6">
