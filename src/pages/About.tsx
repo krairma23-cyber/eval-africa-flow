@@ -21,6 +21,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import Seo from "@/components/Seo";
 
 export default function About() {
   const navigate = useNavigate();
