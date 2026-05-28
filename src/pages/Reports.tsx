@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { calculateRankings } from "@/lib/ranking-utils";
 import { Search, FileText, Download, TrendingUp, TrendingDown, Trophy } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
+import heroReports from "@/assets/hero-reports.jpg";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
@@ -377,12 +379,13 @@ export default function Reports() {
 
   return (
     <div className="space-y-4 sm:space-y-6 w-full overflow-x-hidden">
-      <div className="min-w-0">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Bulletins et Moyennes</h1>
-        <p className="text-sm sm:text-base text-muted-foreground">
-          Consultez les moyennes et bulletins scolaires
-        </p>
-      </div>
+      <PageHeroBanner
+        image={heroReports}
+        alt="Aperçu d'un bulletin scolaire"
+        icon={<FileText className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0" />}
+        title="Bulletins et Moyennes"
+        subtitle="Consultez les moyennes et bulletins scolaires"
+      />
 
       <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <div className="relative">
