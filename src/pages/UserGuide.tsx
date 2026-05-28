@@ -10,6 +10,7 @@ import {
   LogIn, UserPlus, Eye, Printer, Brain, Globe, Lock
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Seo from "@/components/Seo";
 
 interface GuideSection {
   id: string;
