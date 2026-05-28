@@ -307,6 +307,11 @@ export default function UserGuide() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
+      <Seo
+        title="Guide Utilisateur | EvalScol Africa"
+        description="Guide complet d'utilisation de la plateforme EvalScol Africa : gestion des élèves, notes, bulletins, paiements et plus."
+        path="/guide"
+      />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <header className="mb-10">
