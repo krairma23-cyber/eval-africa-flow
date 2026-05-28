@@ -2384,6 +2384,45 @@ export type Database = {
           },
         ]
       }
+      pme_sensitive_identity: {
+        Row: {
+          created_at: string
+          id: string
+          id_card_number: string | null
+          pme_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          id_card_number?: string | null
+          pme_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          id_card_number?: string | null
+          pme_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pme_sensitive_identity_pme_id_fkey"
+            columns: ["pme_id"]
+            isOneToOne: true
+            referencedRelation: "pmes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pme_sensitive_identity_pme_id_fkey"
+            columns: ["pme_id"]
+            isOneToOne: true
+            referencedRelation: "pmes_public_view"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pme_services: {
         Row: {
           base_price: number | null
@@ -2448,7 +2487,6 @@ export type Database = {
           created_at: string | null
           description: string | null
           id: string
-          id_card_number: string | null
           id_card_verified: boolean | null
           is_active: boolean | null
           is_verified: boolean | null
@@ -2478,7 +2516,6 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
-          id_card_number?: string | null
           id_card_verified?: boolean | null
           is_active?: boolean | null
           is_verified?: boolean | null
@@ -2508,7 +2545,6 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
-          id_card_number?: string | null
           id_card_verified?: boolean | null
           is_active?: boolean | null
           is_verified?: boolean | null
