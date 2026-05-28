@@ -16,6 +16,7 @@ import { StudentSchedule } from "@/components/parent/StudentSchedule";
 import { StudentPerformanceCharts } from "@/components/parent/StudentPerformanceCharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Seo from "@/components/Seo";
+import parentPortalBg from "@/assets/parent-portal-bg.jpg";
 
 interface SubjectGrade {
   subject_name: string;
@@ -525,7 +526,10 @@ export default function ParentPortal() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10 flex items-center justify-center p-4">
+      <div
+        className="min-h-screen flex items-center justify-center p-4 relative bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `linear-gradient(to bottom right, hsl(var(--background)/0.85), hsl(var(--primary)/0.15), hsl(var(--accent)/0.2)), url(${parentPortalBg})` }}
+      >
         <Card className="w-full max-w-md p-8">
           <div className="text-center mb-8">
             <img 
@@ -584,7 +588,10 @@ export default function ParentPortal() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
+    <div
+      className="min-h-screen bg-fixed bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `linear-gradient(to bottom right, hsl(var(--background)/0.92), hsl(var(--primary)/0.12), hsl(var(--accent)/0.18)), url(${parentPortalBg})` }}
+    >
       <Seo
         title="Portail Parent | EvalScol Africa"
         description="Accédez aux notes, bulletins, emploi du temps et paiements de scolarité de vos enfants depuis le portail parent EvalScol Africa."
