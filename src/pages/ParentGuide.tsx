@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { FileText, Download, Bell, Shield, Smartphone, HelpCircle, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
+import Seo from "@/components/Seo";
 
 export default function ParentGuide() {
   const navigate = useNavigate();
