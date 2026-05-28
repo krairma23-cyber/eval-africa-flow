@@ -14,12 +14,19 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { EducationNewsBanner } from "@/components/news/EducationNewsBanner";
 import heroBg from "@/assets/hero-classroom-bg.jpg";
+import Seo from "@/components/Seo";
 
 const Index = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   
   return (
+    <>
+    <Seo
+      title="EvalScol Africa | Logiciel Gestion Scolaire Côte d'Ivoire"
+      description="Plateforme SaaS de gestion scolaire avec IA pour l'Afrique : notes, bulletins PDF, portail parent et paiements mobile money."
+      path="/"
+    />
     <div
       className="min-h-screen relative bg-background"
       style={{
