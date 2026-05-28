@@ -15,6 +15,7 @@ import { TuitionPaymentDialog } from "@/components/payment/TuitionPaymentDialog"
 import { StudentSchedule } from "@/components/parent/StudentSchedule";
 import { StudentPerformanceCharts } from "@/components/parent/StudentPerformanceCharts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Seo from "@/components/Seo";
 
 interface SubjectGrade {
   subject_name: string;
