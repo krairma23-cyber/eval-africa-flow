@@ -42,6 +42,9 @@ import {
   Area,
   Legend
 } from "recharts";
+import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
+import heroAnalytics from "@/assets/hero-analytics.jpg";
+
 
 interface RealAnalyticsData {
   totalStudents: number;
@@ -243,35 +246,37 @@ export default function Analytics() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Analytics & Métriques</h1>
-          <p className="text-muted-foreground">
-            Données réelles de votre établissement
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7d">7 jours</SelectItem>
-              <SelectItem value="30d">30 jours</SelectItem>
-              <SelectItem value="90d">90 jours</SelectItem>
-              <SelectItem value="1y">1 an</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button variant="outline" onClick={fetchRealAnalytics} disabled={refreshing}>
-            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            Actualiser
-          </Button>
-          <Button onClick={exportData}>
-            <Download className="h-4 w-4 mr-2" />
-            Exporter
-          </Button>
-        </div>
-      </div>
+      <PageHeroBanner
+        image={heroAnalytics}
+        alt="Analytics et métriques"
+        icon={<BarChart3 className="h-7 w-7 text-primary" />}
+        title="Analytics & Métriques"
+        subtitle="Données réelles de votre établissement"
+        action={
+          <div className="flex items-center gap-2">
+            <Select value={timeRange} onValueChange={setTimeRange}>
+              <SelectTrigger className="w-32">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="7d">7 jours</SelectItem>
+                <SelectItem value="30d">30 jours</SelectItem>
+                <SelectItem value="90d">90 jours</SelectItem>
+                <SelectItem value="1y">1 an</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button variant="outline" onClick={fetchRealAnalytics} disabled={refreshing}>
+              <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+              Actualiser
+            </Button>
+            <Button onClick={exportData}>
+              <Download className="h-4 w-4 mr-2" />
+              Exporter
+            </Button>
+          </div>
+        }
+      />
+
 
       {/* Key Metrics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
