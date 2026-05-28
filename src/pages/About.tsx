@@ -21,6 +21,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import Seo from "@/components/Seo";
 
 export default function About() {
   const navigate = useNavigate();
@@ -386,6 +387,11 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
+      <Seo
+        title="À propos | EvalScol Africa, gestion scolaire IA"
+        description="Découvrez la mission d'EvalScol Africa : digitaliser la gestion scolaire en Afrique francophone avec une plateforme SaaS intelligente."
+        path="/about"
+      />
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         {/* Header */}
         <header className="mb-16">

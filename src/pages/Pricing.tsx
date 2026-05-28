@@ -5,6 +5,39 @@ import { Check, ArrowLeft, Star, Crown, Sparkles, Users, Zap, Shield, TrendingUp
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import Seo from "@/components/Seo";
+
+const productJsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: "EvalScol Essentiel",
+    description: "Plan Standard EvalScol Africa pour établissements scolaires : gestion élèves, notes, bulletins et paiements.",
+    brand: { "@type": "Brand", name: "EvalScol Africa" },
+    offers: {
+      "@type": "Offer",
+      price: "29990",
+      priceCurrency: "XOF",
+      availability: "https://schema.org/InStock",
+      url: "https://evalscolafrica.siteteck.com/pricing",
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: "EvalScol Pro IA",
+    description: "Plan Professional EvalScol Africa avec IA : détection élèves à risque, analytics avancés et support prioritaire.",
+    brand: { "@type": "Brand", name: "EvalScol Africa" },
+    offers: {
+      "@type": "Offer",
+      price: "59990",
+      priceCurrency: "XOF",
+      availability: "https://schema.org/InStock",
+      url: "https://evalscolafrica.siteteck.com/pricing",
+    },
+  },
+];
+
 
 export default function Pricing() {
   const navigate = useNavigate();
@@ -129,6 +162,13 @@ export default function Pricing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
+      <Seo
+        title="Tarifs EvalScol Africa | Plans gestion scolaire"
+        description="Découvrez les tarifs EvalScol Africa : essai gratuit, plan Essentiel à 29 990 FCFA et Pro IA à 59 990 FCFA. Sans engagement."
+        path="/pricing"
+        jsonLd={productJsonLd}
+      />
+
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         <header className="mb-12">
           <div className="flex justify-between items-center mb-6">
