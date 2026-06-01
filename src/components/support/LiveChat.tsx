@@ -164,10 +164,13 @@ export default function LiveChat({ onClose }: LiveChatProps) {
   };
 
   const subscribeToMessages = () => {
-    if (!session) return;
+    if (!session || !currentUserId) return;
 
+    // Topic includes the authenticated user's UID to satisfy the realtime.messages
+    // authorization policy (topics scoped to 'user:<uid>:...'). RLS on
+    // support_chat_messages also filters events to the session owner.
     const channel = supabase
-      .channel(`chat-${session.id}`)
+      .channel(`user:${currentUserId}:chat:${session.id}`)
       .on(
         'postgres_changes',
         {
