@@ -5283,6 +5283,12 @@ export type Database = {
           total_users: number
         }[]
       }
+      get_current_user_roles: {
+        Args: never
+        Returns: {
+          role: Database["public"]["Enums"]["app_role"]
+        }[]
+      }
       get_current_user_school_id: { Args: never; Returns: string }
       get_enhanced_security_overview: {
         Args: never
@@ -5581,6 +5587,7 @@ export type Database = {
       is_teacher: { Args: { p_user_id?: string }; Returns: boolean }
       is_user_admin: { Args: { check_user_id?: string }; Returns: boolean }
       join_school_by_code: { Args: { p_join_code: string }; Returns: Json }
+      join_school_with_code: { Args: { _join_code: string }; Returns: string }
       log_comprehensive_audit: {
         Args: {
           p_action: string

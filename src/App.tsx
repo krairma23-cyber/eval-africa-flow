@@ -9,6 +9,7 @@ import { CookieConsent } from "./components/gdpr/CookieConsent";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import { ChunkLoadErrorBoundary } from "@/components/system/ChunkLoadErrorBoundary";
+import AdminRoute from "@/components/auth/AdminRoute";
 
 // Lazy load all pages except Index for better initial load performance.
 // Wrapped with retry logic to avoid blank screens when a chunk/module fails to load (cache mismatch).
