@@ -4,8 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Content Security Policy (strict) — mitigate XSS exposure of localStorage tokens -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'strict-dynamic' 'sha256-SB0NswRE9uOg9wQnInT2V+8g6TcMPXwlj3tUTx9udgw=' 'sha256-RURx893GXWGlsRDiMbQiPR5V8is9/xUogTGfWHbC1No=' 'sha256-hFWONsCIhIJQCCMpiTI+0NjwXsm7vZdCyugU+3+xo7E=' https: 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.paystack.co https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://stats.g.doubleclick.net; frame-src 'self' https://www.googletagmanager.com https://checkout.paystack.com https://standard.paystack.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;" />
+    <!-- Content Security Policy — mitigate XSS exposure of localStorage tokens.
+         NOTE: 'strict-dynamic' was removed because it disables 'self' and breaks the Vite/SPA module script (/src/main.tsx and built chunks) → blank page.
+         Inline scripts (GTM bootstrap + JSON-LD) are allowed via 'unsafe-inline'. For a stricter policy, move to nonces served via HTTP headers (Vite plugin or edge) instead of a meta tag. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://*.googletagmanager.com https://*.google-analytics.com https://js.paystack.co https://checkout.paystack.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.paystack.co https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://stats.g.doubleclick.net; frame-src 'self' https://www.googletagmanager.com https://checkout.paystack.com https://standard.paystack.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;" />
     <!-- Per-route canonical is set via react-helmet-async (src/components/Seo.tsx). -->
 
 
