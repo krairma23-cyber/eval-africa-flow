@@ -34,7 +34,6 @@ serve(async (req) => {
 
     const { message, action } = await req.json();
     
-    console.log('AI Assistant request:', { message, action });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -108,7 +107,6 @@ Tu réponds de manière concise, claire et professionnelle. Tu t'adaptes au nive
     const data = await response.json();
     const aiResponse = data.choices[0]?.message?.content || 'Désolé, je n\'ai pas pu générer une réponse.';
 
-    console.log('AI response generated successfully');
 
     return new Response(
       JSON.stringify({ 

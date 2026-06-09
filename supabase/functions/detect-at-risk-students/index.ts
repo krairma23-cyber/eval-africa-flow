@@ -59,7 +59,6 @@ serve(async (req) => {
       });
     }
 
-    console.log('Starting at-risk student detection...');
 
     // Récupérer les résultats récents (3 derniers mois)
     const threeMonthsAgo = new Date();
@@ -95,7 +94,6 @@ serve(async (req) => {
       throw resultsError;
     }
 
-    console.log(`Found ${assessmentResults?.length || 0} assessment results`);
 
     // Grouper par élève
     const studentScores = new Map<string, AssessmentScore[]>();
@@ -121,7 +119,6 @@ serve(async (req) => {
       studentScores.get(studentId)!.push(scoreData);
     }
 
-    console.log(`Analyzing ${studentScores.size} students`);
 
     // Analyser chaque élève
     const atRiskStudents = [];
@@ -216,7 +213,6 @@ serve(async (req) => {
       }
     }
 
-    console.log(`Found ${atRiskStudents.length} at-risk students`);
 
     // Insérer les notifications
     if (notifications.length > 0) {
@@ -227,7 +223,6 @@ serve(async (req) => {
       if (notifError) {
         console.error('Error creating notifications:', notifError);
       } else {
-        console.log(`Created ${notifications.length} notifications`);
       }
     }
 

@@ -43,7 +43,6 @@ serve(async (req) => {
     const user_id = user.id;
     const { payment_reference, plan_id, billing_period } = await req.json();
 
-    console.log('[activate-subscription] Activation started');
 
     // Get plan details
     const { data: plan, error: planError } = await supabaseAdmin
@@ -179,7 +178,6 @@ serve(async (req) => {
       );
     }
 
-    console.log('[activate-subscription] Subscription activated');
 
     // Configure plan features based on plan_id
     let planFeatures;
@@ -303,7 +301,6 @@ serve(async (req) => {
       console.error('Failed to configure plan features:', featuresError);
       // Don't fail the subscription activation, just log the error
     } else {
-      console.log('[activate-subscription] Plan features configured');
     }
 
     return new Response(

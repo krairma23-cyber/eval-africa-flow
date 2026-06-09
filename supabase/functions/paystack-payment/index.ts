@@ -122,7 +122,6 @@ serve(async (req) => {
       );
     }
 
-    console.log('Payment initialized successfully:', paystackData.data.reference);
 
     return new Response(
       JSON.stringify({

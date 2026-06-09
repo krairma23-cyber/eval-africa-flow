@@ -48,7 +48,6 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const payload: ConfirmationEmailData = await req.json();
-    console.log("Email type:", payload.email_data.email_action_type);
 
     const { user, email_data } = payload;
     const confirmationLink = `${email_data.site_url}/auth/v1/verify?token=${email_data.token_hash}&type=${email_data.email_action_type}&redirect_to=${email_data.redirect_to}`;
@@ -120,7 +119,6 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log("Sending email to:", user.email);
 
     const { data, error } = await resend.emails.send({
       from: "EvalScol <onboarding@resend.dev>",
@@ -134,7 +132,6 @@ const handler = async (req: Request): Promise<Response> => {
       throw error;
     }
 
-    console.log("✅ Email sent successfully:", data);
 
     return new Response(
       JSON.stringify({ success: true, messageId: data?.id }),

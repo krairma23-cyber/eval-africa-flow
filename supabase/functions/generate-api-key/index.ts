@@ -153,7 +153,6 @@ serve(async (req) => {
       success: true,
     });
 
-    console.log(`API key generated for user ${user.id}, key ID: ${newKey.id}`);
 
     // Return the full key ONCE (it won't be retrievable later)
     return new Response(

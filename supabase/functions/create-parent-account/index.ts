@@ -107,7 +107,6 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (existingUser) {
       parentUserId = existingUser.id;
-      console.log("[create-parent-account] Existing parent account linked");
     } else {
       // Generate temporary password
       tempPassword = generatePassword();
@@ -133,7 +132,6 @@ const handler = async (req: Request): Promise<Response> => {
       }
 
       parentUserId = newUser.user.id;
-      console.log("[create-parent-account] Parent user created");
 
       // Create parent profile
       const { error: profileError } = await supabaseAdmin
@@ -170,7 +168,6 @@ const handler = async (req: Request): Promise<Response> => {
       .eq("id", student_id);
 
     if (updateStudentError) {
-      console.log("Note: Could not update student with parent_user_id:", updateStudentError.message);
     }
 
     // Send welcome email with credentials if new user
@@ -250,7 +247,6 @@ const handler = async (req: Request): Promise<Response> => {
         if (emailError) {
           console.error("Error sending email:", emailError);
         } else {
-          console.log("[create-parent-account] Welcome email sent");
         }
       } catch (emailErr) {
         console.error("Failed to send email:", emailErr);
