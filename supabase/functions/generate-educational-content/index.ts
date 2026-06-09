@@ -59,7 +59,6 @@ serve(async (req) => {
     const difficulty = sanitize(parsed.data.difficulty);
     const { type, questionsCount, duration } = parsed.data;
 
-    console.log('Generating content:', { type, subject, level, topic, difficulty });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -172,7 +171,6 @@ Inclus:
       throw new Error('No content generated');
     }
 
-    console.log('Content generated successfully');
 
     return new Response(
       JSON.stringify({ 

@@ -163,7 +163,6 @@ serve(async (req) => {
       );
     }
 
-    console.log('Tuition payment initialized:', paystackData.data.reference);
 
     return new Response(
       JSON.stringify({
