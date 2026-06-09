@@ -21,6 +21,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useRole } from "@/hooks/useRole";
 import {
   Sidebar,
   SidebarContent,
@@ -39,6 +40,7 @@ export function AppSidebar() {
   const [schoolLogo, setSchoolLogo] = useState<string | null>(null);
   const [schoolName, setSchoolName] = useState<string>("EvalScol");
   const { t } = useLanguage();
+  const { isAdmin } = useRole();
 
   const menuItems = [
     { title: t('sidebar.dashboard'), url: "/dashboard", icon: Home },
@@ -55,8 +57,8 @@ export function AppSidebar() {
     { title: t('sidebar.api'), url: "/dashboard/api", icon: Code },
     { title: t('sidebar.support'), url: "/dashboard/support", icon: HelpCircle },
     { title: t('sidebar.notifications'), url: "/dashboard/notifications", icon: Bell },
-    { title: t('sidebar.users'), url: "/dashboard/users", icon: Shield },
-    { title: "Traction", url: "/dashboard/traction", icon: TrendingUp },
+    ...(isAdmin ? [{ title: t('sidebar.users'), url: "/dashboard/users", icon: Shield }] : []),
+    ...(isAdmin ? [{ title: "Traction", url: "/dashboard/traction", icon: TrendingUp }] : []),
     { title: t('sidebar.settings'), url: "/dashboard/settings", icon: Settings },
   ];
 

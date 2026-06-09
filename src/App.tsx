@@ -9,6 +9,7 @@ import { CookieConsent } from "./components/gdpr/CookieConsent";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import { ChunkLoadErrorBoundary } from "@/components/system/ChunkLoadErrorBoundary";
+import AdminRoute from "@/components/auth/AdminRoute";
 
 // Lazy load all pages except Index for better initial load performance.
 // Wrapped with retry logic to avoid blank screens when a chunk/module fails to load (cache mismatch).
@@ -90,7 +91,7 @@ const App = () => (
 
               <Route path="/dashboard" element={<DashboardLayout />}>
                 <Route index element={<Dashboard />} />
-                <Route path="users" element={<UserManagement />} />
+                <Route path="users" element={<AdminRoute><UserManagement /></AdminRoute>} />
                 <Route path="students" element={<Students />} />
                 <Route path="teachers" element={<Teachers />} />
                 <Route path="subjects" element={<Subjects />} />
@@ -110,7 +111,7 @@ const App = () => (
                 <Route path="privacy" element={<DataPrivacy />} />
                 <Route path="paystack-diagnostic" element={<PaystackDiagnostic />} />
                 <Route path="tuition-diagnostic" element={<TuitionPaymentDiagnostic />} />
-                <Route path="traction" element={<Traction />} />
+                <Route path="traction" element={<AdminRoute><Traction /></AdminRoute>} />
               </Route>
               {/* Command Center - Super Admin only */}
               <Route path="/command-center" element={<CommandCenterLayout />}>
