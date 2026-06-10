@@ -64,28 +64,33 @@ serve(async (req) => {
       ? (plan.price_yearly || plan.price_monthly * 12) 
       : plan.price_monthly;
 
-    // Idempotency: refuse to re-apply a payment_reference that has already
-    // been used to activate any subscription (for paid plans only).
+    // Idempotency: atomically claim this payment_reference via processed_webhook_events
+    // (event_id is UNIQUE). If insert fails with conflict, the reference was already used.
     if (expectedAmount > 0 && payment_reference) {
-      const { data: existingSub } = await supabaseAdmin
-        .from('user_subscriptions')
-        .select('id, user_id')
-        .eq('payment_reference', payment_reference)
-        .maybeSingle();
-      if (existingSub && existingSub.user_id !== user_id) {
-        console.error('[activate-subscription] Reference already used by another user');
+      const { error: claimError } = await supabaseAdmin
+        .from('processed_webhook_events')
+        .insert({
+          event_id: payment_reference,
+          event_type: `subscription:${user_id}`,
+        });
+
+      if (claimError) {
+        // Unique violation => reference already processed
+        if ((claimError as any).code === '23505') {
+          console.error('[activate-subscription] Replay detected for reference');
+          return new Response(
+            JSON.stringify({ error: 'Payment reference already used' }),
+            { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        console.error('[activate-subscription] Idempotency claim failed:', claimError);
         return new Response(
-          JSON.stringify({ error: 'Payment reference already used' }),
-          { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      if (existingSub && existingSub.user_id === user_id) {
-        return new Response(
-          JSON.stringify({ success: true, message: 'Subscription already activated for this reference' }),
-          { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          JSON.stringify({ error: 'Failed to validate payment reference' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
     }
+
 
     // If it's a paid plan, verify payment with Paystack
     if (expectedAmount > 0 && payment_reference) {
@@ -160,7 +165,6 @@ serve(async (req) => {
         plan_id,
         status: 'active',
         billing_period: billing_period || 'monthly',
-        payment_reference: payment_reference || null,
         current_period_start: now.toISOString(),
         current_period_end: periodEnd.toISOString(),
         updated_at: now.toISOString()
