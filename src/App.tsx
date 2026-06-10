@@ -109,8 +109,8 @@ const App = () => (
                 <Route path="support" element={<Support />} />
                 <Route path="notifications" element={<Notifications />} />
                 <Route path="privacy" element={<DataPrivacy />} />
-                <Route path="paystack-diagnostic" element={<PaystackDiagnostic />} />
-                <Route path="tuition-diagnostic" element={<TuitionPaymentDiagnostic />} />
+                <Route path="paystack-diagnostic" element={<AdminRoute><PaystackDiagnostic /></AdminRoute>} />
+                <Route path="tuition-diagnostic" element={<AdminRoute><TuitionPaymentDiagnostic /></AdminRoute>} />
                 <Route path="traction" element={<AdminRoute><Traction /></AdminRoute>} />
               </Route>
               {/* Command Center - Super Admin only */}
