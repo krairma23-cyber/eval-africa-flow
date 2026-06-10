@@ -165,7 +165,6 @@ serve(async (req) => {
         plan_id,
         status: 'active',
         billing_period: billing_period || 'monthly',
-        payment_reference: payment_reference || null,
         current_period_start: now.toISOString(),
         current_period_end: periodEnd.toISOString(),
         updated_at: now.toISOString()
