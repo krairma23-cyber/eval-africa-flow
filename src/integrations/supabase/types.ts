@@ -5138,6 +5138,17 @@ export type Database = {
         }[]
       }
       apply_standard_rls: { Args: never; Returns: undefined }
+      audit_multitenant_rls: {
+        Args: never
+        Returns: {
+          has_rls: boolean
+          has_school_id: boolean
+          has_tenant_scoped_policy: boolean
+          policy_count: number
+          risk_level: string
+          table_name: string
+        }[]
+      }
       automated_security_cleanup: { Args: never; Returns: undefined }
       check_admin_access_rate_limit: {
         Args: {
