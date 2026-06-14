@@ -10,6 +10,7 @@ import DashboardLayout from "./components/layout/DashboardLayout";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import { ChunkLoadErrorBoundary } from "@/components/system/ChunkLoadErrorBoundary";
 import AdminRoute from "@/components/auth/AdminRoute";
+import EnvironmentBanner from "@/components/layout/EnvironmentBanner";
 
 // Lazy load all pages except Index for better initial load performance.
 // Wrapped with retry logic to avoid blank screens when a chunk/module fails to load (cache mismatch).
@@ -73,6 +74,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <EnvironmentBanner />
         <CookieConsent />
         <ChunkLoadErrorBoundary>
           <Suspense fallback={<PageLoader />}>

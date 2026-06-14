@@ -1,64 +1,108 @@
-# Plan de renforcement RGPD & protection des données élèves
+# Plan : 3 environnements Dev / Staging / Prod
 
-Périmètre : base de données uniquement (pas d'Edge Functions). Découpage en lots indépendants pour validation progressive.
+## Objectif
+Protéger les données réelles des écoles : ne plus jamais tester une migration, une edge function ou une nouvelle feature directement sur la base qui contient les vraies notes, paiements et données médicales des élèves.
 
-## Constat — vulnérabilités critiques identifiées
+## Situation actuelle (à risque)
+- **Un seul projet Supabase** (`xckeensgwzwrweloaeoy`) contient TOUTES les données réelles
+- Chaque migration s'applique directement en production
+- Chaque déploiement d'edge function impacte les vraies écoles
+- Un bug = perte ou corruption de données réelles, sans filet
 
-1. **Fuite multi-tenant sur `profiles`** : la policy *"Admins can view all profiles"* ne filtre pas par `school_id`. Un admin de l'école A peut lire les profils (PII parents/enseignants) de toutes les autres écoles.
-2. **Élévation de privilèges sur `students`** : la policy *"School staff can access students"* accorde `ALL` (INSERT/UPDATE/DELETE) à tout membre rattaché à l'école — y compris parents et enseignants qui ne devraient pas pouvoir modifier les fiches élèves.
-3. **Notes/bulletins/inscriptions modifiables par tous** : `assessment_results`, `enrollments`, `report_cards` utilisent `ALL` avec `user_belongs_to_school` — un parent ou personnel non enseignant peut altérer ou supprimer notes et bulletins.
-4. **Pas de masquage des données médicales** : les champs médicaux/contacts d'urgence sur `students` sont lus en intégralité par toute personne ayant accès à la table.
-5. **Aucun parcours RGPD utilisateur** côté UI : pas d'export portabilité ni de suppression de compte self-service.
+## Architecture cible
 
-## Lot 1 — Cloisonnement multi-tenant strict (URGENT)
+```text
+┌─────────────┐       ┌─────────────┐       ┌─────────────┐
+│     DEV     │  ──►  │   STAGING   │  ──►  │    PROD     │
+│ (bac à      │       │ (recette /  │       │ (vraies     │
+│  sable)     │       │  pré-prod)  │       │  écoles)    │
+└─────────────┘       └─────────────┘       └─────────────┘
+   Supabase A           Supabase B            Supabase C
+   données fake         copie anonymisée      données réelles
+   tout cassable        tests finaux          intouchable
+```
 
-Migration SQL :
-- Remplacer la policy `Admins can view all profiles` par une version filtrée par `school_id` du profil de l'admin connecté.
-- Idem pour `Admins can update all profiles`.
-- Ajouter fonction `same_school_admin(target_user_id)` SECURITY DEFINER + `SET search_path = public`.
+## Les 3 environnements
 
-## Lot 2 — Restriction des écritures sensibles
+### 1. DEV — développement quotidien
+- **Projet Supabase dédié** (nouveau)
+- Données 100% factices (seed avec 2-3 écoles fictives, élèves générés)
+- C'est ici que Lovable travaille au jour le jour
+- Casser la base = aucun impact
 
-Migration SQL :
-- Sur `students` : retirer la policy `School staff can access students` (ALL). La remplacer par :
-  - `SELECT` pour staff (`user_belongs_to_school`)
-  - `INSERT/UPDATE/DELETE` réservés à `has_role(admin)` + `user_belongs_to_school`
-- Sur `assessment_results` : `SELECT` staff/parents (du child) ; `INSERT/UPDATE` réservés enseignants assignés ou admin ; `DELETE` admin uniquement.
-- Sur `enrollments` et `report_cards` : `SELECT` staff/parents ; `INSERT/UPDATE/DELETE` admin uniquement.
+### 2. STAGING — recette / pré-prod
+- **Projet Supabase dédié** (nouveau)
+- Copie anonymisée de la prod rafraîchie chaque semaine (noms remplacés, emails masqués, paiements neutralisés)
+- Sert à valider chaque migration et chaque release avant prod
+- Les écoles pilotes peuvent y tester les nouveautés
 
-## Lot 3 — Masquage PII & données médicales
+### 3. PROD — production
+- **Projet Supabase actuel** (`xckeensgwzwrweloaeoy`) conservé tel quel
+- N'accepte QUE des changements déjà validés en staging
+- Sauvegardes quotidiennes + Point-in-Time Recovery activé (Supabase Pro)
+- Accès admin restreint
 
-Migration SQL :
-- Créer vue `public.students_safe` (security_invoker) excluant : `medical_conditions`, `allergies`, `emergency_contact_*`, `parent_phone`, `parent_email`.
-- Créer vue `public.students_medical` accessible uniquement aux admins et infirmier(e) scolaire (rôle dédié si présent, sinon admin).
-- Logger chaque SELECT sur les colonnes médicales via trigger → `data_access_logs`.
+## Flux de promotion d'une modification
 
-> Action côté code : adapter les `select('*')` sur `students` pour utiliser `students_safe` partout sauf dans la fiche médicale dédiée.
+```text
+1. Lovable code la feature              → testée sur DEV
+2. Migration validée par l'équipe       → appliquée sur STAGING
+3. Tests de recette OK sur STAGING      → promue en PROD
+4. Si problème en PROD                  → rollback via PITR Supabase
+```
 
-## Lot 4 — Droits RGPD utilisateurs (UI + RPC)
+## Ce qui sera mis en place (côté code)
 
-Migration SQL :
-- Fonction `export_user_data(user_id uuid)` SECURITY DEFINER → JSON complet (profil, élèves liés si parent, notes, paiements). Restreinte à `auth.uid() = user_id`.
-- Fonction `request_account_deletion(reason text)` → crée une demande dans `account_deletion_requests` (nouvelle table), notifie admin, anonymise après 30 j via cron.
+1. **Variables d'environnement par environnement**
+   - `.env.development`, `.env.staging`, `.env.production`
+   - Chacun pointe vers son propre `VITE_SUPABASE_URL` et `VITE_SUPABASE_PUBLISHABLE_KEY`
 
-UI (`src/pages/DataPrivacy.tsx`) :
-- Section *"Exporter mes données"* (JSON téléchargeable — portabilité art. 20).
-- Section *"Supprimer mon compte"* avec délai légal et confirmation double.
-- Section *"Mes journaux d'accès"* (lecture de `data_access_logs` filtré sur `auth.uid()`).
+2. **Bannière visuelle d'environnement**
+   - Bandeau orange "STAGING — données de test" en haut de l'écran hors prod
+   - Évite toute confusion pour les testeurs
+
+3. **Script de seed pour DEV**
+   - Crée écoles, classes, élèves, notes fictifs au démarrage
+   - Permet à tout dev de repartir d'une base propre
+
+4. **Script d'anonymisation prod → staging**
+   - Edge function qui clone la prod en remplaçant : noms, emails, téléphones, numéros de paiement, données médicales
+   - À lancer manuellement ou via cron hebdo
+
+5. **Documentation `ENVIRONMENTS.md`**
+   - Qui a accès à quoi
+   - Procédure de promotion d'une migration
+   - Procédure de rollback
+
+## Ce qui doit être fait MANUELLEMENT par vous (hors Lovable)
+
+⚠️ Lovable ne peut PAS créer de nouveaux projets Supabase pour vous. Étapes à faire vous-même :
+
+1. Créer 2 nouveaux projets sur [supabase.com](https://supabase.com/dashboard) :
+   - `evalscol-dev`
+   - `evalscol-staging`
+2. Activer le plan **Pro (25 $/mois par projet)** sur la prod pour avoir le Point-in-Time Recovery (rollback à la seconde près sur 7 jours)
+3. Me communiquer les URL + clés anon des 2 nouveaux projets pour que je configure les `.env`
+
+## Coût estimé
+- Dev : Free tier Supabase (0 $)
+- Staging : Free tier ou Pro selon volume (0 à 25 $/mois)
+- Prod : Pro recommandé (25 $/mois) pour PITR
+- **Total : 25 à 50 $/mois** pour une sécurité industrielle
+
+## Alternative plus légère (si budget serré)
+Si créer 2 projets Supabase est trop tôt, une étape intermédiaire :
+- Garder un seul projet Supabase
+- Activer **Point-in-Time Recovery** sur la prod (Plan Pro = 25 $/mois)
+- Mettre en place une **branche Supabase** (feature payante) pour tester les migrations
+- Coût : 25 $/mois, sécurité partielle
+
+## Recommandation
+Commencer par **Dev + Prod** (sans staging), c'est 80% du bénéfice pour 50% de l'effort. Ajouter staging plus tard quand vous aurez ≥ 10 écoles clientes.
 
 ## Détails techniques
 
-- Toutes les nouvelles fonctions `SECURITY DEFINER` incluent `SET search_path = public` (règle mémoire).
-- Aucune modification à `auth`, `storage`, `realtime`.
-- Validation post-migration via le linter Supabase à chaque lot.
-- Mise à jour mémoire projet à la fin (`mem://security/...`).
-
-## Hors périmètre (à traiter plus tard)
-
-- Audit Edge Functions (Zod, JWT, logs sans PII).
-- Chiffrement applicatif des champs médicaux (au-delà du masquage RLS).
-- Rotation automatisée des `api_keys`.
-
-## Ordre d'exécution proposé
-
-Lot 1 → validation → Lot 2 → validation → Lot 3 (impacte code app) → Lot 4 (UI). Chaque lot = une migration revue avant exécution.
+- **Bascule d'environnement** : Vite charge automatiquement le bon `.env.<mode>` selon le script (`vite --mode staging`).
+- **Edge functions** : déployées séparément sur chaque projet Supabase via `supabase functions deploy --project-ref <ref>`.
+- **Migrations** : le dossier `supabase/migrations/` est versionné une seule fois ; on applique en cascade dev → staging → prod via `supabase db push --project-ref <ref>`.
+- **Secrets** : chaque projet Supabase a ses propres secrets (Paystack TEST en dev/staging, Paystack LIVE en prod).
