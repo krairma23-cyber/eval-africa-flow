@@ -2,8 +2,14 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = "https://xckeensgwzwrweloaeoy.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhja2VlbnNnd3p3cndlbG9hZW95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMzkxNTYsImV4cCI6MjA3MTcxNTE1Nn0.hycFLciBAMOMBJKwnlMtJqLenJUPYMcVR2ll8VJh6d0";
+// URL & key viennent des .env.<mode> (dev / staging / production)
+// Fallback = projet prod si la variable n'est pas définie.
+const SUPABASE_URL =
+  (import.meta.env.VITE_SUPABASE_URL as string | undefined) ??
+  "https://xckeensgwzwrweloaeoy.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY =
+  (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string | undefined) ??
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhja2VlbnNnd3p3cndlbG9hZW95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxMzkxNTYsImV4cCI6MjA3MTcxNTE1Nn0.hycFLciBAMOMBJKwnlMtJqLenJUPYMcVR2ll8VJh6d0";
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
