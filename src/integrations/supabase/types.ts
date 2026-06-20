@@ -5349,7 +5349,7 @@ export type Database = {
           table_name: string
         }[]
       }
-      get_school_join_code: { Args: { p_school_id: string }; Returns: string }
+      get_school_join_code: { Args: { _school_id: string }; Returns: string }
       get_secure_student_data: {
         Args: { p_student_id: string }
         Returns: {

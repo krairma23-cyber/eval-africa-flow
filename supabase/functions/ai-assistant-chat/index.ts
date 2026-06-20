@@ -1,5 +1,12 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
+import { z } from "https://esm.sh/zod@3.23.8";
+
+const ChatSchema = z.object({
+  message: z.string().trim().min(1, "Message required").max(4000, "Message too long"),
+  action: z.enum(['createAssessment', 'analyzePerformance', 'generateReport']).optional(),
+});
+
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -32,7 +39,25 @@ serve(async (req) => {
       });
     }
 
-    const { message, action } = await req.json();
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const parsed = ChatSchema.safeParse(body);
+    if (!parsed.success) {
+      return new Response(JSON.stringify({
+        error: 'Invalid input',
+        details: parsed.error.flatten().fieldErrors,
+      }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const { message, action } = parsed.data;
+
     
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');

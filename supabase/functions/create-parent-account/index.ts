@@ -97,9 +97,17 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Check if user already exists
-    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
-    const existingUser = existingUsers?.users?.find(u => u.email === parent_email);
+    // Check if user already exists — direct lookup (no pagination issues)
+    let existingUser: { id: string } | null = null;
+    try {
+      const { data: lookup } = await (supabaseAdmin.auth.admin as any).getUserByEmail(parent_email);
+      if (lookup?.user) existingUser = { id: lookup.user.id };
+    } catch (_e) {
+      // Fallback: search via paginated listUsers using email filter if supported
+      const { data: list } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 200 } as any);
+      const found = list?.users?.find((u: any) => u.email === parent_email);
+      if (found) existingUser = { id: found.id };
+    }
 
     let parentUserId: string;
     let tempPassword: string | null = null;
