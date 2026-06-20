@@ -81,7 +81,7 @@ export default function Settings() {
         single();
 
         // join_code is admin-only and fetched via secure RPC
-        const { data: joinCodeData } = await supabase.rpc('get_school_join_code' as any, { p_school_id: profile.school_id });
+        const { data: joinCodeData } = await supabase.rpc('get_school_join_code' as any, { _school_id: profile.school_id });
 
         if (school) {
           setSchoolName(school.name || "École Primaire Example");
