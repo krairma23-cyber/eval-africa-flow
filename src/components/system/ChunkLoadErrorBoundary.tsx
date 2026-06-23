@@ -57,7 +57,7 @@ export class ChunkLoadErrorBoundary extends React.Component<Props, State> {
     if (!this.state.isChunkError) return this.props.children;
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background p-6">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/15 via-background to-accent/15 p-6">
         <div className="w-full max-w-md rounded-lg border bg-card p-6 text-card-foreground">
           <h1 className="text-lg font-semibold">Problème de chargement</h1>
           <p className="mt-2 text-sm text-muted-foreground">
