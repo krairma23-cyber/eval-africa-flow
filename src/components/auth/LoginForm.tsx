@@ -311,8 +311,8 @@ export function LoginForm() {
   );
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/15 via-background to-accent/15 p-4">
+      <Card className="w-full max-w-md border-primary/20 shadow-2xl backdrop-blur-sm bg-card/95">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <img 
