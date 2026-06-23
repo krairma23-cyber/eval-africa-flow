@@ -84,20 +84,20 @@ All colors MUST be HSL.
     --background: 222 47% 11%;
     --foreground: 210 20% 98%;
 
-    --card: 221 39% 11%;
+    --card: 221 39% 13%;
     --card-foreground: 210 20% 98%;
 
-    --popover: 221 39% 11%;
+    --popover: 221 39% 13%;
     --popover-foreground: 210 20% 98%;
 
-    --primary: 263 83% 57%;
-    --primary-foreground: 210 20% 98%;
+    --primary: 263 83% 67%;
+    --primary-foreground: 222 47% 8%;
 
     --secondary: 215 27.9% 16.9%;
     --secondary-foreground: 210 20% 98%;
 
     --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
+    --muted-foreground: 215 20% 78%;
 
     --accent: 142 76% 36%;
     --accent-foreground: 210 20% 98%;
