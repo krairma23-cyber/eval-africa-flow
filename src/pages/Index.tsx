@@ -66,6 +66,24 @@ const Index = () => {
             <li className="flex items-start gap-2"><span className="text-accent font-bold">✅</span><span>Paiements scolaires en 2 minutes via Mobile Money</span></li>
             <li className="flex items-start gap-2"><span className="text-accent font-bold">✅</span><span>Portail parent en temps réel</span></li>
           </ul>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-2">
+            <Button
+              size="lg"
+              className="bg-[#10B981] hover:bg-[#10B981]/90 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all"
+              onClick={() => navigate('/support')}
+            >
+              Réserver une démonstration
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="bg-transparent border-2 border-primary text-primary hover:bg-primary/10 font-semibold px-8"
+              onClick={() => navigate('/auth')}
+            >
+              Essayer gratuitement pendant 14 jours
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground mb-6">Aucune carte bancaire requise.</p>
           <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4 text-accent" />
