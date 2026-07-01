@@ -461,8 +461,8 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.logout': 'Logout',
     
     // Hero Section
-    'hero.title': 'EvalScol Africa - Complete SaaS School Management Platform in Africa',
-    'hero.subtitle': '100% cloud solution for institutions in Francophone Africa. From 50 to 1000+ students. Complete student management, automated assessments, PDF report cards, real-time parent portal, integrated mobile money payments, AI for at-risk student detection. 14-day free trial.',
+    'hero.title': 'Generate all your school report cards in minutes, not weeks.',
+    'hero.subtitle': 'EvalScol Africa automates grades, report cards, Mobile Money payments and parent communication for African schools.',
     'hero.secureData': 'Secure Data',
     'hero.secureAuth': 'Secure Authentication',
     'hero.parentPortal': 'Parent Portal',
