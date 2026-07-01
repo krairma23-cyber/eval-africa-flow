@@ -25,8 +25,8 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.logout': 'Déconnexion',
     
     // Hero Section
-    'hero.title': 'EvalScol Africa - Plateforme SaaS Complète de Gestion Scolaire en Afrique',
-    'hero.subtitle': 'Solution 100% cloud pour établissements en Afrique francophone. De 50 à 1000+ élèves. Gestion complète des élèves, évaluations automatisées, bulletins PDF, portail parent temps réel, paiements mobile money intégrés, IA pour détection élèves à risque. Essai gratuit 14 jours.',
+    'hero.title': 'Générez tous vos bulletins scolaires en quelques minutes, pas en plusieurs semaines.',
+    'hero.subtitle': 'EvalScol Africa automatise les notes, les bulletins, les paiements Mobile Money et la communication avec les parents pour les écoles africaines.',
     'hero.secureData': 'Données sécurisées',
     'hero.secureAuth': 'Authentification sécurisée',
     'hero.parentPortal': 'Portail Parent',
@@ -461,8 +461,8 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.logout': 'Logout',
     
     // Hero Section
-    'hero.title': 'EvalScol Africa - Complete SaaS School Management Platform in Africa',
-    'hero.subtitle': '100% cloud solution for institutions in Francophone Africa. From 50 to 1000+ students. Complete student management, automated assessments, PDF report cards, real-time parent portal, integrated mobile money payments, AI for at-risk student detection. 14-day free trial.',
+    'hero.title': 'Generate all your school report cards in minutes, not weeks.',
+    'hero.subtitle': 'EvalScol Africa automates grades, report cards, Mobile Money payments and parent communication for African schools.',
     'hero.secureData': 'Secure Data',
     'hero.secureAuth': 'Secure Authentication',
     'hero.parentPortal': 'Parent Portal',

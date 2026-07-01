@@ -57,9 +57,15 @@ const Index = () => {
           <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4">
             {t('hero.title')}
           </h1>
-          <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
+          <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
             {t('hero.subtitle')}
           </p>
+          <ul className="max-w-2xl mx-auto mb-6 grid sm:grid-cols-2 gap-x-6 gap-y-2 text-left text-sm sm:text-base text-foreground">
+            <li className="flex items-start gap-2"><span className="text-accent font-bold">✅</span><span>Réduction de 80% du temps administratif</span></li>
+            <li className="flex items-start gap-2"><span className="text-accent font-bold">✅</span><span>Réduction de 95% des erreurs de calcul</span></li>
+            <li className="flex items-start gap-2"><span className="text-accent font-bold">✅</span><span>Paiements scolaires en 2 minutes via Mobile Money</span></li>
+            <li className="flex items-start gap-2"><span className="text-accent font-bold">✅</span><span>Portail parent en temps réel</span></li>
+          </ul>
           <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4 text-accent" />
