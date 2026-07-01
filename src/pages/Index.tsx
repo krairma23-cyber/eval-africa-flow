@@ -6,6 +6,7 @@ import { LoginForm } from "@/components/auth/LoginForm";
 import { SchoolTestimonials } from "@/components/testimonials/SchoolTestimonials";
 import { LocalSupport } from "@/components/features/LocalSupport";
 import { EvaluationFeatures } from "@/components/features/EvaluationFeatures";
+import { PremiumKPIs } from "@/components/features/PremiumKPIs";
 import { ParentReports } from "@/components/features/ParentReports";
 import { PressPartners } from "@/components/features/PressPartners";
 import { AboutEvalScol } from "@/components/features/AboutEvalScol";
@@ -189,6 +190,9 @@ const Index = () => {
             <LoginForm />
           </aside>
         </main>
+
+        {/* Premium KPIs */}
+        <PremiumKPIs />
 
         {/* Evaluation and Analytics Features */}
         <EvaluationFeatures />
