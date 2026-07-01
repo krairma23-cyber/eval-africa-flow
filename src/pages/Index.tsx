@@ -191,6 +191,9 @@ const Index = () => {
           </aside>
         </main>
 
+        {/* Premium KPIs */}
+        <PremiumKPIs />
+
         {/* Evaluation and Analytics Features */}
         <EvaluationFeatures />
 
