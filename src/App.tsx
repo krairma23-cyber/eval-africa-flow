@@ -47,6 +47,8 @@ const UserGuide = lazyWithRetry(() => import("./pages/UserGuide"), "page:UserGui
 const PaystackDiagnostic = lazyWithRetry(() => import("./pages/PaystackDiagnostic"), "page:PaystackDiagnostic");
 const TuitionPaymentDiagnostic = lazyWithRetry(() => import("./pages/TuitionPaymentDiagnostic"), "page:TuitionPaymentDiagnostic");
 const Traction = lazyWithRetry(() => import("./pages/Traction"), "page:Traction");
+const ApiDocs = lazyWithRetry(() => import("./pages/ApiDocs"), "page:ApiDocs");
+
 
 // Command Center pages
 const CommandCenterLayout = lazyWithRetry(() => import("./pages/command-center/CommandCenterLayout"), "page:CommandCenterLayout");
