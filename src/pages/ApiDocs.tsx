@@ -49,7 +49,9 @@ export default function ApiDocs() {
       <Seo
         title="Documentation API | EvalScol Africa"
         description="Documentation officielle de l'API REST EvalScol Africa : authentification, endpoints, webhooks, exemples cURL et JavaScript."
+        path="/api-docs"
       />
+
 
 
       {/* Header */}
