@@ -208,6 +208,25 @@ const Index = () => {
 
         {/* Local Support Section */}
         <LocalSupport />
+
+        {/* Emotional Closing Section */}
+        <section className="max-w-4xl mx-auto mt-16 mb-8 text-center px-4">
+          <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 border border-primary/20 p-8 lg:p-12 shadow-lg">
+            <h2 className="text-2xl lg:text-4xl font-bold text-foreground mb-4 leading-tight">
+              Les écoles africaines méritent mieux que les fichiers Excel et les calculs manuels.
+            </h2>
+            <p className="text-base lg:text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+              EvalScol Africa rend aux directeurs le temps, la visibilité et la sérénité nécessaires pour se concentrer sur l'éducation plutôt que sur l'administration.
+            </p>
+            <Button
+              size="lg"
+              className="bg-[#10B981] hover:bg-[#10B981]/90 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all"
+              onClick={() => navigate('/support')}
+            >
+              Demander une démonstration
+            </Button>
+          </div>
+        </section>
       </div>
     </div>
     </>
