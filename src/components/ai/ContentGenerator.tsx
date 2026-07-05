@@ -48,10 +48,10 @@ export const ContentGenerator = () => {
           type: selectedType,
           subject: formData.subject,
           level: formData.level,
-          topic: formData.topic,
+          topic: formData.topic || 'Général',
           difficulty: formData.difficulty,
-          questionsCount: formData.questionsCount,
-          duration: formData.duration,
+          questionsCount: parseInt(formData.questionsCount, 10) || 10,
+          duration: parseInt(formData.duration, 10) || 60,
         }
       });
 
