@@ -638,6 +638,19 @@ export default function Students() {
                       <div></div>
                     )}
                   </div>
+                  <DeleteConfirmButton
+                    table="students"
+                    id={student.id}
+                    itemLabel={`l'élève ${student.first_name} ${student.last_name}`}
+                    description={`Supprimer ${student.first_name} ${student.last_name} ? L'inscription, les notes, les présences et paiements liés seront également supprimés.`}
+                    onDeleted={fetchStudents}
+                    variant="outline"
+                    size="sm"
+                    className="w-full h-7 sm:h-8 text-xs px-2 text-destructive hover:text-destructive border-destructive/40"
+                  >
+                    <Trash2 className="h-3 w-3 mr-1 flex-shrink-0" />
+                    <span className="truncate">Supprimer</span>
+                  </DeleteConfirmButton>
                 </div>
               </CardContent>
             </Card>
