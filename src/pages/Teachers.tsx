@@ -16,6 +16,8 @@ import { Pencil, BookOpen, UserPlus } from "lucide-react";
 import { logError } from "@/lib/logger";
 import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
 import heroTeachers from "@/assets/hero-teachers.jpg";
+import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
+import { Trash2 } from "lucide-react";
 
 // Fonction pour déterminer l'ordre des enseignants (Primaire avant Secondaire)
 const getTeacherLevelOrder = (specialization: string): number => {
