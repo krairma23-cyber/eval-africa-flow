@@ -9,12 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { calculateRankings } from "@/lib/ranking-utils";
-import { Search, FileText, Download, TrendingUp, TrendingDown, Trophy } from "lucide-react";
+import { Search, FileText, Download, TrendingUp, TrendingDown, Trophy, Trash2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
 import heroReports from "@/assets/hero-reports.jpg";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
 
 interface StudentGrade {
   student_id: string;
