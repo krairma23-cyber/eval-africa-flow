@@ -270,6 +270,19 @@ export default function Teachers() {
                       Modifier
                     </Button>
                   </EditTeacherDialog>
+
+                  <DeleteConfirmButton
+                    table="teachers"
+                    id={teacher.id}
+                    itemLabel={`l'enseignant ${teacher.first_name} ${teacher.last_name}`}
+                    onDeleted={fetchTeachers}
+                    variant="outline"
+                    size="sm"
+                    className="w-full h-8 text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-3 w-3 mr-2" />
+                    Supprimer
+                  </DeleteConfirmButton>
                 </div>
               </CardContent>
             </Card>
