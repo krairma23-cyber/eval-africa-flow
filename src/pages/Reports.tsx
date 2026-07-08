@@ -9,12 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { calculateRankings } from "@/lib/ranking-utils";
-import { Search, FileText, Download, TrendingUp, TrendingDown, Trophy } from "lucide-react";
+import { Search, FileText, Download, TrendingUp, TrendingDown, Trophy, Trash2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
 import heroReports from "@/assets/hero-reports.jpg";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
 
 interface StudentGrade {
   student_id: string;
@@ -497,15 +498,49 @@ export default function Reports() {
                       )}
                     </div>
 
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full h-8 text-xs sm:text-sm"
-                      onClick={() => exportToPDF(grade)}
-                    >
-                      <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
-                      <span className="truncate">Télécharger le bulletin</span>
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 h-8 text-xs sm:text-sm"
+                        onClick={() => exportToPDF(grade)}
+                      >
+                        <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                        <span className="truncate">Télécharger</span>
+                      </Button>
+                      <DeleteConfirmButton
+                        table="assessment_results"
+                        id={`${grade.student_id}-${grade.term_id}`}
+                        itemLabel={`le bulletin de ${grade.student_first_name} ${grade.student_last_name} (${grade.term_name})`}
+                        description={`Supprimer le bulletin de ${grade.student_first_name} ${grade.student_last_name} pour la période ${grade.term_name} ? Toutes les notes de cet élève pour cette période seront supprimées définitivement.`}
+                        onDeleted={fetchData}
+                        variant="outline"
+                        size="sm"
+                        className="h-8 text-destructive hover:text-destructive border-destructive/40"
+                        customDelete={async () => {
+                          const { data: assessments, error: aErr } = await supabase
+                            .from('assessments')
+                            .select('id')
+                            .eq('term_id', grade.term_id);
+                          if (aErr) throw aErr;
+                          const assessmentIds = (assessments || []).map(a => a.id);
+                          if (assessmentIds.length === 0) return;
+                          const { error } = await supabase
+                            .from('assessment_results')
+                            .delete()
+                            .eq('student_id', grade.student_id)
+                            .in('assessment_id', assessmentIds);
+                          if (error) throw error;
+                          await supabase
+                            .from('report_cards')
+                            .delete()
+                            .eq('student_id', grade.student_id)
+                            .eq('term_id', grade.term_id);
+                        }}
+                      >
+                        <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                      </DeleteConfirmButton>
+                    </div>
                   </CardContent>
                 </Card>
               ))}

@@ -16,6 +16,7 @@ import { logError } from "@/lib/logger";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
 import heroClassroom from "@/assets/hero-classroom.jpg";
+import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
 
 // Fonction pour obtenir l'ordre du niveau scolaire
 const getGradeLevelOrder = (gradeName: string): number => {
@@ -269,6 +270,16 @@ export default function Classrooms() {
                         <Pencil className="h-4 w-4" />
                       </Button>
                     </EditClassroomDialog>
+                    <DeleteConfirmButton
+                      table="classrooms"
+                      id={classroom.id}
+                      itemLabel={`la classe ${classroom.name}`}
+                      description={`Êtes-vous sûr de vouloir supprimer la classe ${classroom.name} ? Toutes les inscriptions, évaluations et notes associées seront également supprimées.`}
+                      onDeleted={fetchClassrooms}
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                    />
                   </div>
                 </CardTitle>
                 <CardDescription className="text-xs sm:text-sm">

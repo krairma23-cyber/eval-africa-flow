@@ -12,7 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
 import { EditStudentDialog } from "@/components/forms/EditStudentDialog";
 import { EnrollStudentDialog } from "@/components/forms/EnrollStudentDialog";
-import { Pencil, UserPlus, DollarSign, Check, X, Mail } from "lucide-react";
+import { Pencil, UserPlus, DollarSign, Check, X, Mail, Trash2 } from "lucide-react";
+import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
 import { SendParentPortalLinkDialog } from "@/components/forms/SendParentPortalLinkDialog";
 import { ManagePaymentDialog } from "@/components/forms/ManagePaymentDialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -637,6 +638,19 @@ export default function Students() {
                       <div></div>
                     )}
                   </div>
+                  <DeleteConfirmButton
+                    table="students"
+                    id={student.id}
+                    itemLabel={`l'élève ${student.first_name} ${student.last_name}`}
+                    description={`Supprimer ${student.first_name} ${student.last_name} ? L'inscription, les notes, les présences et paiements liés seront également supprimés.`}
+                    onDeleted={fetchStudents}
+                    variant="outline"
+                    size="sm"
+                    className="w-full h-7 sm:h-8 text-xs px-2 text-destructive hover:text-destructive border-destructive/40"
+                  >
+                    <Trash2 className="h-3 w-3 mr-1 flex-shrink-0" />
+                    <span className="truncate">Supprimer</span>
+                  </DeleteConfirmButton>
                 </div>
               </CardContent>
             </Card>

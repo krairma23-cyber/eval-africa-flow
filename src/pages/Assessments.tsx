@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
 import assessmentsDecor from "@/assets/decor-assessments.jpg";
+import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
 
 interface Assessment {
   id: string;
@@ -256,6 +257,16 @@ export default function Assessments() {
                               <Pencil className="h-4 w-4" />
                             </Button>
                           </EditAssessmentDialog>
+                          <DeleteConfirmButton
+                            table="assessments"
+                            id={assessment.id}
+                            itemLabel={`l'évaluation "${assessment.title}"`}
+                            description={`Supprimer "${assessment.title}" ? Toutes les notes des élèves associées à cette évaluation seront également supprimées.`}
+                            onDeleted={fetchAssessments}
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          />
                         </div>
                       </CardTitle>
                       <CardDescription className="text-sm">
