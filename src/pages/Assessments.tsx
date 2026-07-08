@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
 import assessmentsDecor from "@/assets/decor-assessments.jpg";
+import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
 
 interface Assessment {
   id: string;
