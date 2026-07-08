@@ -16,6 +16,7 @@ import { logError } from "@/lib/logger";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
 import heroClassroom from "@/assets/hero-classroom.jpg";
+import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
 
 // Fonction pour obtenir l'ordre du niveau scolaire
 const getGradeLevelOrder = (gradeName: string): number => {
