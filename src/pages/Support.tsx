@@ -515,7 +515,7 @@ export default function Support() {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start text-sm"
-                    onClick={() => window.open('/parent-guide', '_blank')}
+                    onClick={() => window.open('/getting-started', '_blank')}
                   >
                     <BookOpen className="h-4 w-4 mr-2 shrink-0" />
                     <span className="truncate">Guide de démarrage</span>
@@ -523,7 +523,7 @@ export default function Support() {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start text-sm"
-                    onClick={() => window.open('https://docs.evalscol.com/manuel', '_blank')}
+                    onClick={() => window.open('/user-manual', '_blank')}
                   >
                     <BookOpen className="h-4 w-4 mr-2 shrink-0" />
                     <span className="truncate">Manuel utilisateur</span>
@@ -531,7 +531,7 @@ export default function Support() {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start text-sm"
-                    onClick={() => window.open('https://docs.evalscol.com/api', '_blank')}
+                    onClick={() => window.open('/api-docs', '_blank')}
                   >
                     <BookOpen className="h-4 w-4 mr-2 shrink-0" />
                     <span className="truncate">Documentation API</span>
