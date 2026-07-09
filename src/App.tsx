@@ -48,6 +48,8 @@ const PaystackDiagnostic = lazyWithRetry(() => import("./pages/PaystackDiagnosti
 const TuitionPaymentDiagnostic = lazyWithRetry(() => import("./pages/TuitionPaymentDiagnostic"), "page:TuitionPaymentDiagnostic");
 const Traction = lazyWithRetry(() => import("./pages/Traction"), "page:Traction");
 const ApiDocs = lazyWithRetry(() => import("./pages/ApiDocs"), "page:ApiDocs");
+const GettingStarted = lazyWithRetry(() => import("./pages/GettingStarted"), "page:GettingStarted");
+const UserManual = lazyWithRetry(() => import("./pages/UserManual"), "page:UserManual");
 
 
 // Command Center pages
@@ -93,6 +95,8 @@ const App = () => (
               <Route path="/parent-guide" element={<ParentGuide />} />
               <Route path="/guide" element={<UserGuide />} />
               <Route path="/api-docs" element={<ApiDocs />} />
+              <Route path="/getting-started" element={<GettingStarted />} />
+              <Route path="/user-manual" element={<UserManual />} />
 
 
               <Route path="/dashboard" element={<DashboardLayout />}>
