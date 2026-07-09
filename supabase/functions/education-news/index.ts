@@ -21,16 +21,22 @@ const FEEDS: { category: string; query: string }[] = [
 ];
 
 function decode(s: string): string {
-  return s
+  let out = s
     .replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1')
     .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/&apos;/g, "'")
-    .replace(/<[^>]+>/g, '')
-    .trim();
+    .replace(/&apos;/g, "'");
+
+  let prev: string;
+  do {
+    prev = out;
+    out = out.replace(/<[^>]+>/g, '');
+  } while (out !== prev);
+
+  return out.trim();
 }
 
 function pick(block: string, tag: string): string {
