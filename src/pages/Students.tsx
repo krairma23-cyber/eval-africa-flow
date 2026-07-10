@@ -428,7 +428,7 @@ export default function Students() {
               </div>
               <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {classroomData.students.map((student) => {
-            const theme = getStudentTheme(student.id);
+            const theme = getStudentTheme(student);
             return (
             <Card
               key={student.id}
