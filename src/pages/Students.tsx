@@ -698,7 +698,7 @@ export default function Students() {
                 </div>
               </CardContent>
             </Card>
-                ))}
+                );})}
               </div>
             </div>
           ))}
