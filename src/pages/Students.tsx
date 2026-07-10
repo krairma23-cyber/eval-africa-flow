@@ -221,28 +221,34 @@ export default function Students() {
     return age;
   };
 
-  // Unique visual identity per student, derived deterministically from their id.
-  const STUDENT_THEMES = [
-    { from: "#6366f1", to: "#a855f7", ring: "#6366f1", pattern: "radial-gradient(circle at 20% 30%, rgba(255,255,255,0.35) 0, transparent 40%)" },
-    { from: "#0ea5e9", to: "#22d3ee", ring: "#0ea5e9", pattern: "repeating-linear-gradient(45deg, rgba(255,255,255,0.12) 0 8px, transparent 8px 16px)" },
-    { from: "#10b981", to: "#84cc16", ring: "#10b981", pattern: "radial-gradient(circle at 80% 20%, rgba(255,255,255,0.3) 0, transparent 50%)" },
-    { from: "#f59e0b", to: "#ef4444", ring: "#f59e0b", pattern: "repeating-linear-gradient(-45deg, rgba(255,255,255,0.12) 0 6px, transparent 6px 14px)" },
-    { from: "#ec4899", to: "#f43f5e", ring: "#ec4899", pattern: "radial-gradient(circle at 50% 100%, rgba(255,255,255,0.35) 0, transparent 60%)" },
-    { from: "#8b5cf6", to: "#3b82f6", ring: "#8b5cf6", pattern: "linear-gradient(120deg, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(255,255,255,0.15) 100%)" },
-    { from: "#14b8a6", to: "#0284c7", ring: "#14b8a6", pattern: "repeating-radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0 3px, transparent 3px 12px)" },
-    { from: "#f97316", to: "#eab308", ring: "#f97316", pattern: "linear-gradient(60deg, rgba(255,255,255,0.2) 0%, transparent 50%)" },
-    { from: "#06b6d4", to: "#6366f1", ring: "#06b6d4", pattern: "radial-gradient(ellipse at 0% 50%, rgba(255,255,255,0.3) 0, transparent 50%)" },
-    { from: "#a855f7", to: "#ec4899", ring: "#a855f7", pattern: "repeating-linear-gradient(90deg, rgba(255,255,255,0.1) 0 10px, transparent 10px 20px)" },
-    { from: "#22c55e", to: "#14b8a6", ring: "#22c55e", pattern: "radial-gradient(circle at 70% 70%, rgba(255,255,255,0.25) 0, transparent 45%)" },
-    { from: "#ef4444", to: "#f97316", ring: "#ef4444", pattern: "linear-gradient(200deg, rgba(255,255,255,0.2) 0%, transparent 60%)" },
-  ];
+  // Visual theme derived from the student's classroom color so each class has
+  // a consistent look and students in the same class share the same palette.
+  const hexToRgb = (hex: string) => {
+    const h = hex.replace("#", "");
+    const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+    const num = parseInt(full, 16);
+    return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+  };
+  const rgbToHex = (r: number, g: number, b: number) =>
+    "#" + [r, g, b].map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0")).join("");
+  const lighten = (hex: string, amount = 0.35) => {
+    const { r, g, b } = hexToRgb(hex);
+    return rgbToHex(r + (255 - r) * amount, g + (255 - g) * amount, b + (255 - b) * amount);
+  };
+  const darken = (hex: string, amount = 0.15) => {
+    const { r, g, b } = hexToRgb(hex);
+    return rgbToHex(r * (1 - amount), g * (1 - amount), b * (1 - amount));
+  };
 
-  const getStudentTheme = (id: string) => {
-    let hash = 0;
-    for (let i = 0; i < id.length; i++) {
-      hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
-    }
-    return STUDENT_THEMES[hash % STUDENT_THEMES.length];
+  const getStudentTheme = (student: Student) => {
+    const base = getEnrollment(student)?.classrooms?.color || "#6366f1";
+    return {
+      from: darken(base, 0.1),
+      to: lighten(base, 0.4),
+      ring: base,
+      pattern:
+        "radial-gradient(circle at 20% 30%, rgba(255,255,255,0.3) 0, transparent 45%)",
+    };
   };
 
   if (loading) {
@@ -422,7 +428,7 @@ export default function Students() {
               </div>
               <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {classroomData.students.map((student) => {
-            const theme = getStudentTheme(student.id);
+            const theme = getStudentTheme(student);
             return (
             <Card
               key={student.id}
