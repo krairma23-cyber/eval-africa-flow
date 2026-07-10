@@ -421,12 +421,32 @@ export default function Students() {
                 </Badge>
               </div>
               <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {classroomData.students.map((student) => (
-            <Card key={student.id} className="hover:shadow-md transition-shadow overflow-hidden">
-              <CardHeader className="flex flex-col items-center pb-2 sm:pb-3 pt-3 sm:pt-4 px-3 sm:px-6">
-                <Avatar className="h-12 w-12 sm:h-16 sm:w-16 mb-2 sm:mb-3">
+                {classroomData.students.map((student) => {
+            const theme = getStudentTheme(student.id);
+            return (
+            <Card
+              key={student.id}
+              className="hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden relative border-t-4"
+              style={{ borderTopColor: theme.ring }}
+            >
+              <div
+                className="h-16 sm:h-20 w-full relative"
+                style={{
+                  backgroundImage: `${theme.pattern}, linear-gradient(135deg, ${theme.from}, ${theme.to})`,
+                }}
+              />
+              <CardHeader className="flex flex-col items-center pb-2 sm:pb-3 pt-0 px-3 sm:px-6 -mt-8 sm:-mt-10">
+                <Avatar
+                  className="h-14 w-14 sm:h-20 sm:w-20 mb-2 sm:mb-3 ring-4 ring-background shadow-md"
+                  style={{ boxShadow: `0 0 0 3px ${theme.ring}` }}
+                >
                   <AvatarImage src={student.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${student.first_name} ${student.last_name}`} />
-                  <AvatarFallback className="text-sm sm:text-base">{student.first_name[0]}{student.last_name[0]}</AvatarFallback>
+                  <AvatarFallback
+                    className="text-sm sm:text-lg font-semibold text-white"
+                    style={{ background: `linear-gradient(135deg, ${theme.from}, ${theme.to})` }}
+                  >
+                    {student.first_name[0]}{student.last_name[0]}
+                  </AvatarFallback>
                 </Avatar>
                 <CardTitle className="flex items-center justify-between w-full text-base sm:text-lg min-w-0">
                   <span className="truncate">{student.first_name} {student.last_name}</span>
