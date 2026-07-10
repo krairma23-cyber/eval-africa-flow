@@ -221,6 +221,30 @@ export default function Students() {
     return age;
   };
 
+  // Unique visual identity per student, derived deterministically from their id.
+  const STUDENT_THEMES = [
+    { from: "#6366f1", to: "#a855f7", ring: "#6366f1", pattern: "radial-gradient(circle at 20% 30%, rgba(255,255,255,0.35) 0, transparent 40%)" },
+    { from: "#0ea5e9", to: "#22d3ee", ring: "#0ea5e9", pattern: "repeating-linear-gradient(45deg, rgba(255,255,255,0.12) 0 8px, transparent 8px 16px)" },
+    { from: "#10b981", to: "#84cc16", ring: "#10b981", pattern: "radial-gradient(circle at 80% 20%, rgba(255,255,255,0.3) 0, transparent 50%)" },
+    { from: "#f59e0b", to: "#ef4444", ring: "#f59e0b", pattern: "repeating-linear-gradient(-45deg, rgba(255,255,255,0.12) 0 6px, transparent 6px 14px)" },
+    { from: "#ec4899", to: "#f43f5e", ring: "#ec4899", pattern: "radial-gradient(circle at 50% 100%, rgba(255,255,255,0.35) 0, transparent 60%)" },
+    { from: "#8b5cf6", to: "#3b82f6", ring: "#8b5cf6", pattern: "linear-gradient(120deg, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(255,255,255,0.15) 100%)" },
+    { from: "#14b8a6", to: "#0284c7", ring: "#14b8a6", pattern: "repeating-radial-gradient(circle at 30% 30%, rgba(255,255,255,0.15) 0 3px, transparent 3px 12px)" },
+    { from: "#f97316", to: "#eab308", ring: "#f97316", pattern: "linear-gradient(60deg, rgba(255,255,255,0.2) 0%, transparent 50%)" },
+    { from: "#06b6d4", to: "#6366f1", ring: "#06b6d4", pattern: "radial-gradient(ellipse at 0% 50%, rgba(255,255,255,0.3) 0, transparent 50%)" },
+    { from: "#a855f7", to: "#ec4899", ring: "#a855f7", pattern: "repeating-linear-gradient(90deg, rgba(255,255,255,0.1) 0 10px, transparent 10px 20px)" },
+    { from: "#22c55e", to: "#14b8a6", ring: "#22c55e", pattern: "radial-gradient(circle at 70% 70%, rgba(255,255,255,0.25) 0, transparent 45%)" },
+    { from: "#ef4444", to: "#f97316", ring: "#ef4444", pattern: "linear-gradient(200deg, rgba(255,255,255,0.2) 0%, transparent 60%)" },
+  ];
+
+  const getStudentTheme = (id: string) => {
+    let hash = 0;
+    for (let i = 0; i < id.length; i++) {
+      hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+    }
+    return STUDENT_THEMES[hash % STUDENT_THEMES.length];
+  };
+
   if (loading) {
     return (
       <div className="space-y-6">
