@@ -10,8 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { logError } from "@/lib/logger";
 import { Download, Upload, AlertTriangle, CheckCircle2, FileSpreadsheet } from "lucide-react";
-import { z } from "zod";
-
 interface ImportStudentsDialogProps {
   onImported: () => void;
   children: React.ReactNode;
@@ -31,18 +29,14 @@ interface ParsedRow {
   _row: number;
 }
 
-const rowSchema = z.object({
-  student_number: z.string().trim().min(1).max(50),
-  first_name: z.string().trim().min(1).max(100),
-  last_name: z.string().trim().min(1).max(100),
-  date_of_birth: z.string().optional().or(z.literal("")),
-  gender: z.string().optional().or(z.literal("")),
-  parent_name: z.string().optional().or(z.literal("")),
-  parent_phone: z.string().optional().or(z.literal("")),
-  parent_email: z.string().email().optional().or(z.literal("")),
-  address: z.string().optional().or(z.literal("")),
-  class_name: z.string().optional().or(z.literal("")),
-});
+function validateRow(r: Record<string, string>): string | null {
+  if (!r.student_number) return "student_number requis";
+  if (r.student_number.length > 50) return "student_number trop long";
+  if (!r.first_name) return "first_name requis";
+  if (!r.last_name) return "last_name requis";
+  if (r.parent_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.parent_email)) return "parent_email invalide";
+  return null;
+}
 
 const HEADERS = [
   "student_number",
