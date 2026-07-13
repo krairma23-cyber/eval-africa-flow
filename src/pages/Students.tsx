@@ -283,12 +283,20 @@ export default function Students() {
         title={t('students.title')}
         subtitle={t('students.subtitle')}
         action={
-          <AddStudentDialog onStudentAdded={fetchStudents}>
-            <Button className="w-full sm:w-auto text-sm">
-              <Plus className="h-4 w-4 mr-2" />
-              {t('students.add')}
-            </Button>
-          </AddStudentDialog>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <ImportStudentsDialog onImported={fetchStudents}>
+              <Button variant="outline" className="w-full sm:w-auto text-sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Importer Excel
+              </Button>
+            </ImportStudentsDialog>
+            <AddStudentDialog onStudentAdded={fetchStudents}>
+              <Button className="w-full sm:w-auto text-sm">
+                <Plus className="h-4 w-4 mr-2" />
+                {t('students.add')}
+              </Button>
+            </AddStudentDialog>
+          </div>
         }
       />
 
