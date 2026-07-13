@@ -186,21 +186,23 @@ export function ImportStudentsDialog({ onImported, children }: ImportStudentsDia
 
         if (r.class_name && inserted) {
           const classId = classMap[r.class_name.trim().toLowerCase()];
-          if (classId) {
-            await supabase.from("enrollments").insert({
+          if (classId && academicYearId) {
+            await (supabase.from("enrollments") as any).insert({
               student_id: inserted.id,
               classroom_id: classId,
-              school_id: schoolId,
+              academic_year_id: academicYearId,
               status: "active",
             });
-          } else {
+          } else if (!classId) {
             errors.push(`Ligne ${r._row}: classe "${r.class_name}" introuvable — élève créé sans inscription`);
+          } else {
+            errors.push(`Ligne ${r._row}: aucune année académique active — élève créé sans inscription`);
           }
         }
         created++;
       } catch (err: any) {
         errors.push(`Ligne ${r._row}: ${err.message || "erreur inconnue"}`);
-        await logError("Bulk import row failed", err, { component: "ImportStudentsDialog", row: r._row });
+        await logError("Bulk import row failed", err, { component: "ImportStudentsDialog", action: `row_${r._row}` });
       }
       setProgress(Math.round(((i + 1) / rows.length) * 100));
     }
