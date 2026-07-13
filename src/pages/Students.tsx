@@ -10,6 +10,7 @@ import { Search, Plus, Users, Filter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
+import { ImportStudentsDialog } from "@/components/forms/ImportStudentsDialog";
 import { EditStudentDialog } from "@/components/forms/EditStudentDialog";
 import { EnrollStudentDialog } from "@/components/forms/EnrollStudentDialog";
 import { Pencil, UserPlus, DollarSign, Check, X, Mail, Trash2 } from "lucide-react";
