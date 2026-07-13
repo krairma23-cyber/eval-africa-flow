@@ -127,9 +127,9 @@ export function ImportStudentsDialog({ onImported, children }: ImportStudentsDia
         const rowNum = idx + 2;
         const normalized: any = {};
         HEADERS.forEach((h) => { normalized[h] = String(r[h] ?? "").trim(); });
-        const check = rowSchema.safeParse(normalized);
-        if (!check.success) {
-          errors.push(`Ligne ${rowNum}: ${check.error.issues[0].message} (${check.error.issues[0].path.join(".")})`);
+        const err = validateRow(normalized);
+        if (err) {
+          errors.push(`Ligne ${rowNum}: ${err}`);
           return;
         }
         parsed.push({ ...normalized, _row: rowNum });
