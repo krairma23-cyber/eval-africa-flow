@@ -59,6 +59,7 @@ export function ImportStudentsDialog({ onImported, children }: ImportStudentsDia
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<{ created: number; skipped: number; errors: string[] } | null>(null);
   const [schoolId, setSchoolId] = useState<string | null>(null);
+  const [academicYearId, setAcademicYearId] = useState<string | null>(null);
   const [classMap, setClassMap] = useState<Record<string, string>>({});
   const [planInfo, setPlanInfo] = useState<{ current: number; max: number } | null>(null);
   const { toast } = useToast();
@@ -68,16 +69,23 @@ export function ImportStudentsDialog({ onImported, children }: ImportStudentsDia
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      const { data: profile } = await supabase.from("profiles").select("school_id").eq("user_id", user.id).maybeSingle();
+      const { data: profile } = await (supabase.from("profiles") as any).select("school_id").eq("user_id", user.id).maybeSingle();
       if (!profile?.school_id) return;
       setSchoolId(profile.school_id);
 
-      const { data: classes } = await supabase.from("classrooms").select("id,name").eq("school_id", profile.school_id);
+      const { data: classes } = await (supabase.from("classrooms") as any).select("id,name").eq("school_id", profile.school_id);
       const map: Record<string, string> = {};
-      (classes || []).forEach((c: any) => { map[c.name.trim().toLowerCase()] = c.id; });
+      (classes || []).forEach((c: any) => { map[String(c.name).trim().toLowerCase()] = c.id; });
       setClassMap(map);
 
-      const { data: features } = await supabase.from("user_plan_features").select("max_students").eq("user_id", user.id).maybeSingle();
+      const { data: year } = await (supabase.from("academic_years") as any)
+        .select("id")
+        .eq("school_id", profile.school_id)
+        .eq("is_current", true)
+        .maybeSingle();
+      setAcademicYearId(year?.id || null);
+
+      const { data: features } = await (supabase.from("user_plan_features") as any).select("max_students").eq("user_id", user.id).maybeSingle();
       const { count } = await supabase.from("students").select("*", { count: "exact", head: true }).eq("school_id", profile.school_id);
       setPlanInfo({ current: count || 0, max: features?.max_students || 50 });
     })();
