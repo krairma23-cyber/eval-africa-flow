@@ -92,6 +92,27 @@ export const ContentGenerator = () => {
     });
   };
 
+  const downloadContent = () => {
+    if (!generatedContent) return;
+    const { content, type, metadata } = generatedContent;
+    const safe = (s: string) => (s || '').replace(/[^a-z0-9-_]/gi, '_');
+    const filename = `${type}_${safe(metadata.subject)}_${safe(metadata.level)}_${Date.now()}.md`;
+    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast({
+      title: "⬇️ Téléchargé",
+      description: filename,
+    });
+  };
+
+
   return (
     <div className="space-y-6">
       <div>
@@ -292,7 +313,7 @@ export const ContentGenerator = () => {
                         <Copy className="h-4 w-4 mr-2" />
                         Copier
                       </Button>
-                      <Button variant="outline" className="flex-1">
+                      <Button variant="outline" onClick={downloadContent} className="flex-1">
                         <Download className="h-4 w-4 mr-2" />
                         Télécharger
                       </Button>
