@@ -92,24 +92,83 @@ export const ContentGenerator = () => {
     });
   };
 
-  const downloadContent = () => {
+  const downloadContent = async () => {
     if (!generatedContent) return;
     const { content, type, metadata } = generatedContent;
     const safe = (s: string) => (s || '').replace(/[^a-z0-9-_]/gi, '_');
-    const filename = `${type}_${safe(metadata.subject)}_${safe(metadata.level)}_${Date.now()}.md`;
-    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast({
-      title: "⬇️ Téléchargé",
-      description: filename,
-    });
+    const filename = `${type}_${safe(metadata.subject)}_${safe(metadata.level)}_${Date.now()}.docx`;
+
+    try {
+      const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = await import('docx');
+
+      const typeLabel = type === 'assessment' ? 'Évaluation' : type === 'report' ? 'Rapport' : 'Analyse';
+
+      const lines = content.split('\n');
+      const bodyParagraphs = lines.map((line) => {
+        const trimmed = line.trimEnd();
+        if (/^#\s+/.test(trimmed)) {
+          return new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun(trimmed.replace(/^#\s+/, ''))] });
+        }
+        if (/^##\s+/.test(trimmed)) {
+          return new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun(trimmed.replace(/^##\s+/, ''))] });
+        }
+        if (/^###\s+/.test(trimmed)) {
+          return new Paragraph({ heading: HeadingLevel.HEADING_3, children: [new TextRun(trimmed.replace(/^###\s+/, ''))] });
+        }
+        if (/^[-*]\s+/.test(trimmed)) {
+          return new Paragraph({ bullet: { level: 0 }, children: [new TextRun(trimmed.replace(/^[-*]\s+/, ''))] });
+        }
+        // Handle bold **text**
+        const parts = trimmed.split(/(\*\*[^*]+\*\*)/g);
+        const runs = parts.filter(Boolean).map((p) =>
+          p.startsWith('**') && p.endsWith('**')
+            ? new TextRun({ text: p.slice(2, -2), bold: true })
+            : new TextRun(p)
+        );
+        return new Paragraph({ children: runs.length ? runs : [new TextRun('')] });
+      });
+
+      const doc = new Document({
+        creator: 'EvalScol Africa',
+        title: `${typeLabel} - ${metadata.subject}`,
+        sections: [{
+          children: [
+            new Paragraph({
+              heading: HeadingLevel.TITLE,
+              alignment: AlignmentType.CENTER,
+              children: [new TextRun(`${typeLabel} - ${metadata.subject}`)],
+            }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              children: [new TextRun({ text: `Niveau: ${metadata.level} • Difficulté: ${metadata.difficulty} • Durée: ${metadata.duration}`, italics: true, color: '666666' })],
+            }),
+            new Paragraph({ children: [new TextRun('')] }),
+            ...bodyParagraphs,
+          ],
+        }],
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "⬇️ Téléchargé",
+        description: filename,
+      });
+    } catch (e: any) {
+      toast({
+        title: "Erreur de téléchargement",
+        description: e?.message || "Impossible de générer le document Word.",
+        variant: "destructive",
+      });
+    }
   };
 
 
