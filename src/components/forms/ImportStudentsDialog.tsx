@@ -110,23 +110,51 @@ export function ImportStudentsDialog({ onImported, children }: ImportStudentsDia
     XLSX.writeFile(wb, "modele-import-eleves.xlsx");
   };
 
+  const parseDocxTable = async (file: File): Promise<any[]> => {
+    const mammoth = await import("mammoth");
+    const { value: html } = await mammoth.convertToHtml({ arrayBuffer: await file.arrayBuffer() });
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const table = doc.querySelector("table");
+    if (!table) throw new Error("no-table");
+    const trs = Array.from(table.querySelectorAll("tr"));
+    if (trs.length < 2) throw new Error("no-rows");
+    const headers = Array.from(trs[0].querySelectorAll("th,td")).map((c) => (c.textContent || "").trim().toLowerCase());
+    return trs.slice(1).map((tr) => {
+      const cells = Array.from(tr.querySelectorAll("td,th")).map((c) => (c.textContent || "").trim());
+      const obj: Record<string, string> = {};
+      headers.forEach((h, i) => { obj[h] = cells[i] ?? ""; });
+      return obj;
+    });
+  };
+
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setResult(null);
     setParseErrors([]);
+    const ext = file.name.split(".").pop()?.toLowerCase() || "";
     try {
-      const buf = await file.arrayBuffer();
-      const wb = XLSX.read(buf, { type: "array" });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const json: any[] = XLSX.utils.sheet_to_json(ws, { defval: "", raw: false });
+      let json: any[] = [];
+      if (ext === "docx") {
+        json = await parseDocxTable(file);
+      } else if (ext === "csv" || ext === "txt") {
+        const text = await file.text();
+        const wb = XLSX.read(text, { type: "string", raw: false });
+        json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "", raw: false });
+      } else {
+        const buf = await file.arrayBuffer();
+        const wb = XLSX.read(buf, { type: "array" });
+        json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: "", raw: false });
+      }
 
       const errors: string[] = [];
       const parsed: ParsedRow[] = [];
       json.forEach((r, idx) => {
         const rowNum = idx + 2;
+        const lower: Record<string, string> = {};
+        Object.keys(r || {}).forEach((k) => { lower[String(k).trim().toLowerCase()] = String((r as any)[k] ?? "").trim(); });
         const normalized: any = {};
-        HEADERS.forEach((h) => { normalized[h] = String(r[h] ?? "").trim(); });
+        HEADERS.forEach((h) => { normalized[h] = lower[h] ?? ""; });
         const err = validateRow(normalized);
         if (err) {
           errors.push(`Ligne ${rowNum}: ${err}`);
@@ -136,10 +164,17 @@ export function ImportStudentsDialog({ onImported, children }: ImportStudentsDia
       });
       setRows(parsed);
       setParseErrors(errors);
-    } catch (err) {
-      toast({ title: "Erreur", description: "Impossible de lire le fichier Excel", variant: "destructive" });
+      if (parsed.length === 0 && errors.length === 0) {
+        toast({ title: "Aucune donnée", description: "Aucune ligne exploitable trouvée dans le fichier.", variant: "destructive" });
+      }
+    } catch (err: any) {
+      const msg = err?.message === "no-table" || err?.message === "no-rows"
+        ? "Le document Word doit contenir un tableau avec une ligne d'en-têtes (student_number, first_name, last_name…)."
+        : "Impossible de lire le fichier (formats acceptés : .xlsx, .xls, .csv, .docx)";
+      toast({ title: "Erreur", description: msg, variant: "destructive" });
     }
   };
+
 
   const runImport = async () => {
     if (!schoolId || rows.length === 0) return;
@@ -248,10 +283,11 @@ export function ImportStudentsDialog({ onImported, children }: ImportStudentsDia
           </div>
 
           <div>
-            <Label htmlFor="file">Fichier Excel (.xlsx)</Label>
-            <Input id="file" type="file" accept=".xlsx,.xls" onChange={handleFile} disabled={importing} />
+            <Label htmlFor="file">Fichier élèves (.xlsx, .xls, .csv, .docx)</Label>
+            <Input id="file" type="file" accept=".xlsx,.xls,.csv,.docx" onChange={handleFile} disabled={importing} />
             <p className="text-xs text-muted-foreground mt-1">
-              Colonnes requises : student_number, first_name, last_name. Optionnelles : date_of_birth (YYYY-MM-DD), gender (M/F), parent_name, parent_phone, parent_email, address, class_name.
+              Excel/CSV : première ligne = en-têtes. Word (.docx) : un tableau avec une ligne d'en-têtes. Colonnes requises : student_number, first_name, last_name. Optionnelles : date_of_birth (YYYY-MM-DD), gender (M/F), parent_name, parent_phone, parent_email, address, class_name.
+
             </p>
           </div>
 
