@@ -283,10 +283,11 @@ export function ImportStudentsDialog({ onImported, children }: ImportStudentsDia
           </div>
 
           <div>
-            <Label htmlFor="file">Fichier Excel (.xlsx)</Label>
-            <Input id="file" type="file" accept=".xlsx,.xls" onChange={handleFile} disabled={importing} />
+            <Label htmlFor="file">Fichier élèves (.xlsx, .xls, .csv, .docx)</Label>
+            <Input id="file" type="file" accept=".xlsx,.xls,.csv,.docx" onChange={handleFile} disabled={importing} />
             <p className="text-xs text-muted-foreground mt-1">
-              Colonnes requises : student_number, first_name, last_name. Optionnelles : date_of_birth (YYYY-MM-DD), gender (M/F), parent_name, parent_phone, parent_email, address, class_name.
+              Excel/CSV : première ligne = en-têtes. Word (.docx) : un tableau avec une ligne d'en-têtes. Colonnes requises : student_number, first_name, last_name. Optionnelles : date_of_birth (YYYY-MM-DD), gender (M/F), parent_name, parent_phone, parent_email, address, class_name.
+
             </p>
           </div>
 
