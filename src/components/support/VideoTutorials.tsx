@@ -53,6 +53,16 @@ export const videos = [
     title: "Créer des évaluations",
     url: "https://youtu.be/0treqN-exHM",
   },
+  {
+    id: "VM5bH0pn8Nw",
+    title: "PUB EvalScol Africa la nouvelle gestion scolaire avancée",
+    url: "https://www.youtube.com/watch?v=VM5bH0pn8Nw",
+  },
+  {
+    id: "CgR3WoJ5Q64",
+    title: "PUB de gestion scolaire avance ''EvalScol Africa ''",
+    url: "https://www.youtube.com/watch?v=CgR3WoJ5Q64",
+  },
 ];
 
 export interface VideoTutorialsProps {
