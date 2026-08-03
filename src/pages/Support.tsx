@@ -11,7 +11,6 @@ import {
   Send, 
   Search,
   BookOpen,
-  Video,
   Mail,
   Phone,
   Clock,
@@ -30,6 +29,8 @@ import { Label } from "@/components/ui/label";
 
 import { Database } from "@/integrations/supabase/types";
 import LiveChat from "@/components/support/LiveChat";
+import VideoTutorials from "@/components/support/VideoTutorials";
+
 
 type Ticket = Database['public']['Tables']['support_tickets']['Row'];
 type FAQ = Database['public']['Tables']['support_faqs']['Row'];
@@ -499,6 +500,12 @@ export default function Support() {
         </TabsContent>
 
         <TabsContent value="resources" className="space-y-6">
+          <VideoTutorials
+            title="Tutoriels vidéo"
+            description="Apprenez en regardant nos vidéos tutorielles YouTube."
+            columns={3}
+          />
+
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <Card>
               <CardHeader>
@@ -535,46 +542,6 @@ export default function Support() {
                   >
                     <BookOpen className="h-4 w-4 mr-2 shrink-0" />
                     <span className="truncate">Documentation API</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Video className="h-5 w-5" />
-                  Tutoriels vidéo
-                </CardTitle>
-                <CardDescription>
-                  Apprenez en regardant nos vidéos
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start text-sm"
-                    onClick={() => window.open('https://www.youtube.com/watch?v=evalscol-setup', '_blank')}
-                  >
-                    <Video className="h-4 w-4 mr-2 shrink-0" />
-                    <span className="truncate">Configuration initiale</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start text-sm"
-                    onClick={() => window.open('https://www.youtube.com/watch?v=evalscol-evaluations', '_blank')}
-                  >
-                    <Video className="h-4 w-4 mr-2 shrink-0" />
-                    <span className="truncate">Créer des évaluations</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start text-sm"
-                    onClick={() => window.open('https://www.youtube.com/watch?v=evalscol-bulletins', '_blank')}
-                  >
-                    <Video className="h-4 w-4 mr-2 shrink-0" />
-                    <span className="truncate">Générer des bulletins</span>
                   </Button>
                 </div>
               </CardContent>

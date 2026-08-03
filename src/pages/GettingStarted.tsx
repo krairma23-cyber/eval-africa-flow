@@ -15,6 +15,8 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import Seo from "@/components/Seo";
+import VideoTutorials from "@/components/support/VideoTutorials";
+
 
 const steps = [
   {
@@ -121,6 +123,14 @@ export default function GettingStarted() {
               </CardContent>
             </Card>
           ))}
+        </section>
+
+        <section className="mb-12">
+          <VideoTutorials
+            title="Tutoriels vidéo"
+            description="Préférez apprendre en image ? Suivez nos tutoriels YouTube pour configurer EvalScol Africa pas à pas."
+            columns={2}
+          />
         </section>
 
         <Card className="bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20 mb-8">
