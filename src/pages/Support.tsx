@@ -541,45 +541,11 @@ export default function Support() {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Video className="h-5 w-5" />
-                  Tutoriels vidéo
-                </CardTitle>
-                <CardDescription>
-                  Apprenez en regardant nos vidéos
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start text-sm"
-                    onClick={() => window.open('https://www.youtube.com/watch?v=evalscol-setup', '_blank')}
-                  >
-                    <Video className="h-4 w-4 mr-2 shrink-0" />
-                    <span className="truncate">Configuration initiale</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start text-sm"
-                    onClick={() => window.open('https://www.youtube.com/watch?v=evalscol-evaluations', '_blank')}
-                  >
-                    <Video className="h-4 w-4 mr-2 shrink-0" />
-                    <span className="truncate">Créer des évaluations</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start text-sm"
-                    onClick={() => window.open('https://www.youtube.com/watch?v=evalscol-bulletins', '_blank')}
-                  >
-                    <Video className="h-4 w-4 mr-2 shrink-0" />
-                    <span className="truncate">Générer des bulletins</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <VideoTutorials
+              title="Tutoriels vidéo"
+              description="Apprenez en regardant nos vidéos tutorielles YouTube."
+              columns={3}
+            />
 
             <Card>
               <CardHeader>
