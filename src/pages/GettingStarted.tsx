@@ -15,6 +15,8 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import Seo from "@/components/Seo";
+import VideoTutorials from "@/components/support/VideoTutorials";
+
 
 const steps = [
   {
