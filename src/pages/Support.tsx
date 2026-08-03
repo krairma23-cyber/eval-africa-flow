@@ -11,7 +11,6 @@ import {
   Send, 
   Search,
   BookOpen,
-  Video,
   Mail,
   Phone,
   Clock,
@@ -30,6 +29,8 @@ import { Label } from "@/components/ui/label";
 
 import { Database } from "@/integrations/supabase/types";
 import LiveChat from "@/components/support/LiveChat";
+import VideoTutorials from "@/components/support/VideoTutorials";
+
 
 type Ticket = Database['public']['Tables']['support_tickets']['Row'];
 type FAQ = Database['public']['Tables']['support_faqs']['Row'];
