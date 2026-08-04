@@ -239,10 +239,20 @@ export default function Teachers() {
         </Card>
       ) : (
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredTeachers.map((teacher) => (
-            <Card key={teacher.id} className="hover:shadow-md transition-shadow overflow-hidden">
+          {filteredTeachers.map((teacher) => {
+            const classes = teacherClasses[teacher.id] || [];
+            const accent = classes[0]?.color || 'hsl(var(--muted-foreground))';
+            return (
+            <Card
+              key={teacher.id}
+              className="hover:shadow-md transition-shadow overflow-hidden border-l-4"
+              style={{ borderLeftColor: accent }}
+            >
               <CardHeader className="flex flex-col items-center pb-3 pt-4 px-3">
-                <Avatar className="h-14 w-14 sm:h-16 sm:w-16 mb-2">
+                <Avatar
+                  className="h-14 w-14 sm:h-16 sm:w-16 mb-2 ring-2 ring-offset-2 ring-offset-background"
+                  style={{ ['--tw-ring-color' as any]: accent }}
+                >
                   <AvatarImage src={teacher.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${teacher.first_name} ${teacher.last_name}`} />
                   <AvatarFallback>{teacher.first_name[0]}{teacher.last_name[0]}</AvatarFallback>
                 </Avatar>
@@ -255,7 +265,25 @@ export default function Teachers() {
                 <CardDescription className="text-xs text-center">
                   N° enseignant: {teacher.teacher_number}
                 </CardDescription>
+                {classes.length > 0 && (
+                  <div className="flex flex-wrap justify-center gap-1 mt-2">
+                    {classes.slice(0, 4).map((c) => (
+                      <Badge
+                        key={c.id}
+                        variant="outline"
+                        className="text-xs"
+                        style={{ borderColor: c.color, color: c.color }}
+                      >
+                        {c.name}
+                      </Badge>
+                    ))}
+                    {classes.length > 4 && (
+                      <Badge variant="outline" className="text-xs">+{classes.length - 4}</Badge>
+                    )}
+                  </div>
+                )}
               </CardHeader>
+
               <CardContent className="space-y-1.5 pt-0 pb-4 px-3">
                 {teacher.email && (
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
