@@ -49,9 +49,54 @@ export default function Support() {
   });
   const { toast } = useToast();
 
+  type ServiceState = "checking" | "up" | "down";
+  const [serviceStatus, setServiceStatus] = useState<Record<string, ServiceState>>({
+    api: "checking",
+    db: "checking",
+    ai: "checking",
+  });
+  const [lastCheck, setLastCheck] = useState<Date | null>(null);
+
+  const checkServices = async () => {
+    setServiceStatus({ api: "checking", db: "checking", ai: "checking" });
+    const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+
+    const [api, db, ai] = await Promise.all([
+      (async (): Promise<ServiceState> => {
+        try {
+          if (!url) return "down";
+          const res = await fetch(`${url}/auth/v1/health`, {
+            headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? "" },
+          });
+          return res.ok ? "up" : "down";
+        } catch {
+          return "down";
+        }
+      })(),
+      (async (): Promise<ServiceState> => {
+        const { error } = await supabase.from("support_faqs").select("id").limit(1);
+        return error ? "down" : "up";
+      })(),
+      (async (): Promise<ServiceState> => {
+        try {
+          if (!url) return "down";
+          const res = await fetch(`${url}/functions/v1/ai-assistant-chat`, { method: "OPTIONS" });
+          return res.status < 500 ? "up" : "down";
+        } catch {
+          return "down";
+        }
+      })(),
+    ]);
+
+    setServiceStatus({ api, db, ai });
+    setLastCheck(new Date());
+  };
+
   useEffect(() => {
     fetchSupportData();
+    checkServices();
   }, []);
+
 
   const fetchSupportData = async () => {
     try {
