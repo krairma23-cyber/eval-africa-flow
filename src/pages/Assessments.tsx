@@ -78,7 +78,7 @@ export default function Assessments() {
           assessment_types(name),
           classroom_subjects(
             subjects(name),
-            classrooms(name)
+            classrooms(name, color)
           )
         `)
         .order("assessment_date", { ascending: false });
