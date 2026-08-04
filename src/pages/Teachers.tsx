@@ -345,7 +345,9 @@ export default function Teachers() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
+
         </div>
       )}
     </div>
