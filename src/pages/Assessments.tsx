@@ -337,7 +337,8 @@ export default function Assessments() {
                 ))}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
