@@ -37,9 +37,23 @@ interface Assessment {
     };
     classrooms: {
       name: string;
+      color?: string | null;
     };
   };
 }
+
+// Utilitaires couleur : thème dérivé de la couleur de la classe
+const hexToRgb = (hex: string) => {
+  const h = hex.replace("#", "");
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const num = parseInt(full, 16);
+  return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+};
+const withAlpha = (hex: string, alpha: number) => {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 
 export default function Assessments() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
@@ -64,7 +78,7 @@ export default function Assessments() {
           assessment_types(name),
           classroom_subjects(
             subjects(name),
-            classrooms(name)
+            classrooms(name, color)
           )
         `)
         .order("assessment_date", { ascending: false });
@@ -216,23 +230,43 @@ export default function Assessments() {
         </div>
       ) : (
         <div className="space-y-6">
-          {Object.entries(assessmentsByClassroom).map(([classroomName, classroomAssessments]) => (
+          {Object.entries(assessmentsByClassroom).map(([classroomName, classroomAssessments]) => {
+            const classColor =
+              classroomAssessments[0]?.classroom_subjects?.classrooms?.color || "#6366f1";
+            return (
             <div key={classroomName} className="space-y-3">
               <div className="flex items-center gap-2 flex-wrap">
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-lg min-w-0">
-                  <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
-                  <h2 className="text-base sm:text-xl font-semibold truncate">{classroomName}</h2>
+                <div
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg min-w-0 border-l-4"
+                  style={{ backgroundColor: withAlpha(classColor, 0.12), borderLeftColor: classColor }}
+                >
+                  <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" style={{ color: classColor }} />
+                  <h2 className="text-base sm:text-xl font-semibold truncate" style={{ color: classColor }}>
+                    {classroomName}
+                  </h2>
                 </div>
                 <Separator className="flex-1 hidden sm:block" />
-                <Badge variant="secondary" className="px-2 py-1 text-xs ml-auto flex-shrink-0">
+                <Badge
+                  variant="secondary"
+                  className="px-2 py-1 text-xs ml-auto flex-shrink-0"
+                  style={{ backgroundColor: withAlpha(classColor, 0.18), color: classColor }}
+                >
                   {classroomAssessments.length} évaluation{classroomAssessments.length > 1 ? 's' : ''}
                 </Badge>
               </div>
               
               <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {classroomAssessments.map((assessment) => (
-                  <Card key={assessment.id} className="hover:shadow-md transition-shadow overflow-hidden">
+                  <Card
+                    key={assessment.id}
+                    className="hover:shadow-md transition-shadow overflow-hidden border-l-4"
+                    style={{
+                      borderLeftColor: assessment.classroom_subjects?.classrooms?.color || classColor,
+                      backgroundColor: withAlpha(assessment.classroom_subjects?.classrooms?.color || classColor, 0.05),
+                    }}
+                  >
                     <CardHeader className="p-3 sm:p-4">
+
                       <CardTitle className="flex items-center justify-between gap-2 text-base sm:text-lg">
                         <span className="truncate">{assessment.title}</span>
                         <div className="flex gap-1 items-center flex-shrink-0">
@@ -303,7 +337,8 @@ export default function Assessments() {
                 ))}
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
