@@ -49,9 +49,54 @@ export default function Support() {
   });
   const { toast } = useToast();
 
+  type ServiceState = "checking" | "up" | "down";
+  const [serviceStatus, setServiceStatus] = useState<Record<string, ServiceState>>({
+    api: "checking",
+    db: "checking",
+    ai: "checking",
+  });
+  const [lastCheck, setLastCheck] = useState<Date | null>(null);
+
+  const checkServices = async () => {
+    setServiceStatus({ api: "checking", db: "checking", ai: "checking" });
+    const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+
+    const [api, db, ai] = await Promise.all([
+      (async (): Promise<ServiceState> => {
+        try {
+          if (!url) return "down";
+          const res = await fetch(`${url}/auth/v1/health`, {
+            headers: { apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? "" },
+          });
+          return res.ok ? "up" : "down";
+        } catch {
+          return "down";
+        }
+      })(),
+      (async (): Promise<ServiceState> => {
+        const { error } = await supabase.from("support_faqs").select("id").limit(1);
+        return error ? "down" : "up";
+      })(),
+      (async (): Promise<ServiceState> => {
+        try {
+          if (!url) return "down";
+          const res = await fetch(`${url}/functions/v1/ai-assistant-chat`, { method: "OPTIONS" });
+          return res.status < 500 ? "up" : "down";
+        } catch {
+          return "down";
+        }
+      })(),
+    ]);
+
+    setServiceStatus({ api, db, ai });
+    setLastCheck(new Date());
+  };
+
   useEffect(() => {
     fetchSupportData();
+    checkServices();
   }, []);
+
 
   const fetchSupportData = async () => {
     try {
@@ -558,35 +603,49 @@ export default function Support() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-sm">API EvalScol</span>
-                  <Badge className="bg-green-100 text-green-800 shrink-0">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    Opérationnel
-                  </Badge>
-                </div>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-sm">Base de données</span>
-                  <Badge className="bg-green-100 text-green-800 shrink-0">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    Opérationnel
-                  </Badge>
-                </div>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-sm">Assistant IA</span>
-                  <Badge className="bg-green-100 text-green-800 shrink-0">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    Opérationnel
-                  </Badge>
-                </div>
-                <Button 
-                  variant="outline" 
+                {([
+                  { key: "api", label: "API EvalScol" },
+                  { key: "db", label: "Base de données" },
+                  { key: "ai", label: "Assistant IA" },
+                ] as const).map(({ key, label }) => {
+                  const state = serviceStatus[key];
+                  return (
+                    <div key={key} className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-sm">{label}</span>
+                      {state === "checking" ? (
+                        <Badge variant="secondary" className="shrink-0">
+                          <Clock className="h-3 w-3 mr-1 animate-pulse" />
+                          Vérification…
+                        </Badge>
+                      ) : state === "up" ? (
+                        <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 shrink-0 hover:bg-emerald-500/20">
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Opérationnel
+                        </Badge>
+                      ) : (
+                        <Badge variant="destructive" className="shrink-0">
+                          <AlertCircle className="h-3 w-3 mr-1" />
+                          Indisponible
+                        </Badge>
+                      )}
+                    </div>
+                  );
+                })}
+                {lastCheck && (
+                  <p className="text-xs text-muted-foreground">
+                    Dernière vérification : {lastCheck.toLocaleTimeString("fr-FR")}
+                  </p>
+                )}
+                <Button
+                  variant="outline"
                   className="w-full"
-                  onClick={() => window.open('https://status.evalscol.com', '_blank')}
+                  onClick={checkServices}
+                  disabled={Object.values(serviceStatus).some((s) => s === "checking")}
                 >
-                  Voir l'état complet
+                  Actualiser l'état
                 </Button>
               </CardContent>
+
             </Card>
           </div>
         </TabsContent>
