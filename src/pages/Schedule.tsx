@@ -29,6 +29,7 @@ interface Schedule {
   room_number: string | null;
   classrooms: {
     name: string;
+    color?: string | null;
   };
   subjects: {
     name: string;
@@ -52,7 +53,21 @@ const DAYS = [
 interface Classroom {
   id: string;
   name: string;
+  color?: string | null;
 }
+
+// Utilitaires couleur : dérivent un thème lisible depuis la couleur de la classe
+const hexToRgb = (hex: string) => {
+  const h = hex.replace("#", "");
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const num = parseInt(full, 16);
+  return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+};
+const withAlpha = (hex: string, alpha: number) => {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 
 export default function Schedule() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
@@ -72,7 +87,7 @@ export default function Schedule() {
         .from('schedules')
         .select(`
           *,
-          classrooms (name),
+          classrooms (name, color),
           subjects (name),
           teachers (first_name, last_name)
         `)
@@ -96,7 +111,7 @@ export default function Schedule() {
     try {
       const { data, error } = await supabase
         .from('classrooms')
-        .select('id, name')
+        .select("id, name, color")
         .order('name');
 
       if (error) throw error;
@@ -236,17 +251,27 @@ export default function Schedule() {
                     </td>
                     {[1, 2, 3, 4, 5].map((day) => {
                       const schedule = getScheduleForDayAndTime(day, timeSlot);
+                      const color = schedule?.classrooms?.color || "#6366f1";
                       return (
                         <td key={day} className="border p-1">
                           {schedule ? (
-                            <div className="space-y-1">
+                            <div
+                              className="space-y-1 rounded-md p-1.5 border-l-4"
+                              style={{
+                                backgroundColor: withAlpha(color, 0.12),
+                                borderLeftColor: color,
+                              }}
+                            >
                               <div className="space-y-0.5">
-                                <div className="font-semibold text-primary text-xs">
+                                <div className="font-semibold text-xs" style={{ color }}>
                                   {schedule.subjects.name}
                                 </div>
-                                <div className="text-[10px] text-muted-foreground">
+                                <span
+                                  className="inline-block rounded-full px-1.5 py-0.5 text-[9px] font-medium"
+                                  style={{ backgroundColor: withAlpha(color, 0.2), color }}
+                                >
                                   {schedule.classrooms.name}
-                                </div>
+                                </span>
                                 <div className="text-[10px]">
                                   {schedule.teachers.first_name}{" "}
                                   {schedule.teachers.last_name}
@@ -256,6 +281,7 @@ export default function Schedule() {
                                   {schedule.room_number && ` • ${schedule.room_number}`}
                                 </div>
                               </div>
+
                               <EditScheduleDialog schedule={schedule} onScheduleUpdated={fetchSchedules}>
                                 <Button variant="outline" size="sm" className="w-full h-6 text-[10px] px-1">
                                   <Edit className="h-2.5 w-2.5 mr-0.5" />
