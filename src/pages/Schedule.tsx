@@ -53,7 +53,21 @@ const DAYS = [
 interface Classroom {
   id: string;
   name: string;
+  color?: string | null;
 }
+
+// Utilitaires couleur : dérivent un thème lisible depuis la couleur de la classe
+const hexToRgb = (hex: string) => {
+  const h = hex.replace("#", "");
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const num = parseInt(full, 16);
+  return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+};
+const withAlpha = (hex: string, alpha: number) => {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 
 export default function Schedule() {
   const [schedules, setSchedules] = useState<Schedule[]>([]);
