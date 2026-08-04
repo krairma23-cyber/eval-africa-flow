@@ -87,7 +87,7 @@ export default function Schedule() {
         .from('schedules')
         .select(`
           *,
-          classrooms (name),
+          classrooms (name, color),
           subjects (name),
           teachers (first_name, last_name)
         `)
@@ -111,7 +111,7 @@ export default function Schedule() {
     try {
       const { data, error } = await supabase
         .from('classrooms')
-        .select('id, name')
+        .select("id, name, color")
         .order('name');
 
       if (error) throw error;
