@@ -56,15 +56,45 @@ interface Teacher {
   created_at: string;
 }
 
+interface TeacherClass {
+  id: string;
+  name: string;
+  color: string;
+}
+
 export default function Teachers() {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [teacherClasses, setTeacherClasses] = useState<Record<string, TeacherClass[]>>({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
     fetchTeachers();
+    fetchTeacherClasses();
   }, []);
+
+  const fetchTeacherClasses = async () => {
+    const { data, error } = await supabase
+      .from('classroom_subjects')
+      .select('teacher_id, classrooms(id, name, color)');
+
+    if (error || !data) return;
+
+    const map: Record<string, TeacherClass[]> = {};
+    data.forEach((row: any) => {
+      if (!row.teacher_id || !row.classrooms) return;
+      const list = map[row.teacher_id] || (map[row.teacher_id] = []);
+      if (!list.some((c) => c.id === row.classrooms.id)) {
+        list.push({
+          id: row.classrooms.id,
+          name: row.classrooms.name,
+          color: row.classrooms.color || 'hsl(var(--primary))',
+        });
+      }
+    });
+    setTeacherClasses(map);
+  };
 
   const fetchTeachers = async () => {
     try {
@@ -72,6 +102,7 @@ export default function Teachers() {
         .from('teachers')
         .select('*')
         .order('created_at', { ascending: false });
+
 
       if (error) {
         await logError('Failed to fetch teachers', error, {
