@@ -245,6 +245,18 @@ export default function LiveChat({ onClose }: LiveChatProps) {
       <CardContent className="flex-1 flex flex-col p-0">
         <ScrollArea className="flex-1 p-4">
           <div className="space-y-4">
+            <div className="flex gap-2 justify-start">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                  SUP
+                </AvatarFallback>
+              </Avatar>
+              <div className="max-w-[75%] rounded-lg p-3 bg-muted">
+                <p className="text-sm whitespace-pre-wrap break-words">
+                  Bienvenue sur le support EvalScol Africa ! 👋{"\n"}Comment pouvons-nous vous aider aujourd'hui ?
+                </p>
+              </div>
+            </div>
             {messages.map((message) => (
               <div
                 key={message.id}
