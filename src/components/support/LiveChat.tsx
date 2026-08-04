@@ -130,17 +130,7 @@ export default function LiveChat({ onClose }: LiveChatProps) {
       if (error) throw error;
 
       setSession(data);
-      
-      // Send welcome message from support bot
-      await supabase
-        .from('support_chat_messages')
-        .insert({
-          session_id: data.id,
-          sender_id: 'system',
-          message: "Bienvenue sur le support EvalScol Africa ! 👋\nComment pouvons-nous vous aider aujourd'hui ?",
-          is_admin: true
-        });
-
+      setMessages([]);
     } catch (error) {
       console.error('Error creating session:', error);
       throw error;
