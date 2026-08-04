@@ -29,6 +29,7 @@ interface Schedule {
   room_number: string | null;
   classrooms: {
     name: string;
+    color?: string | null;
   };
   subjects: {
     name: string;
