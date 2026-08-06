@@ -361,6 +361,162 @@ export default function Reports() {
     }
   };
 
+  const getSchoolName = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return "École";
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('school_id')
+        .eq('user_id', user.id)
+        .single();
+      if (!profile?.school_id) return "École";
+      const { data: schoolData } = await supabase
+        .from('schools')
+        .select('name')
+        .eq('id', profile.school_id)
+        .single();
+      return schoolData?.name || "École";
+    } catch {
+      return "École";
+    }
+  };
+
+  const exportToWord = async (grade: StudentGrade) => {
+    try {
+      const {
+        Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType,
+        Table: DocxTable, TableRow: DocxTableRow, TableCell: DocxTableCell,
+        WidthType, ShadingType, BorderStyle,
+      } = await import('docx');
+
+      const schoolName = await getSchoolName();
+
+      let appreciation = "Insuffisant";
+      if (grade.overall_average >= 16) appreciation = "Excellent";
+      else if (grade.overall_average >= 14) appreciation = "Très bien";
+      else if (grade.overall_average >= 12) appreciation = "Bien";
+      else if (grade.overall_average >= 10) appreciation = "Passable";
+
+      const border = { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" };
+      const borders = { top: border, bottom: border, left: border, right: border };
+      const widths = [4160, 1600, 1800, 1800];
+      const margins = { top: 80, bottom: 80, left: 120, right: 120 };
+
+      const cell = (text: string, opts: { bold?: boolean; index: number; center?: boolean; fill?: string }) =>
+        new DocxTableCell({
+          borders,
+          margins,
+          width: { size: widths[opts.index], type: WidthType.DXA },
+          shading: opts.fill ? { fill: opts.fill, type: ShadingType.CLEAR } : undefined,
+          children: [new Paragraph({
+            alignment: opts.center ? AlignmentType.CENTER : AlignmentType.LEFT,
+            children: [new TextRun({ text, bold: opts.bold })],
+          })],
+        });
+
+      const headerRow = new DocxTableRow({
+        children: ["Matière", "Note /20", "Coefficient", "Note pondérée"].map((t, i) =>
+          cell(t, { bold: true, index: i, center: i > 0, fill: "D5E8F0" })
+        ),
+      });
+
+      const bodyRows = grade.subject_grades.map((subject) => new DocxTableRow({
+        children: [
+          cell(subject.subject_name, { index: 0 }),
+          cell(subject.avg_score.toFixed(2), { index: 1, center: true }),
+          cell(subject.coefficient.toString(), { index: 2, center: true }),
+          cell(subject.weighted_score.toFixed(2), { index: 3, center: true }),
+        ],
+      }));
+
+      const doc = new Document({
+        creator: 'EvalScol Africa',
+        title: `Bulletin - ${grade.student_first_name} ${grade.student_last_name}`,
+        styles: { default: { document: { run: { font: "Arial", size: 22 } } } },
+        sections: [{
+          properties: {
+            page: {
+              size: { width: 11906, height: 16838 },
+              margin: { top: 1134, right: 1134, bottom: 1134, left: 1134 },
+            },
+          },
+          children: [
+            new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: schoolName, bold: true, size: 24 })] }),
+            new Paragraph({
+              alignment: AlignmentType.CENTER,
+              heading: HeadingLevel.HEADING_1,
+              children: [new TextRun({ text: "BULLETIN SCOLAIRE", bold: true, size: 36 })],
+            }),
+            new Paragraph({ children: [new TextRun("")] }),
+            new Paragraph({ children: [new TextRun({ text: `Élève : ${grade.student_first_name} ${grade.student_last_name}` })] }),
+            new Paragraph({ children: [new TextRun({ text: `Classe : ${grade.classroom_name}` })] }),
+            new Paragraph({ children: [new TextRun({ text: `Période : ${grade.term_name}` })] }),
+            ...(grade.rank && grade.total_students
+              ? [new Paragraph({ children: [new TextRun({ text: `Rang : ${grade.rank}/${grade.total_students}` })] })]
+              : []),
+            new Paragraph({ children: [new TextRun("")] }),
+            new Paragraph({
+              children: [new TextRun({
+                text: `Moyenne Générale : ${grade.overall_average.toFixed(2)}/20`,
+                bold: true, size: 28,
+                color: grade.overall_average >= 10 ? "008000" : "C00000",
+              })],
+            }),
+            new Paragraph({ children: [new TextRun({ text: `Appréciation : ${appreciation}`, italics: true })] }),
+            new Paragraph({ children: [new TextRun("")] }),
+            new DocxTable({
+              width: { size: 9360, type: WidthType.DXA },
+              columnWidths: widths,
+              rows: [headerRow, ...bodyRows],
+            }),
+            new Paragraph({ children: [new TextRun("")] }),
+            new Paragraph({ children: [new TextRun({ text: "Observations de l'enseignant :", bold: true })] }),
+            new Paragraph({ children: [new TextRun("_______________________________________________________________")] }),
+            new Paragraph({ children: [new TextRun("_______________________________________________________________")] }),
+            new Paragraph({ children: [new TextRun("")] }),
+            new Paragraph({
+              alignment: AlignmentType.RIGHT,
+              children: [new TextRun({ text: "Signature de la direction : ______________________" })],
+            }),
+            new Paragraph({
+              children: [new TextRun({ text: `Généré le ${new Date().toLocaleDateString("fr-FR")}`, size: 16, color: "666666" })],
+            }),
+          ],
+        }],
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Bulletin_${grade.student_first_name}_${grade.student_last_name}_${grade.term_name}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Succès",
+        description: `Bulletin Word de ${grade.student_first_name} ${grade.student_last_name} téléchargé`,
+      });
+    } catch (error) {
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to generate Word bulletin', error, {
+        component: 'Reports',
+        action: 'GENERATE_DOCX',
+        metadata: { studentId: grade.student_id, termId: grade.term_id },
+      });
+      toast({
+        title: "Erreur",
+        description: "Impossible de générer le document Word",
+        variant: "destructive",
+      });
+    }
+  };
+
+
+
   if (loading) {
     return (
       <div className="space-y-6">
