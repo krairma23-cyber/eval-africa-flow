@@ -662,8 +662,18 @@ export default function Reports() {
                         onClick={() => exportToPDF(grade)}
                       >
                         <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
-                        <span className="truncate">Télécharger</span>
+                        <span className="truncate">PDF</span>
                       </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1 h-8 text-xs sm:text-sm"
+                        onClick={() => exportToWord(grade)}
+                      >
+                        <FileDown className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                        <span className="truncate">Word</span>
+                      </Button>
+
                       <DeleteConfirmButton
                         table="assessment_results"
                         id={`${grade.student_id}-${grade.term_id}`}
