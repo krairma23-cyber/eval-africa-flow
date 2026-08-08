@@ -23,12 +23,12 @@ const FEEDS: { category: string; query: string }[] = [
 function decode(s: string): string {
   return s
     .replace(/<!\[CDATA\[(.*?)\]\]>/gs, '$1')
-    .replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, '&')
     .replace(/<[^>]+>/g, '')
     .trim();
 }
