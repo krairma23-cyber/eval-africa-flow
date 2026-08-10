@@ -329,6 +329,73 @@ export default function ParentPortal() {
     }
   };
 
+  const downloadReceipt = async (payment: StudentPaymentInfo) => {
+    try {
+      const { data: student } = await supabase
+        .from('students')
+        .select('school_id, classrooms(name)')
+        .eq('id', payment.student_id)
+        .maybeSingle();
+
+      let schoolName = "Établissement scolaire";
+      if (student?.school_id) {
+        const { data: school } = await supabase
+          .from('schools')
+          .select('name')
+          .eq('id', student.school_id)
+          .maybeSingle();
+        if (school?.name) schoolName = school.name;
+      }
+
+      const { data: transactions } = await supabase
+        .from('payment_transactions')
+        .select('amount, payment_date, payment_method, payment_reference')
+        .eq('student_id', payment.student_id)
+        .eq('status', 'completed')
+        .order('payment_date', { ascending: true });
+
+      const payments = (transactions ?? []).map((t) => ({
+        date: t.payment_date as string,
+        amount: Number(t.amount),
+        method: t.payment_method,
+        reference: t.payment_reference,
+      }));
+
+      if (payments.length === 0 && payment.amount_paid > 0) {
+        payments.push({
+          date: new Date().toISOString(),
+          amount: payment.amount_paid,
+          method: null,
+          reference: null,
+        });
+      }
+
+      if (payments.length === 0) {
+        toast({
+          title: "Aucun paiement",
+          description: "Aucun paiement enregistré pour cet élève.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      generateReceiptPdf({
+        schoolName,
+        studentName: payment.student_name,
+        className: (student as any)?.classrooms?.name ?? null,
+        payments,
+        tuitionFee: payment.tuition_fee,
+        amountPaid: payment.amount_paid,
+      });
+    } catch (error) {
+      logError('Receipt generation failed', error, {
+        component: 'ParentPortal',
+        action: 'download_receipt',
+      });
+      toast({ title: "Erreur", description: "Impossible de générer le reçu", variant: "destructive" });
+    }
+  };
+
   const loadPaymentInfo = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
