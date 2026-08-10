@@ -88,6 +88,98 @@ export type Database = {
         }
         Relationships: []
       }
+      accounting_categories: {
+        Row: {
+          code: string | null
+          color: string
+          created_at: string
+          id: string
+          is_active: boolean
+          kind: string
+          name: string
+          school_id: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          color?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kind: string
+          name: string
+          school_id: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          color?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          kind?: string
+          name?: string
+          school_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      accounting_entries: {
+        Row: {
+          amount: number
+          category_id: string | null
+          created_at: string
+          created_by: string | null
+          entry_date: string
+          id: string
+          kind: string
+          label: string
+          notes: string | null
+          payment_method: string | null
+          reference: string | null
+          school_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          entry_date?: string
+          id?: string
+          kind: string
+          label: string
+          notes?: string | null
+          payment_method?: string | null
+          reference?: string | null
+          school_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          entry_date?: string
+          id?: string
+          kind?: string
+          label?: string
+          notes?: string | null
+          payment_method?: string | null
+          reference?: string | null
+          school_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accounting_entries_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "accounting_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_searches: {
         Row: {
           created_at: string | null
@@ -4020,6 +4112,7 @@ export type Database = {
           status: string
         }[]
       }
+      seed_accounting_categories: { Args: never; Returns: number }
       set_user_role: {
         Args: { new_role: string; target_user_id: string }
         Returns: undefined
