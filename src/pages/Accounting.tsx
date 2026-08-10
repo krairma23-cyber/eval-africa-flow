@@ -227,12 +227,67 @@ export default function Accounting() {
             </Button>
           )}
           {isAdmin && (
+            <Button variant="outline" onClick={openImport}>
+              <RefreshCw className="h-4 w-4 mr-2" /> Importer les paiements
+            </Button>
+          )}
+          {isAdmin && (
             <Button onClick={openNew}>
               <Plus className="h-4 w-4 mr-2" /> Nouvelle écriture
             </Button>
           )}
         </div>
       </div>
+
+      <Dialog open={importOpen} onOpenChange={setImportOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Importer les paiements de scolarité</DialogTitle>
+            <DialogDescription>
+              Génère une écriture de recette pour chaque paiement d'élève encaissé sur la période.
+              Les paiements déjà importés sont ignorés.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4 py-2">
+            <div className="grid gap-2">
+              <Label htmlFor="importStart">Du</Label>
+              <Input
+                id="importStart"
+                type="date"
+                value={importStart}
+                onChange={(e) => { setImportStart(e.target.value); setImportPreview(null); }}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="importEnd">Au</Label>
+              <Input
+                id="importEnd"
+                type="date"
+                value={importEnd}
+                onChange={(e) => { setImportEnd(e.target.value); setImportPreview(null); }}
+              />
+            </div>
+          </div>
+          {importPreview && (
+            <div className="rounded-md bg-muted p-3 text-sm text-foreground">
+              {importPreview.count === 0
+                ? "Aucun nouveau paiement à importer sur cette période."
+                : `${importPreview.count} paiement(s) à importer — total ${formatCFA(importPreview.amount)}.`}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => runImport(true)} disabled={importing}>
+              Aperçu
+            </Button>
+            <Button
+              onClick={() => runImport(false)}
+              disabled={importing || !importPreview || importPreview.count === 0}
+            >
+              {importing ? "Import en cours…" : "Importer"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="border-l-4 border-l-emerald-500">
