@@ -126,13 +126,15 @@ export default function Students() {
       );
 
       let schoolName = "Établissement scolaire";
+      let schoolLogoUrl: string | null = null;
       if (profile?.school_id) {
         const { data: school } = await supabase
           .from("schools")
-          .select("name")
+          .select("name, logo_url")
           .eq("id", profile.school_id)
           .maybeSingle();
         if (school?.name) schoolName = school.name;
+        schoolLogoUrl = school?.logo_url ?? null;
       }
 
       const { data: transactions } = await supabase
@@ -167,8 +169,9 @@ export default function Students() {
         return;
       }
 
-      generateReceiptPdf({
+      await generateReceiptPdf({
         schoolName,
+        schoolLogoUrl,
         studentName,
         className: getEnrollment(student)?.classrooms?.name ?? null,
         parentName: student.parent_name ?? null,
