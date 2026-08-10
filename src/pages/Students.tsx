@@ -638,6 +638,17 @@ export default function Students() {
                       </Button>
                     </ManagePaymentDialog>
                   </div>
+                  {(student.amount_paid ?? 0) > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full h-7 sm:h-8 text-xs px-2"
+                      onClick={() => downloadReceipt(student)}
+                    >
+                      <Receipt className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">Reçu (PDF)</span>
+                    </Button>
+                  )}
                   <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                     <Button 
                       variant="default" 
