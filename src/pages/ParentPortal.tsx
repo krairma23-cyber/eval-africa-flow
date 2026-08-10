@@ -11,6 +11,7 @@ import { logError } from "@/lib/logger";
 import { calculateRankings } from "@/lib/ranking-utils";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { generateReceiptPdf } from "@/lib/receipt-pdf";
 import { TuitionPaymentDialog } from "@/components/payment/TuitionPaymentDialog";
 import { StudentSchedule } from "@/components/parent/StudentSchedule";
 import { StudentPerformanceCharts } from "@/components/parent/StudentPerformanceCharts";
