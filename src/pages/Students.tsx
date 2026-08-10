@@ -115,6 +115,71 @@ export default function Students() {
     }
   };
 
+  const downloadReceipt = async (student: Student) => {
+    const studentName = `${student.first_name} ${student.last_name}`;
+    try {
+      const { data: profile } = await supabase.auth.getUser().then(async ({ data }) =>
+        data.user
+          ? await supabase.from("profiles").select("school_id").eq("user_id", data.user.id).maybeSingle()
+          : { data: null }
+      );
+
+      let schoolName = "Établissement scolaire";
+      if (profile?.school_id) {
+        const { data: school } = await supabase
+          .from("schools")
+          .select("name")
+          .eq("id", profile.school_id)
+          .maybeSingle();
+        if (school?.name) schoolName = school.name;
+      }
+
+      const { data: transactions } = await supabase
+        .from("payment_transactions")
+        .select("amount, payment_date, payment_method, payment_reference")
+        .eq("student_id", student.id)
+        .eq("status", "completed")
+        .order("payment_date", { ascending: true });
+
+      const payments = (transactions ?? []).map((t) => ({
+        date: t.payment_date as string,
+        amount: Number(t.amount),
+        method: t.payment_method,
+        reference: t.payment_reference,
+      }));
+
+      if (payments.length === 0 && (student.amount_paid ?? 0) > 0) {
+        payments.push({
+          date: new Date().toISOString(),
+          amount: student.amount_paid ?? 0,
+          method: student.payment_method ?? null,
+          reference: null,
+        });
+      }
+
+      if (payments.length === 0) {
+        toast({
+          title: "Aucun paiement",
+          description: "Aucun paiement enregistré pour cet élève.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      generateReceiptPdf({
+        schoolName,
+        studentName,
+        className: getEnrollment(student)?.classrooms?.name ?? null,
+        parentName: student.parent_name ?? null,
+        payments,
+        tuitionFee: student.tuition_fee,
+        amountPaid: student.amount_paid,
+      });
+    } catch {
+      toast({ title: "Erreur", description: "Impossible de générer le reçu", variant: "destructive" });
+    }
+  };
+
   // Helper: get first valid enrollment (with non-null classroom)
   const getEnrollment = (s: Student) =>
     s.enrollments?.find((e) => e?.classrooms) ?? null;
