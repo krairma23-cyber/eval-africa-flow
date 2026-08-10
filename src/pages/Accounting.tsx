@@ -18,8 +18,10 @@ import {
   type AccountingCategory,
   type AccountingEntry,
 } from "@/components/forms/AccountingEntryDialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import {
-  Plus, Search, Download, TrendingUp, TrendingDown, Wallet, Receipt, Pencil, Sparkles,
+  Plus, Search, Download, TrendingUp, TrendingDown, Wallet, Receipt, Pencil, Sparkles, RefreshCw,
 } from "lucide-react";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
