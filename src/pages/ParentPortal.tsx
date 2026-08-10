@@ -11,6 +11,7 @@ import { logError } from "@/lib/logger";
 import { calculateRankings } from "@/lib/ranking-utils";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { generateReceiptPdf } from "@/lib/receipt-pdf";
 import { TuitionPaymentDialog } from "@/components/payment/TuitionPaymentDialog";
 import { StudentSchedule } from "@/components/parent/StudentSchedule";
 import { StudentPerformanceCharts } from "@/components/parent/StudentPerformanceCharts";
@@ -326,6 +327,73 @@ export default function ParentPortal() {
         description: "Impossible de charger les bulletins",
         variant: "destructive",
       });
+    }
+  };
+
+  const downloadReceipt = async (payment: StudentPaymentInfo) => {
+    try {
+      const { data: student } = await supabase
+        .from('students')
+        .select('school_id, classrooms(name)')
+        .eq('id', payment.student_id)
+        .maybeSingle();
+
+      let schoolName = "Établissement scolaire";
+      if (student?.school_id) {
+        const { data: school } = await supabase
+          .from('schools')
+          .select('name')
+          .eq('id', student.school_id)
+          .maybeSingle();
+        if (school?.name) schoolName = school.name;
+      }
+
+      const { data: transactions } = await supabase
+        .from('payment_transactions')
+        .select('amount, payment_date, payment_method, payment_reference')
+        .eq('student_id', payment.student_id)
+        .eq('status', 'completed')
+        .order('payment_date', { ascending: true });
+
+      const payments = (transactions ?? []).map((t) => ({
+        date: t.payment_date as string,
+        amount: Number(t.amount),
+        method: t.payment_method,
+        reference: t.payment_reference,
+      }));
+
+      if (payments.length === 0 && payment.amount_paid > 0) {
+        payments.push({
+          date: new Date().toISOString(),
+          amount: payment.amount_paid,
+          method: null,
+          reference: null,
+        });
+      }
+
+      if (payments.length === 0) {
+        toast({
+          title: "Aucun paiement",
+          description: "Aucun paiement enregistré pour cet élève.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      generateReceiptPdf({
+        schoolName,
+        studentName: payment.student_name,
+        className: (student as any)?.classrooms?.name ?? null,
+        payments,
+        tuitionFee: payment.tuition_fee,
+        amountPaid: payment.amount_paid,
+      });
+    } catch (error) {
+      logError('Receipt generation failed', error, {
+        component: 'ParentPortal',
+        action: 'download_receipt',
+      });
+      toast({ title: "Erreur", description: "Impossible de générer le reçu", variant: "destructive" });
     }
   };
 
@@ -687,6 +755,17 @@ export default function ParentPortal() {
                     <Button className="w-full" variant="outline" disabled>
                       <Check className="h-4 w-4 mr-2 text-green-600" />
                       Frais de scolarité payés
+                    </Button>
+                  )}
+
+                  {payment.amount_paid > 0 && (
+                    <Button
+                      className="w-full mt-2"
+                      variant="outline"
+                      onClick={() => downloadReceipt(payment)}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Télécharger le reçu (PDF)
                     </Button>
                   )}
                 </Card>
