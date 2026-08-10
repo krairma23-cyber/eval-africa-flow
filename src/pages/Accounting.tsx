@@ -44,6 +44,53 @@ export default function Accounting() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<AccountingEntry | null>(null);
 
+  const today = new Date();
+  const [importOpen, setImportOpen] = useState(false);
+  const [importStart, setImportStart] = useState(
+    new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0, 10)
+  );
+  const [importEnd, setImportEnd] = useState(today.toISOString().slice(0, 10));
+  const [importPreview, setImportPreview] = useState<{ count: number; amount: number } | null>(null);
+  const [importing, setImporting] = useState(false);
+
+  const runImport = async (dryRun: boolean) => {
+    setImporting(true);
+    try {
+      const { data, error } = await supabase.rpc("import_tuition_payments", {
+        p_start: importStart,
+        p_end: importEnd,
+        p_dry_run: dryRun,
+      });
+      if (error) {
+        toast({ title: "Erreur", description: error.message, variant: "destructive" });
+        return;
+      }
+      const row = Array.isArray(data) ? data[0] : data;
+      const count = Number(row?.imported_count ?? 0);
+      const amount = Number(row?.imported_amount ?? 0);
+      if (dryRun) {
+        setImportPreview({ count, amount });
+      } else {
+        toast({
+          title: "Import terminé",
+          description: count === 0
+            ? "Aucun nouveau paiement à importer sur cette période."
+            : `${count} paiement(s) importé(s) pour ${formatCFA(amount)}.`,
+        });
+        setImportOpen(false);
+        setImportPreview(null);
+        loadAll();
+      }
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const openImport = () => {
+    setImportPreview(null);
+    setImportOpen(true);
+  };
+
   const loadAll = async () => {
     setLoading(true);
     try {
