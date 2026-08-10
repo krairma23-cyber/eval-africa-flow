@@ -24,7 +24,9 @@ type TableName =
   | "report_cards"
   | "enrollments"
   | "subjects"
-  | "terms";
+  | "terms"
+  | "accounting_entries"
+  | "accounting_categories";
 
 interface DeleteConfirmButtonProps {
   table: TableName;
