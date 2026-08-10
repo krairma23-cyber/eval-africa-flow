@@ -13,7 +13,7 @@ import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
 import { ImportStudentsDialog } from "@/components/forms/ImportStudentsDialog";
 import { EditStudentDialog } from "@/components/forms/EditStudentDialog";
 import { EnrollStudentDialog } from "@/components/forms/EnrollStudentDialog";
-import { Pencil, UserPlus, DollarSign, Check, X, Mail, Trash2 } from "lucide-react";
+import { Pencil, UserPlus, DollarSign, Check, X, Mail, Trash2, Receipt } from "lucide-react";
 import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
 import { SendParentPortalLinkDialog } from "@/components/forms/SendParentPortalLinkDialog";
 import { ManagePaymentDialog } from "@/components/forms/ManagePaymentDialog";
