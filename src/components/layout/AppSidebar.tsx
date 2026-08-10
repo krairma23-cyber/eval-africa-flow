@@ -10,6 +10,7 @@ import {
   Shield,
   BarChart3,
   CreditCard,
+  Wallet,
   Code,
   HelpCircle,
   Bell,
