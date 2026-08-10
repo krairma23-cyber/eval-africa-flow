@@ -19,6 +19,7 @@ const Dashboard = lazyWithRetry(() => import("./pages/Dashboard"), "page:Dashboa
 const Students = lazyWithRetry(() => import("./pages/Students"), "page:Students");
 const Teachers = lazyWithRetry(() => import("./pages/Teachers"), "page:Teachers");
 const Subjects = lazyWithRetry(() => import("./pages/Subjects"), "page:Subjects");
+const Accounting = lazyWithRetry(() => import("./pages/Accounting"), "page:Accounting");
 const Classrooms = lazyWithRetry(() => import("./pages/Classrooms"), "page:Classrooms");
 const Assessments = lazyWithRetry(() => import("./pages/Assessments"), "page:Assessments");
 const Reports = lazyWithRetry(() => import("./pages/Reports"), "page:Reports");
