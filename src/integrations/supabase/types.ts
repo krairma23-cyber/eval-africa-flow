@@ -3865,6 +3865,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      import_tuition_payments: {
+        Args: { p_dry_run?: boolean; p_end: string; p_start: string }
+        Returns: {
+          imported_amount: number
+          imported_count: number
+        }[]
+      }
       is_admin: { Args: { check_user_id?: string }; Returns: boolean }
       is_org_admin: {
         Args: { p_org_id: string; p_user_id?: string }

@@ -18,8 +18,10 @@ import {
   type AccountingCategory,
   type AccountingEntry,
 } from "@/components/forms/AccountingEntryDialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import {
-  Plus, Search, Download, TrendingUp, TrendingDown, Wallet, Receipt, Pencil, Sparkles,
+  Plus, Search, Download, TrendingUp, TrendingDown, Wallet, Receipt, Pencil, Sparkles, RefreshCw,
 } from "lucide-react";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
@@ -41,6 +43,53 @@ export default function Accounting() {
   const [period, setPeriod] = useState<string>("year");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<AccountingEntry | null>(null);
+
+  const today = new Date();
+  const [importOpen, setImportOpen] = useState(false);
+  const [importStart, setImportStart] = useState(
+    new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0, 10)
+  );
+  const [importEnd, setImportEnd] = useState(today.toISOString().slice(0, 10));
+  const [importPreview, setImportPreview] = useState<{ count: number; amount: number } | null>(null);
+  const [importing, setImporting] = useState(false);
+
+  const runImport = async (dryRun: boolean) => {
+    setImporting(true);
+    try {
+      const { data, error } = await supabase.rpc("import_tuition_payments", {
+        p_start: importStart,
+        p_end: importEnd,
+        p_dry_run: dryRun,
+      });
+      if (error) {
+        toast({ title: "Erreur", description: error.message, variant: "destructive" });
+        return;
+      }
+      const row = Array.isArray(data) ? data[0] : data;
+      const count = Number(row?.imported_count ?? 0);
+      const amount = Number(row?.imported_amount ?? 0);
+      if (dryRun) {
+        setImportPreview({ count, amount });
+      } else {
+        toast({
+          title: "Import terminé",
+          description: count === 0
+            ? "Aucun nouveau paiement à importer sur cette période."
+            : `${count} paiement(s) importé(s) pour ${formatCFA(amount)}.`,
+        });
+        setImportOpen(false);
+        setImportPreview(null);
+        loadAll();
+      }
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const openImport = () => {
+    setImportPreview(null);
+    setImportOpen(true);
+  };
 
   const loadAll = async () => {
     setLoading(true);
@@ -178,12 +227,67 @@ export default function Accounting() {
             </Button>
           )}
           {isAdmin && (
+            <Button variant="outline" onClick={openImport}>
+              <RefreshCw className="h-4 w-4 mr-2" /> Importer les paiements
+            </Button>
+          )}
+          {isAdmin && (
             <Button onClick={openNew}>
               <Plus className="h-4 w-4 mr-2" /> Nouvelle écriture
             </Button>
           )}
         </div>
       </div>
+
+      <Dialog open={importOpen} onOpenChange={setImportOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Importer les paiements de scolarité</DialogTitle>
+            <DialogDescription>
+              Génère une écriture de recette pour chaque paiement d'élève encaissé sur la période.
+              Les paiements déjà importés sont ignorés.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4 py-2">
+            <div className="grid gap-2">
+              <Label htmlFor="importStart">Du</Label>
+              <Input
+                id="importStart"
+                type="date"
+                value={importStart}
+                onChange={(e) => { setImportStart(e.target.value); setImportPreview(null); }}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="importEnd">Au</Label>
+              <Input
+                id="importEnd"
+                type="date"
+                value={importEnd}
+                onChange={(e) => { setImportEnd(e.target.value); setImportPreview(null); }}
+              />
+            </div>
+          </div>
+          {importPreview && (
+            <div className="rounded-md bg-muted p-3 text-sm text-foreground">
+              {importPreview.count === 0
+                ? "Aucun nouveau paiement à importer sur cette période."
+                : `${importPreview.count} paiement(s) à importer — total ${formatCFA(importPreview.amount)}.`}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => runImport(true)} disabled={importing}>
+              Aperçu
+            </Button>
+            <Button
+              onClick={() => runImport(false)}
+              disabled={importing || !importPreview || importPreview.count === 0}
+            >
+              {importing ? "Import en cours…" : "Importer"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card className="border-l-4 border-l-emerald-500">
