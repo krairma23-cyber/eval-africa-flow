@@ -169,8 +169,9 @@ export default function Students() {
         return;
       }
 
-      generateReceiptPdf({
+      await generateReceiptPdf({
         schoolName,
+        schoolLogoUrl,
         studentName,
         className: getEnrollment(student)?.classrooms?.name ?? null,
         parentName: student.parent_name ?? null,
