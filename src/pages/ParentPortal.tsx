@@ -757,6 +757,17 @@ export default function ParentPortal() {
                       Frais de scolarité payés
                     </Button>
                   )}
+
+                  {payment.amount_paid > 0 && (
+                    <Button
+                      className="w-full mt-2"
+                      variant="outline"
+                      onClick={() => downloadReceipt(payment)}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Télécharger le reçu (PDF)
+                    </Button>
+                  )}
                 </Card>
               ))}
             </div>
