@@ -339,13 +339,15 @@ export default function ParentPortal() {
         .maybeSingle();
 
       let schoolName = "Établissement scolaire";
+      let schoolLogoUrl: string | null = null;
       if (student?.school_id) {
         const { data: school } = await supabase
           .from('schools')
-          .select('name')
+          .select('name, logo_url')
           .eq('id', student.school_id)
           .maybeSingle();
         if (school?.name) schoolName = school.name;
+        schoolLogoUrl = school?.logo_url ?? null;
       }
 
       const { data: transactions } = await supabase
@@ -380,8 +382,9 @@ export default function ParentPortal() {
         return;
       }
 
-      generateReceiptPdf({
+      await generateReceiptPdf({
         schoolName,
+        schoolLogoUrl,
         studentName: payment.student_name,
         className: (student as any)?.classrooms?.name ?? null,
         payments,
