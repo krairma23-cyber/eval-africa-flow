@@ -17,6 +17,7 @@ import { Pencil, UserPlus, DollarSign, Check, X, Mail, Trash2 } from "lucide-rea
 import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
 import { SendParentPortalLinkDialog } from "@/components/forms/SendParentPortalLinkDialog";
 import { ManagePaymentDialog } from "@/components/forms/ManagePaymentDialog";
+import { generateReceiptPdf } from "@/lib/receipt-pdf";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { useLanguage } from "@/contexts/LanguageContext";
