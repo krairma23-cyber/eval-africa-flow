@@ -2004,6 +2004,62 @@ export type Database = {
           },
         ]
       }
+      school_backups: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          expires_at: string | null
+          file_path: string
+          id: string
+          retention_days: number
+          row_count: number
+          school_id: string
+          size_bytes: number
+          status: string
+          tables_count: number
+          trigger_source: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          expires_at?: string | null
+          file_path: string
+          id?: string
+          retention_days?: number
+          row_count?: number
+          school_id: string
+          size_bytes?: number
+          status?: string
+          tables_count?: number
+          trigger_source?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          expires_at?: string | null
+          file_path?: string
+          id?: string
+          retention_days?: number
+          row_count?: number
+          school_id?: string
+          size_bytes?: number
+          status?: string
+          tables_count?: number
+          trigger_source?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_backups_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       schools: {
         Row: {
           academic_year: string | null
