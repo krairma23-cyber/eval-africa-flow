@@ -707,9 +707,15 @@ export default function Settings() {
                   <SelectItem value="-1">Illimité</SelectItem>
                 </SelectContent>
               </Select>
+              <p className="text-xs text-muted-foreground">
+                Durée de conservation des archives de sauvegarde avant suppression automatique (minimum appliqué : 1 an).
+              </p>
             </div>
+            <Separator />
+            <BackupPanel />
           </CardContent>
         </Card>
+
 
         {/* Apparence */}
         <Card className="overflow-hidden">
