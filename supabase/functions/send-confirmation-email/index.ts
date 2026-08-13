@@ -27,19 +27,40 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  // Verify hook secret for security — fail closed if secret is missing
-  const hookSecret = req.headers.get('x-webhook-secret');
-  const expectedSecret = Deno.env.get('SUPABASE_AUTH_HOOK_SECRET');
+  // Fail closed if the hook secret is missing
+  const rawSecret =
+    Deno.env.get("AUTH_HOOK_SECRET") ?? Deno.env.get("SUPABASE_AUTH_HOOK_SECRET");
 
-  if (!expectedSecret) {
-    console.error("[send-confirmation-email] SUPABASE_AUTH_HOOK_SECRET not configured");
+  if (!rawSecret) {
+    console.error("[send-confirmation-email] AUTH_HOOK_SECRET not configured");
     return new Response(
       JSON.stringify({ error: 'Webhook secret not configured' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 
-  if (hookSecret !== expectedSecret) {
+  const bodyText = await req.text();
+
+  // Supabase Auth Hooks sign requests using the standard-webhooks spec.
+  // A simple shared-secret header is still accepted as a fallback.
+  const legacySecret = req.headers.get('x-webhook-secret');
+  const hasStandardHeaders = !!req.headers.get('webhook-signature');
+
+  if (hasStandardHeaders) {
+    try {
+      const wh = new Webhook(rawSecret.replace(/^v1,\s*/, ""));
+      wh.verify(bodyText, {
+        "webhook-id": req.headers.get("webhook-id")!,
+        "webhook-timestamp": req.headers.get("webhook-timestamp")!,
+        "webhook-signature": req.headers.get("webhook-signature")!,
+      });
+    } catch (_err) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid signature' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+  } else if (legacySecret !== rawSecret) {
     return new Response(
       JSON.stringify({ error: 'Unauthorized' }),
       { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -47,10 +68,11 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const payload: ConfirmationEmailData = await req.json();
+    const payload: ConfirmationEmailData = JSON.parse(bodyText);
 
     const { user, email_data } = payload;
     const confirmationLink = `${email_data.site_url}/auth/v1/verify?token=${email_data.token_hash}&type=${email_data.email_action_type}&redirect_to=${email_data.redirect_to}`;
+
 
     let subject = "Confirmez votre inscription à EvalScol";
     let html = `
