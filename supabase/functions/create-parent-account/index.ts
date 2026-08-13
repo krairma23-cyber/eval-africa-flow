@@ -246,7 +246,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       try {
         const { error: emailError } = await resend.emails.send({
-          from: "EvalScol <onboarding@resend.dev>",
+          from: "EvalScol Africa <evalscolafrica@siteteck.com>",
           to: [parent_email],
           subject: `🎓 Accès Portail Parent - ${student_name} - ${school_name || "EvalScol"}`,
           html: emailHtml,
