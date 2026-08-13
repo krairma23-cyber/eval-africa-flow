@@ -12,6 +12,8 @@ import { logError } from "@/lib/logger";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon, Globe, Database, Zap, CreditCard, Calendar, ClipboardList, Copy, KeyRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import BackupPanel from "@/components/settings/BackupPanel";
+
 
 export default function Settings() {
   const [loading, setLoading] = useState(false);
