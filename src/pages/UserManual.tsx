@@ -16,6 +16,7 @@ import {
   Shield,
   Settings as SettingsIcon,
   Brain,
+  Calculator,
 } from "lucide-react";
 import Seo from "@/components/Seo";
 
@@ -188,6 +189,71 @@ const sections = [
       {
         q: "Comment contacter le support ?",
         a: "Menu Support → onglet Chat en direct pour parler à notre équipe, ou email support@evalscol.com, ou WhatsApp +225 07 07 04 19 04.",
+      },
+    ],
+  },
+  {
+    id: "comptabilite",
+    icon: Calculator,
+    title: "Comptabilité de l'école",
+    items: [
+      {
+        q: "Où se trouve le module de comptabilité ?",
+        a: "Tableau de bord → Comptabilité. Réservé aux administrateurs de l'établissement. Les données sont isolées par école.",
+      },
+      {
+        q: "Comment enregistrer une recette ou une dépense ?",
+        a: "Cliquez sur « Nouvelle écriture », choisissez le type (recette/dépense), la catégorie, le montant, la date et une description.",
+      },
+      {
+        q: "La comptabilité est-elle reliée aux paiements des parents ?",
+        a: "Oui. Le bouton « Importer les paiements » intègre les frais de scolarité encaissés sur une période choisie dans le grand livre, sans double saisie.",
+      },
+      {
+        q: "Puis-je exporter mes comptes ?",
+        a: "Oui, un export CSV du grand livre est disponible, ainsi que des graphiques recettes/dépenses par catégorie.",
+      },
+    ],
+  },
+  {
+    id: "documents",
+    icon: FileText,
+    title: "Documents, imports et exports",
+    items: [
+      {
+        q: "Quels formats puis-je utiliser pour importer des élèves ?",
+        a: "Excel (.xlsx), CSV et Word (.docx contenant un tableau). Menu Élèves → Importer. Un contrôle de validation signale les lignes incorrectes.",
+      },
+      {
+        q: "Puis-je modifier un bulletin après génération ?",
+        a: "Oui, exportez le bulletin au format Word (.docx) depuis le menu Rapports pour le modifier, en plus de la version PDF officielle.",
+      },
+      {
+        q: "Les reçus de paiement sont-ils automatiques ?",
+        a: "Oui. Un reçu PDF avec le logo de l'école est disponible pour chaque paiement, téléchargeable depuis la fiche élève et le portail parent.",
+      },
+      {
+        q: "Les contenus générés par l'IA sont-ils modifiables ?",
+        a: "Oui, les devoirs et exercices générés se téléchargent en Word (.docx) pour être adaptés avant distribution.",
+      },
+    ],
+  },
+  {
+    id: "ressources",
+    icon: BookOpen,
+    title: "Ressources et documentation",
+    items: [
+      {
+        q: "Où trouver les tutoriels vidéo ?",
+        a: "Pages Support et Guide de démarrage : une bibliothèque de tutoriels YouTube couvre la configuration, les notes, les bulletins et les paiements.",
+      },
+      {
+        q: "Existe-t-il une documentation API publique ?",
+        a: "Oui, sur la page /api-docs : endpoints, authentification par clé API, webhooks et exemples de requêtes.",
+      },
+      {
+        q: "Comment exporter ou supprimer mes données personnelles ?",
+        a: "Tableau de bord → Confidentialité : export complet de vos données et demande de suppression de compte (conformité RGPD).",
       },
     ],
   },

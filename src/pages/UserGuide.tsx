@@ -7,7 +7,8 @@ import {
   ClipboardCheck, FileText, UserCog, BarChart3, CreditCard, Code,
   HelpCircle, Bell, Shield, Settings, ChevronDown, ChevronRight,
   Smartphone, Monitor, Search, Download, Sparkles, CheckCircle2,
-  LogIn, UserPlus, Eye, Printer, Brain, Globe, Lock
+  LogIn, UserPlus, Eye, Printer, Brain, Globe, Lock, Calculator, PlayCircle
+
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
@@ -215,6 +216,79 @@ const guideSections: GuideSection[] = [
     steps: [
       { title: "Accédez aux notifications", detail: "Cliquez sur 'Notifications' dans la barre latérale ou l'icône cloche." },
       { title: "Consulter les alertes", detail: "Voyez les nouveaux bulletins publiés, les paiements reçus et les alertes système." },
+    ],
+  },
+  {
+    id: "accounting",
+    icon: Calculator,
+    title: "Comptabilité",
+    badge: "Nouveau",
+    description: "Suivez les recettes et dépenses de votre établissement.",
+    steps: [
+      { title: "Accédez au menu 'Comptabilité'", detail: "Cliquez sur 'Comptabilité' dans la barre latérale (accès Admin)." },
+      { title: "Créer vos catégories", detail: "Définissez vos catégories de recettes (scolarité, dons) et de dépenses (salaires, fournitures)." },
+      { title: "Saisir une écriture", detail: "Cliquez 'Nouvelle écriture', choisissez le type, la catégorie, le montant et la date." },
+      { title: "Importer les frais de scolarité", detail: "Utilisez 'Importer les paiements' pour intégrer automatiquement les paiements des parents sur une période." },
+      { title: "Analyser et exporter", detail: "Consultez le grand livre, les graphiques recettes/dépenses et exportez au format CSV." },
+    ],
+    tips: ["Les écritures sont strictement isolées par établissement.", "L'import des paiements évite toute double saisie."],
+  },
+  {
+    id: "receipts",
+    icon: Printer,
+    title: "Reçus de paiement",
+    badge: "Nouveau",
+    description: "Générez et téléchargez les reçus PDF des paiements.",
+    steps: [
+      { title: "Depuis la fiche élève", detail: "Ouvrez 'Élèves', repérez le paiement et cliquez sur le bouton de téléchargement du reçu." },
+      { title: "Depuis le portail parent", detail: "Les parents téléchargent eux-mêmes leurs reçus dans l'onglet Paiements." },
+      { title: "Personnalisation", detail: "Le reçu reprend automatiquement le logo et les coordonnées de votre école." },
+    ],
+  },
+  {
+    id: "exports",
+    icon: Download,
+    title: "Imports & Exports (Excel / Word)",
+    badge: "Nouveau",
+    description: "Importez vos élèves en masse et exportez vos documents modifiables.",
+    steps: [
+      { title: "Import d'élèves", detail: "Dans 'Élèves' → 'Importer', chargez un fichier Excel (.xlsx), CSV ou Word (.docx contenant un tableau)." },
+      { title: "Bulletins en Word", detail: "Dans 'Rapports', choisissez l'export Word (.docx) pour modifier les bulletins avant impression." },
+      { title: "Contenus IA en Word", detail: "Les devoirs et exercices générés par l'IA se téléchargent en .docx pour être adaptés à votre classe." },
+    ],
+  },
+  {
+    id: "api-docs",
+    icon: Code,
+    title: "Documentation API",
+    badge: "Nouveau",
+    description: "Intégrez EvalScol à vos autres outils.",
+    steps: [
+      { title: "Consulter la documentation", detail: "Rendez-vous sur /api-docs pour la liste complète des endpoints et exemples." },
+      { title: "Créer une clé API", detail: "Dans 'API' du tableau de bord, générez une clé (Admin uniquement) et conservez-la en lieu sûr." },
+      { title: "Configurer un webhook", detail: "Ajoutez une URL de webhook pour recevoir les événements en temps réel." },
+    ],
+  },
+  {
+    id: "privacy",
+    icon: Lock,
+    title: "Confidentialité des données",
+    description: "Maîtrisez vos données personnelles (RGPD).",
+    steps: [
+      { title: "Accédez au menu 'Confidentialité'", detail: "Cliquez sur 'Confidentialité' dans la barre latérale du tableau de bord." },
+      { title: "Exporter vos données", detail: "Téléchargez une copie complète de vos données personnelles." },
+      { title: "Demander la suppression", detail: "Soumettez une demande de suppression de compte traitée par l'administration." },
+    ],
+  },
+  {
+    id: "tutorials",
+    icon: PlayCircle,
+    title: "Tutoriels vidéo",
+    badge: "Nouveau",
+    description: "Apprenez en image avec nos vidéos pas à pas.",
+    steps: [
+      { title: "Où les trouver", detail: "Les tutoriels sont disponibles sur les pages 'Support' et 'Guide de démarrage'." },
+      { title: "Suivre les étapes", detail: "Chaque vidéo couvre une fonctionnalité : configuration, notes, bulletins, paiements." },
     ],
   },
   {
