@@ -12,6 +12,8 @@ import { logError } from "@/lib/logger";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Settings as SettingsIcon, Save, School, Bell, Shield, Palette, Upload, Image as ImageIcon, Globe, Database, Zap, CreditCard, Calendar, ClipboardList, Copy, KeyRound } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import BackupPanel from "@/components/settings/BackupPanel";
+
 
 export default function Settings() {
   const [loading, setLoading] = useState(false);
@@ -707,9 +709,15 @@ export default function Settings() {
                   <SelectItem value="-1">Illimité</SelectItem>
                 </SelectContent>
               </Select>
+              <p className="text-xs text-muted-foreground">
+                Durée de conservation des archives de sauvegarde avant suppression automatique (minimum appliqué : 1 an).
+              </p>
             </div>
+            <Separator />
+            <BackupPanel />
           </CardContent>
         </Card>
+
 
         {/* Apparence */}
         <Card className="overflow-hidden">

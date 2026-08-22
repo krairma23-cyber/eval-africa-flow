@@ -12,6 +12,7 @@ import {
   ClipboardList,
   FileText,
   CreditCard,
+  Calculator,
   CheckCircle2,
 } from "lucide-react";
 import Seo from "@/components/Seo";
@@ -61,6 +62,12 @@ const steps = [
     desc: "Configurez Paystack pour recevoir les frais de scolarité en Mobile Money (Orange, MTN, Moov) ou carte bancaire.",
     action: { label: "Paramètres", to: "/dashboard/settings" },
   },
+  {
+    icon: Calculator,
+    title: "8. Suivre votre comptabilité",
+    desc: "Enregistrez recettes et dépenses, importez automatiquement les frais de scolarité encaissés et exportez votre grand livre.",
+    action: { label: "Comptabilité", to: "/dashboard/accounting" },
+  },
 ];
 
 export default function GettingStarted() {
@@ -68,7 +75,7 @@ export default function GettingStarted() {
     <div className="min-h-screen bg-background">
       <Seo
         title="Guide de démarrage | EvalScol Africa"
-        description="Prenez EvalScol Africa en main en 7 étapes : création de l'école, invitation de l'équipe, classes, élèves, notes, bulletins et paiements."
+        description="Prenez EvalScol Africa en main en 8 étapes : création de l'école, invitation de l'équipe, classes, élèves, notes, bulletins et paiements."
         path="/getting-started"
       />
 
@@ -90,7 +97,7 @@ export default function GettingStarted() {
           </h1>
           <p className="text-lg text-muted-foreground">
             Configurez votre école et générez vos premiers bulletins en moins d'une heure.
-            Suivez ces 7 étapes dans l'ordre.
+            Suivez ces 8 étapes dans l'ordre.
           </p>
           <div className="flex flex-wrap gap-3 mt-6">
             <Button asChild className="bg-[#10B981] hover:bg-[#0ea472] text-white">

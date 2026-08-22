@@ -35,3 +35,7 @@ verify_jwt = true
 
 [functions.education-news]
 verify_jwt = false
+
+[functions.school-backup]
+verify_jwt = false
+

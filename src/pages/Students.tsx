@@ -13,10 +13,11 @@ import { AddStudentDialog } from "@/components/forms/AddStudentDialog";
 import { ImportStudentsDialog } from "@/components/forms/ImportStudentsDialog";
 import { EditStudentDialog } from "@/components/forms/EditStudentDialog";
 import { EnrollStudentDialog } from "@/components/forms/EnrollStudentDialog";
-import { Pencil, UserPlus, DollarSign, Check, X, Mail, Trash2 } from "lucide-react";
+import { Pencil, UserPlus, DollarSign, Check, X, Mail, Trash2, Receipt } from "lucide-react";
 import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
 import { SendParentPortalLinkDialog } from "@/components/forms/SendParentPortalLinkDialog";
 import { ManagePaymentDialog } from "@/components/forms/ManagePaymentDialog";
+import { generateReceiptPdf } from "@/lib/receipt-pdf";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -112,6 +113,74 @@ export default function Students() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const downloadReceipt = async (student: Student) => {
+    const studentName = `${student.first_name} ${student.last_name}`;
+    try {
+      const { data: profile } = await supabase.auth.getUser().then(async ({ data }) =>
+        data.user
+          ? await supabase.from("profiles").select("school_id").eq("user_id", data.user.id).maybeSingle()
+          : { data: null }
+      );
+
+      let schoolName = "Établissement scolaire";
+      let schoolLogoUrl: string | null = null;
+      if (profile?.school_id) {
+        const { data: school } = await supabase
+          .from("schools")
+          .select("name, logo_url")
+          .eq("id", profile.school_id)
+          .maybeSingle();
+        if (school?.name) schoolName = school.name;
+        schoolLogoUrl = school?.logo_url ?? null;
+      }
+
+      const { data: transactions } = await supabase
+        .from("payment_transactions")
+        .select("amount, payment_date, payment_method, payment_reference")
+        .eq("student_id", student.id)
+        .eq("status", "completed")
+        .order("payment_date", { ascending: true });
+
+      const payments = (transactions ?? []).map((t) => ({
+        date: t.payment_date as string,
+        amount: Number(t.amount),
+        method: t.payment_method,
+        reference: t.payment_reference,
+      }));
+
+      if (payments.length === 0 && (student.amount_paid ?? 0) > 0) {
+        payments.push({
+          date: new Date().toISOString(),
+          amount: student.amount_paid ?? 0,
+          method: student.payment_method ?? null,
+          reference: null,
+        });
+      }
+
+      if (payments.length === 0) {
+        toast({
+          title: "Aucun paiement",
+          description: "Aucun paiement enregistré pour cet élève.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      await generateReceiptPdf({
+        schoolName,
+        schoolLogoUrl,
+        studentName,
+        className: getEnrollment(student)?.classrooms?.name ?? null,
+        parentName: student.parent_name ?? null,
+        payments,
+        tuitionFee: student.tuition_fee,
+        amountPaid: student.amount_paid,
+      });
+    } catch {
+      toast({ title: "Erreur", description: "Impossible de générer le reçu", variant: "destructive" });
     }
   };
 
@@ -572,6 +641,17 @@ export default function Students() {
                       </Button>
                     </ManagePaymentDialog>
                   </div>
+                  {(student.amount_paid ?? 0) > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full h-7 sm:h-8 text-xs px-2"
+                      onClick={() => downloadReceipt(student)}
+                    >
+                      <Receipt className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">Reçu (PDF)</span>
+                    </Button>
+                  )}
                   <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
                     <Button 
                       variant="default" 
