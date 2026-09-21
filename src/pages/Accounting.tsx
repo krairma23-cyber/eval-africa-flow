@@ -326,12 +326,12 @@ export default function Accounting() {
 
       <Card>
         <CardContent className="pt-6 flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-[200px]">
+          <div className="relative flex-1 min-w-full sm:w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input className="pl-9" placeholder="Rechercher une écriture…" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>
           <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-[170px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-[170px]"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="month">Ce mois</SelectItem>
               <SelectItem value="quarter">3 derniers mois</SelectItem>
@@ -340,7 +340,7 @@ export default function Accounting() {
             </SelectContent>
           </Select>
           <Select value={kindFilter} onValueChange={setKindFilter}>
-            <SelectTrigger className="w-[150px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-[150px]"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tous les types</SelectItem>
               <SelectItem value="income">Recettes</SelectItem>
@@ -348,7 +348,7 @@ export default function Accounting() {
             </SelectContent>
           </Select>
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-[200px]"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full sm:w-[200px]"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Toutes les catégories</SelectItem>
               {categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}

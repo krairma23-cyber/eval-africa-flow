@@ -250,7 +250,7 @@ export default function UserManagement() {
                       value={user.role || 'user'}
                       onValueChange={(newRole) => updateUserRole(user.id, newRole as 'admin' | 'teacher' | 'user')}
                     >
-                      <SelectTrigger className="w-[130px]">
+                      <SelectTrigger className="w-full sm:w-[130px]">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>

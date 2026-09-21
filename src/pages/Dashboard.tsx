@@ -174,7 +174,7 @@ export default function Dashboard() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4 sm:space-y-6">
-          <div className="grid gap-3 sm:gap-4 grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {statCards.map((card, index) => (
               <motion.div
                 key={card.title}
