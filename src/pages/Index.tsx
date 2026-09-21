@@ -257,7 +257,7 @@ const Index = () => {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.55 }}
           >
-            <LoginForm />
+            <LoginForm embedded />
           </motion.aside>
         </main>
 
