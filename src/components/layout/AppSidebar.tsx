@@ -126,7 +126,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <div className="px-4 py-4 border-b border-border">
+          <div className="px-3 py-3 sm:px-4 sm:py-4 border-b border-border">
             <div className="flex items-start gap-3">
               <img 
                 src={schoolLogo || "/logo.png"}
@@ -135,7 +135,7 @@ export function AppSidebar() {
                 onError={(e) => {
                   e.currentTarget.src = "/logo.png";
                 }}
-                className="w-16 h-16 sm:w-24 sm:h-24 object-contain rounded flex-shrink-0"
+                className="w-14 h-14 sm:w-20 sm:h-20 object-contain rounded flex-shrink-0"
               />
               <div className="flex-1 min-w-0">
                 <SidebarGroupLabel className="text-lg font-semibold text-primary break-words whitespace-normal leading-tight">
