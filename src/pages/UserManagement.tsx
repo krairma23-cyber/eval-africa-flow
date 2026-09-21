@@ -227,10 +227,10 @@ export default function UserManagement() {
               {users.map((user) => (
                 <div
                   key={user.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 sm:p-4 border rounded-lg min-w-0"
                 >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
+                  <div className="flex-1 min-w-0 w-full">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
                       <h3 className="font-medium">
                         {user.full_name || 'Nom non renseigné'}
                       </h3>
@@ -239,13 +239,13 @@ export default function UserManagement() {
                         {user.role || 'user'}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">{user.email}</p>
+                    <p className="text-sm text-muted-foreground break-all">{user.email}</p>
                     <p className="text-xs text-muted-foreground">
                       Inscrit le {new Date(user.created_at).toLocaleDateString('fr-FR')}
                     </p>
                   </div>
                   
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Select
                       value={user.role || 'user'}
                       onValueChange={(newRole) => updateUserRole(user.id, newRole as 'admin' | 'teacher' | 'user')}

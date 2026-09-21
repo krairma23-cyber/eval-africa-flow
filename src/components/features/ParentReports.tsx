@@ -30,13 +30,13 @@ export const ParentReports = () => {
     title: "Historique Complet",
     description: "Archives de tous les bulletins et rapports depuis le début de l'année scolaire"
   }];
-  return <section className="py-16 px-4 bg-secondary">
+  return <section className="py-10 sm:py-16 px-0 sm:px-4 bg-secondary">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-12">
           <div className="inline-block mb-4 px-4 py-2 bg-primary/20 rounded-full border border-primary/30">
             <span className="text-sm font-semibold text-primary">Espace Parents</span>
           </div>
-          <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-[hsl(280,100%,70%)] to-primary bg-clip-text text-transparent">
+          <h2 className="text-2xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-[hsl(280,100%,70%)] to-primary bg-clip-text text-transparent">
             Rapports Accessibles aux Parents
           </h2>
           <p className="text-lg text-foreground/70 max-w-3xl mx-auto">
@@ -61,7 +61,7 @@ export const ParentReports = () => {
 
         <Card className="overflow-hidden bg-card border-primary/20">
           <div className="grid md:grid-cols-2 gap-0">
-            <div className="relative h-64 md:h-auto min-h-[280px]">
+            <div className="relative h-52 sm:h-64 md:h-auto md:min-h-[280px]">
               <img
                 src={parentsImg}
                 alt="Parent et enfant consultant le portail parent"
@@ -72,7 +72,7 @@ export const ParentReports = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 via-transparent to-accent/20" />
             </div>
-            <div className="p-8 flex flex-col justify-center">
+            <div className="p-4 sm:p-8 flex flex-col justify-center">
             <div className="flex-1">
               <h3 className="text-2xl font-bold mb-3 text-foreground">
                 Interface Parent Intuitive
@@ -101,10 +101,10 @@ export const ParentReports = () => {
                 </li>
               </ul>
             </div>
-            <div className="flex flex-col gap-3 min-w-[200px]">
+            <div className="flex flex-col gap-3 w-full sm:min-w-[200px]">
               <Button 
                 size="lg" 
-                className="bg-accent hover:bg-accent/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all"
+                className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold shadow-lg hover:shadow-xl transition-all whitespace-normal h-auto min-h-11"
                 onClick={() => navigate("/parent-portal")}
               >
                 Accéder au Portail Parent
@@ -112,7 +112,7 @@ export const ParentReports = () => {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-foreground/30 text-foreground hover:bg-foreground/10" 
+                className="w-full border-foreground/30 text-foreground hover:bg-foreground/10 whitespace-normal h-auto min-h-11" 
                 onClick={() => navigate("/parent-guide")}
               >
                 Guide Parents

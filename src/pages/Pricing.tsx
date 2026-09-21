@@ -169,9 +169,9 @@ export default function Pricing() {
         jsonLd={productJsonLd}
       />
 
-      <div className="container mx-auto px-4 py-12 max-w-7xl">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12 max-w-7xl">
         <header className="mb-12">
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
             <Button variant="ghost" onClick={() => navigate("/")}>
               <ArrowLeft className="h-4 w-4 mr-2" /> Retour
             </Button>
@@ -180,11 +180,11 @@ export default function Pricing() {
 
           <div className="text-center">
             <img src="/logo.png" alt="EvalScol Logo" className="h-28 w-auto mx-auto mb-4" />
-            <Badge variant="default" className="mb-4">Nouveau modèle 2026 — pensé pour l'Afrique</Badge>
-            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+            <Badge variant="default" className="mb-4 whitespace-normal text-center">Nouveau modèle 2026 — pensé pour l'Afrique</Badge>
+            <h1 className="text-3xl sm:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight">
               École accessible. Portail parent premium.
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto">
               50 000 FCFA / an pour l'école · 2 500 FCFA / an par parent. Plus simple, plus juste, plus rentable
               pour vous comme pour nous.
             </p>
@@ -193,7 +193,7 @@ export default function Pricing() {
 
         {/* Parent Portal Highlight */}
         <Card className="mb-12 border-primary/40 bg-gradient-to-br from-primary/10 to-accent/10">
-          <CardContent className="pt-8 pb-8">
+          <CardContent className="p-4 sm:pt-8 sm:pb-8">
             <div className="grid md:grid-cols-2 gap-8 items-center">
               <div>
                 <Badge className="mb-3"><Users className="h-3 w-3 mr-1" /> Portail Parent Premium</Badge>
@@ -250,7 +250,7 @@ export default function Pricing() {
           {plans.map((plan) => {
             const Icon = plan.icon;
             return (
-              <Card key={plan.id} className={`relative ${plan.popular ? "border-primary shadow-lg scale-105" : ""}`}>
+              <Card key={plan.id} className={`relative ${plan.popular ? "border-primary shadow-lg lg:scale-105" : ""}`}>
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <Badge className="bg-primary"><Star className="h-3 w-3 mr-1" /> Populaire</Badge>
@@ -372,9 +372,9 @@ export default function Pricing() {
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
               Démarrez votre essai gratuit 30 jours. Aucune carte bancaire requise.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" onClick={() => navigate("/auth")}>Démarrer l'essai gratuit</Button>
-              <Button size="lg" variant="outline" onClick={() => navigate("/support")}>Parler à un conseiller</Button>
+            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+              <Button className="w-full sm:w-auto whitespace-normal h-auto min-h-11" size="lg" onClick={() => navigate("/auth")}>Démarrer l'essai gratuit</Button>
+              <Button className="w-full sm:w-auto whitespace-normal h-auto min-h-11" size="lg" variant="outline" onClick={() => navigate("/support")}>Parler à un conseiller</Button>
             </div>
           </CardContent>
         </Card>

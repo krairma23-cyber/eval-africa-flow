@@ -40,7 +40,11 @@ const signupSchema = loginSchema.extend({
   schoolName: z.string().max(100, "Nom d'école trop long").optional(),
 });
 
-export function LoginForm() {
+interface LoginFormProps {
+  embedded?: boolean;
+}
+
+export function LoginForm({ embedded = false }: LoginFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -311,9 +315,12 @@ export function LoginForm() {
   );
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/15 via-background to-accent/15 p-4">
+    <div className={cn(
+      "flex w-full min-w-0 items-center justify-center bg-gradient-to-br from-primary/15 via-background to-accent/15 p-2 sm:p-4",
+      embedded ? "min-h-0 rounded-lg" : "min-h-screen",
+    )}>
       <Card className="w-full max-w-md border-primary/20 shadow-2xl backdrop-blur-sm bg-card/95">
-        <CardHeader className="text-center">
+        <CardHeader className="text-center p-4 sm:p-6">
           <div className="flex justify-center mb-4">
             <img 
               src="/logo.png" 
@@ -325,7 +332,7 @@ export function LoginForm() {
             {t('login.title')}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="signin" className="text-xs sm:text-sm">{t('login.signin')}</TabsTrigger>
@@ -422,7 +429,7 @@ export function LoginForm() {
                   <RadioGroup 
                     value={isCreatingSchool ? "create" : "join"} 
                     onValueChange={(value) => setIsCreatingSchool(value === "create")}
-                    className="grid grid-cols-2 gap-3"
+                    className="grid grid-cols-1 xs:grid-cols-2 gap-3"
                   >
                     <div className={`relative flex flex-col items-center justify-center text-center rounded-lg border-2 p-3 cursor-pointer transition-colors ${!isCreatingSchool ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
                       <RadioGroupItem value="join" id="type-join" className="sr-only" />
@@ -488,7 +495,7 @@ export function LoginForm() {
                       <RadioGroup 
                         value={selectedRole} 
                         onValueChange={(value) => setSelectedRole(value as "user" | "teacher")}
-                        className="grid grid-cols-2 gap-3"
+                        className="grid grid-cols-1 xs:grid-cols-2 gap-3"
                       >
                         <div className={`relative flex flex-col items-center justify-center text-center rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "user" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
                           <RadioGroupItem value="user" id="role-user" className="sr-only" />
@@ -509,7 +516,7 @@ export function LoginForm() {
                   </>
                 )}
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">{t('login.firstName')}</Label>
                     <Input

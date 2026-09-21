@@ -154,20 +154,20 @@ export default function Dashboard() {
       </motion.div>
 
       <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
-        <TabsList className="w-full h-auto flex flex-wrap sm:flex-nowrap gap-1 p-1 overflow-x-auto no-scrollbar">
-          <TabsTrigger value="overview" className="flex-1 min-w-[70px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
+        <TabsList className="w-full max-w-full h-auto flex flex-nowrap gap-1 p-1 overflow-x-auto no-scrollbar overscroll-x-contain justify-start sm:justify-center">
+          <TabsTrigger value="overview" className="flex-none sm:flex-1 min-w-[88px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
             <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
             <span className="hidden xs:inline sm:inline truncate">{t('dashboard.tabs.overview')}</span>
           </TabsTrigger>
-          <TabsTrigger value="ai-assistant" className="flex-1 min-w-[70px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
+          <TabsTrigger value="ai-assistant" className="flex-none sm:flex-1 min-w-[88px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
             <Brain className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
             <span className="hidden xs:inline sm:inline truncate">{t('dashboard.tabs.assistant')}</span>
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex-1 min-w-[70px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
+          <TabsTrigger value="analytics" className="flex-none sm:flex-1 min-w-[88px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
             <Zap className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
             <span className="hidden xs:inline sm:inline truncate">{t('dashboard.tabs.analytics')}</span>
           </TabsTrigger>
-          <TabsTrigger value="generator" className="flex-1 min-w-[70px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
+          <TabsTrigger value="generator" className="flex-none sm:flex-1 min-w-[88px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
             <ClipboardCheck className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
             <span className="hidden xs:inline sm:inline truncate">{t('dashboard.tabs.generator')}</span>
           </TabsTrigger>

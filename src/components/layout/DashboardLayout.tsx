@@ -106,7 +106,7 @@ export default function DashboardLayout() {
   if (loading) {
     return (
       <div className="flex min-h-screen w-full">
-        <div className="w-60 border-r bg-sidebar">
+        <div className="hidden md:block w-60 border-r bg-sidebar">
           <div className="p-4 space-y-4">
             <Skeleton className="h-8 w-32" />
             {Array.from({ length: 8 }).map((_, i) => (
@@ -114,7 +114,7 @@ export default function DashboardLayout() {
             ))}
           </div>
         </div>
-        <div className="flex-1 p-6">
+        <div className="flex-1 min-w-0 p-3 sm:p-4 md:p-6">
           <Skeleton className="h-8 w-64 mb-4" />
           <div className="space-y-4">
             <Skeleton className="h-32 w-full" />
@@ -135,7 +135,7 @@ export default function DashboardLayout() {
         <AppSidebar />
         
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 border-b bg-background flex items-center justify-between px-2 sm:px-4 gap-1 sm:gap-2">
+          <header className="sticky top-0 z-30 min-h-14 border-b bg-background/95 backdrop-blur flex items-center justify-between px-2 sm:px-4 py-2 gap-1 sm:gap-2">
             <div className="flex items-center gap-2 min-w-0">
               <SidebarTrigger />
               <img 
@@ -143,7 +143,7 @@ export default function DashboardLayout() {
                 alt="EvalScol Logo" 
                 className="h-7 w-7 sm:h-9 sm:w-9 object-contain flex-shrink-0"
               />
-              <h1 className="font-semibold text-sm sm:text-base truncate">EvalScol</h1>
+              <h1 className="hidden xs:block font-semibold text-sm sm:text-base truncate">EvalScol</h1>
             </div>
             
             <div className="flex items-center gap-1 sm:gap-2 min-w-0">
@@ -163,7 +163,7 @@ export default function DashboardLayout() {
             </div>
           </header>
           
-          <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-x-hidden">
+          <main className="flex-1 w-full max-w-full p-2.5 sm:p-4 md:p-6 overflow-x-hidden">
             <Outlet />
           </main>
         </div>
