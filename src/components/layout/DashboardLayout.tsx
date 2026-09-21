@@ -135,15 +135,15 @@ export default function DashboardLayout() {
         <AppSidebar />
         
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-14 border-b bg-background flex items-center justify-between px-2 sm:px-4 gap-2">
+          <header className="h-14 border-b bg-background flex items-center justify-between px-2 sm:px-4 gap-1 sm:gap-2">
             <div className="flex items-center gap-2 min-w-0">
               <SidebarTrigger />
               <img 
                 src="/evalscol-logo.png" 
                 alt="EvalScol Logo" 
-                className="h-8 w-8 sm:h-10 sm:w-10 object-contain flex-shrink-0"
+                className="h-7 w-7 sm:h-9 sm:w-9 object-contain flex-shrink-0"
               />
-              <h1 className="font-semibold text-base sm:text-lg truncate">EvalScol</h1>
+              <h1 className="font-semibold text-sm sm:text-base truncate">EvalScol</h1>
             </div>
             
             <div className="flex items-center gap-1 sm:gap-2 min-w-0">

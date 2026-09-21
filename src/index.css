@@ -264,3 +264,22 @@ main, section, article, aside { min-width: 0; }
     border-radius: calc(var(--radius) - 2px);
   }
 }
+
+/* Enhanced Responsive Table Indicator */
+@layer utilities {
+  .table-scroll-hint {
+    @apply relative overflow-hidden;
+  }
+  .table-scroll-hint::after {
+    content: '';
+    @apply absolute top-0 right-0 bottom-0 w-8 pointer-events-none transition-opacity duration-300;
+    background: linear-gradient(to right, transparent, hsl(var(--background) / 0.1));
+  }
+}
+
+/* Responsive Grid Adjustments */
+@media (max-width: 400px) {
+  .grid-cols-2-tight {
+    grid-template-columns: 1fr;
+  }
+}
