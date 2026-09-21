@@ -154,7 +154,7 @@ export default function Dashboard() {
       </motion.div>
 
       <Tabs defaultValue="overview" className="space-y-4 sm:space-y-6">
-        <TabsList className="w-full h-auto flex flex-wrap gap-1 p-1">
+        <TabsList className="w-full h-auto flex flex-wrap sm:flex-nowrap gap-1 p-1 overflow-x-auto no-scrollbar">
           <TabsTrigger value="overview" className="flex-1 min-w-[70px] flex items-center justify-center gap-1 sm:gap-2 px-2 py-2 text-xs sm:text-sm">
             <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
             <span className="hidden xs:inline sm:inline truncate">{t('dashboard.tabs.overview')}</span>
@@ -174,7 +174,7 @@ export default function Dashboard() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-4 sm:space-y-6">
-          <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
             {statCards.map((card, index) => (
               <motion.div
                 key={card.title}
