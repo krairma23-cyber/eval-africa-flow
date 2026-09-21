@@ -16,10 +16,18 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { EducationNewsBanner } from "@/components/news/EducationNewsBanner";
 import heroBg from "@/assets/hero-classroom-bg.jpg";
 import Seo from "@/components/Seo";
+import { MotionReveal } from "@/components/motion/MotionReveal";
+import { motion, useReducedMotion } from "framer-motion";
+
+const featureCardMotion = {
+  rest: { y: 0, scale: 1 },
+  hover: { y: -4, scale: 1.01 },
+};
 
 const Index = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const reduceMotion = useReducedMotion();
   
   return (
     <>
@@ -40,50 +48,99 @@ const Index = () => {
     >
       <div className="container mx-auto px-4 py-8 lg:py-16 relative">
         {/* Language Switcher */}
-        <div className="flex justify-end mb-4 gap-2">
+        <motion.div
+          className="flex justify-end mb-4 gap-2"
+          initial={reduceMotion ? false : { opacity: 0, y: -12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
           <ThemeToggle />
           <LanguageSwitcher />
-        </div>
+        </motion.div>
 
         {/* Education news banner */}
-        <div className="max-w-5xl mx-auto mb-8">
+        <motion.div
+          className="max-w-5xl mx-auto mb-8"
+          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.08 }}
+        >
           <EducationNewsBanner />
-        </div>
+        </motion.div>
         
         {/* Hero Section */}
         <header className="text-center mb-12 lg:mb-16">
-          <div className="inline-flex items-center justify-center gap-3 mb-4">
+          <motion.div
+            className="inline-flex items-center justify-center gap-3 mb-4"
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.12 }}
+          >
             <img src="/logo.png" alt="EvalScol Logo" className="h-44 w-auto object-contain" width={322} height={176} loading="eager" fetchPriority="high" />
-          </div>
-          <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4">
+          </motion.div>
+          <motion.h1
+            className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4"
+            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.2 }}
+          >
             {t('hero.title')}
-          </h1>
-          <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
+          </motion.h1>
+          <motion.p
+            className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-6"
+            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.28 }}
+          >
             {t('hero.subtitle')}
-          </p>
-          <ul className="max-w-2xl mx-auto mb-6 grid sm:grid-cols-2 gap-x-6 gap-y-2 text-left text-sm sm:text-base text-foreground">
-            <li className="flex items-start gap-2"><span className="text-accent font-bold">✅</span><span>Réduction de 80% du temps administratif</span></li>
-            <li className="flex items-start gap-2"><span className="text-accent font-bold">✅</span><span>Réduction de 95% des erreurs de calcul</span></li>
-            <li className="flex items-start gap-2"><span className="text-accent font-bold">✅</span><span>Paiements scolaires en 2 minutes via Mobile Money</span></li>
-            <li className="flex items-start gap-2"><span className="text-accent font-bold">✅</span><span>Portail parent en temps réel</span></li>
-          </ul>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-2">
-            <Button
-              size="lg"
-              className="bg-[#10B981] hover:bg-[#10B981]/90 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all"
-              onClick={() => navigate('/support')}
-            >
-              Réserver une démonstration
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="bg-transparent border-2 border-primary text-primary hover:bg-primary/10 font-semibold px-8"
-              onClick={() => navigate('/auth')}
-            >
-              Essayer gratuitement pendant 14 jours
-            </Button>
-          </div>
+          </motion.p>
+          <motion.ul
+            className="max-w-2xl mx-auto mb-6 grid sm:grid-cols-2 gap-x-6 gap-y-2 text-left text-sm sm:text-base text-foreground"
+            initial="hidden"
+            animate="visible"
+            variants={{ visible: { transition: { staggerChildren: reduceMotion ? 0 : 0.07, delayChildren: 0.32 } } }}
+          >
+            {[
+              "Réduction de 80% du temps administratif",
+              "Réduction de 95% des erreurs de calcul",
+              "Paiements scolaires en 2 minutes via Mobile Money",
+              "Portail parent en temps réel",
+            ].map((benefit) => (
+              <motion.li
+                key={benefit}
+                className="flex items-start gap-2"
+                variants={{ hidden: { opacity: reduceMotion ? 1 : 0, x: reduceMotion ? 0 : -10 }, visible: { opacity: 1, x: 0 } }}
+              >
+                <span className="text-accent font-bold">✅</span><span>{benefit}</span>
+              </motion.li>
+            ))}
+          </motion.ul>
+          <motion.div
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-2"
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.58 }}
+          >
+            <motion.div whileHover={reduceMotion ? undefined : { scale: 1.03 }} whileTap={reduceMotion ? undefined : { scale: 0.98 }}>
+              <Button
+                size="lg"
+                className="bg-[#10B981] hover:bg-[#10B981]/90 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all"
+                onClick={() => navigate('/support')}
+              >
+                Réserver une démonstration
+              </Button>
+            </motion.div>
+            <motion.div whileHover={reduceMotion ? undefined : { scale: 1.03 }} whileTap={reduceMotion ? undefined : { scale: 0.98 }}>
+              <Button
+                size="lg"
+                variant="outline"
+                className="bg-transparent border-2 border-primary text-primary hover:bg-primary/10 font-semibold px-8"
+                onClick={() => navigate('/auth')}
+              >
+                Essayer gratuitement pendant 14 jours
+              </Button>
+            </motion.div>
+          </motion.div>
           <p className="text-sm text-muted-foreground mb-6">Aucune carte bancaire requise.</p>
           <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
@@ -111,6 +168,7 @@ const Index = () => {
             <article>
               <h2 className="text-2xl lg:text-3xl font-bold mb-6">{t('index.featuresTitle')}</h2>
               <div className="grid gap-4">
+                <motion.div variants={featureCardMotion} initial="rest" whileHover={reduceMotion ? "rest" : "hover"} transition={{ duration: 0.2 }}>
                 <Card className="border-primary/20 hover:border-primary/40 transition-colors">
                   <CardHeader className="pb-3">
                     <div className="flex items-start gap-3">
@@ -124,7 +182,9 @@ const Index = () => {
                     </div>
                   </CardHeader>
                 </Card>
+                </motion.div>
 
+                <motion.div variants={featureCardMotion} initial="rest" whileHover={reduceMotion ? "rest" : "hover"} transition={{ duration: 0.2 }}>
                 <Card className="border-accent/20 hover:border-accent/40 transition-colors">
                   <CardHeader className="pb-3">
                     <div className="flex items-start gap-3">
@@ -138,7 +198,9 @@ const Index = () => {
                     </div>
                   </CardHeader>
                 </Card>
+                </motion.div>
 
+                <motion.div variants={featureCardMotion} initial="rest" whileHover={reduceMotion ? "rest" : "hover"} transition={{ duration: 0.2 }}>
                 <Card className="border-primary/20 hover:border-primary/40 transition-colors">
                   <CardHeader className="pb-3">
                     <div className="flex items-start gap-3">
@@ -152,7 +214,9 @@ const Index = () => {
                     </div>
                   </CardHeader>
                 </Card>
+                </motion.div>
 
+                <motion.div variants={featureCardMotion} initial="rest" whileHover={reduceMotion ? "rest" : "hover"} transition={{ duration: 0.2 }}>
                 <Card className="border-accent/20 hover:border-accent/40 transition-colors">
                   <CardHeader className="pb-3">
                     <div className="flex items-start gap-3">
@@ -166,6 +230,7 @@ const Index = () => {
                     </div>
                   </CardHeader>
                 </Card>
+                </motion.div>
               </div>
             </article>
 
@@ -186,30 +251,49 @@ const Index = () => {
           </section>
 
           {/* Right Column - Authentication Form */}
-          <aside className="order-1 lg:order-2 lg:sticky lg:top-8">
+          <motion.aside
+            className="order-1 lg:order-2 lg:sticky lg:top-8"
+            initial={reduceMotion ? false : { opacity: 0, x: 24 }}
+            whileInView={reduceMotion ? undefined : { opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.55 }}
+          >
             <LoginForm />
-          </aside>
+          </motion.aside>
         </main>
 
         {/* Premium KPIs */}
+        <MotionReveal>
         <PremiumKPIs />
+        </MotionReveal>
 
         {/* Evaluation and Analytics Features */}
+        <MotionReveal>
         <EvaluationFeatures />
+        </MotionReveal>
 
         {/* Parent Reports Section */}
+        <MotionReveal>
         <ParentReports />
+        </MotionReveal>
 
         {/* Testimonials Section */}
+        <MotionReveal>
         <SchoolTestimonials />
+        </MotionReveal>
 
         {/* Press & Partners Section */}
+        <MotionReveal>
         <PressPartners />
+        </MotionReveal>
 
         {/* Local Support Section */}
+        <MotionReveal>
         <LocalSupport />
+        </MotionReveal>
 
         {/* Emotional Closing Section */}
+        <MotionReveal>
         <section className="max-w-4xl mx-auto mt-16 mb-8 text-center px-4">
           <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 border border-primary/20 p-8 lg:p-12 shadow-lg">
             <h2 className="text-2xl lg:text-4xl font-bold text-foreground mb-4 leading-tight">
@@ -227,6 +311,7 @@ const Index = () => {
             </Button>
           </div>
         </section>
+        </MotionReveal>
       </div>
     </div>
     </>
