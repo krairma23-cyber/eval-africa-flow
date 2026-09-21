@@ -205,7 +205,7 @@ export default function Subjects() {
           />
         </div>
         <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
-          <SelectTrigger className="w-full sm:w-[250px]">
+          <SelectTrigger className="w-full sm:w-full sm:w-[250px]">
             <SelectValue placeholder="Filtrer par classe" />
           </SelectTrigger>
           <SelectContent>

@@ -192,7 +192,7 @@ export default function Schedule() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <label className="text-xs sm:text-sm font-medium whitespace-nowrap">Filtrer par classe:</label>
           <Select value={selectedClassroom} onValueChange={setSelectedClassroom}>
-            <SelectTrigger className="w-full sm:w-[250px] text-sm">
+            <SelectTrigger className="w-full sm:w-full sm:w-[250px] text-sm">
               <SelectValue placeholder="Toutes les classes" />
             </SelectTrigger>
             <SelectContent>
