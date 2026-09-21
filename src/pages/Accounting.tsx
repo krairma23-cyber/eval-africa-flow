@@ -326,7 +326,7 @@ export default function Accounting() {
 
       <Card>
         <CardContent className="pt-6 flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-full sm:w-[200px]">
+          <div className="relative flex-1 basis-full sm:basis-[200px] min-w-0">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input className="pl-9" placeholder="Rechercher une écriture…" value={search} onChange={(e) => setSearch(e.target.value)} />
           </div>

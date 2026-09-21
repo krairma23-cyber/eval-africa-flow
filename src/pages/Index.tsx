@@ -42,11 +42,10 @@ const Index = () => {
         backgroundImage: `linear-gradient(to bottom, hsl(var(--background) / 0.35), hsl(var(--background) / 0.55)), url(${heroBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
         backgroundRepeat: 'no-repeat',
       }}
     >
-      <div className="container mx-auto px-4 py-8 lg:py-16 relative">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 lg:py-16 relative">
         {/* Language Switcher */}
         <motion.div
           className="flex justify-end mb-4 gap-2"
@@ -71,15 +70,15 @@ const Index = () => {
         {/* Hero Section */}
         <header className="text-center mb-12 lg:mb-16">
           <motion.div
-            className="inline-flex items-center justify-center gap-3 mb-4"
+            className="inline-flex items-center justify-center gap-3 mb-2 sm:mb-4"
             initial={reduceMotion ? false : { opacity: 0, scale: 0.94 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.12 }}
           >
-            <img src="/logo.png" alt="EvalScol Logo" className="h-44 w-auto object-contain" width={322} height={176} loading="eager" fetchPriority="high" />
+            <img src="/logo.png" alt="EvalScol Logo" className="h-28 sm:h-36 lg:h-44 w-auto object-contain" width={322} height={176} loading="eager" fetchPriority="high" />
           </motion.div>
           <motion.h1
-            className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4"
+            className="text-3xl sm:text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-4 leading-tight"
             initial={reduceMotion ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.2 }}
@@ -121,20 +120,20 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45, delay: 0.58 }}
           >
-            <motion.div whileHover={reduceMotion ? undefined : { scale: 1.03 }} whileTap={reduceMotion ? undefined : { scale: 0.98 }}>
+            <motion.div className="w-full sm:w-auto" whileHover={reduceMotion ? undefined : { scale: 1.03 }} whileTap={reduceMotion ? undefined : { scale: 0.98 }}>
               <Button
                 size="lg"
-                className="bg-[#10B981] hover:bg-[#10B981]/90 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all"
+                className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-5 sm:px-8 shadow-lg hover:shadow-xl transition-all whitespace-normal h-auto min-h-11"
                 onClick={() => navigate('/support')}
               >
                 Réserver une démonstration
               </Button>
             </motion.div>
-            <motion.div whileHover={reduceMotion ? undefined : { scale: 1.03 }} whileTap={reduceMotion ? undefined : { scale: 0.98 }}>
+            <motion.div className="w-full sm:w-auto" whileHover={reduceMotion ? undefined : { scale: 1.03 }} whileTap={reduceMotion ? undefined : { scale: 0.98 }}>
               <Button
                 size="lg"
                 variant="outline"
-                className="bg-transparent border-2 border-primary text-primary hover:bg-primary/10 font-semibold px-8"
+                className="w-full sm:w-auto bg-transparent border-2 border-primary text-primary hover:bg-primary/10 font-semibold px-5 sm:px-8 whitespace-normal h-auto min-h-11"
                 onClick={() => navigate('/auth')}
               >
                 Essayer gratuitement pendant 14 jours
@@ -142,7 +141,7 @@ const Index = () => {
             </motion.div>
           </motion.div>
           <p className="text-sm text-muted-foreground mb-6">Aucune carte bancaire requise.</p>
-          <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+          <div className="flex flex-col xs:flex-row items-center justify-center gap-2 sm:gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4 text-accent" />
               <span>{t('hero.secureData')}</span>
@@ -154,7 +153,7 @@ const Index = () => {
           </div>
           <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
             <AboutEvalScol />
-            <Button size="lg" className="bg-accent hover:bg-accent/90 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all" onClick={() => navigate('/parent-portal')}>
+            <Button size="lg" className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-5 sm:px-8 shadow-lg hover:shadow-xl transition-all whitespace-normal h-auto min-h-11" onClick={() => navigate('/parent-portal')}>
               <Users className="h-5 w-5 mr-2" />
               {t('hero.parentPortal')}
             </Button>
@@ -295,7 +294,7 @@ const Index = () => {
         {/* Emotional Closing Section */}
         <MotionReveal>
         <section className="max-w-4xl mx-auto mt-16 mb-8 text-center px-4">
-          <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 border border-primary/20 p-8 lg:p-12 shadow-lg">
+           <div className="rounded-lg bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10 border border-primary/20 p-5 sm:p-8 lg:p-12 shadow-lg">
             <h2 className="text-2xl lg:text-4xl font-bold text-foreground mb-4 leading-tight">
               Les écoles africaines méritent mieux que les fichiers Excel et les calculs manuels.
             </h2>
@@ -304,7 +303,7 @@ const Index = () => {
             </p>
             <Button
               size="lg"
-              className="bg-[#10B981] hover:bg-[#10B981]/90 text-white font-semibold px-8 shadow-lg hover:shadow-xl transition-all"
+              className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-5 sm:px-8 shadow-lg hover:shadow-xl transition-all whitespace-normal h-auto min-h-11"
               onClick={() => navigate('/support')}
             >
               Demander une démonstration
