@@ -81,13 +81,13 @@ All colors MUST be HSL.
 
   /* ===== MODE SOMBRE ===== */
   .dark {
-    --background: 222 47% 11%;
+    --background: 0 0% 0%;
     --foreground: 210 20% 98%;
 
-    --card: 221 39% 13%;
+    --card: 222 47% 6%;
     --card-foreground: 210 20% 98%;
 
-    --popover: 221 39% 13%;
+    --popover: 222 47% 6%;
     --popover-foreground: 210 20% 98%;
 
     --primary: 263 83% 67%;
