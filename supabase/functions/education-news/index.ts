@@ -53,6 +53,29 @@ const FEEDS: Feed[] = [
     url: 'https://fr.allafrica.com/tools/headlines/rdf/education/headlines.rdf',
   },
   {
+    category: 'Afrique de l\'Ouest',
+    source: 'allAfrica',
+    url: 'https://fr.allafrica.com/tools/headlines/rdf/westafrica/headlines.rdf',
+    keywords: EDU_KEYWORDS,
+  },
+  {
+    category: 'Côte d\'Ivoire',
+    source: 'allAfrica',
+    url: 'https://fr.allafrica.com/tools/headlines/rdf/ivorycoast/headlines.rdf',
+    keywords: EDU_KEYWORDS,
+  },
+  {
+    category: 'Sénégal',
+    source: 'allAfrica',
+    url: 'https://fr.allafrica.com/tools/headlines/rdf/senegal/headlines.rdf',
+    keywords: EDU_KEYWORDS,
+  },
+  {
+    category: 'Numérique',
+    source: 'allAfrica',
+    url: 'https://fr.allafrica.com/tools/headlines/rdf/innovation/headlines.rdf',
+  },
+  {
     category: 'Afrique',
     source: 'RFI Afrique',
     url: 'https://www.rfi.fr/fr/afrique/rss',
