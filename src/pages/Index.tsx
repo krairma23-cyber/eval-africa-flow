@@ -36,15 +36,7 @@ const Index = () => {
       description="Plateforme SaaS de gestion scolaire avec IA pour l'Afrique : notes, bulletins PDF, portail parent et paiements mobile money."
       path="/"
     />
-    <div
-      className="min-h-screen relative bg-background"
-      style={{
-        backgroundImage: `linear-gradient(to bottom, hsl(var(--background) / 0.35), hsl(var(--background) / 0.55)), url(${heroBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
+    <div className="min-h-screen relative bg-background">
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 lg:py-16 relative">
         {/* Language Switcher */}
         <motion.div
