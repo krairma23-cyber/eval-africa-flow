@@ -66,8 +66,19 @@ const FEEDS: Feed[] = [
   },
 ];
 
+/** Corrige le mojibake UTF-8 lu en latin-1 (ex: "Ã©" -> "é"). */
+function fixMojibake(s: string): string {
+  if (!/[ÃÂ][\u0080-\u00BF]/.test(s)) return s;
+  try {
+    const bytes = Uint8Array.from([...s].map((c) => c.charCodeAt(0) & 0xff));
+    return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+  } catch {
+    return s;
+  }
+}
+
 function decode(s: string): string {
-  return s
+  const out = s
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
     .replace(/<[^>]+>/g, ' ')
     .replace(/&lt;/g, '<')
@@ -81,6 +92,7 @@ function decode(s: string): string {
     .replace(/&amp;/g, '&')
     .replace(/\s+/g, ' ')
     .trim();
+  return fixMojibake(out);
 }
 
 function pick(block: string, tag: string): string {
