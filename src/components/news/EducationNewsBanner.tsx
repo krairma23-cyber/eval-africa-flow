@@ -30,7 +30,7 @@ const FALLBACK_NEWS: NewsItem[] = [
 ];
 
 const STORAGE_KEY = "evalscol_news_banner_dismissed_v1";
-const CACHE_KEY = "evalscol_news_cache_v1";
+const CACHE_KEY = "evalscol_news_cache_v2";
 const CACHE_TTL_MS = 30 * 60 * 1000; // 30 min
 
 export function EducationNewsBanner() {
