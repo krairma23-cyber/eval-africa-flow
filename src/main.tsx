@@ -9,7 +9,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <HelmetProvider>
-      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
         <LanguageProvider>
           <App />
         </LanguageProvider>
