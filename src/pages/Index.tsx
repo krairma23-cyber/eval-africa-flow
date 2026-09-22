@@ -60,7 +60,17 @@ const Index = () => {
         </motion.div>
         
         {/* Hero Section */}
-        <header className="text-center mb-12 lg:mb-16">
+        <header className="relative isolate -mx-3 mb-12 overflow-hidden px-3 py-8 text-center sm:-mx-4 sm:px-4 sm:py-10 lg:mb-16 lg:py-14">
+          <img
+            src={heroBg}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+            loading="eager"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 -z-10 bg-background/80" aria-hidden="true" />
+          <div className="mx-auto max-w-6xl">
           <motion.div
             className="inline-flex items-center justify-center gap-3 mb-2 sm:mb-4"
             initial={reduceMotion ? false : { opacity: 0, scale: 0.94 }}
@@ -149,6 +159,7 @@ const Index = () => {
               <Users className="h-5 w-5 mr-2" />
               {t('hero.parentPortal')}
             </Button>
+          </div>
           </div>
         </header>
 
