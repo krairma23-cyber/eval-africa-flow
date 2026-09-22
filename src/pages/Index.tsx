@@ -69,7 +69,7 @@ const Index = () => {
             loading="eager"
             fetchPriority="high"
           />
-          <div className="absolute inset-0 -z-10 bg-background/80" aria-hidden="true" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background/60 via-background/75 to-background/90" aria-hidden="true" />
           <div className="mx-auto max-w-6xl">
           <motion.div
             className="inline-flex items-center justify-center gap-3 mb-2 sm:mb-4"
