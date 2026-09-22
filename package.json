@@ -63,9 +63,9 @@
     "lucide-react": "^0.462.0",
     "mammoth": "^1.12.0",
     "next-themes": "^0.3.0",
-    "react": "^19.2.8",
+    "react": "19.2.8",
     "react-day-picker": "^8.10.1",
-    "react-dom": "^19.2.8",
+    "react-dom": "19.2.8",
     "react-helmet-async": "^3.0.0",
     "react-hook-form": "^7.61.1",
     "react-is": "^19.1.1",
@@ -99,9 +99,6 @@
     "vite": "^8.2.2"
   },
   "overrides": {
-    "minimatch": "10.2.6",
-    "brace-expansion": "2.1.4",
-    "@isaacs/brace-expansion": "5.0.1",
     "@xmldom/xmldom": "0.8.14",
     "glob": "10.5.0",
     "uuid": "14.0.1",
