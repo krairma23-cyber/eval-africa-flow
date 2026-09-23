@@ -16,9 +16,10 @@ export function lazyWithRetry<T extends React.ComponentType<any>>(
     const retryKey = `lazy-retry:${key}`;
 
     try {
-      // If a previous load succeeded, clear retry flag.
+      const mod = await importer();
+      // Load succeeded: clear retry flag.
       sessionStorage.removeItem(retryKey);
-      return await importer();
+      return mod;
     } catch (err) {
       const hasRetried = sessionStorage.getItem(retryKey) === "1";
 
