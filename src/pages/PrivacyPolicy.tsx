@@ -74,7 +74,7 @@ const PrivacyPolicy = () => {
                 <h3 className="font-semibold mb-2">Cookies et données de connexion :</h3>
                 <ul className="list-disc pl-6 space-y-1 text-sm">
                   <li>Cookies essentiels (authentification)</li>
-                  <li>Cookies analytiques (amélioration du service)</li>
+                  <li>Cookies analytiques Google Analytics — uniquement après votre consentement</li>
                   <li>Logs de connexion (sécurité)</li>
                 </ul>
               </div>
@@ -162,22 +162,28 @@ const PrivacyPolicy = () => {
             <CardContent className="space-y-2 text-sm">
               <p>Nous mettons en œuvre des mesures techniques et organisationnelles pour protéger vos données :</p>
               <ul className="list-disc pl-6 space-y-1">
-                <li>Chiffrement des données sensibles (AES-256)</li>
+                <li>Communications chiffrées (HTTPS)</li>
                 <li>Authentification sécurisée et gestion des sessions</li>
                 <li>Logs d'audit pour tracer les accès aux données</li>
-                <li>Hébergement en Europe (conformité RGPD)</li>
-                <li>Sauvegardes régulières et plan de continuité</li>
+                                <li>Sauvegardes régulières et plan de continuité</li>
               </ul>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>7. Transferts de données</CardTitle>
+              <CardTitle>7. Destinataires et transferts de données</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm">
-              <p>Vos données sont hébergées au sein de l'Union Européenne et ne font l'objet d'aucun transfert 
-              vers des pays tiers, sauf consentement explicite et garanties appropriées (clauses contractuelles types).</p>
+            <CardContent className="text-sm space-y-2">
+              <p>Vos données ne sont jamais vendues. Elles sont transmises uniquement aux prestataires nécessaires au service :</p>
+              <ul className="list-disc pl-6 space-y-1">
+                <li><strong>Supabase</strong> : hébergement de la base de données et authentification</li>
+                <li><strong>Paystack</strong> : traitement des paiements (montant, email, téléphone du payeur)</li>
+                <li><strong>Resend</strong> : envoi des emails (adresse email, nom)</li>
+                <li><strong>Assistant IA</strong> : textes que vous saisissez dans l'assistant, sans données d'élèves nominatives</li>
+                <li><strong>Google (Analytics / Tag Manager)</strong> : statistiques de visite, uniquement si vous acceptez les cookies</li>
+              </ul>
+              <p>Certains prestataires peuvent être situés hors de votre pays (notamment aux États-Unis) ; ces transferts sont encadrés par des garanties contractuelles appropriées.</p>
             </CardContent>
           </Card>
 

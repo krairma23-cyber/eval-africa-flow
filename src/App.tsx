@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import { CookieConsent } from "./components/gdpr/CookieConsent";
+import { LegalFooter } from "./components/gdpr/LegalFooter";
+import { LegalNotice, TermsOfUse, CookiePolicy } from "./pages/LegalPages";
 import DashboardLayout from "./components/layout/DashboardLayout";
 import { lazyWithRetry } from "@/lib/lazyWithRetry";
 import { ChunkLoadErrorBoundary } from "@/components/system/ChunkLoadErrorBoundary";
@@ -91,6 +93,9 @@ const App = () => (
               <Route path="/pitch-deck" element={<PitchDeck />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/mentions-legales" element={<LegalNotice />} />
+              <Route path="/cgu" element={<TermsOfUse />} />
+              <Route path="/cookies" element={<CookiePolicy />} />
               <Route path="/payment-callback" element={<PaymentCallback />} />
               <Route path="/parent-portal" element={<ParentPortal />} />
               <Route path="/parent-guide" element={<ParentGuide />} />
@@ -141,6 +146,7 @@ const App = () => (
             </Routes>
           </Suspense>
         </ChunkLoadErrorBoundary>
+        <LegalFooter />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
