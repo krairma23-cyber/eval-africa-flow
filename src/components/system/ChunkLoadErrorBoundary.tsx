@@ -53,15 +53,18 @@ export class ChunkLoadErrorBoundary extends React.Component<Props, State> {
   render() {
     if (!this.state.hasError) return this.props.children;
 
-    // If it's not a chunk-related error, don't hide it behind a generic screen.
-    if (!this.state.isChunkError) return this.props.children;
+    const isChunk = this.state.isChunkError;
 
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/15 via-background to-accent/15 p-6">
         <div className="w-full max-w-md rounded-lg border bg-card p-6 text-card-foreground">
-          <h1 className="text-lg font-semibold">Problème de chargement</h1>
+          <h1 className="text-lg font-semibold">
+            {isChunk ? "Problème de chargement" : "Une erreur est survenue"}
+          </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Un module de l’application n’a pas pu être chargé (souvent à cause du cache du navigateur après une mise à jour).
+            {isChunk
+              ? "Un module de l’application n’a pas pu être chargé (souvent à cause du cache du navigateur après une mise à jour)."
+              : "Cette page a rencontré un problème inattendu. Rechargez pour réessayer."}
           </p>
           <div className="mt-4 flex flex-col gap-2">
             <Button onClick={this.handleReload}>Recharger</Button>
