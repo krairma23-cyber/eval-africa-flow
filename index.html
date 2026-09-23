@@ -9,6 +9,24 @@
          Inline scripts (GTM bootstrap + JSON-LD) are allowed via 'unsafe-inline'. For a stricter policy, move to nonces served via HTTP headers (Vite plugin or edge) instead of a meta tag. -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://*.googletagmanager.com https://*.google-analytics.com https://js.paystack.co https://checkout.paystack.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.paystack.co https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://stats.g.doubleclick.net; frame-src 'self' https://www.googletagmanager.com https://checkout.paystack.com https://standard.paystack.co; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;" />
     <!-- Per-route canonical is set via react-helmet-async (src/components/Seo.tsx). -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <!-- Anti-clickjacking + HTTPS enforcement on production domains only (Lovable editor preview must stay embeddable). -->
+    <style id="antiClickjack">html{display:none!important}</style>
+    <script>
+      (function () {
+        var prod = /(^|\.)siteteck\.com$|^evalscol-africa\.lovable\.app$/.test(location.hostname);
+        if (prod && location.protocol === 'http:') {
+          location.replace('https://' + location.host + location.pathname + location.search + location.hash);
+          return;
+        }
+        if (prod && window.top !== window.self) {
+          try { window.top.location = window.self.location.href; } catch (e) {}
+          return;
+        }
+        var s = document.getElementById('antiClickjack');
+        if (s) s.parentNode.removeChild(s);
+      })();
+    </script>
 
 
     
