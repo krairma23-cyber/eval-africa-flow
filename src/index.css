@@ -7,31 +7,31 @@ All colors MUST be HSL.
 */
 
 @layer base {
-  /* ===== MODE CLAIR (par défaut) ===== */
+  /* ===== MODE CLAIR ===== */
   :root {
-    --background: 221 46% 8%;
-    --foreground: 210 20% 98%;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
 
-    --card: 222 47% 7%;
-    --card-foreground: 210 20% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 222 47% 7%;
-    --popover-foreground: 210 20% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 263 83% 67%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
+    --secondary: 214 32% 91%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 215 20% 78%;
+    --muted: 214 32% 91%;
+    --muted-foreground: 215 25% 35%;
 
     --accent: 142 76% 36%;
     --accent-foreground: 0 0% 100%;
 
     /* Futuristic colors */
-    --ai-glow: 263 83% 57%;
+    --ai-glow: 221 83% 53%;
     --ai-secondary: 142 76% 36%;
     --neural-blue: 217 91% 60%;
     --quantum-purple: 280 100% 70%;
@@ -63,20 +63,20 @@ All colors MUST be HSL.
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 263 83% 67%;
+    --border: 214 27% 82%;
+    --input: 214 27% 82%;
+    --ring: 221 83% 53%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 218 34% 13%;
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 263 83% 67%;
+    --sidebar-background: 210 40% 96%;
+    --sidebar-foreground: 222 47% 16%;
+    --sidebar-primary: 221 83% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 27.9% 16.9%;
-    --sidebar-accent-foreground: 210 20% 98%;
-    --sidebar-border: 217.2 32.6% 17.5%;
-    --sidebar-ring: 263 83% 67%;
+    --sidebar-accent: 214 32% 89%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 27% 82%;
+    --sidebar-ring: 221 83% 53%;
   }
 
   /* ===== MODE SOMBRE ===== */
