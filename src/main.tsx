@@ -5,6 +5,9 @@ import { HelmetProvider } from "react-helmet-async";
 import App from "./App.tsx";
 import "./index.css";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { registerAppServiceWorker } from "./lib/registerSW";
+
+registerAppServiceWorker();
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
