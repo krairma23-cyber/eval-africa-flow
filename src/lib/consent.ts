@@ -1,7 +1,7 @@
 // Gestion du consentement cookies + chargement conditionnel de Google Tag Manager.
 // Aucun traceur tiers n'est chargé avant un consentement explicite "mesure d'audience".
 export const CONSENT_KEY = "gdpr-consent";
-export const CONSENT_VERSION = "2026-09-23";
+export const CONSENT_VERSION = "2026-09-25";
 export const CONSENT_EVENT = "evalscol-consent-change";
 const GTM_ID = "GTM-TB5QSVH5";
 
@@ -29,13 +29,13 @@ export function readConsent(): ConsentRecord | null {
   }
 }
 
-export function saveConsent(analytics: boolean) {
+export function saveConsent(analytics: boolean, marketing = false) {
   const record: ConsentRecord = {
     version: CONSENT_VERSION,
     date: new Date().toISOString(),
     functional: true,
     analytics,
-    marketing: false,
+    marketing,
     notice: CONSENT_NOTICE,
   };
   localStorage.setItem(CONSENT_KEY, JSON.stringify(record));
