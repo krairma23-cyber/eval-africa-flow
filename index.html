@@ -4,6 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Apply the saved theme before React and the compiled stylesheet load. -->
+    <script>
+      (function () {
+        var theme = 'dark';
+        try {
+          var savedTheme = localStorage.getItem('theme');
+          if (savedTheme === 'light' || savedTheme === 'dark') theme = savedTheme;
+        } catch (e) {}
+
+        var root = document.documentElement;
+        root.classList.toggle('dark', theme === 'dark');
+        root.style.backgroundColor = theme === 'dark' ? '#0b111e' : '#f8fafc';
+        root.style.colorScheme = theme;
+      })();
+    </script>
+
     <!-- Content Security Policy — mitigate XSS exposure of localStorage tokens.
          NOTE: 'strict-dynamic' was removed because it disables 'self' and breaks the Vite/SPA module script (/src/main.tsx and built chunks) → blank page.
          Inline scripts (GTM bootstrap + JSON-LD) are allowed via 'unsafe-inline'. For a stricter policy, move to nonces served via HTTP headers (Vite plugin or edge) instead of a meta tag. -->
