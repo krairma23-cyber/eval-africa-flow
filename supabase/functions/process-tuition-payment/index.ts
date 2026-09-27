@@ -67,18 +67,7 @@ serve(async (req) => {
 
     const { reference } = validated;
 
-    // Idempotency: refuse to re-apply a reference that has already been processed
-    const { data: existingTx } = await supabase
-      .from('payment_transactions')
-      .select('id')
-      .eq('payment_reference', reference)
-      .maybeSingle();
-    if (existingTx) {
-      return new Response(
-        JSON.stringify({ error: 'Payment reference already processed' }),
-        { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    // Idempotency is enforced atomically by apply_tuition_payment (UNIQUE payment_reference)
 
     // Verify payment with Paystack
     const paystackResponse = await fetch(
@@ -105,7 +94,14 @@ serve(async (req) => {
     }
 
     const paymentData = paystackData.data;
-    const metadata = paymentData.metadata;
+    const metadata = paymentData.metadata || {};
+    // SECURITY: only accept tuition payments in XOF bound to a student
+    if (paymentData.currency !== 'XOF' || metadata.payment_type !== 'tuition_fee' || !metadata.student_id) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid payment metadata' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
     const studentId = metadata.student_id;
     const amount = paymentData.amount / 100; // Convert from kobo to FCFA
 
@@ -140,52 +136,29 @@ serve(async (req) => {
       );
     }
 
-    // Calculate new amount paid
-    const currentAmountPaid = student.amount_paid || 0;
-    const newAmountPaid = currentAmountPaid + amount;
-    const tuitionFee = student.tuition_fee || 0;
+    // SECURITY: atomic apply (insert transaction first => replay fails on UNIQUE, then SQL increment)
+    const { data: applied, error: applyErr } = await supabase.rpc('apply_tuition_payment', {
+      p_reference: reference,
+      p_student_id: studentId,
+      p_amount: amount,
+      p_paid_at: paymentData.paid_at,
+      p_parent_email: paymentData.customer?.email || '',
+      p_parent_name: metadata.parent_name || 'Unknown',
+      p_metadata: metadata,
+    });
 
-    // Determine new payment status
-    let newPaymentStatus = 'unpaid';
-    if (newAmountPaid >= tuitionFee && tuitionFee > 0) {
-      newPaymentStatus = 'paid';
-    } else if (newAmountPaid > 0) {
-      newPaymentStatus = 'partial';
+    if (applyErr) {
+      const dup = (applyErr as any).code === '23505';
+      console.error('[process-tuition-payment] apply_tuition_payment failed:', applyErr.message);
+      return new Response(
+        JSON.stringify({ error: dup ? 'Payment reference already processed' : 'Failed to apply payment' }),
+        { status: dup ? 409 : 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // Update student payment record
-    const { error: updateError } = await supabase
-      .from('students')
-      .update({
-        amount_paid: newAmountPaid,
-        payment_status: newPaymentStatus,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', studentId);
-
-    if (updateError) {
-      throw new Error(`Failed to update student payment: ${updateError.message}`);
-    }
-
-    // Create payment transaction record via secure function
-    const { error: transactionError } = await supabase
-      .rpc('record_payment_transaction', {
-        p_student_id: studentId,
-        p_amount: amount,
-        p_reference: reference,
-        p_payment_method: 'mobile_money',
-        p_payment_date: paymentData.paid_at,
-        p_parent_email: paymentData.customer.email,
-        p_parent_name: metadata.parent_name || 'Unknown',
-        p_status: 'completed',
-        p_metadata: metadata
-      });
-
-    if (transactionError) {
-      console.error('[process-tuition-payment] Failed to create transaction record:', transactionError.message);
-      // Don't fail the whole operation if transaction logging fails
-    }
-
+    const row = Array.isArray(applied) ? applied[0] : applied;
+    const newAmountPaid = Number(row?.new_total ?? 0);
+    const tuitionFee = Number(row?.tuition ?? student.tuition_fee ?? 0);
 
     return new Response(
       JSON.stringify({
@@ -193,13 +166,13 @@ serve(async (req) => {
         student_id: studentId,
         amount_paid: amount,
         new_total_paid: newAmountPaid,
-        payment_status: newPaymentStatus,
+        payment_status: row?.new_status,
         remaining_balance: Math.max(0, tuitionFee - newAmountPaid),
         receipt_url: paymentData.receipt_url || null
       }),
-      { 
-        status: 200, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
 
