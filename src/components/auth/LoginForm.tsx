@@ -334,13 +334,9 @@ export function LoginForm({ embedded = false }: LoginFormProps) {
         </CardHeader>
         <CardContent className="p-4 pt-0 sm:p-6 sm:pt-0">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="signin" className="text-xs sm:text-sm">{t('login.signin')}</TabsTrigger>
               <TabsTrigger value="signup" className="text-xs sm:text-sm">{t('login.signup')}</TabsTrigger>
-              <TabsTrigger value="reset" className="text-xs sm:text-sm whitespace-normal leading-tight py-2">
-                <span className="hidden sm:inline">{t('login.forgot')}</span>
-                <span className="sm:hidden">{t('login.password')}</span>
-              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
@@ -379,6 +375,16 @@ export function LoginForm({ embedded = false }: LoginFormProps) {
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? t('login.loading.signin') : t('login.submit.signin')}
                 </Button>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("reset")}
+                    className="text-sm text-muted-foreground underline-offset-4 hover:underline hover:text-foreground transition-colors"
+                  >
+                    {t('login.forgot')}
+                  </button>
+                </div>
 
                 <div className="relative my-4">
                   <div className="absolute inset-0 flex items-center">
