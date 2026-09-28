@@ -66,9 +66,6 @@ Deno.serve(async (req) => {
     const schoolName = inv.schools?.name ?? "";
 
     if (body.action === "preview") {
-      const { data: existing } = await admin.rpc("get_users_for_admin").then(() => ({ data: null })).catch(() => ({ data: null }));
-      void existing;
-      // check whether account exists
       let hasAccount = false;
       for (let page = 1; page <= 20 && !hasAccount; page++) {
         const { data } = await admin.auth.admin.listUsers({ page, perPage: 1000 });
