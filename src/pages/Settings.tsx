@@ -420,39 +420,15 @@ export default function Settings() {
               
             </div>
 
-            {/* Join Code */}
-            {schoolJoinCode &&
-            <div className="grid gap-2 p-3 rounded-lg bg-primary/5 border border-primary/20">
-                <Label className="flex items-center gap-2">
-                  <KeyRound className="h-4 w-4" />
-                  Code d'invitation de l'école
-                </Label>
-                <div className="flex items-center gap-2">
-                  <Input
-                  value={schoolJoinCode}
-                  readOnly
-                  className="font-mono tracking-widest text-lg font-bold uppercase bg-background" />
-                
-                  <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => {
-                    navigator.clipboard.writeText(schoolJoinCode);
-                    toast({
-                      title: "Copié !",
-                      description: "Le code d'invitation a été copié dans le presse-papier."
-                    });
-                  }}>
-                  
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Partagez ce code avec les enseignants et le personnel pour qu'ils puissent rejoindre votre école lors de leur inscription.
-                </p>
-              </div>
-            }
+            <div className="grid gap-1 p-3 rounded-lg bg-primary/5 border border-primary/20 text-sm">
+              <span className="flex items-center gap-2 font-medium text-foreground">
+                <KeyRound className="h-4 w-4" />
+                Invitations enseignants
+              </span>
+              <span className="text-muted-foreground">
+                Le code d'école partagé est remplacé par des invitations personnelles. Invitez vos enseignants depuis « Gestion des utilisateurs ».
+              </span>
+            </div>
             <div className="grid gap-2">
               <Label htmlFor="school-address">Adresse</Label>
               <Textarea
