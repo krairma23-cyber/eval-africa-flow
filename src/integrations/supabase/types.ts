@@ -2060,6 +2060,38 @@ export type Database = {
           },
         ]
       }
+      school_memberships: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          school_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: string
+          school_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          school_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_memberships_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       schools: {
         Row: {
           academic_year: string | null
@@ -2731,6 +2763,62 @@ export type Database = {
             columns: ["teacher_id"]
             isOneToOne: false
             referencedRelation: "teachers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teacher_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          first_name: string
+          id: string
+          invited_by: string
+          last_name: string
+          school_id: string
+          status: string
+          token_hash: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email: string
+          expires_at?: string
+          first_name: string
+          id?: string
+          invited_by: string
+          last_name: string
+          school_id: string
+          status?: string
+          token_hash: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          first_name?: string
+          id?: string
+          invited_by?: string
+          last_name?: string
+          school_id?: string
+          status?: string
+          token_hash?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_invitations_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
             referencedColumns: ["id"]
           },
         ]
@@ -4176,6 +4264,7 @@ export type Database = {
         }[]
       }
       seed_accounting_categories: { Args: never; Returns: number }
+      set_active_school: { Args: { p_school_id: string }; Returns: boolean }
       set_user_role: {
         Args: { new_role: string; target_user_id: string }
         Returns: undefined
