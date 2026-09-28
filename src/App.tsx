@@ -17,6 +17,7 @@ import EnvironmentBanner from "@/components/layout/EnvironmentBanner";
 // Lazy load all pages except Index for better initial load performance.
 // Wrapped with retry logic to avoid blank screens when a chunk/module fails to load (cache mismatch).
 const Auth = lazyWithRetry(() => import("./pages/Auth"), "page:Auth");
+const AcceptInvitation = lazyWithRetry(() => import("./pages/AcceptInvitation"), "page:AcceptInvitation");
 const Dashboard = lazyWithRetry(() => import("./pages/Dashboard"), "page:Dashboard");
 const Students = lazyWithRetry(() => import("./pages/Students"), "page:Students");
 const Teachers = lazyWithRetry(() => import("./pages/Teachers"), "page:Teachers");
@@ -88,6 +89,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/invitation/:token" element={<AcceptInvitation />} />
               <Route path="/about" element={<About />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/pitch-deck" element={<PitchDeck />} />

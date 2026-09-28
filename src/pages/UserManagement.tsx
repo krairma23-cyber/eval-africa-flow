@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { Users, Crown, Shield, User } from "lucide-react";
 import { logError } from "@/lib/logger";
+import { TeacherInvitationsPanel } from "@/components/invitations/TeacherInvitationsPanel";
 
 interface UserWithRole {
   id: string;
@@ -212,6 +213,7 @@ export default function UserManagement() {
       </div>
 
       <div className="grid gap-4">
+        <TeacherInvitationsPanel />
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">

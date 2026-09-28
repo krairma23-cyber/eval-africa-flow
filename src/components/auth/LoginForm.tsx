@@ -137,10 +137,10 @@ export function LoginForm({ embedded = false }: LoginFormProps) {
     }
 
     // Validate join code if joining school
-    if (!isCreatingSchool && (!joinCode.trim() || joinCode.trim().length < 4)) {
+    if (!isCreatingSchool) {
       toast({
         title: t('common.error'),
-        description: t('login.invalidJoinCode'),
+        description: "Pour rejoindre une école, utilisez le lien d'invitation reçu de l'administrateur.",
         variant: "destructive",
       });
       return;
@@ -183,8 +183,7 @@ export function LoginForm({ embedded = false }: LoginFormProps) {
       if (isCreatingSchool) {
         metadata.school_name = schoolName.trim();
       } else {
-        // If joining, add the join code
-        metadata.join_code = joinCode.trim().toUpperCase();
+        return;
       }
       
       const { data, error } = await supabase.auth.signUp({
@@ -476,50 +475,15 @@ export function LoginForm({ embedded = false }: LoginFormProps) {
                 )}
 
                 {!isCreatingSchool && (
-                  <>
-                    <div className="space-y-2 p-3 rounded-lg bg-accent/5 border border-accent/20">
-                      <Label htmlFor="joinCode" className="flex items-center gap-2">
-                        <KeyRound className="h-4 w-4" />
-                        {t('login.joinCode')} *
-                      </Label>
-                      <Input
-                        id="joinCode"
-                        value={joinCode}
-                        onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                        placeholder={t('login.joinCodePlaceholder')}
-                        required={!isCreatingSchool}
-                        maxLength={12}
-                        className="uppercase tracking-widest font-mono"
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        {t('login.joinCodeHelp')}
-                      </p>
-                    </div>
-
-                    <div className="space-y-3">
-                      <Label>{t('login.iAm')}</Label>
-                      <RadioGroup 
-                        value={selectedRole} 
-                        onValueChange={(value) => setSelectedRole(value as "user" | "teacher")}
-                        className="grid grid-cols-1 xs:grid-cols-2 gap-3"
-                      >
-                        <div className={`relative flex flex-col items-center justify-center text-center rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "user" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
-                          <RadioGroupItem value="user" id="role-user" className="sr-only" />
-                          <label htmlFor="role-user" className="flex flex-col items-center gap-1 cursor-pointer w-full">
-                            <User className="h-5 w-5 text-primary" />
-                            <span className="font-medium text-sm">{t('login.user')}</span>
-                          </label>
-                        </div>
-                        <div className={`relative flex flex-col items-center justify-center text-center rounded-lg border-2 p-3 cursor-pointer transition-colors ${selectedRole === "teacher" ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`}>
-                          <RadioGroupItem value="teacher" id="role-teacher" className="sr-only" />
-                          <label htmlFor="role-teacher" className="flex flex-col items-center gap-1 cursor-pointer w-full">
-                            <GraduationCap className="h-5 w-5 text-primary" />
-                            <span className="font-medium text-sm">{t('login.teacher')}</span>
-                          </label>
-                        </div>
-                      </RadioGroup>
-                    </div>
-                  </>
+                  <div className="space-y-2 p-3 rounded-lg bg-accent/5 border border-accent/20 text-sm">
+                    <p className="flex items-center gap-2 font-medium text-foreground">
+                      <KeyRound className="h-4 w-4" />
+                      Inscription sur invitation
+                    </p>
+                    <p className="text-muted-foreground">
+                      Les enseignants et le personnel rejoignent une école uniquement via le lien d'invitation envoyé par l'administrateur (email, WhatsApp ou SMS). Ouvrez ce lien pour créer votre compte ou rattacher l'école à votre compte existant.
+                    </p>
+                  </div>
                 )}
 
                 <div className="grid grid-cols-1 xs:grid-cols-2 gap-2">

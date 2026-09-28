@@ -39,3 +39,9 @@ verify_jwt = false
 [functions.school-backup]
 verify_jwt = false
 
+
+[functions.teacher-invite]
+verify_jwt = false
+
+[functions.teacher-invite-accept]
+verify_jwt = false

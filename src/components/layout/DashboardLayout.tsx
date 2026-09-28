@@ -7,6 +7,7 @@ import { AppSidebar } from "./AppSidebar";
 import { Button } from "@/components/ui/button";
 import { LogOut, User as UserIcon } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { SchoolSwitcher } from "./SchoolSwitcher";
 import { useToast } from "@/hooks/use-toast";
 import { logError } from "@/lib/logger";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -147,6 +148,7 @@ export default function DashboardLayout() {
             </div>
             
             <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+              <SchoolSwitcher />
               <ThemeToggle />
               <div className="hidden md:flex items-center gap-2 text-sm min-w-0">
                 <UserIcon className="h-4 w-4 flex-shrink-0" />
