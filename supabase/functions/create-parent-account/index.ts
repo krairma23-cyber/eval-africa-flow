@@ -236,7 +236,7 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               <div class="footer">
                 <p>© ${new Date().getFullYear()} EvalScol Africa - Plateforme de gestion scolaire</p>
-                <p>📞 Support: +225 0101821329 / 0707041903 | 📧 evalscolafrica@siteteck.com</p>
+                <p>📞 Support: +225 0101821329 / 0707041903 | 📧 support@siteteck.com</p>
                 <p style="font-size: 11px; color: #999;">Cet email a été envoyé automatiquement. Merci de ne pas y répondre directement.</p>
               </div>
             </div>
@@ -246,7 +246,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       try {
         const { error: emailError } = await resend.emails.send({
-          from: "EvalScol Africa <evalscolafrica@siteteck.com>",
+          from: "EvalScol Africa <support@siteteck.com>",
           to: [parent_email],
           subject: `🎓 Accès Portail Parent - ${student_name} - ${school_name || "EvalScol"}`,
           html: emailHtml,

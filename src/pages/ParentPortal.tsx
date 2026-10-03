@@ -966,7 +966,7 @@ export default function ParentPortal() {
             </Button>
             <Button 
               variant="outline"
-              onClick={() => window.open("mailto:evalscolafrica@siteteck.com?subject=Contact École")}
+              onClick={() => window.open("mailto:support@siteteck.com?subject=Contact École")}
             >
               Contacter l'École
             </Button>

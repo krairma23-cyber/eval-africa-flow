@@ -39,7 +39,7 @@ const PrivacyPolicy = () => {
               </p>
               <div className="bg-muted p-4 rounded-lg">
                 <p className="font-semibold">Contact DPO (Délégué à la Protection des Données) :</p>
-                <p>Email : evalscolafrica@siteteck.com</p>
+                <p>Email : support@siteteck.com</p>
                 <p>Adresse : Abidjan, Côte d'Ivoire</p>
               </div>
             </CardContent>

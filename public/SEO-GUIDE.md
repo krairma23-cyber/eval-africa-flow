@@ -416,7 +416,7 @@ Ajouter dans pages spécifiques :
 ## 📞 SUPPORT & QUESTIONS
 
 ### Contacts techniques SEO :
-- Email : support@evalscol.com
+- Email : support@siteteck.com
 - Téléphone : +225 07 07 04 19 04
 
 ### Ressources additionnelles :

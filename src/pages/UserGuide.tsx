@@ -299,7 +299,7 @@ const guideSections: GuideSection[] = [
     steps: [
       { title: "Accédez au menu 'Support'", detail: "Cliquez sur 'Support' dans la barre latérale." },
       { title: "Envoyer un ticket", detail: "Décrivez votre problème et soumettez un ticket de support." },
-      { title: "Contacter l'équipe", detail: "Email : support@evalscol.com | WhatsApp : +225 07 07 04 19 04" },
+      { title: "Contacter l'équipe", detail: "Email : support@siteteck.com | WhatsApp : +225 07 07 04 19 04" },
     ],
   },
 ];
@@ -505,7 +505,7 @@ export default function UserGuide() {
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => window.open("mailto:support@evalscol.com?subject=Aide EvalScol")}
+                onClick={() => window.open("mailto:support@siteteck.com?subject=Aide EvalScol")}
               >
                 Envoyer un Email
               </Button>

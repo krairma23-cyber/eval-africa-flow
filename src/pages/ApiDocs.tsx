@@ -377,7 +377,7 @@ print(r.json())`}</CodeBlock>
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild variant="outline">
-                  <a href="mailto:support@evalscol.com">support@evalscol.com</a>
+                  <a href="mailto:support@siteteck.com">support@siteteck.com</a>
                 </Button>
                 <Button asChild variant="outline">
                   <a href="https://wa.me/2250707041904" target="_blank" rel="noreferrer">WhatsApp</a>

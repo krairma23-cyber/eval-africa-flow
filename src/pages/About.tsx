@@ -601,7 +601,7 @@ export default function About() {
               <CardContent className="pt-6 text-center">
                 <Mail className="h-10 w-10 mx-auto text-accent mb-3" />
                 <h3 className="font-semibold mb-2">{texts.email}</h3>
-                <p className="text-muted-foreground mb-1">evalscolafrica@siteteck.com</p>
+                <p className="text-muted-foreground mb-1">support@siteteck.com</p>
               </CardContent>
             </Card>
             

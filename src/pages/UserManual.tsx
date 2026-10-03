@@ -188,7 +188,7 @@ const sections = [
       },
       {
         q: "Comment contacter le support ?",
-        a: "Menu Support → onglet Chat en direct pour parler à notre équipe, ou email support@evalscol.com, ou WhatsApp +225 07 07 04 19 04.",
+        a: "Menu Support → onglet Chat en direct pour parler à notre équipe, ou email support@siteteck.com, ou WhatsApp +225 07 07 04 19 04.",
       },
     ],
   },
@@ -374,7 +374,7 @@ export default function UserManual() {
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild variant="outline">
-                  <a href="mailto:support@evalscol.com">support@evalscol.com</a>
+                  <a href="mailto:support@siteteck.com">support@siteteck.com</a>
                 </Button>
                 <Button asChild variant="outline">
                   <a href="https://wa.me/2250707041904" target="_blank" rel="noreferrer">WhatsApp</a>
