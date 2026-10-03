@@ -456,14 +456,14 @@ export default function Support() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <p><strong>Email:</strong></p>
-                  <p className="text-muted-foreground">evalscolafrica@siteteck.com</p>
+                  <p className="text-muted-foreground">support@siteteck.com</p>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
                   Réponse sous 24-48h (Standard) / 12h (Professional) / 4h (Enterprise 24/7)
                 </div>
                 <Button asChild>
-                  <a href="mailto:evalscolafrica@siteteck.com">
+                  <a href="mailto:support@siteteck.com">
                     <Mail className="h-4 w-4 mr-2" />
                     Envoyer un email
                   </a>

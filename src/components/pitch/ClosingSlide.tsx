@@ -21,7 +21,7 @@ export const ClosingSlide = () => {
           <div className="flex items-center justify-center gap-8">
             <div>
               <div className="text-sm opacity-75">Email</div>
-              <div className="font-semibold">evalscolafrica@siteteck.com</div>
+              <div className="font-semibold">support@siteteck.com</div>
             </div>
             <div className="border-l border-primary-foreground/30 h-12"></div>
             <div>

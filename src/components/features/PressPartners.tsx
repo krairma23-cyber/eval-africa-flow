@@ -86,8 +86,8 @@ const PressPartners = () => {
               <strong className="text-accent">Vous êtes média ou institution ?</strong> 
               <br />
               Contactez-nous pour un partenariat ou une publication : 
-              <a href="mailto:evalscolafrica@siteteck.com" className="text-primary hover:underline ml-1">
-                evalscolafrica@siteteck.com
+              <a href="mailto:support@siteteck.com" className="text-primary hover:underline ml-1">
+                support@siteteck.com
               </a>
             </p>
           </CardContent>

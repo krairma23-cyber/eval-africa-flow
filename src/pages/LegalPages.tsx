@@ -30,7 +30,7 @@ export const LegalNotice = () => (
       <p><strong>EvalScol Africa</strong> — Plateau, Abidjan, Côte d'Ivoire</p>
       <p>Forme juridique, RCCM et capital : [à compléter]</p>
       <p>Directeur de la publication : [à compléter]</p>
-      <p>Téléphone : +225 07 07 04 19 04 — Email : evalscolafrica@siteteck.com</p>
+      <p>Téléphone : +225 07 07 04 19 04 — Email : support@siteteck.com</p>
     </Section>
     <Section title="Hébergement">
       <p>Site : Lovable (Lovable Labs Incorporated) — https://lovable.dev</p>
@@ -66,7 +66,7 @@ export const TermsOfUse = () => (
       <p>Nous faisons nos meilleurs efforts pour assurer la disponibilité du service, sans garantie d'absence d'interruption.</p>
     </Section>
     <Section title="7. Droit applicable">
-      <p>Droit ivoirien. Contact : evalscolafrica@siteteck.com.</p>
+      <p>Droit ivoirien. Contact : support@siteteck.com.</p>
     </Section>
   </Layout>
 );

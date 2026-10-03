@@ -42,7 +42,7 @@ async function sendEmail(to: string, firstName: string, schoolName: string, link
   const key = Deno.env.get("RESEND_API_KEY");
   if (!key) return false;
   const { error } = await new Resend(key).emails.send({
-    from: "EvalScol Africa <evalscolafrica@siteteck.com>",
+    from: "EvalScol Africa <support@siteteck.com>",
     to: [to],
     subject: `Invitation à rejoindre ${schoolName} sur EvalScol Africa`,
     html: `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto">

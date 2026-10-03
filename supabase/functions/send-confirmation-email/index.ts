@@ -114,7 +114,7 @@ const handler = async (req: Request): Promise<Response> => {
             </div>
             <div class="footer">
               <p>© ${new Date().getFullYear()} EvalScol Africa - Plateforme de gestion scolaire</p>
-              <p>📞 Support: +225 0101821329 / 0707041903 | 📧 evalscolafrica@siteteck.com</p>
+              <p>📞 Support: +225 0101821329 / 0707041903 | 📧 support@siteteck.com</p>
             </div>
           </div>
         </body>
@@ -144,7 +144,7 @@ const handler = async (req: Request): Promise<Response> => {
 
 
     const { data, error } = await resend.emails.send({
-      from: "EvalScol Africa <evalscolafrica@siteteck.com>",
+      from: "EvalScol Africa <support@siteteck.com>",
       to: [user.email],
       subject: subject,
       html: html,

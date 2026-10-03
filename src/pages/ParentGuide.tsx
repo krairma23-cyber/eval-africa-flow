@@ -97,7 +97,7 @@ export default function ParentGuide() {
       doc.setFontSize(8);
       doc.setTextColor(150, 150, 150);
       doc.text(
-        `EvalScol Africa - evalscolafrica@siteteck.com - Page ${i}/${pageCount}`,
+        `EvalScol Africa - support@siteteck.com - Page ${i}/${pageCount}`,
         pageWidth / 2,
         doc.internal.pageSize.getHeight() - 10,
         { align: "center" }
@@ -328,7 +328,7 @@ export default function ParentGuide() {
               <Button 
                 size="lg" 
                 variant="outline"
-                onClick={() => window.open("mailto:evalscolafrica@siteteck.com?subject=Question Parent")}
+                onClick={() => window.open("mailto:support@siteteck.com?subject=Question Parent")}
               >
                 Envoyer un Message
               </Button>
