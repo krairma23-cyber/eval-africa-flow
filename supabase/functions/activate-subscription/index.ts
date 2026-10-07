@@ -43,6 +43,20 @@ serve(async (req) => {
     const user_id = user.id;
     const { payment_reference, plan_id, billing_period } = await req.json();
 
+    // SECURITY: strict input validation
+    if (!['monthly', 'yearly'].includes(billing_period)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid billing_period' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    if (payment_reference != null && (typeof payment_reference !== 'string' || !/^[A-Za-z0-9_.=-]{6,100}$/.test(payment_reference))) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid payment reference' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
 
     // Get plan details
     const { data: plan, error: planError } = await supabaseAdmin
@@ -63,34 +77,6 @@ serve(async (req) => {
     const expectedAmount = billing_period === 'yearly' 
       ? (plan.price_yearly || plan.price_monthly * 12) 
       : plan.price_monthly;
-
-    // Idempotency: atomically claim this payment_reference via processed_webhook_events
-    // (event_id is UNIQUE). If insert fails with conflict, the reference was already used.
-    if (expectedAmount > 0 && payment_reference) {
-      const { error: claimError } = await supabaseAdmin
-        .from('processed_webhook_events')
-        .insert({
-          event_id: payment_reference,
-          event_type: `subscription:${user_id}`,
-        });
-
-      if (claimError) {
-        // Unique violation => reference already processed
-        if ((claimError as any).code === '23505') {
-          console.error('[activate-subscription] Replay detected for reference');
-          return new Response(
-            JSON.stringify({ error: 'Payment reference already used' }),
-            { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-          );
-        }
-        console.error('[activate-subscription] Idempotency claim failed:', claimError);
-        return new Response(
-          JSON.stringify({ error: 'Failed to validate payment reference' }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-    }
-
 
     // If it's a paid plan, verify payment with Paystack
     if (expectedAmount > 0 && payment_reference) {
@@ -126,8 +112,23 @@ serve(async (req) => {
         );
       }
 
+      // SECURITY: the payment must be a subscription payment for THIS plan, THIS user, in XOF
+      const tx = paymentData.data;
+      const txMeta = tx.metadata || {};
+      if (tx.currency !== 'XOF'
+          || txMeta.payment_type !== 'subscription'
+          || txMeta.plan_id !== plan_id
+          || txMeta.user_id !== user_id
+          || (txMeta.billing_period && txMeta.billing_period !== billing_period)) {
+        console.error('[activate-subscription] Payment does not match plan/user');
+        return new Response(
+          JSON.stringify({ error: 'Payment does not match this plan/user' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
       // CRITICAL: Verify amount matches plan price (Paystack returns amount in centimes/kobo)
-      const expectedAmountInKobo = expectedAmount * 100; // Convert XOF to centimes (100 centimes = 1 XOF)
+      const expectedAmountInKobo = Math.round(Number(expectedAmount) * 100);
       if (paymentData.data.amount !== expectedAmountInKobo) {
         console.error('Amount mismatch:', {
           paidAmountKobo: paymentData.data.amount,
@@ -147,6 +148,34 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
+
+    // Idempotency: claim the reference only AFTER successful verification
+    // (event_id is UNIQUE). If insert fails with conflict, the reference was already used.
+    if (expectedAmount > 0 && payment_reference) {
+      const { error: claimError } = await supabaseAdmin
+        .from('processed_webhook_events')
+        .insert({
+          event_id: payment_reference,
+          event_type: `subscription:${user_id}`,
+        });
+
+      if (claimError) {
+        // Unique violation => reference already processed
+        if ((claimError as any).code === '23505') {
+          console.error('[activate-subscription] Replay detected for reference');
+          return new Response(
+            JSON.stringify({ error: 'Payment reference already used' }),
+            { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+        console.error('[activate-subscription] Idempotency claim failed:', claimError);
+        return new Response(
+          JSON.stringify({ error: 'Failed to validate payment reference' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
 
     // Calculate subscription period
     const now = new Date();
@@ -186,7 +215,10 @@ serve(async (req) => {
     // Configure plan features based on plan_id
     let planFeatures;
     
-    if (plan_id === 'free-trial' || plan_id === 'starter' || expectedAmount === 0) {
+    // plan_id is a UUID: map features from the plan NAME (Standard / Professional / Enterprise)
+    const planKey = String(plan.name || '').toLowerCase();
+
+    if (Number(expectedAmount) === 0) {
       planFeatures = {
         user_id,
         plan_id: 'free-trial',
@@ -207,7 +239,7 @@ serve(async (req) => {
         custom_business_modules: false,
         unlimited_user_accounts: false
       };
-    } else if (plan_id === 'standard') {
+    } else if (planKey.startsWith('standard')) {
       planFeatures = {
         user_id,
         plan_id: 'standard',
@@ -228,7 +260,7 @@ serve(async (req) => {
         custom_business_modules: false,
         unlimited_user_accounts: false
       };
-    } else if (plan_id === 'professional') {
+    } else if (planKey.startsWith('professional')) {
       planFeatures = {
         user_id,
         plan_id: 'professional',
@@ -249,7 +281,7 @@ serve(async (req) => {
         custom_business_modules: false,
         unlimited_user_accounts: false
       };
-    } else if (plan_id === 'enterprise') {
+    } else if (planKey.startsWith('enterprise')) {
       planFeatures = {
         user_id,
         plan_id: 'enterprise',

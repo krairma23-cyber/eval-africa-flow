@@ -23,7 +23,7 @@ async function attach(admin: SupabaseClient, userId: string, inv: any, setActive
   await admin.from("user_roles").upsert({ user_id: userId, role: "teacher" }, { onConflict: "user_id,role" });
   const { data: profile } = await admin.from("profiles").select("school_id").eq("user_id", userId).maybeSingle();
   if (!profile) {
-    await admin.from("profiles").insert({ user_id: userId, first_name: inv.first_name, last_name: inv.last_name, school_id: inv.school_id, user_type: "teacher" });
+    await admin.from("profiles").insert({ user_id: userId, first_name: inv.first_name, last_name: inv.last_name, school_id: inv.school_id });
   } else if (setActive || !profile.school_id) {
     await admin.from("profiles").update({ school_id: inv.school_id }).eq("user_id", userId);
   }
@@ -87,7 +87,7 @@ Deno.serve(async (req) => {
       }
       // handle_new_user created a profile with no school & role 'user'; attach now
       await attach(admin, created.user.id, inv, true);
-      await admin.from("profiles").update({ user_type: "teacher", onboarding_completed: true }).eq("user_id", created.user.id);
+      await admin.from("profiles").update({ onboarding_completed: true }).eq("user_id", created.user.id);
       return json({ success: true, email: inv.email });
     }
 

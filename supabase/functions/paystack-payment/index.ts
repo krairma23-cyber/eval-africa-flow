@@ -69,7 +69,31 @@ serve(async (req) => {
       throw error;
     }
 
-    const { email, amount, planId, planName, phone_number, callback_url } = validated;
+    const { email, amount: clientAmount, planId, phone_number, callback_url } = validated;
+
+    // SECURITY: price comes from the database, never from the client
+    const { data: plan, error: planErr } = await supabaseAuth
+      .from('subscription_plans')
+      .select('id, name, price_monthly, price_yearly, is_active')
+      .eq('id', planId)
+      .maybeSingle();
+    if (planErr || !plan || plan.is_active === false) {
+      return new Response(JSON.stringify({ error: 'Plan not found' }), {
+        status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const monthly = Number(plan.price_monthly || 0);
+    const yearly = Number(plan.price_yearly || monthly * 12);
+    let billing_period: 'monthly' | 'yearly';
+    if (clientAmount === yearly && yearly > 0) billing_period = 'yearly';
+    else if (clientAmount === monthly && monthly > 0) billing_period = 'monthly';
+    else {
+      return new Response(JSON.stringify({ error: 'Amount does not match plan price' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const amount = billing_period === 'yearly' ? yearly : monthly;
+    const planName = plan.name;
 
     // Initialize payment with Paystack
     // For XOF (West African CFA franc), Paystack expects amounts in kobo (minor units)
@@ -77,12 +101,15 @@ serve(async (req) => {
     const amountInKobo = Math.round(amount * 100);
     
     const paymentBody: any = {
-      email,
+      email: user.email || email,
       amount: amountInKobo,
       currency: 'XOF',
       callback_url: callback_url || `${req.headers.get('origin')}/billing?payment=success`,
       channels: ['card', 'mobile_money'], // Enable cards and mobile money (Orange, MTN, Moov)
       metadata: {
+        payment_type: 'subscription',
+        user_id: user.id,
+        billing_period,
         plan_id: planId,
         plan_name: planName,
         custom_fields: [
