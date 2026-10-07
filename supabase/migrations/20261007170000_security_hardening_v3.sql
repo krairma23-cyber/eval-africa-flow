@@ -1,5 +1,6 @@
 -- =====================================================================
--- EvalScol Africa : correctifs de sécurité (v3, rebasée le 01/10/2026)
+-- EvalScol Africa : correctifs de sécurité (v3.1, rebasée le 07/10/2026)
+-- v3.1 : idempotente avec la migration Lovable 20261003010629 (FAQ + chat support déjà appliqués en prod)
 -- Rebasée sur l'état RÉEL de la prod au 01/10/2026, qui inclut déjà les migrations
 -- Lovable du 28/09 (invitations enseignants, school_memberships, set_active_school,
 -- révocation des fonctions SECURITY DEFINER, handle_new_user sans school_id).
@@ -122,6 +123,7 @@ REVOKE EXECUTE ON FUNCTION public.ensure_user_has_school() FROM PUBLIC, anon, au
 -- ---------------------------------------------------------------------
 -- Documents de vérification : lecture réservée au super_admin
 DROP POLICY IF EXISTS "Admins can view all verification documents" ON storage.objects;
+DROP POLICY IF EXISTS "Super admins can view all verification documents" ON storage.objects;
 CREATE POLICY "Super admins can view all verification documents"
 ON storage.objects FOR SELECT TO authenticated
 USING (bucket_id = 'verification-documents' AND public.is_super_admin(auth.uid()));
@@ -130,6 +132,9 @@ USING (bucket_id = 'verification-documents' AND public.is_super_admin(auth.uid()
 DROP POLICY IF EXISTS "Only admins can insert FAQs" ON public.support_faqs;
 DROP POLICY IF EXISTS "Only admins can update FAQs" ON public.support_faqs;
 DROP POLICY IF EXISTS "Only admins can delete FAQs" ON public.support_faqs;
+DROP POLICY IF EXISTS "Only super admins can insert FAQs" ON public.support_faqs;
+DROP POLICY IF EXISTS "Only super admins can update FAQs" ON public.support_faqs;
+DROP POLICY IF EXISTS "Only super admins can delete FAQs" ON public.support_faqs;
 CREATE POLICY "Only super admins can insert FAQs" ON public.support_faqs
   FOR INSERT TO authenticated WITH CHECK (public.is_super_admin(auth.uid()));
 CREATE POLICY "Only super admins can update FAQs" ON public.support_faqs
@@ -305,8 +310,6 @@ END;
 $$;
 REVOKE ALL ON FUNCTION public.apply_tuition_payment(text,uuid,numeric,timestamptz,text,text,jsonb) FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.apply_tuition_payment(text,uuid,numeric,timestamptz,text,text,jsonb) TO service_role;
-
-COMMIT;
 
 -- =====================================================================
 -- VÉRIFICATIONS APRÈS APPLICATION (SQL Editor) :

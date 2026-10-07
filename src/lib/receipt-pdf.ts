@@ -1,5 +1,6 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface ReceiptPayment {
   date: string;
@@ -58,9 +59,45 @@ export function buildReceiptNumber(studentName: string, seed?: string) {
   return `REC-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}-${initials || "ELV"}-${base}`;
 }
 
-async function loadImage(url: string): Promise<{ dataUrl: string; width: number; height: number } | null> {
+// Le logo ne peut provenir QUE du bucket Supabase "school-logos" du projet.
+// logo_url est stocké comme chemin ("<school_id>/logo.png") ; une URL complète n'est
+// acceptée que si elle pointe vers ce même bucket. Toute autre URL est ignorée
+// (évite qu'un admin d'école fasse appeler une URL arbitraire par les navigateurs
+// des parents : pistage IP, requêtes vers le réseau local, etc.).
+const LOGO_BUCKET = "school-logos";
+
+export function resolveLogoUrl(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const v = value.trim();
+  if (!v || v.length > 512) return null;
+  const { data } = supabase.storage.from(LOGO_BUCKET).getPublicUrl("x");
+  const base = new URL(data.publicUrl);
+  const prefix = base.pathname.slice(0, -1); // ".../object/public/school-logos/"
+  if (/^https?:\/\//i.test(v)) {
+    try {
+      const u = new URL(v);
+      if (u.protocol !== "https:" && base.protocol === "https:") return null;
+      if (u.origin !== base.origin || !u.pathname.startsWith(prefix)) return null;
+      if (decodeURIComponent(u.pathname).includes("..")) return null;
+      return u.toString();
+    } catch {
+      return null;
+    }
+  }
+  const path = v.replace(/^\/+/, "").replace(new RegExp(`^${LOGO_BUCKET}/`), "");
+  if (path.includes("..") || /[\\?#]/.test(path) || /^[a-z][a-z0-9+.-]*:/i.test(path)) return null;
+  return supabase.storage.from(LOGO_BUCKET).getPublicUrl(path).data.publicUrl;
+}
+
+async function loadImage(rawUrl: string): Promise<{ dataUrl: string; width: number; height: number } | null> {
   try {
-    const res = await fetch(url, { mode: "cors" });
+    const url = resolveLogoUrl(rawUrl);
+    if (!url) return null;
+    const res = await fetch(url, { mode: "cors", credentials: "omit", referrerPolicy: "no-referrer", redirect: "error" });
+    if (!res.ok) return null;
+    const type = res.headers.get("content-type") ?? "";
+    if (!/^image\/(png|jpe?g|webp)$/i.test(type.split(";")[0].trim())) return null;
+    if (Number(res.headers.get("content-length") ?? 0) > 2 * 1024 * 1024) return null;
     if (!res.ok) return null;
     const blob = await res.blob();
     const dataUrl: string = await new Promise((resolve, reject) => {
