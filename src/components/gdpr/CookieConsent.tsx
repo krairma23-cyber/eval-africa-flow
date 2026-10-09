@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Cookie } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { isPrivatePath } from "@/lib/consent";
 import { applyConsent, readConsent, saveConsent } from "@/lib/consent";
 
 export const CookieConsent = () => {
@@ -11,11 +12,15 @@ export const CookieConsent = () => {
   const [custom, setCustom] = useState(false);
   const [analytics, setAnalytics] = useState(false);
   const [marketing, setMarketing] = useState(false);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    if (readConsent()) applyConsent(pathname);
+  }, [pathname]);
 
   useEffect(() => {
     const c = readConsent();
     if (!c) setShowBanner(true);
-    else applyConsent();
     const open = () => {
       const cur = readConsent();
       setAnalytics(!!cur?.analytics);
@@ -33,7 +38,7 @@ export const CookieConsent = () => {
     setCustom(false);
   };
 
-  if (!showBanner) return null;
+  if (!showBanner || (isPrivatePath(pathname) && !custom)) return null;
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 p-2 sm:p-4 animate-in slide-in-from-bottom-5" role="dialog" aria-label="Préférences cookies">
@@ -44,7 +49,7 @@ export const CookieConsent = () => {
             <h3 className="text-lg font-semibold mb-2">Respect de votre vie privée</h3>
             <p className="text-sm text-muted-foreground mb-4">
               Nous utilisons des cookies essentiels au fonctionnement du site (connexion, sécurité).
-              Avec votre accord, nous mesurons aussi l'audience via Google Analytics (Google LLC).
+              Avec votre accord, et uniquement sur les pages publiques, nous mesurons l'audience via Google Analytics (Google LLC) et nos campagnes via Meta Pixel (Meta Platforms). Aucun traceur dans les espaces connectés.
               Aucun traceur n'est déposé avant votre choix, modifiable à tout moment via « Gérer les cookies » en bas de page.
             </p>
 
@@ -59,7 +64,7 @@ export const CookieConsent = () => {
                   <Switch checked={analytics} onCheckedChange={setAnalytics} aria-label="Mesure d'audience" />
                 </label>
                 <label className="flex items-center justify-between gap-3 text-sm">
-                  <span><strong>Marketing et publicité</strong> — aucun outil utilisé actuellement</span>
+                  <span><strong>Marketing et publicité</strong> — Meta Pixel (Facebook)</span>
                   <Switch checked={marketing} onCheckedChange={setMarketing} aria-label="Marketing et publicité" />
                 </label>
               </div>
