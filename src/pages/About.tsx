@@ -22,6 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import Seo from "@/components/Seo";
+import { DesignedBy2KK } from "@/components/features/DesignedBy2KK";
 
 export default function About() {
   const navigate = useNavigate();
@@ -616,6 +617,11 @@ export default function About() {
             </Card>
           </div>
         </section>
+
+        {/* Concepteur de la plateforme */}
+        <div className="mb-16">
+          <DesignedBy2KK variant="card" />
+        </div>
 
         {/* CTA Section */}
         <Card className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border-primary/20">

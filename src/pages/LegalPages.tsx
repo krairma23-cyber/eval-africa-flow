@@ -32,6 +32,9 @@ export const LegalNotice = () => (
       <p>Directeur de la publication : [à compléter]</p>
       <p>Téléphone : +225 07 07 04 19 04 — Email : support@siteteck.com</p>
     </Section>
+    <Section title="Conception et développement">
+      <p>La plateforme EvalScol Africa est conçue et développée par <strong>2KK Technologie</strong> (Côte d'Ivoire).</p>
+    </Section>
     <Section title="Hébergement">
       <p>Site : Lovable (Lovable Labs Incorporated) — https://lovable.dev</p>
       <p>Données applicatives : Supabase Inc. — https://supabase.com</p>
