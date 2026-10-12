@@ -18,7 +18,7 @@ import {
   AlertCircle,
   Facebook
 } from "lucide-react";
-import { FACEBOOK_URL } from "@/components/features/SocialLinks";
+import { FACEBOOK_URL, WHATSAPP_URL } from "@/components/features/SocialLinks";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -509,7 +509,7 @@ export default function Support() {
                     </a>
                   </Button>
                   <Button asChild variant="outline" className="flex-1">
-                    <a href="https://chat.whatsapp.com/DMzKKigmion9jTcsWJtDvK" target="_blank" rel="noopener noreferrer">
+                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                       <MessageCircle className="h-4 w-4 mr-2" />
                       WhatsApp
                     </a>
