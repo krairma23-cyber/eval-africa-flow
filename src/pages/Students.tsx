@@ -65,6 +65,7 @@ export default function Students() {
   const [selectedClassroom, setSelectedClassroom] = useState<string>("all");
   const [selectedGradeLevel, setSelectedGradeLevel] = useState<string>("all");
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState<string>("all");
+  const [sendingReminders, setSendingReminders] = useState(false);
   const { toast } = useToast();
   const { t } = useLanguage();
 

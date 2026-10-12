@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { calculateRankings } from "@/lib/ranking-utils";
-import { Search, FileText, Download, FileDown, TrendingUp, TrendingDown, Trophy, Trash2 } from "lucide-react";
+import { Search, FileText, Download, FileDown, TrendingUp, TrendingDown, Trophy, Trash2, Mail } from "lucide-react";
+import { notifyParent } from "@/lib/parent-notify";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
 import heroReports from "@/assets/hero-reports.jpg";
@@ -672,6 +673,27 @@ export default function Reports() {
                       >
                         <FileDown className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
                         <span className="truncate">Word</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 h-8 text-xs sm:text-sm"
+                        onClick={async () => {
+                          const res = await notifyParent({
+                            action: "report_card",
+                            student_id: grade.student_id,
+                            term_id: grade.term_id,
+                            average: Math.min(20, Math.max(0, Number(grade.overall_average) || 0)),
+                            rank: grade.rank,
+                            total: grade.total_students,
+                          });
+                          toast(res.sent
+                            ? { title: "Parent prévenu", description: `Email envoyé pour le bulletin de ${grade.student_first_name}.` }
+                            : { title: "Email non envoyé", description: res.error, variant: "destructive" });
+                        }}
+                      >
+                        <Mail className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                        <span className="truncate">Prévenir</span>
                       </Button>
 
                       <DeleteConfirmButton
