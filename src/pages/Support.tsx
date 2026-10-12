@@ -18,7 +18,7 @@ import {
   AlertCircle,
   Facebook
 } from "lucide-react";
-import { FACEBOOK_URL } from "@/components/features/SocialLinks";
+import { FACEBOOK_URL, WHATSAPP_URL } from "@/components/features/SocialLinks";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -486,7 +486,7 @@ export default function Support() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <p><strong>Téléphone:</strong></p>
-                  <p className="text-muted-foreground">+225 01 01 82 13 29 / 07 07 04 19 03</p>
+                  <p className="text-muted-foreground">+225 01 01 82 13 29</p>
                 </div>
                 <div className="space-y-2">
                   <p><strong>Horaires:</strong></p>
@@ -509,7 +509,7 @@ export default function Support() {
                     </a>
                   </Button>
                   <Button asChild variant="outline" className="flex-1">
-                    <a href="https://chat.whatsapp.com/DMzKKigmion9jTcsWJtDvK" target="_blank" rel="noopener noreferrer">
+                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                       <MessageCircle className="h-4 w-4 mr-2" />
                       WhatsApp
                     </a>

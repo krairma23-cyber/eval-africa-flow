@@ -299,7 +299,7 @@ const guideSections: GuideSection[] = [
     steps: [
       { title: "Accédez au menu 'Support'", detail: "Cliquez sur 'Support' dans la barre latérale." },
       { title: "Envoyer un ticket", detail: "Décrivez votre problème et soumettez un ticket de support." },
-      { title: "Contacter l'équipe", detail: "Email : support@siteteck.com | WhatsApp : +225 07 07 04 19 04" },
+      { title: "Contacter l'équipe", detail: "Email : support@siteteck.com | WhatsApp : +225 01 01 82 13 29" },
     ],
   },
 ];

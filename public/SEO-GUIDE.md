@@ -221,7 +221,7 @@ Créer des pages optimisées par ville :
 Nom : EvalScol Africa
 Catégorie : Éditeur de logiciels / Services éducatifs
 Adresse : Plateau, Abidjan, Côte d'Ivoire
-Téléphone : +225 07 07 04 19 04
+Téléphone : +225 01 01 82 13 29
 Site web : https://evalscolafrica.com
 Horaires : Lun-Ven 8h-18h GMT
 
@@ -417,7 +417,7 @@ Ajouter dans pages spécifiques :
 
 ### Contacts techniques SEO :
 - Email : support@siteteck.com
-- Téléphone : +225 07 07 04 19 04
+- Téléphone : +225 01 01 82 13 29
 
 ### Ressources additionnelles :
 - [Google SEO Starter Guide](https://developers.google.com/search/docs/beginner/seo-starter-guide)

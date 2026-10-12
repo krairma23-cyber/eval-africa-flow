@@ -30,7 +30,7 @@ export const LegalNotice = () => (
       <p><strong>EvalScol Africa</strong> — Plateau, Abidjan, Côte d'Ivoire</p>
       <p>Forme juridique, RCCM et capital : [à compléter]</p>
       <p>Directeur de la publication : [à compléter]</p>
-      <p>Téléphone : +225 07 07 04 19 04 — Email : support@siteteck.com</p>
+      <p>Téléphone : +225 01 01 82 13 29 — Email : support@siteteck.com</p>
     </Section>
     <Section title="Conception et développement">
       <p>La plateforme EvalScol Africa est conçue et développée par <strong>2KK Technologie</strong> (Côte d'Ivoire).</p>

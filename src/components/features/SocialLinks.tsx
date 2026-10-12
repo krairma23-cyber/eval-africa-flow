@@ -2,7 +2,7 @@ import { Facebook, MessageCircle, Mail } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61585093164850";
-export const WHATSAPP_URL = "https://chat.whatsapp.com/DMzKKigmion9jTcsWJtDvK";
+export const WHATSAPP_URL = "https://wa.me/2250101821329";
 
 const COPY = {
   fr: { title: "Suivez-nous", facebook: "Facebook", whatsapp: "WhatsApp", email: "Email" },

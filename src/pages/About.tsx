@@ -594,7 +594,7 @@ export default function About() {
               <CardContent className="pt-6 text-center">
                 <Phone className="h-10 w-10 mx-auto text-primary mb-3" />
                 <h3 className="font-semibold mb-2">{texts.phone}</h3>
-                <p className="text-muted-foreground mb-2">+225 01 01 82 13 29 / 07 07 04 19 03</p>
+                <p className="text-muted-foreground mb-2">+225 01 01 82 13 29</p>
                 <p className="text-xs text-muted-foreground">{texts.hours}</p>
               </CardContent>
             </Card>

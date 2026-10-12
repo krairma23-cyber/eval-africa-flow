@@ -380,7 +380,7 @@ print(r.json())`}</CodeBlock>
                   <a href="mailto:support@siteteck.com">support@siteteck.com</a>
                 </Button>
                 <Button asChild variant="outline">
-                  <a href="https://wa.me/2250707041904" target="_blank" rel="noreferrer">WhatsApp</a>
+                  <a href="https://wa.me/2250101821329" target="_blank" rel="noreferrer">WhatsApp</a>
                 </Button>
               </div>
             </CardContent>
