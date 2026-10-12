@@ -486,7 +486,7 @@ export default function Support() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <p><strong>Téléphone:</strong></p>
-                  <p className="text-muted-foreground">+225 01 01 82 13 29 / 07 07 04 19 03</p>
+                  <p className="text-muted-foreground">+225 01 01 82 13 29</p>
                 </div>
                 <div className="space-y-2">
                   <p><strong>Horaires:</strong></p>

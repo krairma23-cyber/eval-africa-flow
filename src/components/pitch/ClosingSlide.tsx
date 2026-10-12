@@ -26,7 +26,7 @@ export const ClosingSlide = () => {
             <div className="border-l border-primary-foreground/30 h-12"></div>
             <div>
               <div className="text-sm opacity-75">Téléphone</div>
-              <div className="font-semibold">+225 01 01 82 13 29 / 07 07 04 19 03</div>
+              <div className="font-semibold">+225 01 01 82 13 29</div>
             </div>
           </div>
 
