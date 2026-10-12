@@ -15,8 +15,10 @@ import {
   Phone,
   Clock,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Facebook
 } from "lucide-react";
+import { FACEBOOK_URL } from "@/components/features/SocialLinks";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -513,6 +515,12 @@ export default function Support() {
                     </a>
                   </Button>
                 </div>
+                <Button asChild variant="outline" className="w-full">
+                  <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">
+                    <Facebook className="h-4 w-4 mr-2" />
+                    Suivez-nous sur Facebook
+                  </a>
+                </Button>
               </CardContent>
             </Card>
           </div>

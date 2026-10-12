@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { openConsentSettings } from "@/lib/consent";
 import { DesignedBy2KK } from "@/components/features/DesignedBy2KK";
+import { SocialLinks } from "@/components/features/SocialLinks";
 
 export const LegalFooter = () => {
   const { pathname } = useLocation();
@@ -16,6 +17,7 @@ export const LegalFooter = () => {
           Gérer les cookies
         </button>
       </nav>
+      <SocialLinks compact className="mt-4" withEmail={false} />
       <DesignedBy2KK className="mt-3" />
     </footer>
   );
