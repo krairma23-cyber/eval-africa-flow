@@ -23,6 +23,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import Seo from "@/components/Seo";
 import { DesignedBy2KK } from "@/components/features/DesignedBy2KK";
+import { SocialLinks } from "@/components/features/SocialLinks";
 
 export default function About() {
   const navigate = useNavigate();
@@ -616,6 +617,7 @@ export default function About() {
               </CardContent>
             </Card>
           </div>
+          <SocialLinks showTitle className="mt-8" />
         </section>
 
         {/* Concepteur de la plateforme */}
