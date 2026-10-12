@@ -23,6 +23,7 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PageHeroBanner } from "@/components/layout/PageHeroBanner";
 import studentsDecor from "@/assets/decor-students.jpg";
+import { notifyParent } from "@/lib/parent-notify";
 
 interface Student {
   id: string;
@@ -353,6 +354,28 @@ export default function Students() {
         subtitle={t('students.subtitle')}
         action={
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto text-sm"
+              disabled={sendingReminders}
+              onClick={async () => {
+                const unpaid = students.filter((s) => s.payment_status !== 'paid' && s.parent_email);
+                if (unpaid.length === 0) {
+                  toast({ title: "Aucun rappel à envoyer", description: "Aucun élève avec un solde impayé et un email parent." });
+                  return;
+                }
+                if (!window.confirm(`Envoyer un rappel de frais de scolarité à ${unpaid.length} parent(s) ?`)) return;
+                setSendingReminders(true);
+                const res = await notifyParent({ action: "fee_reminder", student_ids: unpaid.slice(0, 500).map((s) => s.id) });
+                setSendingReminders(false);
+                toast(res.error
+                  ? { title: "Échec de l'envoi", description: res.error, variant: "destructive" }
+                  : { title: "Rappels envoyés", description: `${res.sent} email(s) envoyé(s)${res.skipped ? `, ${res.skipped} ignoré(s)` : ""}.` });
+              }}
+            >
+              <Mail className="h-4 w-4 mr-2" />
+              {sendingReminders ? "Envoi..." : "Rappel des impayés"}
+            </Button>
             <ImportStudentsDialog onImported={fetchStudents}>
               <Button variant="outline" className="w-full sm:w-auto text-sm">
                 <Plus className="h-4 w-4 mr-2" />
@@ -741,6 +764,15 @@ export default function Students() {
                             title: "Absence marquée",
                             description: `${student.first_name} ${student.last_name} est absent(e)`,
                             variant: "destructive",
+                          });
+                          const res = await notifyParent({
+                            action: "absence",
+                            student_id: student.id,
+                            date: new Date().toISOString().split('T')[0],
+                          });
+                          toast({
+                            title: res.sent ? "Parent prévenu par email" : "Email parent non envoyé",
+                            description: res.sent ? undefined : res.error,
                           });
                         } catch (error) {
                           toast({
