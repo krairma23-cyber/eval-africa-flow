@@ -45,3 +45,6 @@ verify_jwt = false
 
 [functions.teacher-invite-accept]
 verify_jwt = false
+
+[functions.parent-notify]
+verify_jwt = false
