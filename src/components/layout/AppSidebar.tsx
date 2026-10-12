@@ -33,7 +33,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
+import logo2kk from "@/assets/2kk-technologie-logo.png.asset.json";
 
 export function AppSidebar() {
   const { isMobile, setOpen, setOpenMobile } = useSidebar();
@@ -164,6 +166,19 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter className="border-t border-border px-3 py-3">
+        <div className="flex items-center gap-2">
+          <img
+            src={logo2kk.url}
+            alt="Logo 2KK Technologie"
+            className="h-6 w-auto object-contain flex-shrink-0"
+            loading="lazy"
+          />
+          <span className="text-[10px] leading-tight text-muted-foreground group-data-[collapsible=icon]:hidden">
+            Plateforme conçue par <span className="font-semibold text-foreground">2KK Technologie</span>
+          </span>
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }
