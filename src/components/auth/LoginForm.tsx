@@ -274,7 +274,7 @@ export function LoginForm({ embedded = false }: LoginFormProps) {
     setLoading(true);
 
     try {
-      const redirectUrl = `${window.location.origin}/auth`;
+      const redirectUrl = `${window.location.origin}/set-password`;
       
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: redirectUrl,

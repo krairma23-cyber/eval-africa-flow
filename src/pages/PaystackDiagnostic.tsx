@@ -113,7 +113,7 @@ export default function PaystackDiagnostic() {
             amount: 1000, // Test avec 1000 FCFA
             planId: 'standard',
             planName: 'Standard (Test)',
-            phone_number: import.meta.env.VITE_PAYSTACK_TEST_PHONE || '',
+            phone_number: undefined,
             callback_url: `${window.location.origin}/payment-callback`
           }
         });

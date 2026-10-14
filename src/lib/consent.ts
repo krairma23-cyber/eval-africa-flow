@@ -23,7 +23,7 @@ export const CONSENT_NOTICE =
   "Cookies essentiels (connexion, sécurité) toujours actifs. Mesure d'audience Google Analytics (Google LLC) et Meta Pixel (Meta Platforms) uniquement avec votre accord, sur les pages publiques. Jamais dans les espaces connectés.";
 
 // Espaces privés : aucun traceur, jamais.
-const PRIVATE_PREFIXES = ["/dashboard", "/command-center", "/parent-portal", "/invitation", "/payment-callback", "/onboarding"];
+const PRIVATE_PREFIXES = ["/dashboard", "/command-center", "/parent-portal", "/invitation", "/payment-callback", "/onboarding", "/set-password"];
 
 export function isPrivatePath(pathname: string = location.pathname): boolean {
   return PRIVATE_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/"));

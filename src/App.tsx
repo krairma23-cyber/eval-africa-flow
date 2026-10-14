@@ -18,6 +18,7 @@ import EnvironmentBanner from "@/components/layout/EnvironmentBanner";
 // Wrapped with retry logic to avoid blank screens when a chunk/module fails to load (cache mismatch).
 const Auth = lazyWithRetry(() => import("./pages/Auth"), "page:Auth");
 const AcceptInvitation = lazyWithRetry(() => import("./pages/AcceptInvitation"), "page:AcceptInvitation");
+const SetPassword = lazyWithRetry(() => import("./pages/SetPassword"), "page:SetPassword");
 const Dashboard = lazyWithRetry(() => import("./pages/Dashboard"), "page:Dashboard");
 const Students = lazyWithRetry(() => import("./pages/Students"), "page:Students");
 const Teachers = lazyWithRetry(() => import("./pages/Teachers"), "page:Teachers");
@@ -93,6 +94,7 @@ const App = () => (
               <Route path="/about" element={<About />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/pitch-deck" element={<PitchDeck />} />
+              <Route path="/set-password" element={<SetPassword />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/mentions-legales" element={<LegalNotice />} />

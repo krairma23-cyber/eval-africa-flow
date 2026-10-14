@@ -20,8 +20,8 @@ export default function PaymentCallback() {
 
       try {
         // Check for tuition payment first
-        const pendingTuitionStr = localStorage.getItem('pending_tuition_payment');
-        const pendingSubscriptionStr = localStorage.getItem('pending_payment');
+        const pendingTuitionStr = sessionStorage.getItem('pending_tuition_payment');
+        const pendingSubscriptionStr = sessionStorage.getItem('pending_payment');
 
         // Verify payment with Paystack
         const { data: verifyData, error: verifyError } = await supabase.functions.invoke('paystack-verify', {
@@ -50,7 +50,7 @@ export default function PaymentCallback() {
             return;
           }
 
-          localStorage.removeItem('pending_tuition_payment');
+          sessionStorage.removeItem('pending_tuition_payment');
           toast.success(`Paiement des frais de scolarité réussi! Montant: ${processData.amount_paid.toLocaleString('fr-FR')} FCFA`);
           navigate('/parent-portal?payment=success');
           return;
@@ -76,7 +76,7 @@ export default function PaymentCallback() {
             return;
           }
 
-          localStorage.removeItem('pending_payment');
+          sessionStorage.removeItem('pending_payment');
           toast.success("Paiement vérifié et abonnement activé avec succès!");
           navigate('/billing');
           return;
