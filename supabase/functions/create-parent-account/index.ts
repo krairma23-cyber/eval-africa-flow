@@ -178,9 +178,20 @@ const handler = async (req: Request): Promise<Response> => {
     if (updateStudentError) {
     }
 
-    // Send welcome email with credentials if new user
-    if (isNewUser && tempPassword && resend) {
-      const portalUrl = `${req.headers.get("origin") || "https://evalscol.com"}/parent`;
+    // Send welcome email with a single-use activation link (never the password)
+    let activationLink: string | null = null;
+    if (isNewUser) {
+      const origin = req.headers.get("origin") || "https://evalscol-africa.lovable.app";
+      const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+        type: "recovery",
+        email: parent_email,
+        options: { redirectTo: `${origin}/set-password` },
+      });
+      if (linkError) console.error("Error creating activation link:", linkError.message);
+      activationLink = linkData?.properties?.action_link ?? null;
+    }
+    if (isNewUser && activationLink && resend) {
+      const portalUrl = activationLink;
       
       const emailHtml = `
         <!DOCTYPE html>
@@ -210,19 +221,19 @@ const handler = async (req: Request): Promise<Response> => {
                 <p>L'école <strong>${school_name || "votre école"}</strong> vous donne accès au portail parent EvalScol pour suivre la scolarité de <strong>${student_name}</strong>.</p>
                 
                 <div class="credentials">
-                  <h3 style="margin-top: 0;">📋 Vos identifiants de connexion</h3>
+                  <h3 style="margin-top: 0;">📋 Votre identifiant</h3>
                   <p><strong>Email :</strong> ${parent_email}</p>
-                  <p><strong>Mot de passe temporaire :</strong> <code style="background: #e9ecef; padding: 4px 8px; border-radius: 4px; font-size: 16px;">${tempPassword}</code></p>
+                  <p>Cliquez sur le bouton ci-dessous pour choisir votre mot de passe et activer votre compte.</p>
                 </div>
 
                 <div style="text-align: center;">
                   <a href="${portalUrl}" class="button">
-                    🔑 Accéder au Portail Parent
+                    🔑 Activer mon compte
                   </a>
                 </div>
 
                 <div class="warning">
-                  <strong>⚠️ Important :</strong> Pour votre sécurité, nous vous recommandons de changer votre mot de passe dès votre première connexion.
+                  <strong>⚠️ Important :</strong> Ce lien est personnel et ne fonctionne qu'une seule fois. S'il a expiré, utilisez « Mot de passe oublié » sur la page de connexion.
                 </div>
 
                 <h3>Que pouvez-vous faire sur le portail ?</h3>
@@ -266,9 +277,9 @@ const handler = async (req: Request): Promise<Response> => {
         success: true,
         parent_user_id: parentUserId,
         is_new_user: isNewUser,
-        email_sent: isNewUser && !!tempPassword,
+        email_sent: isNewUser && !!activationLink,
         message: isNewUser 
-          ? "Compte parent créé et email envoyé avec les identifiants" 
+          ? "Compte parent créé et lien d'activation envoyé par email" 
           : "Parent déjà inscrit, liaison avec l'élève effectuée"
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
