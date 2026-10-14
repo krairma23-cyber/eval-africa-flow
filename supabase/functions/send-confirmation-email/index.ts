@@ -61,7 +61,9 @@ const handler = async (req: Request): Promise<Response> => {
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-  } else if (legacySecret !== rawSecret) {
+  } else {
+    // Only signed standard-webhooks requests are accepted (no plain shared-secret fallback)
+    void legacySecret;
     return new Response(
       JSON.stringify({ error: 'Unauthorized' }),
       { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

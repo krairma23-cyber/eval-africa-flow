@@ -85,7 +85,7 @@ export function TuitionPaymentDialog({
 
       if (data.authorization_url) {
         // Store payment info in localStorage for callback processing
-        localStorage.setItem('pending_tuition_payment', JSON.stringify({
+        sessionStorage.setItem('pending_tuition_payment', JSON.stringify({
           reference: data.reference,
           student_id: studentId,
           student_name: studentName,

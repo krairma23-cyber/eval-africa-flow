@@ -450,7 +450,7 @@ export default function Billing() {
           billing_period: isYearly ? 'yearly' : 'monthly'
         };
 
-        localStorage.setItem('pending_payment', JSON.stringify(pendingPayment));
+        sessionStorage.setItem('pending_payment', JSON.stringify(pendingPayment));
         window.location.href = data.authorization_url;
       } else {
         throw new Error('No authorization URL received from payment gateway');
