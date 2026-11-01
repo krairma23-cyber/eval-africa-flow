@@ -69,6 +69,10 @@ All colors MUST be HSL.
 
     --radius: 0.5rem;
 
+    /* Footer (deep navy, readable in both themes) */
+    --footer: 222 47% 11%;
+    --footer-foreground: 210 20% 98%;
+
     --sidebar-background: 210 40% 96%;
     --sidebar-foreground: 222 47% 16%;
     --sidebar-primary: 221 83% 53%;
@@ -108,6 +112,10 @@ All colors MUST be HSL.
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 263 83% 57%;
+
+    /* Footer (deep navy, readable in both themes) */
+    --footer: 222 47% 11%;
+    --footer-foreground: 210 20% 98%;
 
     --sidebar-background: 218 34% 13%;
     --sidebar-foreground: 210 20% 90%;
