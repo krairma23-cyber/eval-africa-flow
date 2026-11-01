@@ -506,7 +506,7 @@ const Index = () => {
         </MotionReveal>
 
         {/* ===== Footer ===== */}
-        <footer className="bg-primary text-primary-foreground">
+        <footer className="bg-footer text-footer-foreground">
           <div className="container mx-auto px-4 py-12 max-w-7xl">
             <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-6">
               <div className="lg:col-span-2">
@@ -514,8 +514,26 @@ const Index = () => {
                   <img src="/logo.png" alt="EvalScol Africa" className="h-10 w-auto object-contain" width={73} height={40} />
                   <span className="text-lg font-bold">EvalScol Africa</span>
                 </div>
-                <p className="text-sm opacity-90 mb-6 max-w-xs">{c.footer.tagline}</p>
-                <SocialLinks compact className="justify-start" />
+                <p className="text-sm opacity-80 mb-6 max-w-xs">{c.footer.tagline}</p>
+                <div className="flex items-center gap-2">
+                  {[
+                    { href: FACEBOOK_URL, label: "EvalScol Africa sur Facebook", icon: Facebook },
+                    { href: WHATSAPP_URL, label: "WhatsApp EvalScol Africa", icon: MessageCircle },
+                    { href: "mailto:support@siteteck.com", label: "support@siteteck.com", icon: Mail },
+                  ].map(({ href, label, icon: Icon }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target={href.startsWith("mailto:") ? undefined : "_blank"}
+                      rel={href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                      title={label}
+                      aria-label={label}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-footer-foreground/25 text-footer-foreground/80 transition-colors hover:border-footer-foreground/60 hover:text-footer-foreground"
+                    >
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                    </a>
+                  ))}
+                </div>
               </div>
 
               {[
@@ -529,7 +547,7 @@ const Index = () => {
                   <ul className="space-y-2">
                     {col.links.map((link) => (
                       <li key={link.label}>
-                        <Link to={link.to} className="text-sm opacity-90 transition-opacity hover:opacity-100 hover:underline">
+                        <Link to={link.to} className="text-sm opacity-80 transition-opacity hover:opacity-100 hover:underline">
                           {link.label}
                         </Link>
                       </li>
@@ -539,36 +557,34 @@ const Index = () => {
               ))}
             </div>
 
-            <div className="mt-10 rounded-xl border border-primary-foreground/20 bg-primary-foreground/5 p-5">
+            <div className="mt-10 rounded-xl border border-footer-foreground/20 bg-footer-foreground/5 p-5">
               <h3 className="font-semibold mb-4">{c.footer.contact}</h3>
               <div className="grid gap-3 sm:grid-cols-3 text-sm">
-                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 opacity-90 hover:opacity-100 hover:underline">
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 opacity-80 hover:opacity-100 hover:underline">
                   <Phone className="h-4 w-4" aria-hidden="true" />
                   +225 01 01 82 13 29
                 </a>
-                <a href="mailto:support@siteteck.com" className="flex items-center gap-2 opacity-90 hover:opacity-100 hover:underline">
+                <a href="mailto:support@siteteck.com" className="flex items-center gap-2 opacity-80 hover:opacity-100 hover:underline">
                   <Mail className="h-4 w-4" aria-hidden="true" />
                   support@siteteck.com
                 </a>
-                <span className="flex items-center gap-2 opacity-90">
+                <span className="flex items-center gap-2 opacity-80">
                   <MapPin className="h-4 w-4" aria-hidden="true" />
                   Abidjan, Côte d'Ivoire
                 </span>
               </div>
-              <a
-                href={FACEBOOK_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-block text-sm opacity-90 hover:opacity-100 hover:underline"
-              >
-                Facebook
-              </a>
             </div>
 
-            <div className="mt-10 flex flex-col items-center gap-4 border-t border-primary-foreground/20 pt-6 text-center">
-              <p className="text-sm opacity-90">{c.footer.rights}</p>
-              <p className="text-sm opacity-90">{c.footer.madeFor}</p>
-              <DesignedBy2KK />
+            <div className="mt-10 flex flex-col items-center gap-3 border-t border-footer-foreground/20 pt-6 text-center">
+              <p className="text-sm opacity-80">{c.footer.rights}</p>
+              <p className="text-sm opacity-80">{c.footer.madeFor}</p>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <img src={logo2kk.url} alt="Logo 2KK Technologie" className="h-9 w-auto object-contain" loading="lazy" />
+                <span className="text-xs opacity-80">
+                  {language === "fr" ? "Plateforme conçue par" : "Platform designed by"}{" "}
+                  <span className="font-semibold opacity-100">2KK Technologie</span>
+                </span>
+              </div>
             </div>
           </div>
         </footer>
