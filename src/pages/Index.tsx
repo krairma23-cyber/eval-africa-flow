@@ -3,15 +3,15 @@ import {
   GraduationCap, Users, ClipboardCheck, CreditCard, Brain, TrendingUp,
   Calculator, Clock, Wallet, MessageSquareWarning, CalendarX2,
   Smartphone, Sparkles, Headset, ShieldCheck, Menu, X, Phone, Mail, MapPin,
-  CheckCircle2, AlertTriangle, Bell, FileText, ChevronRight,
+  CheckCircle2, AlertTriangle, Bell, FileText, ChevronRight, Facebook, MessageCircle,
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { DesignedBy2KK } from "@/components/features/DesignedBy2KK";
-import { SocialLinks, FACEBOOK_URL, WHATSAPP_URL } from "@/components/features/SocialLinks";
+import { FACEBOOK_URL, WHATSAPP_URL } from "@/components/features/SocialLinks";
+import logo2kk from "@/assets/2kk-technologie-logo.png.asset.json";
 import Seo from "@/components/Seo";
 import { MotionReveal } from "@/components/motion/MotionReveal";
 import { motion, useReducedMotion } from "framer-motion";
@@ -474,7 +474,7 @@ const Index = () => {
           <section id="confiance" className="border-y border-border bg-muted/40 py-14 lg:py-20">
             <div className="container mx-auto px-4 max-w-7xl">
               <div className="grid lg:grid-cols-4 gap-8 items-center mb-12">
-                <div className="rounded-xl bg-primary p-6 text-primary-foreground lg:col-span-1">
+                <div className="rounded-xl bg-footer p-6 text-footer-foreground lg:col-span-1">
                   <h2 className="text-xl font-bold mb-2">{c.stats.title}</h2>
                   <p className="text-sm opacity-90">{c.stats.subtitle}</p>
                 </div>
