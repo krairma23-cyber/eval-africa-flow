@@ -577,6 +577,15 @@ export function LoginForm({ embedded = false }: LoginFormProps) {
                     {t('login.privacy')}
                   </Label>
                 </div>
+                <p className="text-xs text-muted-foreground -mt-2">
+                  <Link to="/cgu" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
+                    {language === "en" ? "Read the Terms of Use (CGU)" : "Consulter les CGU"}
+                  </Link>
+                  {" · "}
+                  <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
+                    {language === "en" ? "Privacy policy" : "Politique de confidentialité"}
+                  </Link>
+                </p>
                 <p className="text-sm text-muted-foreground">
                   {t('login.afterConfirm')}
                 </p>
