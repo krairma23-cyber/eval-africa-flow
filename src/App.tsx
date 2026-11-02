@@ -99,6 +99,7 @@ const App = () => (
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/mentions-legales" element={<LegalNotice />} />
               <Route path="/cgu" element={<TermsOfUse />} />
+              <Route path="/conditions-generales-d-utilisation" element={<TermsOfUse />} />
               <Route path="/cookies" element={<CookiePolicy />} />
               <Route path="/payment-callback" element={<PaymentCallback />} />
               <Route path="/parent-portal" element={<ParentPortal />} />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,7 +60,7 @@ export function LoginForm({ embedded = false }: LoginFormProps) {
   const [activeTab, setActiveTab] = useState("signin");
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -577,6 +577,15 @@ export function LoginForm({ embedded = false }: LoginFormProps) {
                     {t('login.privacy')}
                   </Label>
                 </div>
+                <p className="text-xs text-muted-foreground -mt-2">
+                  <Link to="/cgu" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
+                    {language === "en" ? "Read the Terms of Use (CGU)" : "Consulter les CGU"}
+                  </Link>
+                  {" · "}
+                  <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
+                    {language === "en" ? "Privacy policy" : "Politique de confidentialité"}
+                  </Link>
+                </p>
                 <p className="text-sm text-muted-foreground">
                   {t('login.afterConfirm')}
                 </p>
