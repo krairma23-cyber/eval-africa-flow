@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle2, Users, BookOpen, ClipboardCheck, Settings, ArrowRight, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import BackLink from "@/components/navigation/BackLink";
 
 export default function Onboarding() {
   const [loading, setLoading] = useState(false);
@@ -68,6 +69,8 @@ export default function Onboarding() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl">
+      <BackLink variant="link" to="/dashboard" className="mb-3" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -157,6 +160,7 @@ export default function Onboarding() {
           </CardContent>
         </Card>
       </motion.div>
+      </div>
     </div>
   );
 }

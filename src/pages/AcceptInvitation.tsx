@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { GraduationCap, Loader2 } from "lucide-react";
+import BackLink from "@/components/navigation/BackLink";
 
 interface Preview { school_name: string; email: string; first_name: string; last_name: string; has_account: boolean }
 
@@ -77,7 +78,10 @@ export default function AcceptInvitation() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-background p-4">
+      <div className="w-full max-w-md">
+        <BackLink variant="link" />
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <GraduationCap className="h-10 w-10 text-primary mx-auto mb-2" />

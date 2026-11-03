@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import BackLink from "@/components/navigation/BackLink";
 
 export default function PaymentCallback() {
   const [searchParams] = useSearchParams();
@@ -107,6 +108,9 @@ export default function PaymentCallback() {
         >
           J'ai terminé la transaction
         </button>
+        <div className="flex justify-center pt-2">
+          <BackLink variant="link" />
+        </div>
       </div>
     </div>
   );
