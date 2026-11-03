@@ -35,7 +35,7 @@ import {
   useSidebar,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import logo2kk from "@/assets/2kk-technologie-logo.png.asset.json";
+import logo2kk from "@/assets/2kk-technologie-logo-phoenix.png.asset.json";
 
 export function AppSidebar() {
   const { isMobile, setOpen, setOpenMobile } = useSidebar();

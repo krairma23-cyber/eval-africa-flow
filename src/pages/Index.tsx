@@ -11,7 +11,7 @@ import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { FACEBOOK_URL, WHATSAPP_URL } from "@/components/features/SocialLinks";
-import logo2kk from "@/assets/2kk-technologie-logo.png.asset.json";
+import logo2kk from "@/assets/2kk-technologie-logo-phoenix.png.asset.json";
 import Seo from "@/components/Seo";
 import { MotionReveal } from "@/components/motion/MotionReveal";
 import { motion, useReducedMotion } from "framer-motion";

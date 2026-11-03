@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
-import logo2kk from "@/assets/2kk-technologie-logo.png.asset.json";
+import logo2kk from "@/assets/2kk-technologie-logo-phoenix.png.asset.json";
 
 const COPY = {
   fr: {
