@@ -31,7 +31,7 @@ export const DesignedBy2KK = ({ variant = "inline", className = "" }: DesignedBy
           <img
             src={logo2kk.url}
             alt="Logo 2KK Technologie"
-            className="h-28 w-auto object-contain"
+            className="h-32 w-auto object-contain"
             loading="lazy"
           />
           <div>
@@ -48,7 +48,7 @@ export const DesignedBy2KK = ({ variant = "inline", className = "" }: DesignedBy
       <img
         src={logo2kk.url}
         alt="Logo 2KK Technologie"
-        className="h-9 w-auto object-contain"
+        className="h-11 w-auto object-contain"
         loading="lazy"
       />
       <span className="text-xs text-muted-foreground">

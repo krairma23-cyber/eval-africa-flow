@@ -578,8 +578,8 @@ const Index = () => {
             <div className="mt-10 flex flex-col items-center gap-3 border-t border-footer-foreground/20 pt-6 text-center">
               <p className="text-sm opacity-80">{c.footer.rights}</p>
               <p className="text-sm opacity-80">{c.footer.madeFor}</p>
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <img src={logo2kk.url} alt="Logo 2KK Technologie" className="h-9 w-auto object-contain" loading="lazy" />
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <img src={logo2kk.url} alt="Logo 2KK Technologie" className="h-12 w-auto object-contain" loading="lazy" />
                 <span className="text-xs opacity-80">
                   {language === "fr" ? "Plateforme conçue par" : "Platform designed by"}{" "}
                   <span className="font-semibold opacity-100">2KK Technologie</span>
