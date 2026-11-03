@@ -5,8 +5,8 @@ import {
   Smartphone, Sparkles, Headset, ShieldCheck, Menu, X, Phone, Mail, MapPin,
   CheckCircle2, AlertTriangle, Bell, FileText, ChevronRight, Facebook, MessageCircle,
 } from "lucide-react";
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -168,6 +168,19 @@ const Index = () => {
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const id = location.hash.replace("#", "");
+    if (!id) return;
+    const t = window.setTimeout(() => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }, 50);
+    return () => window.clearTimeout(t);
+  }, [location.hash, location.key]);
   const c = language === "fr" ? COPY.fr : COPY.en;
 
   const navLinks = [
