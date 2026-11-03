@@ -11,7 +11,7 @@ import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { FACEBOOK_URL, WHATSAPP_URL } from "@/components/features/SocialLinks";
-import logo2kk from "@/assets/2kk-technologie-logo.png.asset.json";
+import logo2kk from "@/assets/2kk-technologie-logo-phoenix.png.asset.json";
 import Seo from "@/components/Seo";
 import { MotionReveal } from "@/components/motion/MotionReveal";
 import { motion, useReducedMotion } from "framer-motion";
@@ -578,8 +578,8 @@ const Index = () => {
             <div className="mt-10 flex flex-col items-center gap-3 border-t border-footer-foreground/20 pt-6 text-center">
               <p className="text-sm opacity-80">{c.footer.rights}</p>
               <p className="text-sm opacity-80">{c.footer.madeFor}</p>
-              <div className="flex flex-wrap items-center justify-center gap-2">
-                <img src={logo2kk.url} alt="Logo 2KK Technologie" className="h-9 w-auto object-contain" loading="lazy" />
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <img src={logo2kk.url} alt="Logo 2KK Technologie" className="h-16 w-auto object-contain" loading="lazy" />
                 <span className="text-xs opacity-80">
                   {language === "fr" ? "Plateforme conçue par" : "Platform designed by"}{" "}
                   <span className="font-semibold opacity-100">2KK Technologie</span>

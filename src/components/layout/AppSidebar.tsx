@@ -35,7 +35,7 @@ import {
   useSidebar,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import logo2kk from "@/assets/2kk-technologie-logo.png.asset.json";
+import logo2kk from "@/assets/2kk-technologie-logo-phoenix.png.asset.json";
 
 export function AppSidebar() {
   const { isMobile, setOpen, setOpenMobile } = useSidebar();
@@ -171,7 +171,7 @@ export function AppSidebar() {
           <img
             src={logo2kk.url}
             alt="Logo 2KK Technologie"
-            className="h-6 w-auto object-contain flex-shrink-0"
+            className="h-10 w-auto object-contain flex-shrink-0"
             loading="lazy"
           />
           <span className="text-[10px] leading-tight text-muted-foreground group-data-[collapsible=icon]:hidden">

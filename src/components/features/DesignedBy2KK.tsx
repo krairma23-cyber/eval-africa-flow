@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
-import logo2kk from "@/assets/2kk-technologie-logo.png.asset.json";
+import logo2kk from "@/assets/2kk-technologie-logo-phoenix.png.asset.json";
 
 const COPY = {
   fr: {
@@ -31,7 +31,7 @@ export const DesignedBy2KK = ({ variant = "inline", className = "" }: DesignedBy
           <img
             src={logo2kk.url}
             alt="Logo 2KK Technologie"
-            className="h-28 w-auto object-contain"
+            className="h-40 w-auto object-contain"
             loading="lazy"
           />
           <div>
@@ -48,7 +48,7 @@ export const DesignedBy2KK = ({ variant = "inline", className = "" }: DesignedBy
       <img
         src={logo2kk.url}
         alt="Logo 2KK Technologie"
-        className="h-9 w-auto object-contain"
+        className="h-14 w-auto object-contain"
         loading="lazy"
       />
       <span className="text-xs text-muted-foreground">
