@@ -171,7 +171,7 @@ export function AppSidebar() {
           <img
             src={logo2kk.url}
             alt="Logo 2KK Technologie"
-            className="h-9 w-auto object-contain flex-shrink-0"
+            className="h-10 w-auto object-contain flex-shrink-0"
             loading="lazy"
           />
           <span className="text-[10px] leading-tight text-muted-foreground group-data-[collapsible=icon]:hidden">
