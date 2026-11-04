@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { logError } from "@/lib/logger";
+import { fetchAllRows } from "@/lib/fetch-all";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -75,7 +76,7 @@ export default function Students() {
 
   const fetchStudents = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await fetchAllRows<Student>((from, to) => supabase
         .from('students')
         .select(`
           *,
@@ -88,7 +89,9 @@ export default function Students() {
             )
           )
         `)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .order('id')
+        .range(from, to) as any);
 
       if (error) {
         await logError('Failed to fetch students', error, {

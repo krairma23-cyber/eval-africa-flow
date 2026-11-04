@@ -98,10 +98,12 @@ export default function Teachers() {
 
   const fetchTeachers = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await fetchAllRows<Teacher>((from, to) => supabase
         .from('teachers')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .order('id')
+        .range(from, to) as any);
 
 
       if (error) {
@@ -239,7 +241,7 @@ export default function Teachers() {
         </Card>
       ) : (
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredTeachers.map((teacher) => {
+          {filteredTeachers.slice((safePage - 1) * TEACHERS_PER_PAGE, safePage * TEACHERS_PER_PAGE).map((teacher) => {
             const classes = teacherClasses[teacher.id] || [];
             const accent = classes[0]?.color || 'hsl(var(--muted-foreground))';
             return (
@@ -348,6 +350,13 @@ export default function Teachers() {
             );
           })}
 
+        </div>
+      )}
+      {totalTeacherPages > 1 && (
+        <div className="flex items-center justify-center gap-3 text-sm">
+          <Button variant="outline" size="sm" disabled={safePage <= 1} onClick={() => setTeacherPage(safePage - 1)}>Précédent</Button>
+          <span className="text-muted-foreground">Page {safePage}/{totalTeacherPages} · {filteredTeachers.length} enseignants</span>
+          <Button variant="outline" size="sm" disabled={safePage >= totalTeacherPages} onClick={() => setTeacherPage(safePage + 1)}>Suivant</Button>
         </div>
       )}
     </div>
