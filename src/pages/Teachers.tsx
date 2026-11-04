@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchAllRows } from "@/lib/fetch-all";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,6 +68,8 @@ export default function Teachers() {
   const [teacherClasses, setTeacherClasses] = useState<Record<string, TeacherClass[]>>({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [teacherPage, setTeacherPage] = useState(1);
+  useEffect(() => { setTeacherPage(1); }, [searchTerm]);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -98,10 +101,12 @@ export default function Teachers() {
 
   const fetchTeachers = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await fetchAllRows<Teacher>((from, to) => supabase
         .from('teachers')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .order('id')
+        .range(from, to) as any);
 
 
       if (error) {
@@ -162,6 +167,10 @@ export default function Teachers() {
       // Ensuite par nom de famille
       return a.last_name.localeCompare(b.last_name, 'fr');
     });
+
+  const TEACHERS_PER_PAGE = 24;
+  const totalTeacherPages = Math.max(1, Math.ceil(filteredTeachers.length / TEACHERS_PER_PAGE));
+  const safePage = Math.min(teacherPage, totalTeacherPages);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR');
@@ -239,7 +248,7 @@ export default function Teachers() {
         </Card>
       ) : (
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredTeachers.map((teacher) => {
+          {filteredTeachers.slice((safePage - 1) * TEACHERS_PER_PAGE, safePage * TEACHERS_PER_PAGE).map((teacher) => {
             const classes = teacherClasses[teacher.id] || [];
             const accent = classes[0]?.color || 'hsl(var(--muted-foreground))';
             return (
@@ -348,6 +357,13 @@ export default function Teachers() {
             );
           })}
 
+        </div>
+      )}
+      {totalTeacherPages > 1 && (
+        <div className="flex items-center justify-center gap-3 text-sm">
+          <Button variant="outline" size="sm" disabled={safePage <= 1} onClick={() => setTeacherPage(safePage - 1)}>Précédent</Button>
+          <span className="text-muted-foreground">Page {safePage}/{totalTeacherPages} · {filteredTeachers.length} enseignants</span>
+          <Button variant="outline" size="sm" disabled={safePage >= totalTeacherPages} onClick={() => setTeacherPage(safePage + 1)}>Suivant</Button>
         </div>
       )}
     </div>
