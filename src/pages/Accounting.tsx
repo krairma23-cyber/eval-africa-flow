@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useRole } from "@/hooks/useRole";
 import { logError } from "@/lib/logger";
+import { fetchAllRows } from "@/lib/fetch-all";
 import { DeleteConfirmButton } from "@/components/shared/DeleteConfirmButton";
 import {
   AccountingEntryDialog,
@@ -41,6 +42,7 @@ export default function Accounting() {
   const [kindFilter, setKindFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [period, setPeriod] = useState<string>("year");
+  const [entryPage, setEntryPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<AccountingEntry | null>(null);
 
@@ -106,10 +108,12 @@ export default function Accounting() {
 
       const [{ data: cats, error: catErr }, { data: ents, error: entErr }] = await Promise.all([
         supabase.from("accounting_categories").select("id,name,kind,color,code").order("name"),
-        supabase
+        fetchAllRows<AccountingEntry>((from, to) => supabase
           .from("accounting_entries")
           .select("id,entry_date,label,kind,amount,payment_method,reference,notes,category_id")
-          .order("entry_date", { ascending: false }),
+          .order("entry_date", { ascending: false })
+          .order("id")
+          .range(from, to) as any),
       ]);
 
       if (catErr || entErr) {
@@ -153,6 +157,18 @@ export default function Accounting() {
       return true;
     });
   }, [entries, periodStart, kindFilter, categoryFilter, search]);
+
+  useEffect(() => {
+    setEntryPage(1);
+  }, [search, kindFilter, categoryFilter, period]);
+
+  const ENTRIES_PER_PAGE = 25;
+  const totalEntryPages = Math.max(1, Math.ceil(filtered.length / ENTRIES_PER_PAGE));
+  const safeEntryPage = Math.min(entryPage, totalEntryPages);
+  const pagedEntries = filtered.slice(
+    (safeEntryPage - 1) * ENTRIES_PER_PAGE,
+    safeEntryPage * ENTRIES_PER_PAGE
+  );
 
   const totals = useMemo(() => {
     const income = filtered.filter((e) => e.kind === "income").reduce((s, e) => s + e.amount, 0);
@@ -390,7 +406,7 @@ export default function Accounting() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filtered.map((e) => {
+                      {pagedEntries.map((e) => {
                         const cat = categories.find((c) => c.id === e.category_id);
                         return (
                           <TableRow key={e.id}>
@@ -434,6 +450,13 @@ export default function Accounting() {
                       })}
                     </TableBody>
                   </Table>
+                </div>
+              )}
+              {totalEntryPages > 1 && (
+                <div className="flex items-center justify-center gap-3 text-sm mt-4">
+                  <Button variant="outline" size="sm" disabled={safeEntryPage <= 1} onClick={() => setEntryPage(safeEntryPage - 1)}>Précédent</Button>
+                  <span className="text-muted-foreground">Page {safeEntryPage}/{totalEntryPages} · {filtered.length} écritures</span>
+                  <Button variant="outline" size="sm" disabled={safeEntryPage >= totalEntryPages} onClick={() => setEntryPage(safeEntryPage + 1)}>Suivant</Button>
                 </div>
               )}
             </CardContent>
