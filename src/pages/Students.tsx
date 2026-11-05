@@ -76,7 +76,7 @@ export default function Students() {
 
   const fetchStudents = async () => {
     try {
-      const { data, error } = await fetchAllRows<Student>((from, to) => supabase
+      const { data, error } = await fetchAllRows((from, to) => supabase
         .from('students')
         .select(`
           *,
@@ -91,7 +91,7 @@ export default function Students() {
         `)
         .order('created_at', { ascending: false })
         .order('id')
-        .range(from, to) as any);
+        .range(from, to));
 
       if (error) {
         await logError('Failed to fetch students', error, {

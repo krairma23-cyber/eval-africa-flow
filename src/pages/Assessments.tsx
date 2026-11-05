@@ -77,7 +77,7 @@ export default function Assessments() {
   const fetchAssessments = async () => {
     try {
       setLoading(true);
-      const { data, error } = await fetchAllRows<Assessment>((from, to) => supabase
+      const { data, error } = await fetchAllRows((from, to) => supabase
         .from("assessments")
         .select(`
           *,
@@ -89,7 +89,7 @@ export default function Assessments() {
         `)
         .order("assessment_date", { ascending: false })
         .order("id")
-        .range(from, to) as any);
+        .range(from, to));
 
       if (error) throw error;
       setAssessments(data || []);

@@ -108,12 +108,12 @@ export default function Accounting() {
 
       const [{ data: cats, error: catErr }, { data: ents, error: entErr }] = await Promise.all([
         supabase.from("accounting_categories").select("id,name,kind,color,code").order("name"),
-        fetchAllRows<AccountingEntry>((from, to) => supabase
+        fetchAllRows((from, to) => supabase
           .from("accounting_entries")
           .select("id,entry_date,label,kind,amount,payment_method,reference,notes,category_id")
           .order("entry_date", { ascending: false })
           .order("id")
-          .range(from, to) as any),
+          .range(from, to)),
       ]);
 
       if (catErr || entErr) {

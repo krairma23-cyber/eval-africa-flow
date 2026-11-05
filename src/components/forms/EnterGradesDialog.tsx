@@ -70,10 +70,7 @@ export function EnterGradesDialog({
       const classroomId = assessment.classroom_subjects.classroom_id;
 
       // Get students enrolled in the classroom
-      const { data: enrollments, error: enrollmentError } = await fetchAllRows<{
-        student_id: string;
-        students: { id: string; student_number: string; first_name: string; last_name: string };
-      }>((from, to) => supabase
+      const { data: enrollments, error: enrollmentError } = await fetchAllRows((from, to) => supabase
         .from("enrollments")
         .select(`
           student_id,
@@ -87,23 +84,17 @@ export function EnterGradesDialog({
         .eq("classroom_id", classroomId)
         .eq("status", "active")
         .order("student_id")
-        .range(from, to) as any);
+        .range(from, to));
 
       if (enrollmentError) throw enrollmentError;
 
       // Get existing results
-      const { data: results, error: resultsError } = await fetchAllRows<{
-        id: string;
-        student_id: string;
-        score: number | null;
-        is_absent: boolean;
-        comment: string | null;
-      }>((from, to) => supabase
+      const { data: results, error: resultsError } = await fetchAllRows((from, to) => supabase
         .from("assessment_results")
         .select("id, student_id, score, is_absent, comment")
         .eq("assessment_id", assessmentId)
         .order("id")
-        .range(from, to) as any);
+        .range(from, to));
 
       if (resultsError) throw resultsError;
 

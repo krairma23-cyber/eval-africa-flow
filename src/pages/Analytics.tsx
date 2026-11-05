@@ -102,11 +102,11 @@ export default function Analytics() {
       ] = await Promise.all([
         supabase.from('students').select('id, created_at', { count: 'exact' }).eq('school_id', profile.school_id),
         supabase.from('teachers').select('id, first_name, last_name', { count: 'exact' }).eq('school_id', profile.school_id),
-        fetchAllRows<{ id: string; name: string }>((from, to) => supabase.from('classrooms').select('id, name').order('id').range(from, to) as any),
-        fetchAllRows<{ id: string; created_at: string; title: string }>((from, to) => supabase.from('assessments').select('id, created_at, title').order('id').range(from, to) as any),
+        fetchAllRows((from, to) => supabase.from('classrooms').select('id, name').order('id').range(from, to)),
+        fetchAllRows((from, to) => supabase.from('assessments').select('id, created_at, title').order('id').range(from, to)),
         supabase.from('subjects').select('id, name', { count: 'exact' }).eq('school_id', profile.school_id),
-        fetchAllRows<{ id: string; created_at: string; classroom_id: string }>((from, to) => supabase.from('enrollments').select('id, created_at, classroom_id').order('id').range(from, to) as any),
-        fetchAllRows<{ id: string; score: number; assessment_id: string }>((from, to) => supabase.from('assessment_results').select('id, score, assessment_id').order('id').range(from, to) as any)
+        fetchAllRows((from, to) => supabase.from('enrollments').select('id, created_at, classroom_id').order('id').range(from, to)),
+        fetchAllRows((from, to) => supabase.from('assessment_results').select('id, score, assessment_id').order('id').range(from, to))
       ]);
 
       // Calculate students by class
