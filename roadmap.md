@@ -1,9 +1,9 @@
 # Roadmap
 
 ## En cours
-- [ ] Charger toutes les lignes (au-delà de 1 000) dans : évaluations, comptabilité, bulletins (résultats), statistiques, saisie de notes
-- [ ] Ajouter l'affichage page par page là où la liste devient longue (évaluations, comptabilité)
-- [ ] Vérifier types + build, puis résumer à l'utilisateur
+- [x] Charger toutes les lignes (au-delà de 1 000) dans : évaluations, comptabilité, bulletins (résultats), statistiques, saisie de notes, invitations enseignants
+- [x] Ajouter l'affichage page par page là où la liste devient longue (évaluations 12/page, comptabilité 25/page)
+- [x] Vérifier types + build + test `tests/fetch-all.test.ts` (4 tests)
 
 ## Attente utilisateur
-- [ ] Tester les pages élèves / enseignants dans l'aperçu (nécessite d'être connecté)
+- [ ] Tester les pages élèves / enseignants / évaluations / comptabilité / bulletins dans l'aperçu (nécessite d'être connecté)
