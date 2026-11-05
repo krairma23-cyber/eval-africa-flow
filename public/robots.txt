@@ -1,3 +1,12 @@
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /command-center
+Disallow: /command-center/
+Disallow: /onboarding
+Disallow: /set-password
+Disallow: /invitation/
+Disallow: /payment-callback
+Disallow: /parent-portal
 Sitemap: https://evalscolafrica.siteteck.com/sitemap.xml
