@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { fetchAllRows } from "@/lib/fetch-all";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -62,16 +63,21 @@ export default function Assessments() {
   const [selectedClassroom, setSelectedClassroom] = useState<string>("all");
   const [selectedAssessment, setSelectedAssessment] = useState<Assessment | null>(null);
   const [gradesDialogOpen, setGradesDialogOpen] = useState(false);
+  const [assessmentPage, setAssessmentPage] = useState(1);
   const { toast } = useToast();
 
   useEffect(() => {
     fetchAssessments();
   }, []);
 
+  useEffect(() => {
+    setAssessmentPage(1);
+  }, [searchTerm, selectedClassroom]);
+
   const fetchAssessments = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      const { data, error } = await fetchAllRows((from, to) => supabase
         .from("assessments")
         .select(`
           *,
@@ -81,7 +87,9 @@ export default function Assessments() {
             classrooms(name, color)
           )
         `)
-        .order("assessment_date", { ascending: false });
+        .order("assessment_date", { ascending: false })
+        .order("id")
+        .range(from, to));
 
       if (error) throw error;
       setAssessments(data || []);
@@ -111,8 +119,16 @@ export default function Assessments() {
     return matchesSearch && matchesClassroom;
   });
 
+  const ASSESSMENTS_PER_PAGE = 12;
+  const totalAssessmentPages = Math.max(1, Math.ceil(filteredAssessments.length / ASSESSMENTS_PER_PAGE));
+  const safeAssessmentPage = Math.min(assessmentPage, totalAssessmentPages);
+  const pagedAssessments = filteredAssessments.slice(
+    (safeAssessmentPage - 1) * ASSESSMENTS_PER_PAGE,
+    safeAssessmentPage * ASSESSMENTS_PER_PAGE
+  );
+
   // Group assessments by classroom
-  const assessmentsByClassroom = filteredAssessments.reduce((acc, assessment) => {
+  const assessmentsByClassroom = pagedAssessments.reduce((acc, assessment) => {
     const classroomName = assessment.classroom_subjects.classrooms.name;
     if (!acc[classroomName]) {
       acc[classroomName] = [];
@@ -339,6 +355,14 @@ export default function Assessments() {
             </div>
             );
           })}
+        </div>
+      )}
+
+      {totalAssessmentPages > 1 && (
+        <div className="flex items-center justify-center gap-3 text-sm">
+          <Button variant="outline" size="sm" disabled={safeAssessmentPage <= 1} onClick={() => setAssessmentPage(safeAssessmentPage - 1)}>Précédent</Button>
+          <span className="text-muted-foreground">Page {safeAssessmentPage}/{totalAssessmentPages} · {filteredAssessments.length} évaluations</span>
+          <Button variant="outline" size="sm" disabled={safeAssessmentPage >= totalAssessmentPages} onClick={() => setAssessmentPage(safeAssessmentPage + 1)}>Suivant</Button>
         </div>
       )}
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { fetchAllRows } from "@/lib/fetch-all";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -66,7 +67,7 @@ export default function Reports() {
       if (classroomsRes.data) setClassrooms(classroomsRes.data);
 
       // Fetch all assessment results with student, classroom, subject info
-      const { data: results, error } = await supabase
+      const { data: results, error } = await fetchAllRows((from, to) => supabase
         .from('assessment_results')
         .select(`
           *,
@@ -84,7 +85,9 @@ export default function Reports() {
           )
         `)
         .eq('is_absent', false)
-        .not('score', 'is', null);
+        .not('score', 'is', null)
+        .order('id')
+        .range(from, to));
 
       if (error) throw error;
 

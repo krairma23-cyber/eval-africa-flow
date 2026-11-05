@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserX, Save } from "lucide-react";
 import { logError } from "@/lib/logger";
+import { fetchAllRows } from "@/lib/fetch-all";
 
 interface Student {
   id: string;
@@ -69,7 +70,7 @@ export function EnterGradesDialog({
       const classroomId = assessment.classroom_subjects.classroom_id;
 
       // Get students enrolled in the classroom
-      const { data: enrollments, error: enrollmentError } = await supabase
+      const { data: enrollments, error: enrollmentError } = await fetchAllRows((from, to) => supabase
         .from("enrollments")
         .select(`
           student_id,
@@ -81,15 +82,19 @@ export function EnterGradesDialog({
           )
         `)
         .eq("classroom_id", classroomId)
-        .eq("status", "active");
+        .eq("status", "active")
+        .order("student_id")
+        .range(from, to));
 
       if (enrollmentError) throw enrollmentError;
 
       // Get existing results
-      const { data: results, error: resultsError } = await supabase
+      const { data: results, error: resultsError } = await fetchAllRows((from, to) => supabase
         .from("assessment_results")
-        .select("*")
-        .eq("assessment_id", assessmentId);
+        .select("id, student_id, score, is_absent, comment")
+        .eq("assessment_id", assessmentId)
+        .order("id")
+        .range(from, to));
 
       if (resultsError) throw resultsError;
 

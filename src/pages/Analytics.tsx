@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { fetchAllRows } from "@/lib/fetch-all";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -101,11 +102,11 @@ export default function Analytics() {
       ] = await Promise.all([
         supabase.from('students').select('id, created_at', { count: 'exact' }).eq('school_id', profile.school_id),
         supabase.from('teachers').select('id, first_name, last_name', { count: 'exact' }).eq('school_id', profile.school_id),
-        supabase.from('classrooms').select('id, name').limit(100),
-        supabase.from('assessments').select('id, created_at, title').limit(500),
+        fetchAllRows((from, to) => supabase.from('classrooms').select('id, name').order('id').range(from, to)),
+        fetchAllRows((from, to) => supabase.from('assessments').select('id, created_at, title').order('id').range(from, to)),
         supabase.from('subjects').select('id, name', { count: 'exact' }).eq('school_id', profile.school_id),
-        supabase.from('enrollments').select('id, created_at, classroom_id').limit(500),
-        supabase.from('assessment_results').select('id, score, assessment_id').limit(1000)
+        fetchAllRows((from, to) => supabase.from('enrollments').select('id, created_at, classroom_id').order('id').range(from, to)),
+        fetchAllRows((from, to) => supabase.from('assessment_results').select('id, score, assessment_id').order('id').range(from, to))
       ]);
 
       // Calculate students by class
