@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchAllRows } from "@/lib/fetch-all";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,11 +54,12 @@ export function TeacherInvitationsPanel() {
   const [links, setLinks] = useState<Record<string, string>>({});
 
   const load = useCallback(async () => {
-    const { data } = await supabase
+    const { data } = await fetchAllRows((from, to) => supabase
       .from("teacher_invitations" as any)
       .select("id,email,first_name,last_name,status,expires_at,created_at,accepted_at")
       .order("created_at", { ascending: false })
-      .limit(200);
+      .order("id")
+      .range(from, to));
     setItems(((data as unknown as Invitation[]) ?? []).map((i) =>
       i.status === "pending" && new Date(i.expires_at) < new Date() ? { ...i, status: "expired" } : i));
   }, []);
