@@ -9,10 +9,12 @@ const corsHeaders = {
 };
 
 const PaymentSchema = z.object({
-  email: z.string().email().max(254),
-  amount: z.number().positive().max(100000000), // 100M FCFA max
+  // email/amount/planName are ignored: the server uses the account email and the plan price.
+  email: z.string().email().max(254).optional(),
+  amount: z.number().optional(),
   planId: z.string().uuid(),
-  planName: z.string().min(1).max(100),
+  planName: z.string().max(100).optional(),
+  billing_period: z.enum(['monthly', 'yearly']).optional(),
   phone_number: z.string().regex(/^\+?[0-9]{8,15}$/, "Invalid phone number format").optional(),
   callback_url: z.string().url().max(500).optional()
 });
@@ -70,7 +72,45 @@ serve(async (req) => {
       throw error;
     }
 
-    const { email, amount, planId, planName, phone_number, callback_url } = validated;
+    const { planId, phone_number, callback_url } = validated;
+    const billing_period = validated.billing_period ?? 'monthly';
+    const email = user.email;
+    if (!email) {
+      return new Response(JSON.stringify({ error: 'Account email required' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Price always comes from the plan table, never from the browser.
+    const { data: plan } = await supabaseAuth
+      .from('subscription_plans').select('id, name, price_monthly, price_yearly')
+      .eq('id', planId).maybeSingle();
+    if (!plan) {
+      return new Response(JSON.stringify({ error: 'Plan not found' }), {
+        status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const amount = Number(billing_period === 'yearly'
+      ? (plan.price_yearly || plan.price_monthly * 12) : plan.price_monthly);
+    const planName = plan.name;
+    if (!(amount > 0)) {
+      return new Response(JSON.stringify({ error: 'Free plan does not require payment' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Only redirect back to our own sites after payment.
+    const ALLOWED_HOSTS = ['evalscolafrica.siteteck.com', 'evalscol-africa.lovable.app', 'localhost'];
+    const isAllowedUrl = (u?: string | null) => {
+      if (!u) return false;
+      try {
+        const h = new URL(u).hostname;
+        return ALLOWED_HOSTS.includes(h) || h.endsWith('.lovable.app') || h.endsWith('.lovableproject.com');
+      } catch { return false; }
+    };
+    const origin = req.headers.get('origin');
+    const safeCallback = isAllowedUrl(callback_url) ? callback_url
+      : `${isAllowedUrl(origin) ? origin : 'https://evalscolafrica.siteteck.com'}/payment-callback`;
 
     // Initialize payment with Paystack
     // For XOF (West African CFA franc), Paystack expects amounts in kobo (minor units)
@@ -81,11 +121,14 @@ serve(async (req) => {
       email,
       amount: amountInKobo,
       currency: 'XOF',
-      callback_url: callback_url || `${req.headers.get('origin')}/billing?payment=success`,
+      callback_url: safeCallback,
       channels: ['card', 'mobile_money'], // Enable cards and mobile money (Orange, MTN, Moov)
       metadata: {
         plan_id: planId,
         plan_name: planName,
+        user_id: user.id,
+        billing_period,
+        expected_amount: amount,
         custom_fields: [
           {
             display_name: "Plan",
@@ -113,7 +156,7 @@ serve(async (req) => {
     const paystackData = await paystackResponse.json();
 
     if (!paystackResponse.ok) {
-      console.error('Paystack error:', paystackData);
+      console.error('Paystack init error');
       return new Response(
         JSON.stringify({ 
           error: 'Payment initialization failed', 
