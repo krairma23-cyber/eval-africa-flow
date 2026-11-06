@@ -42,7 +42,11 @@ serve(async (req) => {
 
     // Use authenticated user's ID - do NOT trust user_id from request body
     const user_id = user.id;
-    const { payment_reference, plan_id, billing_period } = await req.json();
+    const body = await req.json();
+    const plan_id = typeof body?.plan_id === 'string' ? body.plan_id : '';
+    const billing_period = body?.billing_period === 'yearly' ? 'yearly' : 'monthly';
+    const payment_reference = typeof body?.payment_reference === 'string' && /^[a-zA-Z0-9_-]{6,100}$/.test(body.payment_reference)
+      ? body.payment_reference : null;
 
 
     // Get plan details
@@ -64,6 +68,74 @@ serve(async (req) => {
     const expectedAmount = billing_period === 'yearly' 
       ? (plan.price_yearly || plan.price_monthly * 12) 
       : plan.price_monthly;
+
+    // If it's a paid plan, verify payment with Paystack
+    if (expectedAmount > 0 && payment_reference) {
+      const paystackSecretKey = Deno.env.get('PAYSTACK_SECRET_KEY');
+      if (!paystackSecretKey) {
+        console.error('[activate-subscription] PAYSTACK_SECRET_KEY not configured');
+        return new Response(
+          JSON.stringify({ error: 'Payment system not configured' }),
+          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const paystackVerification = await fetch(
+        `https://api.paystack.co/transaction/verify/${encodeURIComponent(payment_reference)}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${paystackSecretKey}`
+          }
+        }
+      );
+
+      const paymentData = await paystackVerification.json();
+
+      // CRITICAL: Verify payment was successful
+      if (!paymentData.status || paymentData.data?.status !== 'success') {
+        console.error('[activate-subscription] Payment not verified');
+        return new Response(
+          JSON.stringify({
+            error: 'Payment not verified',
+            message: paymentData?.data?.gateway_response || 'Verification failed'
+          }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // CRITICAL: Verify amount matches plan price (Paystack returns amount in centimes/kobo)
+      const expectedAmountInKobo = expectedAmount * 100; // Convert XOF to centimes (100 centimes = 1 XOF)
+      if (paymentData.data.amount !== expectedAmountInKobo) {
+        console.error('[activate-subscription] Amount mismatch');
+        return new Response(
+          JSON.stringify({ error: 'Amount mismatch' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      // The payment must belong to this user, this plan and this billing period.
+      const md = paymentData.data.metadata || {};
+      const paidEmail = String(paymentData.data.customer?.email || '').toLowerCase();
+      if (
+        paymentData.data.currency !== 'XOF' ||
+        md.plan_id !== plan_id ||
+        (md.user_id && md.user_id !== user_id) ||
+        (!md.user_id && paidEmail !== String(user.email || '').toLowerCase()) ||
+        (md.billing_period && md.billing_period !== billing_period)
+      ) {
+        console.error('[activate-subscription] Payment does not match this subscription');
+        return new Response(
+          JSON.stringify({ error: 'Payment does not match this subscription' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+    } else if (expectedAmount > 0 && !payment_reference) {
+      console.error('Payment reference required for paid plan');
+      return new Response(
+        JSON.stringify({ error: 'Payment reference required for paid plan' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     // Idempotency: atomically claim this payment_reference via processed_webhook_events
     // (event_id is UNIQUE). If insert fails with conflict, the reference was already used.
@@ -93,62 +165,6 @@ serve(async (req) => {
     }
 
 
-    // If it's a paid plan, verify payment with Paystack
-    if (expectedAmount > 0 && payment_reference) {
-      const paystackSecretKey = Deno.env.get('PAYSTACK_SECRET_KEY');
-      if (!paystackSecretKey) {
-        console.error('[activate-subscription] PAYSTACK_SECRET_KEY not configured');
-        return new Response(
-          JSON.stringify({ error: 'Payment system not configured' }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-
-      const paystackVerification = await fetch(
-        `https://api.paystack.co/transaction/verify/${encodeURIComponent(payment_reference)}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${paystackSecretKey}`
-          }
-        }
-      );
-
-      const paymentData = await paystackVerification.json();
-
-      // CRITICAL: Verify payment was successful
-      if (!paymentData.status || paymentData.data?.status !== 'success') {
-        console.error('Payment not verified:', paymentData);
-        return new Response(
-          JSON.stringify({
-            error: 'Payment not verified',
-            message: paymentData?.data?.gateway_response || 'Verification failed'
-          }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-
-      // CRITICAL: Verify amount matches plan price (Paystack returns amount in centimes/kobo)
-      const expectedAmountInKobo = expectedAmount * 100; // Convert XOF to centimes (100 centimes = 1 XOF)
-      if (paymentData.data.amount !== expectedAmountInKobo) {
-        console.error('Amount mismatch:', {
-          paidAmountKobo: paymentData.data.amount,
-          expectedAmountKobo: expectedAmountInKobo,
-          paidAmount: paymentData.data.amount / 100,
-          expectedAmount
-        });
-        return new Response(
-          JSON.stringify({ error: 'Amount mismatch' }),
-          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-    } else if (expectedAmount > 0 && !payment_reference) {
-      console.error('Payment reference required for paid plan');
-      return new Response(
-        JSON.stringify({ error: 'Payment reference required for paid plan' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
     // Calculate subscription period
     const now = new Date();
     const periodEnd = new Date(now);
@@ -165,7 +181,7 @@ serve(async (req) => {
         user_id,
         plan_id,
         status: 'active',
-        billing_period: billing_period || 'monthly',
+        billing_period,
         current_period_start: now.toISOString(),
         current_period_end: periodEnd.toISOString(),
         updated_at: now.toISOString()
@@ -186,8 +202,13 @@ serve(async (req) => {
 
     // Configure plan features based on plan_id
     let planFeatures;
+    const planKey = String(plan.name || '').toLowerCase();
+    const tier = expectedAmount === 0 ? 'free-trial'
+      : planKey.includes('enterprise') ? 'enterprise'
+      : planKey.includes('professional') ? 'professional'
+      : planKey.includes('standard') ? 'standard' : 'free-trial';
     
-    if (plan_id === 'free-trial' || plan_id === 'starter' || expectedAmount === 0) {
+    if (tier === 'free-trial') {
       planFeatures = {
         user_id,
         plan_id: 'free-trial',
@@ -208,7 +229,7 @@ serve(async (req) => {
         custom_business_modules: false,
         unlimited_user_accounts: false
       };
-    } else if (plan_id === 'standard') {
+    } else if (tier === 'standard') {
       planFeatures = {
         user_id,
         plan_id: 'standard',
@@ -229,7 +250,7 @@ serve(async (req) => {
         custom_business_modules: false,
         unlimited_user_accounts: false
       };
-    } else if (plan_id === 'professional') {
+    } else if (tier === 'professional') {
       planFeatures = {
         user_id,
         plan_id: 'professional',
@@ -250,7 +271,7 @@ serve(async (req) => {
         custom_business_modules: false,
         unlimited_user_accounts: false
       };
-    } else if (plan_id === 'enterprise') {
+    } else if (tier === 'enterprise') {
       planFeatures = {
         user_id,
         plan_id: 'enterprise',
