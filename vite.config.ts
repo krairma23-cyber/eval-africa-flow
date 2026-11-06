@@ -10,6 +10,14 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  // The live site must not write technical messages to the visitor's console.
+  build: {
+    minify: mode === "production" ? "terser" : "esbuild",
+    terserOptions:
+      mode === "production"
+        ? { compress: { drop_console: true, drop_debugger: true } }
+        : undefined,
+  },
   plugins: [
     react(),
     mode === "development" && componentTagger(),

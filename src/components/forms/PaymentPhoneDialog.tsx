@@ -36,7 +36,6 @@ export function PaymentPhoneDialog({
       const validPhone = phoneSchema.parse(phone);
       // Remove spaces and special characters, keep only digits and + at the start
       const cleanedPhone = validPhone.replace(/\s+/g, '').replace(/[()-]/g, '');
-      console.log("📱 Phone confirmed:", cleanedPhone);
       onConfirm(cleanedPhone);
       setPhone("");
       setError("");
