@@ -3578,6 +3578,7 @@ export type Database = {
         }[]
       }
       automated_security_cleanup: { Args: never; Returns: undefined }
+      cancel_my_subscription: { Args: never; Returns: undefined }
       check_admin_access_rate_limit: {
         Args: {
           p_admin_id: string
