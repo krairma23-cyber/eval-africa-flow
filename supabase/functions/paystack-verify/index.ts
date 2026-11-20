@@ -85,13 +85,24 @@ serve(async (req) => {
       );
     }
 
+    // Only the person who paid (or whose account started the payment) may see it.
+    const md = paystackData.data?.metadata || {};
+    const payerEmail = String(paystackData.data?.customer?.email || '').toLowerCase();
+    const me = String(user.email || '').toLowerCase();
+    const owns = md.user_id === user.id || md.initiated_by === user.id || (!!me && payerEmail === me);
+    if (!owns) {
+      return new Response(JSON.stringify({ error: 'Payment not found' }), {
+        status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
         status: paystackData.data.status,
         amount: paystackData.data.amount / 100,
-        customer: paystackData.data.customer,
-        metadata: paystackData.data.metadata,
+        plan_id: md.plan_id ?? null,
+        student_id: md.student_id ?? null,
         paid_at: paystackData.data.paid_at,
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

@@ -108,7 +108,9 @@ Deno.serve(async (req) => {
     }
 
     // report_card
-    const { data: term } = await admin.from("terms").select("name").eq("id", body.term_id).maybeSingle();
+    const { data: term } = await admin.from("terms").select("name")
+      .eq("id", body.term_id).eq("school_id", schoolId).maybeSingle();
+    if (!term) return json({ error: "Période introuvable" }, 404);
     const rankLine = body.rank && body.total ? `<p>Rang : <strong>${body.rank}${body.rank === 1 ? "er" : "e"}</strong> sur ${body.total} élèves.</p>` : "";
     const ok = await send(s.parent_email, `Bulletin disponible : ${s.first_name} ${s.last_name}`,
       layout(schoolName, s.parent_name, `<p>Le bulletin de <strong>${esc(s.first_name)} ${esc(s.last_name)}</strong> pour la période <strong>${esc(term?.name ?? "en cours")}</strong> est disponible.</p>
