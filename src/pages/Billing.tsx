@@ -426,6 +426,7 @@ export default function Billing() {
         amount: amount,
         planId: selectedPlan.id,
         planName: selectedPlan.name,
+        billing_period: isYearly ? 'yearly' : 'monthly',
         phone_number: phoneNumber,
         callback_url: `${window.location.origin}/payment-callback`
       };

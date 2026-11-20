@@ -109,6 +109,14 @@ serve(async (req) => {
     const metadata = paymentData.metadata;
     const studentId = metadata.student_id;
     const amount = paymentData.amount / 100; // Convert from kobo to FCFA
+    if (
+      paymentData.currency !== 'XOF' || metadata?.payment_type !== 'tuition_fee' || !studentId ||
+      (metadata.expected_amount !== undefined && Number(metadata.expected_amount) !== amount)
+    ) {
+      return new Response(JSON.stringify({ error: 'Payment does not match a tuition payment' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
 
     // Fetch current student payment info
     const { data: student, error: fetchError } = await supabase
@@ -134,7 +142,7 @@ serve(async (req) => {
       (!!callerEmail && !!studentParentEmail && callerEmail === studentParentEmail);
 
     if (!isAuthorized) {
-      console.error('[process-tuition-payment] Unauthorized caller for student', { caller: caller.id, studentId });
+      console.error('[process-tuition-payment] Unauthorized caller');
       return new Response(
         JSON.stringify({ error: 'Forbidden: not authorized for this student' }),
         { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

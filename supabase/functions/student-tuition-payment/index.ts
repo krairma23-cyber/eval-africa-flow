@@ -10,8 +10,8 @@ const corsHeaders = {
 
 const TuitionPaymentSchema = z.object({
   student_id: z.string().uuid(),
-  amount: z.number().positive().max(100000000), // 100M FCFA max
-  parent_email: z.string().email().max(254),
+  amount: z.number().positive().max(100000000).optional(), // capped to the balance due by the server
+  parent_email: z.string().email().max(254).optional(),
   parent_name: z.string().min(1).max(100),
   phone_number: z.string().regex(/^\+?[0-9]{8,15}$/).optional(),
   callback_url: z.string().url().max(500).optional()
@@ -68,7 +68,7 @@ serve(async (req) => {
       throw error;
     }
 
-    const { student_id, amount, parent_email, parent_name, phone_number, callback_url } = validated;
+    const { student_id, parent_name, phone_number, callback_url } = validated;
 
     // Fetch student information
     const { data: student, error: studentError } = await supabase
@@ -105,6 +105,26 @@ serve(async (req) => {
       });
     }
 
+    // Amount is decided by the server: the balance due, or a smaller part of it.
+    const balanceDue = Math.max(0, Number(student.tuition_fee || 0) - Number(student.amount_paid || 0));
+    if (!(balanceDue > 0)) {
+      return new Response(JSON.stringify({ error: 'Nothing left to pay' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const amount = validated.amount ? Math.min(Math.round(validated.amount), balanceDue) : balanceDue;
+    // Paystack messages only go to the parent on record (or the caller), never an arbitrary address.
+    const parent_email = student.parent_email || caller.email;
+    const ALLOWED = (u?: string | null) => {
+      if (!u) return false;
+      try { const h = new URL(u).hostname;
+        return ['evalscolafrica.siteteck.com', 'localhost'].includes(h) || h.endsWith('.lovable.app') || h.endsWith('.lovableproject.com');
+      } catch { return false; }
+    };
+    const origin = req.headers.get('origin');
+    const safeCallback = ALLOWED(callback_url) ? callback_url
+      : `${ALLOWED(origin) ? origin : 'https://evalscolafrica.siteteck.com'}/payment-callback`;
+
     // Initialize payment with Paystack
     const amountInKobo = Math.round(amount * 100);
     
@@ -112,12 +132,14 @@ serve(async (req) => {
       email: parent_email,
       amount: amountInKobo,
       currency: 'XOF',
-      callback_url: callback_url || `${req.headers.get('origin')}/parent-portal?payment=success`,
+      callback_url: safeCallback,
       metadata: {
         student_id: student_id,
         student_name: `${student.first_name} ${student.last_name}`,
         parent_name: parent_name,
         payment_type: 'tuition_fee',
+        expected_amount: amount,
+        initiated_by: caller.id,
         custom_fields: [
           {
             display_name: "Type de paiement",
@@ -154,7 +176,7 @@ serve(async (req) => {
     const paystackData = await paystackResponse.json();
 
     if (!paystackResponse.ok) {
-      console.error('Paystack error:', paystackData);
+      console.error('Paystack init error');
       return new Response(
         JSON.stringify({ 
           error: 'Payment initialization failed', 

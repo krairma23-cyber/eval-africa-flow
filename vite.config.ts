@@ -11,11 +11,13 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   // The live site must not write technical messages to the visitor's console.
+  // Never publish readable source maps; mangle names so the code is hard to read.
   build: {
+    sourcemap: false,
     minify: mode === "production" ? "terser" : "esbuild",
     terserOptions:
       mode === "production"
-        ? { compress: { drop_console: true, drop_debugger: true } }
+        ? { compress: { drop_console: true, drop_debugger: true, passes: 2 }, mangle: { toplevel: true }, format: { comments: false } }
         : undefined,
   },
   plugins: [
