@@ -133,6 +133,12 @@ export default function ParentPortal() {
       // Loading reports securely
       if (!user?.email) return;
 
+      // Mesure l'engagement réel du parent pour le score d'excellence de son école.
+      void supabase.rpc('log_user_activity', {
+        p_action_type: 'PARENT_PORTAL_VIEW',
+        p_action_details: { source: 'parent_portal' },
+      });
+
       // Récupérer les élèves liés à cet email parent
       const { data: students, error: studentsError } = await supabase
         .from('students')

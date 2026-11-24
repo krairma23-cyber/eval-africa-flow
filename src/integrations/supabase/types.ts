@@ -1224,6 +1224,57 @@ export type Database = {
           },
         ]
       }
+      excellence_public_top10: {
+        Row: {
+          academic_year_name: string
+          calculated_at: string
+          city: string | null
+          country: string
+          created_at: string
+          id: string
+          is_annual: boolean
+          rank: number
+          school_name: string
+          scope_country: string | null
+          scope_key: string
+          score: number
+          term_number: number
+          updated_at: string
+        }
+        Insert: {
+          academic_year_name: string
+          calculated_at: string
+          city?: string | null
+          country: string
+          created_at?: string
+          id?: string
+          is_annual?: boolean
+          rank: number
+          school_name: string
+          scope_country?: string | null
+          scope_key: string
+          score: number
+          term_number: number
+          updated_at?: string
+        }
+        Update: {
+          academic_year_name?: string
+          calculated_at?: string
+          city?: string | null
+          country?: string
+          created_at?: string
+          id?: string
+          is_annual?: boolean
+          rank?: number
+          school_name?: string
+          scope_country?: string | null
+          scope_key?: string
+          score?: number
+          term_number?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       grade_levels: {
         Row: {
           created_at: string | null
@@ -2060,6 +2111,95 @@ export type Database = {
           },
         ]
       }
+      school_excellence_scores: {
+        Row: {
+          academic_year_name: string
+          active_parents: number
+          bulletin_rate: number
+          bulletin_score: number
+          calculated_at: string
+          country_rank: number
+          country_schools: number
+          created_at: string
+          expected_reports: number
+          global_rank: number
+          id: string
+          is_annual: boolean
+          on_time_reports: number
+          parent_accounts: number
+          parent_rate: number
+          parent_score: number
+          pedagogical_score: number
+          result_count: number
+          school_id: string
+          success_rate: number
+          term_number: number
+          total_schools: number
+          total_score: number
+          updated_at: string
+        }
+        Insert: {
+          academic_year_name: string
+          active_parents?: number
+          bulletin_rate?: number
+          bulletin_score?: number
+          calculated_at?: string
+          country_rank: number
+          country_schools: number
+          created_at?: string
+          expected_reports?: number
+          global_rank: number
+          id?: string
+          is_annual?: boolean
+          on_time_reports?: number
+          parent_accounts?: number
+          parent_rate?: number
+          parent_score?: number
+          pedagogical_score?: number
+          result_count?: number
+          school_id: string
+          success_rate?: number
+          term_number: number
+          total_schools: number
+          total_score?: number
+          updated_at?: string
+        }
+        Update: {
+          academic_year_name?: string
+          active_parents?: number
+          bulletin_rate?: number
+          bulletin_score?: number
+          calculated_at?: string
+          country_rank?: number
+          country_schools?: number
+          created_at?: string
+          expected_reports?: number
+          global_rank?: number
+          id?: string
+          is_annual?: boolean
+          on_time_reports?: number
+          parent_accounts?: number
+          parent_rate?: number
+          parent_score?: number
+          pedagogical_score?: number
+          result_count?: number
+          school_id?: string
+          success_rate?: number
+          term_number?: number
+          total_schools?: number
+          total_score?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_excellence_scores_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "schools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       school_memberships: {
         Row: {
           created_at: string
@@ -2385,6 +2525,7 @@ export type Database = {
           parent_email: string | null
           parent_name: string | null
           parent_phone: string | null
+          parent_user_id: string | null
           payment_due_date: string | null
           payment_method: string | null
           payment_notes: string | null
@@ -2416,6 +2557,7 @@ export type Database = {
           parent_email?: string | null
           parent_name?: string | null
           parent_phone?: string | null
+          parent_user_id?: string | null
           payment_due_date?: string | null
           payment_method?: string | null
           payment_notes?: string | null
@@ -2447,6 +2589,7 @@ export type Database = {
           parent_email?: string | null
           parent_name?: string | null
           parent_phone?: string | null
+          parent_user_id?: string | null
           payment_due_date?: string | null
           payment_method?: string | null
           payment_notes?: string | null
@@ -4191,6 +4334,7 @@ export type Database = {
         }
         Returns: string
       }
+      refresh_school_excellence_scores: { Args: never; Returns: undefined }
       remind_enable_password_protection: { Args: never; Returns: string }
       request_account_deletion: { Args: { _reason?: string }; Returns: string }
       run_security_audit: {

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import dashboardDecor from "@/assets/decor-dashboard.jpg";
+import { SchoolExcellencePanel } from "@/components/excellence/SchoolExcellencePanel";
 
 
 interface DashboardStats {
@@ -203,6 +204,8 @@ export default function Dashboard() {
               </motion.div>
             ))}
           </div>
+
+          <SchoolExcellencePanel compact />
 
           <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <AIAssistant />

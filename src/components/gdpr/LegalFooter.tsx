@@ -9,6 +9,7 @@ export const LegalFooter = () => {
   return (
     <footer className="border-t border-border bg-background py-4 px-4 text-xs text-muted-foreground">
       <nav className="max-w-6xl mx-auto flex flex-wrap gap-x-5 gap-y-2 justify-center">
+        <Link to="/palmares" className="hover:text-foreground">Palmarès des écoles</Link>
         <Link to="/mentions-legales" className="hover:text-foreground">Mentions légales</Link>
         <Link to="/cgu" className="hover:text-foreground">CGU</Link>
         <Link to="/privacy-policy" className="hover:text-foreground">Confidentialité</Link>

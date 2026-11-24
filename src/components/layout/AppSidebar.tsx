@@ -16,7 +16,8 @@ import {
   Bell,
   UserCog,
   Calendar,
-  TrendingUp
+  TrendingUp,
+  Trophy
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -56,6 +57,7 @@ export function AppSidebar() {
     { title: t('sidebar.reports'), url: "/dashboard/reports", icon: FileText },
     { title: t('sidebar.assignments'), url: "/dashboard/assignments", icon: UserCog },
     { title: t('sidebar.analytics'), url: "/dashboard/analytics", icon: BarChart3 },
+    ...(isAdmin ? [{ title: "Excellence", url: "/dashboard/excellence", icon: Trophy }] : []),
     { title: t('sidebar.billing'), url: "/dashboard/billing", icon: CreditCard },
     { title: "Comptabilité", url: "/dashboard/accounting", icon: Wallet },
     { title: t('sidebar.api'), url: "/dashboard/api", icon: Code },

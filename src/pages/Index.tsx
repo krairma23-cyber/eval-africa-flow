@@ -79,7 +79,7 @@ const COPY = {
     footer: {
       tagline: "La plateforme qui simplifie la gestion scolaire et améliore les performances des écoles africaines.",
       product: "Produit", resources: "Ressources", support: "Support", company: "Entreprise", contact: "Contactez-nous",
-      productLinks: [{ label: "Fonctionnalités", to: "/#fonctionnalites" }, { label: "Tarifs", to: "/pricing" }, { label: "Sécurité", to: "/privacy-policy" }, { label: "Intégrations", to: "/api-docs" }],
+      productLinks: [{ label: "Fonctionnalités", to: "/#fonctionnalites" }, { label: "Tarifs", to: "/pricing" }, { label: "Palmarès", to: "/palmares" }, { label: "Sécurité", to: "/privacy-policy" }, { label: "Intégrations", to: "/api-docs" }],
       resourceLinks: [{ label: "Blog", to: "/about" }, { label: "Guides", to: "/guide" }, { label: "Centre d'aide", to: "/user-manual" }, { label: "Webinaires", to: "/getting-started" }],
       supportLinks: [{ label: "Contact", to: "/dashboard/support" }, { label: "FAQ", to: "/parent-guide" }, { label: "Assistance", to: "/dashboard/support" }, { label: "Devenir partenaire", to: "/about" }],
       companyLinks: [{ label: "À propos", to: "/about" }, { label: "Carrières", to: "/about" }, { label: "Presse", to: "/about" }, { label: "Mentions légales", to: "/mentions-legales" }, { label: "CGU", to: "/cgu" }],
@@ -149,7 +149,7 @@ const COPY = {
     footer: {
       tagline: "The platform that simplifies school management and improves the performance of African schools.",
       product: "Product", resources: "Resources", support: "Support", company: "Company", contact: "Contact us",
-      productLinks: [{ label: "Features", to: "/#fonctionnalites" }, { label: "Pricing", to: "/pricing" }, { label: "Security", to: "/privacy-policy" }, { label: "Integrations", to: "/api-docs" }],
+      productLinks: [{ label: "Features", to: "/#fonctionnalites" }, { label: "Pricing", to: "/pricing" }, { label: "Palmarès", to: "/palmares" }, { label: "Security", to: "/privacy-policy" }, { label: "Integrations", to: "/api-docs" }],
       resourceLinks: [{ label: "Blog", to: "/about" }, { label: "Guides", to: "/guide" }, { label: "Help center", to: "/user-manual" }, { label: "Webinars", to: "/getting-started" }],
       supportLinks: [{ label: "Contact", to: "/dashboard/support" }, { label: "FAQ", to: "/parent-guide" }, { label: "Assistance", to: "/dashboard/support" }, { label: "Become a partner", to: "/about" }],
       companyLinks: [{ label: "About", to: "/about" }, { label: "Careers", to: "/about" }, { label: "Press", to: "/about" }, { label: "Legal notice", to: "/mentions-legales" }, { label: "Terms (CGU)", to: "/cgu" }],
@@ -187,6 +187,7 @@ const Index = () => {
     { label: c.nav.home, to: "/" },
     { label: c.nav.features, to: "/#fonctionnalites" },
     { label: c.nav.pricing, to: "/pricing" },
+    { label: "Palmarès", to: "/palmares" },
     { label: c.nav.demo, to: "/dashboard/support" },
     { label: c.nav.testimonials, to: "/#confiance" },
     { label: c.nav.contact, to: "/about" },

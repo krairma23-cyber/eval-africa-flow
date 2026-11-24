@@ -19,7 +19,7 @@ DECLARE
   scoped_tables text[] := ARRAY[
     'academic_years','accounting_categories','accounting_entries','api_keys',
     'assessment_types','campuses','profiles','programs','school_backups',
-    'school_memberships','students','subjects','support_chat_sessions',
+    'school_memberships','school_excellence_scores','students','subjects','support_chat_sessions',
     'support_tickets','teacher_invitations','teachers','terms','webhooks'];
   -- child tables without school_id: checked through their parent
   child_checks text[][] := ARRAY[

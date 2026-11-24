@@ -49,6 +49,8 @@ const Onboarding = lazyWithRetry(() => import("./pages/Onboarding"), "page:Onboa
 const PitchDeck = lazyWithRetry(() => import("./pages/PitchDeck"), "page:PitchDeck");
 const About = lazyWithRetry(() => import("./pages/About"), "page:About");
 const Pricing = lazyWithRetry(() => import("./pages/Pricing"), "page:Pricing");
+const Palmares = lazyWithRetry(() => import("./pages/Palmares"), "page:Palmares");
+const SchoolExcellence = lazyWithRetry(() => import("./pages/SchoolExcellence"), "page:SchoolExcellence");
 const UserGuide = lazyWithRetry(() => import("./pages/UserGuide"), "page:UserGuide");
 const PaystackDiagnostic = lazyWithRetry(() => import("./pages/PaystackDiagnostic"), "page:PaystackDiagnostic");
 const TuitionPaymentDiagnostic = lazyWithRetry(() => import("./pages/TuitionPaymentDiagnostic"), "page:TuitionPaymentDiagnostic");
@@ -95,6 +97,7 @@ const App = () => (
               <Route path="/invitation/:token" element={<AcceptInvitation />} />
               <Route path="/about" element={<About />} />
               <Route path="/pricing" element={<Pricing />} />
+              <Route path="/palmares" element={<Palmares />} />
               <Route path="/pitch-deck" element={<PitchDeck />} />
               <Route path="/set-password" element={<SetPassword />} />
               <Route path="/onboarding" element={<Onboarding />} />
@@ -130,6 +133,7 @@ const App = () => (
                 <Route path="billing" element={<Billing />} />
                 <Route path="api" element={<ApiManagement />} />
                 <Route path="analytics" element={<Analytics />} />
+                <Route path="excellence" element={<AdminRoute><SchoolExcellence /></AdminRoute>} />
                 <Route path="support" element={<Support />} />
                 <Route path="notifications" element={<Notifications />} />
                 <Route path="privacy" element={<DataPrivacy />} />
