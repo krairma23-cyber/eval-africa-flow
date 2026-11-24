@@ -18,7 +18,8 @@ import {
   Mail,
   Sparkles
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import Seo from "@/components/Seo";
@@ -27,7 +28,20 @@ import { SocialLinks } from "@/components/features/SocialLinks";
 
 export default function About() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { language } = useLanguage();
+
+  useEffect(() => {
+    const id = location.hash.replace("#", "");
+    if (!id) return;
+    const t = window.setTimeout(() => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }, 50);
+    return () => window.clearTimeout(t);
+  }, [location.hash, location.key]);
 
   const problems = language === 'fr' ? [
     {
@@ -587,7 +601,7 @@ export default function About() {
         </section>
 
         {/* Support & Contact */}
-        <section className="mb-16">
+        <section id="contact" className="mb-16 scroll-mt-24">
           <h2 className="text-3xl font-bold mb-8 text-center">{texts.support}</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <Card>

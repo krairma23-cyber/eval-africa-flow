@@ -20,7 +20,7 @@ const COPY = {
   fr: {
     nav: {
       home: "Accueil", features: "Fonctionnalités", pricing: "Tarifs",
-      demo: "Démonstration", testimonials: "Témoignages", contact: "Contact",
+      about: "À propos", demo: "Démonstration", testimonials: "Témoignages", contact: "Contact",
       login: "Se connecter", start: "Commencer gratuitement",
     },
     hero: {
@@ -90,7 +90,7 @@ const COPY = {
   en: {
     nav: {
       home: "Home", features: "Features", pricing: "Pricing",
-      demo: "Demo", testimonials: "Testimonials", contact: "Contact",
+      about: "About", demo: "Demo", testimonials: "Testimonials", contact: "Contact",
       login: "Sign in", start: "Start for free",
     },
     hero: {
@@ -183,14 +183,15 @@ const Index = () => {
   }, [location.hash, location.key]);
   const c = language === "fr" ? COPY.fr : COPY.en;
 
-  const navLinks = [
+  const navLinks: { label: string; to: string; compact?: boolean }[] = [
     { label: c.nav.home, to: "/" },
     { label: c.nav.features, to: "/#fonctionnalites" },
     { label: c.nav.pricing, to: "/pricing" },
     { label: "Palmarès", to: "/palmares" },
-    { label: c.nav.demo, to: "/dashboard/support" },
+    { label: c.nav.about, to: "/about" },
+    { label: c.nav.demo, to: "/dashboard/support", compact: true },
     { label: c.nav.testimonials, to: "/#confiance" },
-    { label: c.nav.contact, to: "/about" },
+    { label: c.nav.contact, to: "/about#contact" },
   ];
 
   return (
@@ -209,12 +210,12 @@ const Index = () => {
               <span className="text-lg font-bold text-foreground">EvalScol Africa</span>
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-6" aria-label="Navigation principale">
+            <nav className="hidden items-center gap-3 lg:flex xl:gap-4" aria-label="Navigation principale">
               {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   to={link.to}
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+                  className={`whitespace-nowrap text-[13px] font-medium text-muted-foreground transition-colors hover:text-primary ${link.compact ? "hidden 2xl:inline" : ""}`}
                 >
                   {link.label}
                 </Link>

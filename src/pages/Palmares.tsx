@@ -34,7 +34,8 @@ const navLinks = [
   { label: "Fonctionnalités", to: "/#fonctionnalites" },
   { label: "Tarifs", to: "/pricing" },
   { label: "Palmarès", to: "/palmares" },
-  { label: "Contact", to: "/about" },
+  { label: "À propos", to: "/about" },
+  { label: "Contact", to: "/about#contact" },
 ];
 
 function RankIcon({ rank, className = "h-5 w-5" }: { rank: number; className?: string }) {
@@ -107,14 +108,14 @@ export default function Palmares() {
             <img src="/logo.png" alt="EvalScol Africa" className="h-10 w-auto object-contain" />
             <span className="hidden text-lg font-bold sm:inline">EvalScol Africa</span>
           </Link>
-          <nav className="hidden items-center gap-6 lg:flex" aria-label="Navigation principale">
+          <nav className="hidden items-center gap-4 lg:flex xl:gap-6" aria-label="Navigation principale">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 to={link.to}
-                className={link.to === "/palmares"
-                  ? "text-sm font-semibold text-primary"
-                  : "text-sm font-medium text-muted-foreground transition-colors hover:text-primary"}
+                className={`whitespace-nowrap text-[13px] ${link.to === "/palmares"
+                  ? "font-semibold text-primary"
+                  : "font-medium text-muted-foreground transition-colors hover:text-primary"}`}
               >
                 {link.label}
               </Link>
