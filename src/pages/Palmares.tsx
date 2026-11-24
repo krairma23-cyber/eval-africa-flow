@@ -35,7 +35,6 @@ const navLinks = [
   { label: "Tarifs", to: "/pricing" },
   { label: "Palmarès", to: "/palmares" },
   { label: "À propos", to: "/about" },
-  { label: "Contact", to: "/about#contact" },
 ];
 
 function RankIcon({ rank, className = "h-5 w-5" }: { rank: number; className?: string }) {

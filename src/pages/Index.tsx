@@ -191,7 +191,6 @@ const Index = () => {
     { label: c.nav.about, to: "/about" },
     { label: c.nav.demo, to: "/dashboard/support", compact: true },
     { label: c.nav.testimonials, to: "/#confiance" },
-    { label: c.nav.contact, to: "/about#contact" },
   ];
 
   return (
