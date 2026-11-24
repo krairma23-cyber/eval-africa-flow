@@ -213,6 +213,43 @@ export default function Reports() {
     return <Badge variant="destructive">Insuffisant</Badge>;
   };
 
+  const recordReportCardGeneration = async (grade: StudentGrade) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: existing, error: lookupError } = await supabase
+        .from('report_cards')
+        .select('id')
+        .eq('student_id', grade.student_id)
+        .eq('term_id', grade.term_id)
+        .limit(1);
+
+      if (lookupError) throw lookupError;
+      if (existing && existing.length > 0) return;
+
+      const { error: insertError } = await supabase.from('report_cards').insert({
+        student_id: grade.student_id,
+        classroom_id: grade.classroom_id,
+        term_id: grade.term_id,
+        overall_average: grade.overall_average,
+        rank_in_class: grade.rank,
+        total_students: grade.total_students,
+        generated_by: user.id,
+        generated_at: new Date().toISOString(),
+      });
+
+      if (insertError) throw insertError;
+    } catch (error) {
+      const { logError } = await import('@/lib/logger');
+      await logError('Failed to record report card generation', error, {
+        component: 'Reports',
+        action: 'RECORD_REPORT_CARD',
+        metadata: { studentId: grade.student_id, termId: grade.term_id },
+      });
+    }
+  };
+
   const exportToPDF = async (grade: StudentGrade) => {
     try {
       const doc = new jsPDF();
@@ -342,6 +379,7 @@ export default function Reports() {
       
       // Save PDF
       doc.save(`Bulletin_${grade.student_first_name}_${grade.student_last_name}_${grade.term_name}.pdf`);
+      await recordReportCardGeneration(grade);
       
       toast({
         title: "Succès",
@@ -499,6 +537,7 @@ export default function Reports() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      await recordReportCardGeneration(grade);
 
       toast({
         title: "Succès",
