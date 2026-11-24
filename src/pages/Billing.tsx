@@ -181,7 +181,7 @@ export default function Billing() {
         id: plan.id,
         name: plan.name,
         price_monthly: parseFloat(plan.price_monthly),
-        price_yearly: plan.price_yearly ? parseFloat(plan.price_yearly) : parseFloat(plan.price_monthly) * 10,
+        price_yearly: plan.price_yearly ? parseFloat(plan.price_yearly) : parseFloat(plan.price_monthly) * 11,
         features: Array.isArray(plan.features) ? plan.features : [],
         searches_limit: plan.searches_limit || 100,
         api_calls_limit: plan.api_calls_limit || 1000,
@@ -230,7 +230,7 @@ export default function Billing() {
           id: 'standard',
           name: 'Standard',
           price_monthly: 29990,
-          price_yearly: 299900,
+          price_yearly: 329890,
           features: [
             'Jusqu\'à 300 élèves',
             'Gestion complète élèves & enseignants',
@@ -249,7 +249,7 @@ export default function Billing() {
           id: 'professional',
           name: 'Professional',
           price_monthly: 59990,
-          price_yearly: 599900,
+          price_yearly: 659890,
           features: [
             'Jusqu\'à 1000 élèves',
             'Toutes les fonctionnalités Standard',
@@ -269,7 +269,7 @@ export default function Billing() {
           id: 'enterprise',
           name: 'Enterprise',
           price_monthly: 149990,
-          price_yearly: 1499900,
+          price_yearly: 1649890,
           features: [
             'Élèves illimités',
             'Toutes les fonctionnalités Professional',
@@ -621,7 +621,7 @@ export default function Billing() {
                 <Zap className="h-8 w-8 mx-auto text-yellow-500 mb-2" />
                 <h3 className="font-semibold">Économies annuelles</h3>
                 <p className="text-sm text-muted-foreground">Passez au plan annuel</p>
-                <p className="text-sm font-medium text-green-600">-20%</p>
+                <p className="text-sm font-medium text-primary">1 mois offert</p>
               </CardContent>
             </Card>
 
@@ -781,7 +781,7 @@ export default function Billing() {
               </Button>
               <span className={isYearly ? "font-semibold" : "text-muted-foreground"}>
                 Annuel
-                <Badge variant="secondary" className="ml-2">-20%</Badge>
+                <Badge variant="secondary" className="ml-2">1 mois offert</Badge>
               </span>
             </div>
           </div>

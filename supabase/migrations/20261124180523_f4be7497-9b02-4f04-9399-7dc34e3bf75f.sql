@@ -1,0 +1,1 @@
+UPDATE public.subscription_plans SET price_yearly = price_monthly * 11 WHERE price_monthly > 0;

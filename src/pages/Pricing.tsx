@@ -39,7 +39,7 @@ export default function Pricing() {
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-accent/10">
       <Seo
         title="Tarifs EvalScol Africa | Plans gestion scolaire"
-        description="Découvrez les tarifs EvalScol Africa : essai gratuit 14 jours, Standard 29 990 FCFA/mois, Professional 59 990 FCFA/mois, Enterprise dès 149 990 FCFA/mois. -20% en annuel."
+        description="Découvrez les tarifs EvalScol Africa : essai gratuit 14 jours, Standard 29 990 FCFA/mois, Professional 59 990 FCFA/mois, Enterprise dès 149 990 FCFA/mois. Annuel : 1 mois offert. Offre de lancement pour les 5 premières écoles."
         path="/pricing"
         jsonLd={productJsonLd}
       />
@@ -65,11 +65,18 @@ export default function Pricing() {
           </div>
         </header>
 
+        <div role="note" className="mb-8 rounded-2xl border-2 border-primary bg-primary text-primary-foreground px-4 py-5 text-center shadow-lg">
+          <p className="text-lg sm:text-2xl font-bold flex items-center justify-center gap-2 flex-wrap">
+            <Sparkles className="h-6 w-6" /> Offre de lancement : 1 mois offert pour les 5 premières écoles abonnées !
+          </p>
+          <p className="text-sm sm:text-base opacity-90 mt-1">Places limitées — abonnez-vous dès maintenant pour en profiter.</p>
+        </div>
+
         <div className="flex items-center justify-center gap-4 mb-10">
           <span className={!isYearly ? "font-semibold" : "text-muted-foreground"}>Mensuel</span>
           <Switch checked={isYearly} onCheckedChange={setIsYearly} aria-label="Facturation annuelle" />
           <span className={isYearly ? "font-semibold" : "text-muted-foreground"}>
-            Annuel <Badge variant="secondary" className="ml-2">-20%</Badge>
+            Annuel <Badge variant="secondary" className="ml-2">1 mois offert</Badge>
           </span>
         </div>
 

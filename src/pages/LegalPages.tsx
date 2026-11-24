@@ -161,7 +161,8 @@ export const TermsOfUse = () => (
           <li><strong>Standard</strong> — 29 990 FCFA par mois, jusqu'à 300 élèves.</li>
           <li><strong>Professional</strong> — 59 990 FCFA par mois, jusqu'à 1000 élèves, incluant l'AI Assistant, les analyses avancées, l'API et les webhooks.</li>
           <li><strong>Enterprise</strong> — à partir de 149 990 FCFA par mois, élèves illimités, multi-établissements et support 24/7.</li>
-          <li>Une facturation annuelle est proposée avec une remise affichée de 20 % (Standard 299 900 FCFA, Professional 599 900 FCFA, Enterprise 1 499 900 FCFA par an).</li>
+          <li>Une facturation annuelle est proposée : 11 mois payés pour 12 mois d'accès, soit 1 mois offert (Standard 329 890 FCFA, Professional 659 890 FCFA, Enterprise 1 649 890 FCFA par an).</li>
+            <li>Offre de lancement : 1 mois offert pour les 5 premières écoles abonnées, dans la limite de ces 5 places, selon l'ordre de souscription confirmée.</li>
         </ul>
         <p>Les tarifs sont indiqués en francs CFA (XOF), hors taxes applicables, et peuvent être révisés. Toute révision est communiquée au moins 30 jours avant son entrée en vigueur et ne s'applique qu'à la période de facturation suivante.</p>
         <p>À l'issue de l'essai gratuit, aucun prélèvement n'est effectué sans souscription volontaire à une offre payante.</p>
