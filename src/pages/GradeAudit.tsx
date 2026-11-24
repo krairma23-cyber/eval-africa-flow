@@ -44,7 +44,7 @@ export default function GradeAudit() {
       let query = supabase.from("grade_audit_log").select("*", { count: "exact" }).order("created_at", { ascending: false }).order("id");
       if (term !== "all") query = query.eq("term_id", term);
       if (event !== "all") query = query.eq("event_type", event);
-      if (flagged) query = query.neq("flags", "{}");
+      if (flagged) query = query.neq("flags", []);
       if (fromDate) query = query.gte("created_at", `${fromDate}T00:00:00Z`);
       if (toDate) query = query.lte("created_at", `${toDate}T23:59:59.999999Z`);
       const needle = search.trim().replace(/[,%().\\_]/g, "");
