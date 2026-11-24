@@ -3578,6 +3578,35 @@ export type Database = {
         }[]
       }
       automated_security_cleanup: { Args: never; Returns: undefined }
+      calculate_school_excellence: {
+        Args: { p_term_number: number }
+        Returns: {
+          academic_year_name: string
+          active_parents: number
+          bulletin_rate: number
+          bulletin_score: number
+          calculated_at: string
+          city: string
+          country: string
+          country_rank: number
+          country_schools: number
+          expected_reports: number
+          global_rank: number
+          is_annual: boolean
+          on_time_reports: number
+          parent_accounts: number
+          parent_rate: number
+          parent_score: number
+          pedagogical_score: number
+          result_count: number
+          school_id: string
+          school_name: string
+          success_rate: number
+          term_number: number
+          total_schools: number
+          total_score: number
+        }[]
+      }
       check_admin_access_rate_limit: {
         Args: {
           p_admin_id: string
@@ -3749,7 +3778,55 @@ export type Database = {
           total_feedback: number
         }[]
       }
+      get_my_school_excellence: {
+        Args: { p_term_number: number }
+        Returns: {
+          academic_year_name: string
+          active_parents: number
+          bulletin_rate: number
+          bulletin_score: number
+          calculated_at: string
+          city: string
+          country: string
+          country_rank: number
+          country_schools: number
+          expected_reports: number
+          global_rank: number
+          is_annual: boolean
+          on_time_reports: number
+          parent_accounts: number
+          parent_rate: number
+          parent_score: number
+          pedagogical_score: number
+          result_count: number
+          school_name: string
+          success_rate: number
+          term_number: number
+          total_schools: number
+          total_score: number
+        }[]
+      }
       get_owner_column: { Args: { p_table: unknown }; Returns: string }
+      get_public_excellence_countries: {
+        Args: never
+        Returns: {
+          country: string
+        }[]
+      }
+      get_public_excellence_top10: {
+        Args: { p_country?: string; p_term_number: number }
+        Returns: {
+          academic_year_name: string
+          calculated_at: string
+          city: string
+          country: string
+          is_annual: boolean
+          rank: number
+          school_name: string
+          score: number
+          term_number: number
+        }[]
+      }
       get_public_registration_stats: {
         Args: never
         Returns: {
