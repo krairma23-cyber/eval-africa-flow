@@ -124,7 +124,7 @@ export const TermsOfUse = () => (
         <Summary
           items={[
             "EvalScol Africa est un service en ligne d'abonnement, sans engagement, réservé aux établissements scolaires et à leur personnel.",
-            "L'essai Découverte est gratuit pendant 30 jours (jusqu'à 100 élèves) et sans carte bancaire.",
+            "L'essai gratuit dure 14 jours (jusqu'à 50 élèves) et sans carte bancaire.",
             "Vous restez responsable de toutes les données d'élèves saisies ; EvalScol les traite uniquement pour fournir le service.",
             "Les paiements sont effectués par Paystack (mobile money et cartes). Vous pouvez résilier à tout moment depuis l'espace Facturation.",
             "Le service est fourni avec nos meilleurs efforts de disponibilité ; aucun résultat n'est garanti.",
@@ -157,11 +157,11 @@ export const TermsOfUse = () => (
       <Section id="cgu-offres" title="4. Offres, essai et tarifs">
         <p>Les offres et tarifs affichés sur la page Tarifs au moment de la commande s'appliquent. À la date de mise à jour des présentes :</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li><strong>Découverte</strong> — essai gratuit de 30 jours, sans carte bancaire, jusqu'à 100 élèves et 1 portail parent offert.</li>
-          <li><strong>Essentiel École</strong> — 50 000 FCFA par an, élèves illimités côté école ; portails parents facturés 2 500 FCFA par parent et par an.</li>
-          <li><strong>Pro IA</strong> — 120 000 FCFA par an, incluant l'AI Assistant, les analyses avancées, l'API et les webhooks.</li>
-          <li><strong>Secondaire Premium IA</strong> — 120 000 FCFA par an, avec portail parent premium à 3 000 FCFA par parent et par an.</li>
-          <li><strong>Groupe Scolaire</strong> — sur devis, à partir de 250 000 FCFA par an, avec engagement de disponibilité renforcé.</li>
+          <li><strong>Gratuit (Essai)</strong> — essai gratuit de 14 jours, jusqu'à 50 élèves.</li>
+          <li><strong>Standard</strong> — 29 990 FCFA par mois, jusqu'à 300 élèves.</li>
+          <li><strong>Professional</strong> — 59 990 FCFA par mois, jusqu'à 1000 élèves, incluant l'AI Assistant, les analyses avancées, l'API et les webhooks.</li>
+          <li><strong>Enterprise</strong> — à partir de 149 990 FCFA par mois, élèves illimités, multi-établissements et support 24/7.</li>
+          <li>Une facturation annuelle est proposée avec une remise affichée de 20 % (Standard 299 900 FCFA, Professional 599 900 FCFA, Enterprise 1 499 900 FCFA par an).</li>
         </ul>
         <p>Les tarifs sont indiqués en francs CFA (XOF), hors taxes applicables, et peuvent être révisés. Toute révision est communiquée au moins 30 jours avant son entrée en vigueur et ne s'applique qu'à la période de facturation suivante.</p>
         <p>À l'issue de l'essai gratuit, aucun prélèvement n'est effectué sans souscription volontaire à une offre payante.</p>
