@@ -331,6 +331,7 @@ export type Database = {
           graded_by: string | null
           id: string
           is_absent: boolean | null
+          locked_at: string
           score: number | null
           student_id: string
           updated_at: string | null
@@ -345,6 +346,7 @@ export type Database = {
           graded_by?: string | null
           id?: string
           is_absent?: boolean | null
+          locked_at?: string
           score?: number | null
           student_id: string
           updated_at?: string | null
@@ -359,6 +361,7 @@ export type Database = {
           graded_by?: string | null
           id?: string
           is_absent?: boolean | null
+          locked_at?: string
           score?: number | null
           student_id?: string
           updated_at?: string | null
@@ -1272,6 +1275,81 @@ export type Database = {
           score?: number
           term_number?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      grade_audit_log: {
+        Row: {
+          actor_id: string | null
+          actor_name: string
+          assessment_id: string | null
+          assessment_title: string | null
+          created_at: string
+          event_type: string
+          flags: string[]
+          id: string
+          max_score: number | null
+          new_absent: boolean | null
+          new_comment: string | null
+          new_score: number | null
+          old_absent: boolean | null
+          old_comment: string | null
+          old_score: number | null
+          reason: string
+          result_id: string | null
+          school_id: string
+          student_id: string | null
+          student_name: string | null
+          term_id: string
+          term_name: string
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_name: string
+          assessment_id?: string | null
+          assessment_title?: string | null
+          created_at?: string
+          event_type: string
+          flags?: string[]
+          id?: string
+          max_score?: number | null
+          new_absent?: boolean | null
+          new_comment?: string | null
+          new_score?: number | null
+          old_absent?: boolean | null
+          old_comment?: string | null
+          old_score?: number | null
+          reason: string
+          result_id?: string | null
+          school_id: string
+          student_id?: string | null
+          student_name?: string | null
+          term_id: string
+          term_name: string
+        }
+        Update: {
+          actor_id?: string | null
+          actor_name?: string
+          assessment_id?: string | null
+          assessment_title?: string | null
+          created_at?: string
+          event_type?: string
+          flags?: string[]
+          id?: string
+          max_score?: number | null
+          new_absent?: boolean | null
+          new_comment?: string | null
+          new_score?: number | null
+          old_absent?: boolean | null
+          old_comment?: string | null
+          old_score?: number | null
+          reason?: string
+          result_id?: string | null
+          school_id?: string
+          student_id?: string | null
+          student_name?: string | null
+          term_id?: string
+          term_name?: string
         }
         Relationships: []
       }
@@ -3027,6 +3105,8 @@ export type Database = {
           academic_year_id: string
           created_at: string | null
           end_date: string
+          grades_closed_at: string | null
+          grades_closed_by: string | null
           id: string
           is_current: boolean | null
           name: string
@@ -3039,6 +3119,8 @@ export type Database = {
           academic_year_id: string
           created_at?: string | null
           end_date: string
+          grades_closed_at?: string | null
+          grades_closed_by?: string | null
           id?: string
           is_current?: boolean | null
           name: string
@@ -3051,6 +3133,8 @@ export type Database = {
           academic_year_id?: string
           created_at?: string | null
           end_date?: string
+          grades_closed_at?: string | null
+          grades_closed_by?: string | null
           id?: string
           is_current?: boolean | null
           name?: string
@@ -3823,6 +3907,7 @@ export type Database = {
       cleanup_old_event_registrations: { Args: never; Returns: number }
       cleanup_old_security_data: { Args: never; Returns: undefined }
       cleanup_security_logs: { Args: never; Returns: undefined }
+      close_term_grades: { Args: { p_term_id: string }; Returns: undefined }
       create_secure_otp: {
         Args: { p_otp_plain: string; p_user_id: string }
         Returns: string
@@ -4349,6 +4434,10 @@ export type Database = {
       }
       safe_to_mark_public: { Args: { p_table: unknown }; Returns: boolean }
       same_school_admin: { Args: { _target_user_id: string }; Returns: boolean }
+      save_assessment_grades: {
+        Args: { p_assessment_id: string; p_grades: Json }
+        Returns: number
+      }
       secure_admin_access_customer_data: {
         Args: {
           p_access_reason: string
