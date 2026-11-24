@@ -94,7 +94,7 @@ export default function Reports() {
       // Group results by student and term
       const groupedGrades = new Map<string, StudentGrade>();
 
-      results?.forEach((result: any) => {
+      results?.forEach((result) => {
         const key = `${result.students.id}-${result.assessments.terms.id}`;
         
         if (!groupedGrades.has(key)) {
@@ -372,7 +372,7 @@ export default function Reports() {
       });
       
       // Footer
-      const finalY = (doc as any).lastAutoTable.finalY || 150;
+      const finalY = (doc as jsPDF & { lastAutoTable?: { finalY: number } }).lastAutoTable?.finalY || 150;
       doc.setFontSize(8);
       doc.setFont("helvetica", "normal");
       doc.text(`Généré le ${new Date().toLocaleDateString("fr-FR")}`, 20, finalY + 15);

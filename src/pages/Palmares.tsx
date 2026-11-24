@@ -43,6 +43,10 @@ function RankIcon({ rank, className = "h-5 w-5" }: { rank: number; className?: s
   return <Award className={className} aria-hidden="true" />;
 }
 
+function displaySchoolName(name: string): string {
+  return name.trim() || "École participante";
+}
+
 export default function Palmares() {
   const [term, setTerm] = useState(getDefaultExcellenceTerm());
   const [country, setCountry] = useState("ALL");
@@ -247,7 +251,7 @@ export default function Palmares() {
                         </div>
                         <span className="text-3xl font-bold text-muted-foreground">#{entry.rank}</span>
                       </div>
-                      <h3 className="text-xl font-bold leading-snug">{entry.school_name}</h3>
+                      <h3 className="text-xl font-bold leading-snug">{displaySchoolName(entry.school_name)}</h3>
                       <p className="mt-2 text-sm text-muted-foreground">{[entry.city, entry.country].filter(Boolean).join(" · ")}</p>
                       <div className="mt-5 flex flex-wrap gap-2">
                         <Badge variant="secondary"><ShieldCheck className="mr-1 h-3.5 w-3.5" /> Lauréat officiel</Badge>
@@ -268,7 +272,7 @@ export default function Palmares() {
                     <article key={`${entry.rank}-${entry.school_name}`} className="grid grid-cols-[3rem_1fr_auto] items-center gap-3 border-b border-border p-4 last:border-0 sm:grid-cols-[4rem_1fr_14rem_auto] sm:px-6">
                       <span className="text-xl font-bold text-muted-foreground">#{entry.rank}</span>
                       <div className="min-w-0">
-                        <h3 className="truncate font-semibold">{entry.school_name}</h3>
+                        <h3 className="truncate font-semibold">{displaySchoolName(entry.school_name)}</h3>
                         <p className="truncate text-xs text-muted-foreground sm:hidden">{entry.country}</p>
                       </div>
                       <div className="hidden sm:block">
