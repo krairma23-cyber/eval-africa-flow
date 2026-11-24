@@ -1,10 +1,11 @@
 # Roadmap
 
 ## Verrouillage des notes
-- [ ] Verrouiller les notes en base et imposer une correction motivée par la direction
-- [ ] Enregistrer un audit immuable et isolé par école, avec alertes de changements suspects
-- [ ] Adapter la saisie, ajouter le journal de direction et la clôture de période
-- [ ] Tester les règles de verrouillage, d’audit et d’isolation
+- [x] Verrouiller les notes en base et imposer une correction motivée par la direction
+- [x] Enregistrer un audit immuable et isolé par école, avec alertes de changements suspects
+- [x] Adapter la saisie, ajouter le journal de direction et la clôture de période
+- [x] Tester les règles de verrouillage, d’audit et d’isolation (tests serveur réussis, dix écoles)
+- [ ] Vérifier la saisie, les corrections et le journal dans une session direction (session externe indisponible)
 
 ## Terminé
 - [x] Calculer les scores réels par école et par trimestre (50/25/25), avec palmarès annuel au 3e trimestre

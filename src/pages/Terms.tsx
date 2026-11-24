@@ -30,7 +30,8 @@ export default function Terms() {
   const [terms, setTerms] = useState<Term[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
-  const { isAdmin } = useRole();
+  const { roles } = useRole();
+  const isAdmin = roles.includes("admin");
   const [closingTerm, setClosingTerm] = useState<Term | null>(null);
   const [closing, setClosing] = useState(false);
 

@@ -13,6 +13,7 @@ import { logError } from "@/lib/logger";
 import { fetchAllRows } from "@/lib/fetch-all";
 import { useRole } from "@/hooks/useRole";
 import { GradeValue, gradeChanged, gradePayload, termGradesClosed } from "@/lib/grade-security";
+import { ZodError } from "zod";
 
 interface Student {
   id: string;
@@ -44,7 +45,8 @@ export function EnterGradesDialog({
   const [corrections, setCorrections] = useState<Record<string, boolean>>({});
   const [reasons, setReasons] = useState<Record<string, string>>({});
   const [closed, setClosed] = useState(false);
-  const { isAdmin, loading: roleLoading } = useRole();
+  const { roles, loading: roleLoading } = useRole();
+  const isAdmin = roles.includes("admin");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -112,7 +114,7 @@ export function EnterGradesDialog({
         
         return {
           ...student,
-          result: result || null,
+          result: result ? { ...result, is_absent: Boolean(result.is_absent) } : null,
         };
       });
 
@@ -234,7 +236,7 @@ export function EnterGradesDialog({
       });
       toast({
         title: "Erreur",
-        description: error instanceof Error ? error.message : (error as { message?: string })?.message || "Impossible d’enregistrer les notes",
+        description: error instanceof ZodError ? "Vérifiez les notes et renseignez un motif pour chaque correction." : error instanceof Error ? error.message : (error as { message?: string })?.message || "Impossible d’enregistrer les notes",
         variant: "destructive",
       });
     } finally {
