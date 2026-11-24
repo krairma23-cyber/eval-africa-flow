@@ -1,0 +1,12 @@
+CREATE SCHEMA IF NOT EXISTS private;
+REVOKE ALL ON SCHEMA private FROM PUBLIC,anon;
+GRANT USAGE ON SCHEMA private TO authenticated;
+ALTER FUNCTION public.save_assessment_grades(uuid,jsonb) SET SCHEMA private;
+ALTER FUNCTION public.close_term_grades(uuid) SET SCHEMA private;
+CREATE FUNCTION public.save_assessment_grades(p_assessment_id uuid,p_grades jsonb) RETURNS integer LANGUAGE sql SECURITY INVOKER SET search_path=public AS $$ SELECT private.save_assessment_grades(p_assessment_id,p_grades); $$;
+REVOKE ALL ON FUNCTION public.save_assessment_grades(uuid,jsonb) FROM PUBLIC,anon;
+GRANT EXECUTE ON FUNCTION public.save_assessment_grades(uuid,jsonb) TO authenticated;
+CREATE FUNCTION public.close_term_grades(p_term_id uuid) RETURNS void LANGUAGE sql SECURITY INVOKER SET search_path=public AS $$ SELECT private.close_term_grades(p_term_id); $$;
+REVOKE ALL ON FUNCTION public.close_term_grades(uuid) FROM PUBLIC,anon;
+GRANT EXECUTE ON FUNCTION public.close_term_grades(uuid) TO authenticated;
+DROP INDEX public.assessment_results_one_per_student;

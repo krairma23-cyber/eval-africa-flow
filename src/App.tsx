@@ -51,6 +51,7 @@ const About = lazyWithRetry(() => import("./pages/About"), "page:About");
 const Pricing = lazyWithRetry(() => import("./pages/Pricing"), "page:Pricing");
 const Palmares = lazyWithRetry(() => import("./pages/Palmares"), "page:Palmares");
 const SchoolExcellence = lazyWithRetry(() => import("./pages/SchoolExcellence"), "page:SchoolExcellence");
+const GradeAudit = lazyWithRetry(() => import("./pages/GradeAudit"), "page:GradeAudit");
 const UserGuide = lazyWithRetry(() => import("./pages/UserGuide"), "page:UserGuide");
 const PaystackDiagnostic = lazyWithRetry(() => import("./pages/PaystackDiagnostic"), "page:PaystackDiagnostic");
 const TuitionPaymentDiagnostic = lazyWithRetry(() => import("./pages/TuitionPaymentDiagnostic"), "page:TuitionPaymentDiagnostic");
@@ -134,6 +135,7 @@ const App = () => (
                 <Route path="api" element={<ApiManagement />} />
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="excellence" element={<AdminRoute><SchoolExcellence /></AdminRoute>} />
+                <Route path="grade-audit" element={<AdminRoute><GradeAudit /></AdminRoute>} />
                 <Route path="support" element={<Support />} />
                 <Route path="notifications" element={<Notifications />} />
                 <Route path="privacy" element={<DataPrivacy />} />

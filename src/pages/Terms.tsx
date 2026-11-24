@@ -3,11 +3,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Plus } from "lucide-react";
+import { Calendar, Plus, LockKeyhole } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddTermDialog } from "@/components/forms/AddTermDialog";
 import { EditTermDialog } from "@/components/forms/EditTermDialog";
+import { useRole } from "@/hooks/useRole";
+import { termGradesClosed } from "@/lib/grade-security";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 
 interface Term {
   id: string;
@@ -17,6 +20,7 @@ interface Term {
   end_date: string;
   is_current: boolean;
   academic_year_id: string;
+  grades_closed_at: string | null;
   academic_years: {
     name: string;
   };
@@ -26,6 +30,20 @@ export default function Terms() {
   const [terms, setTerms] = useState<Term[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { isAdmin } = useRole();
+  const [closingTerm, setClosingTerm] = useState<Term | null>(null);
+  const [closing, setClosing] = useState(false);
+
+  const closeGrades = async () => {
+    if (!closingTerm || closing) return;
+    setClosing(true);
+    const { error } = await supabase.rpc("close_term_grades", { p_term_id: closingTerm.id });
+    setClosing(false);
+    if (error) { toast({ title: "Clôture impossible", description: error.message, variant: "destructive" }); return; }
+    toast({ title: "Notes de la période clôturées" });
+    setClosingTerm(null);
+    fetchTerms();
+  };
 
   useEffect(() => {
     fetchTerms();
@@ -133,18 +151,23 @@ export default function Terms() {
                 <Badge variant="secondary">
                   Trimestre {term.term_number}
                 </Badge>
+                {termGradesClosed(term) && <Badge variant="outline" className="ml-2"><LockKeyhole className="h-3 w-3 mr-1" />Notes clôturées</Badge>}
                 <div className="pt-2">
                   <EditTermDialog term={term} onTermUpdated={fetchTerms}>
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button variant="outline" size="sm" className="w-full" disabled={termGradesClosed(term)}>
                       Modifier
                     </Button>
                   </EditTermDialog>
+                  {isAdmin && !termGradesClosed(term) && <Button variant="outline" size="sm" className="w-full mt-2" onClick={() => setClosingTerm(term)}><LockKeyhole className="h-4 w-4 mr-2" />Clôturer les notes</Button>}
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
       )}
+      <AlertDialog open={Boolean(closingTerm)} onOpenChange={open => { if (!open && !closing) setClosingTerm(null); }}>
+        <AlertDialogContent><AlertDialogHeader><AlertDialogTitle>Clôturer {closingTerm?.name} ?</AlertDialogTitle><AlertDialogDescription>Aucune nouvelle note ne pourra être saisie pour cette période. La clôture est définitive. Les corrections resteront réservées à la direction, avec motif et historique.</AlertDialogDescription></AlertDialogHeader><AlertDialogFooter><AlertDialogCancel disabled={closing}>Annuler</AlertDialogCancel><AlertDialogAction disabled={closing} onClick={event => { event.preventDefault(); closeGrades(); }}>{closing ? "Clôture…" : "Clôturer définitivement"}</AlertDialogAction></AlertDialogFooter></AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

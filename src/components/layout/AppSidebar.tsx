@@ -58,6 +58,7 @@ export function AppSidebar() {
     { title: t('sidebar.assignments'), url: "/dashboard/assignments", icon: UserCog },
     { title: t('sidebar.analytics'), url: "/dashboard/analytics", icon: BarChart3 },
     ...(isAdmin ? [{ title: "Excellence", url: "/dashboard/excellence", icon: Trophy }] : []),
+    ...(isAdmin ? [{ title: "Journal des notes", url: "/dashboard/grade-audit", icon: Shield }] : []),
     { title: t('sidebar.billing'), url: "/dashboard/billing", icon: CreditCard },
     { title: "Comptabilité", url: "/dashboard/accounting", icon: Wallet },
     { title: t('sidebar.api'), url: "/dashboard/api", icon: Code },

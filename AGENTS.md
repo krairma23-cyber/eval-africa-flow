@@ -5,3 +5,4 @@
 - Run `scripts/test-rls.sh` (supabase/tests/rls_school_isolation.sql) after any RLS change; add new school-scoped tables to its lists — why: catches cross-school data leaks automatically.
 - Platform-wide data (support chats, FAQs) is managed only by `is_super_admin`, never by the school `admin` role — why: `admin` is per-school.
 - Excellence rankings use nightly snapshots split between private per-school scores and a separate public Top 10 table — why: public readers must never query the private cross-school score data.
+- Grades lock on first save; use the atomic grade RPC for initial entries and school-admin corrections with a reason and expected version, backed by immutable trigger audit and irreversible term closure — why: browser bypasses must not enable silent grade manipulation.
