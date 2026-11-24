@@ -31,7 +31,7 @@ export default function DashboardLayout() {
         setUser(session?.user ?? null);
         
         if (event === 'SIGNED_OUT') {
-          navigate('/auth');
+          navigate('/auth', { replace: true });
         }
         
         if (event === 'SIGNED_IN' && session) {
